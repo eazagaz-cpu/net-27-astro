@@ -1,0 +1,45 @@
+---
+import type { BreadcrumbItem } from '../lib/types';
+
+interface Props {
+  items: BreadcrumbItem[];
+}
+
+const { items } = Astro.props;
+---
+
+<nav aria-label="Breadcrumb" class="py-4">
+  <ol class="flex items-center flex-wrap gap-1 text-sm">
+    {items.map((item, index) => {
+      const isLast = index === items.length - 1;
+      return (
+        <li class="flex items-center gap-1">
+          {index > 0 && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-4 h-4 text-[var(--color-text-muted)] flex-shrink-0"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              stroke-width="2"
+            >
+              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+            </svg>
+          )}
+          {isLast ? (
+            <span class="font-semibold text-[var(--color-text-primary)]" aria-current="page">
+              {item.label}
+            </span>
+          ) : (
+            <a
+              href={item.href}
+              class="text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors duration-200"
+            >
+              {item.label}
+            </a>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+</nav>

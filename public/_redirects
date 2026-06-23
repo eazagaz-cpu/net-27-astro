@@ -1,0 +1,8 @@
+# Redirect trailing slashes for consistency
+# Cloudflare Pages handles most of these automatically
+
+# Legacy redirects (add as needed)
+/home /
+/movie/* /movies/:splat
+/tv/* /shows/:splat
+/series/* /shows/:splat

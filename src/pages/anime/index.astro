@@ -1,0 +1,63 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import TitleCard from '../../components/TitleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getTitlesByType, genres } from '../../data/sampleTitles';
+import { breadcrumbSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+
+const anime = getTitlesByType('anime');
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Anime', href: '/anime/' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Anime"
+    description="Explore our anime collection featuring action, fantasy, romance, sci-fi, horror, and slice-of-life series. Find where to stream the best anime on Crunchyroll, Netflix, and more."
+    canonical={`${SITE_URL}/anime/`}
+  />
+  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+
+  <Header />
+
+  <main class="min-h-screen pt-20">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <h1 class="text-3xl md:text-4xl font-bold mb-6">Anime</h1>
+
+      <!-- Genre Filter Chips -->
+      <div class="flex flex-wrap gap-2 mb-8">
+        <a href="/anime/" class="chip bg-[var(--color-primary)]/20 border-[var(--color-primary)]/50 text-[var(--color-primary)]">
+          All
+        </a>
+        {genres.map(genre => (
+          <a href={`/genre/${genre.slug}/`} class="chip">
+            {genre.name}
+          </a>
+        ))}
+      </div>
+
+      <!-- Anime Grid -->
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+        {anime.map(title => <TitleCard title={title} />)}
+      </div>
+
+      {anime.length === 0 && (
+        <div class="text-center py-16">
+          <p class="text-[var(--color-text-muted)] text-lg">No anime found.</p>
+        </div>
+      )}
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

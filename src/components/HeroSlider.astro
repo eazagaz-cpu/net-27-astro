@@ -1,0 +1,212 @@
+---
+import type { Title } from '../lib/types';
+
+interface Props {
+  titles: Title[];
+}
+
+const { titles } = Astro.props;
+const slides = titles.slice(0, 5);
+
+const slideGradients = [
+  'linear-gradient(135deg, #1a0000 0%, #0d001a 50%, #050505 100%)',
+  'linear-gradient(135deg, #001a1a 0%, #00001a 50%, #050505 100%)',
+  'linear-gradient(135deg, #0d0d1a 0%, #1a0d00 50%, #050505 100%)',
+  'linear-gradient(135deg, #1a001a 0%, #001a0d 50%, #050505 100%)',
+  'linear-gradient(135deg, #0d1a00 0%, #1a0000 50%, #050505 100%)',
+];
+---
+
+<section class="relative w-full overflow-hidden" aria-label="Featured titles">
+  <div id="hero-slider" class="relative h-[50vh] sm:h-[60vh] lg:h-[70vh]">
+    {slides.map((slide, index) => {
+      const detailHref = slide.type === 'movie' ? `/movies/${slide.slug}/` : `/shows/${slide.slug}/`;
+      const displayGenres = slide.genres.slice(0, 3);
+      return (
+        <div
+          class:list={[
+            'hero-slide absolute inset-0 transition-opacity duration-700 ease-in-out',
+            index === 0 ? 'opacity-100 z-10' : 'opacity-0 z-0',
+          ]}
+          data-slide-index={index}
+        >
+          <!-- Background -->
+          <div
+            class="absolute inset-0"
+            style={`background: ${slideGradients[index % slideGradients.length]};`}
+          >
+            {slide.backdrop && (
+              <img
+                src={slide.backdrop}
+                alt=""
+                class="w-full h-full object-cover opacity-40"
+                loading={index === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+            )}
+          </div>
+
+          <!-- Gradient Overlays -->
+          <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] via-[var(--color-bg-primary)]/40 to-transparent"></div>
+          <div class="absolute inset-0 bg-gradient-to-r from-[var(--color-bg-primary)]/80 via-transparent to-transparent"></div>
+
+          <!-- Content -->
+          <div class="relative z-10 h-full flex items-end pb-16 sm:pb-20 lg:pb-24">
+            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 w-full">
+              <div class="max-w-2xl">
+                <!-- Meta Info -->
+                <div class="flex items-center gap-3 mb-3 flex-wrap">
+                  {slide.rating > 0 && (
+                    <span class="flex items-center gap-1 text-sm font-semibold text-yellow-400">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                      </svg>
+                      {slide.rating.toFixed(1)}
+                    </span>
+                  )}
+                  <span class="text-sm text-[var(--color-text-secondary)]">{slide.year}</span>
+                  {slide.quality && (
+                    <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[var(--color-primary)] text-white">
+                      {slide.quality}
+                    </span>
+                  )}
+                </div>
+
+                <!-- Title -->
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold leading-tight mb-4 text-white">
+                  {slide.title}
+                </h2>
+
+                <!-- Genre Chips -->
+                {displayGenres.length > 0 && (
+                  <div class="flex flex-wrap gap-2 mb-4">
+                    {displayGenres.map((genre) => (
+                      <span class="px-3 py-1 rounded-full text-xs font-medium border border-[var(--color-border)] text-[var(--color-text-secondary)] bg-[var(--color-bg-card)]/50 backdrop-blur-sm">
+                        {genre}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <!-- Overview -->
+                {slide.overview && (
+                  <p class="text-sm sm:text-base text-[var(--color-text-secondary)] line-clamp-2 mb-6 max-w-xl leading-relaxed">
+                    {slide.overview}
+                  </p>
+                )}
+
+                <!-- Action Buttons -->
+                <div class="flex items-center gap-3 flex-wrap">
+                  <a href={detailHref} class="btn-primary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M8 5v14l11-7z" />
+                    </svg>
+                    Watch Now
+                  </a>
+                  <a href={detailHref} class="btn-secondary">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    More Info
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  <!-- Navigation Dots -->
+  {slides.length > 1 && (
+    <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+      {slides.map((_, index) => (
+        <button
+          class:list={[
+            'hero-dot w-2.5 h-2.5 rounded-full transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-primary)]',
+            index === 0
+              ? 'bg-[var(--color-primary)] w-8'
+              : 'bg-white/30 hover:bg-white/50',
+          ]}
+          data-dot-index={index}
+          aria-label={`Go to slide ${index + 1}`}
+        />
+      ))}
+    </div>
+  )}
+</section>
+
+<script>
+  function initHeroSlider() {
+    const slides = document.querySelectorAll<HTMLElement>('.hero-slide');
+    const dots = document.querySelectorAll<HTMLButtonElement>('.hero-dot');
+    if (slides.length <= 1) return;
+
+    let current = 0;
+    let interval: ReturnType<typeof setInterval>;
+
+    function goToSlide(index: number) {
+      slides.forEach((slide, i) => {
+        if (i === index) {
+          slide.classList.remove('opacity-0', 'z-0');
+          slide.classList.add('opacity-100', 'z-10');
+        } else {
+          slide.classList.remove('opacity-100', 'z-10');
+          slide.classList.add('opacity-0', 'z-0');
+        }
+      });
+
+      dots.forEach((dot, i) => {
+        if (i === index) {
+          dot.classList.remove('bg-white/30', 'hover:bg-white/50');
+          dot.classList.add('bg-[var(--color-primary)]', 'w-8');
+        } else {
+          dot.classList.remove('bg-[var(--color-primary)]', 'w-8');
+          dot.classList.add('bg-white/30', 'hover:bg-white/50');
+        }
+      });
+
+      current = index;
+    }
+
+    function nextSlide() {
+      goToSlide((current + 1) % slides.length);
+    }
+
+    function startAutoplay() {
+      interval = setInterval(nextSlide, 6000);
+    }
+
+    function stopAutoplay() {
+      clearInterval(interval);
+    }
+
+    dots.forEach((dot) => {
+      dot.addEventListener('click', () => {
+        const index = Number(dot.dataset.dotIndex);
+        stopAutoplay();
+        goToSlide(index);
+        startAutoplay();
+      });
+    });
+
+    // Pause on hover
+    const slider = document.getElementById('hero-slider');
+    if (slider) {
+      slider.addEventListener('mouseenter', stopAutoplay);
+      slider.addEventListener('mouseleave', startAutoplay);
+    }
+
+    startAutoplay();
+  }
+
+  // Initialize on page load and after Astro client-side navigation
+  document.addEventListener('DOMContentLoaded', initHeroSlider);
+  document.addEventListener('astro:after-swap', initHeroSlider);
+
+  // Also handle the case where the script runs after DOMContentLoaded
+  if (document.readyState === 'complete' || document.readyState === 'interactive') {
+    initHeroSlider();
+  }
+</script>

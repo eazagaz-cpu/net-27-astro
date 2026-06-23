@@ -1,0 +1,55 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEOHead from '../components/SEOHead.astro';
+import Schema from '../components/Schema.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import SearchBox from '../components/SearchBox.tsx';
+import { breadcrumbSchema } from '../lib/schema';
+import { SITE_URL } from '../lib/seo';
+import { genres } from '../data/sampleTitles';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Search', href: '/search/' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Search Movies & Shows"
+    description="Search and discover movies, TV shows, and anime. Filter by genre, language, year, and streaming platform to find your next favorite title."
+    canonical={`${SITE_URL}/search/`}
+  />
+  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+
+  <Header />
+
+  <main class="min-h-screen pt-20">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <div class="mb-8">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Search</h1>
+        <p class="text-[var(--color-text-secondary)]">Find movies, TV shows, and anime across all streaming platforms.</p>
+      </div>
+
+      <SearchBox client:load />
+
+      <section class="mt-16 pt-8 border-t border-[var(--color-border)]">
+        <h2 class="section-title mb-6">Popular Genres</h2>
+        <div class="flex flex-wrap gap-3">
+          {genres.map(genre => (
+            <a href={`/genre/${genre.slug}/`} class="chip">
+              {genre.name}
+            </a>
+          ))}
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

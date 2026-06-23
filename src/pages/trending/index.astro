@@ -1,0 +1,50 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import TitleCard from '../../components/TitleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { getTrendingTitles } from '../../data/sampleTitles';
+import { breadcrumbSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+
+const trending = getTrendingTitles();
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Trending', href: '/trending/' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Trending Now"
+    description="See what's trending right now. Discover the most popular movies, TV shows, and anime that everyone is watching across all streaming platforms."
+    canonical={`${SITE_URL}/trending/`}
+  />
+  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+
+  <Header />
+
+  <main class="min-h-screen pt-20">
+    <div class="max-w-7xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <h1 class="text-3xl md:text-4xl font-bold mb-8">Trending Now</h1>
+
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+        {trending.map(title => <TitleCard title={title} />)}
+      </div>
+
+      {trending.length === 0 && (
+        <div class="text-center py-16">
+          <p class="text-[var(--color-text-muted)] text-lg">No trending titles at the moment.</p>
+        </div>
+      )}
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

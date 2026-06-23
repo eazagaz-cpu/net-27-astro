@@ -1,9 +1,9 @@
 {
   "name": "net-27.cc",
   "type": "module",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "engines": {
-    "node": ">=22.12.0"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "dev": "astro dev",
@@ -13,12 +13,15 @@
   },
   "dependencies": {
     "@astrojs/react": "^6.0.0",
+    "@astrojs/sitemap": "^3.7.3",
     "astro": "^7.0.0",
     "react": "^19.2.7",
     "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.1",
+    "@types/react": "^19.2.17",
+    "@types/react-dom": "^19.2.3",
     "tailwindcss": "^4.3.1"
   }
 }

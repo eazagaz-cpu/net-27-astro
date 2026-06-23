@@ -1,0 +1,111 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import TitleCard from '../../components/TitleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { languages, getTitlesByLanguage } from '../../data/sampleTitles';
+import { breadcrumbSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+
+export const getStaticPaths = (() => {
+  return languages.map(language => ({
+    params: { slug: language.slug },
+    props: { language },
+  }));
+}) satisfies GetStaticPaths;
+
+const { language } = Astro.props;
+const titles = getTitlesByLanguage(language.name);
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Languages', href: '/language/' },
+  { label: language.name, href: `/language/${language.slug}/` },
+];
+
+const otherLanguages = languages.filter(l => l.slug !== language.slug);
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title={`${language.name} Movies & Shows - Stream Online`}
+    description={`Browse the best ${language.name} movies, TV shows, and anime. Discover ${titles.length} titles in ${language.name} and find where to watch them legally on streaming platforms.`}
+    canonical={`${SITE_URL}/language/${language.slug}/`}
+  />
+  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+
+  <Header />
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/10 to-[var(--color-accent-alt)]/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+
+      <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+        <Breadcrumbs items={breadcrumbs} />
+
+        <div class="mt-4 mb-2">
+          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
+            <span class="gradient-text">{language.name}</span> Movies & Shows
+          </h1>
+          <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-2xl">
+            Explore {titles.length} titles available in {language.name}. Find movies, TV shows, and anime to watch on your favorite streaming platforms.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+
+      <!-- Results Count -->
+      <div class="flex items-center justify-between">
+        <p class="text-[var(--color-text-secondary)]">
+          <span class="text-white font-semibold">{titles.length}</span> titles found
+        </p>
+      </div>
+
+      <!-- Titles Grid -->
+      {titles.length > 0 ? (
+        <section>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {titles.map(title => (
+              <TitleCard title={title} />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <section class="glass-card rounded-xl p-12 text-center">
+          <p class="text-[var(--color-text-muted)] text-lg">No titles found in this language.</p>
+        </section>
+      )}
+
+      <!-- Other Languages -->
+      <section>
+        <h2 class="section-title mb-6">Browse by Language</h2>
+        <div class="flex flex-wrap gap-3">
+          {otherLanguages.map(l => (
+            <a href={`/language/${l.slug}/`} class="chip">
+              {l.name}
+              <span class="ml-1 text-[var(--color-text-muted)]">({l.count})</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- Legal Disclaimer -->
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host, store, or distribute any copyrighted content. All information provided on this page is for informational purposes only. We help users discover titles and find legal streaming options. All trademarks, service marks, and content referenced belong to their respective owners.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

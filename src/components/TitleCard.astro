@@ -1,0 +1,92 @@
+---
+import type { Title } from '../lib/types';
+
+interface Props {
+  title: Title;
+}
+
+const { title } = Astro.props;
+
+const href = title.type === 'movie' ? `/movies/${title.slug}/` : `/shows/${title.slug}/`;
+
+const displayGenres = title.genres.slice(0, 2);
+
+const placeholderGradients = [
+  'from-red-900 to-purple-900',
+  'from-blue-900 to-indigo-900',
+  'from-emerald-900 to-teal-900',
+  'from-orange-900 to-red-900',
+  'from-violet-900 to-fuchsia-900',
+  'from-cyan-900 to-blue-900',
+  'from-rose-900 to-pink-900',
+  'from-amber-900 to-yellow-900',
+];
+
+const gradientIndex = title.title.length % placeholderGradients.length;
+const placeholderGradient = placeholderGradients[gradientIndex];
+---
+
+<a href={href} class="title-card group block">
+  <!-- Poster Area -->
+  <div class="relative aspect-[2/3] overflow-hidden">
+    {title.poster ? (
+      <img
+        src={title.poster}
+        alt={title.title}
+        class="w-full h-full object-cover"
+        loading="lazy"
+        decoding="async"
+      />
+    ) : (
+      <div class={`w-full h-full bg-gradient-to-br ${placeholderGradient} flex items-center justify-center`}>
+        <span class="text-5xl font-bold text-white/30 select-none">
+          {title.title.charAt(0).toUpperCase()}
+        </span>
+      </div>
+    )}
+
+    <!-- Gradient Overlay -->
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+
+    <!-- Quality Badge (Top Right) -->
+    {title.quality && (
+      <span class="absolute top-2 right-2 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-[var(--color-primary)] text-white">
+        {title.quality}
+      </span>
+    )}
+
+    <!-- Rating Badge (Top Left) -->
+    {title.rating > 0 && (
+      <span class="absolute top-2 left-2 flex items-center gap-1 px-2 py-0.5 rounded bg-black/70 backdrop-blur-sm text-xs font-semibold text-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+        </svg>
+        {title.rating.toFixed(1)}
+      </span>
+    )}
+  </div>
+
+  <!-- Info Area -->
+  <div class="p-3">
+    <h3 class="text-sm font-semibold text-[var(--color-text-primary)] line-clamp-1 mb-1 group-hover:text-[var(--color-primary)] transition-colors duration-200">
+      {title.title}
+    </h3>
+    <div class="flex items-center gap-2 mb-2">
+      <span class="text-xs text-[var(--color-text-muted)]">{title.year}</span>
+      {title.type !== 'movie' && (
+        <span class="text-[10px] px-1.5 py-0.5 rounded bg-[var(--color-accent)]/20 text-[var(--color-accent)] font-medium uppercase">
+          {title.type === 'anime' ? 'Anime' : 'TV'}
+        </span>
+      )}
+    </div>
+    {displayGenres.length > 0 && (
+      <div class="flex flex-wrap gap-1">
+        {displayGenres.map((genre) => (
+          <span class="text-[10px] px-2 py-0.5 rounded-full border border-[var(--color-border)] text-[var(--color-text-muted)]">
+            {genre}
+          </span>
+        ))}
+      </div>
+    )}
+  </div>
+</a>

@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEOHead from '../components/SEOHead.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE_URL } from '../lib/seo';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Privacy Policy', href: '/privacy/' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Privacy Policy"
+    description="Net27 privacy policy. Learn how we collect, use, and protect your personal information."
+    canonical={`${SITE_URL}/privacy/`}
+  />
+
+  <Header />
+
+  <main class="min-h-screen pt-20">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <h1 class="text-3xl md:text-4xl font-bold mb-8">Privacy Policy</h1>
+
+      <div class="space-y-8 text-[var(--color-text-secondary)] leading-relaxed">
+        <p class="text-lg">Last updated: January 1, 2025</p>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Introduction</h2>
+          <p>
+            Net27 ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website net-27.cc. Please read this policy carefully.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Information We Collect</h2>
+          <p>We may collect information about you in various ways:</p>
+          <ul class="list-disc list-inside mt-3 space-y-2">
+            <li><strong class="text-[var(--color-text-primary)]">Usage Data:</strong> Browser type, operating system, pages visited, time spent, referring URLs, and other diagnostic data collected automatically when you access our website.</li>
+            <li><strong class="text-[var(--color-text-primary)]">Contact Information:</strong> If you contact us, we may collect your name, email address, and message content.</li>
+            <li><strong class="text-[var(--color-text-primary)]">Local Storage:</strong> We use browser local storage for features like watchlists. This data stays on your device and is not transmitted to our servers.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">How We Use Your Information</h2>
+          <ul class="list-disc list-inside space-y-2">
+            <li>To operate and maintain our website</li>
+            <li>To improve user experience and website performance</li>
+            <li>To analyze usage trends and optimize content</li>
+            <li>To respond to your inquiries and support requests</li>
+            <li>To comply with legal obligations</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Cookies and Tracking</h2>
+          <p>
+            We may use cookies and similar tracking technologies to enhance your browsing experience. Cookies are small data files stored on your device. You can instruct your browser to refuse all cookies or to indicate when a cookie is being sent.
+          </p>
+          <p class="mt-3">
+            We may use analytics services such as Google Analytics to collect and analyze usage data. These services may use cookies and other tracking technologies to collect information about your use of our website.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Third-Party Services</h2>
+          <p>
+            Our website may contain links to third-party streaming platforms and services. We are not responsible for the privacy practices of these external sites. We encourage you to review the privacy policies of any third-party service you visit through our platform.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Data Security</h2>
+          <p>
+            We implement appropriate technical and organizational measures to protect the security of your personal information. However, no method of transmission over the internet or electronic storage is 100% secure, and we cannot guarantee absolute security.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Children's Privacy</h2>
+          <p>
+            Our website is not intended for children under 13. We do not knowingly collect personal information from children under 13. If you believe we have collected such information, please contact us immediately.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Changes to This Policy</h2>
+          <p>
+            We may update this Privacy Policy from time to time. We will notify you of any changes by posting the new policy on this page and updating the "Last updated" date. Your continued use of the website after changes are posted constitutes your acceptance of the updated policy.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Contact Us</h2>
+          <p>
+            If you have questions about this Privacy Policy, please contact us at:
+          </p>
+          <div class="glass-card rounded-lg p-6 mt-3">
+            <p>Email: privacy@net-27.cc</p>
+            <p>Website: <a href="/contact/" class="text-[var(--color-primary)] hover:underline">net-27.cc/contact</a></p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

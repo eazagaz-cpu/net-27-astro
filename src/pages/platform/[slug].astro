@@ -1,0 +1,144 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import TitleCard from '../../components/TitleCard.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import { platforms, getTitlesByPlatform } from '../../data/sampleTitles';
+import { breadcrumbSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+
+export const getStaticPaths = (() => {
+  return platforms.map(platform => ({
+    params: { slug: platform.slug },
+    props: { platform },
+  }));
+}) satisfies GetStaticPaths;
+
+const { platform } = Astro.props;
+const titles = getTitlesByPlatform(platform.name);
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Platforms', href: '/platform/' },
+  { label: platform.name, href: `/platform/${platform.slug}/` },
+];
+
+const otherPlatforms = platforms.filter(p => p.slug !== platform.slug);
+
+const platformColors: Record<string, string> = {
+  'Netflix': 'from-red-900/20 to-red-800/20',
+  'Prime Video': 'from-blue-900/20 to-cyan-900/20',
+  'Disney+': 'from-blue-800/20 to-indigo-900/20',
+  'Hulu': 'from-green-900/20 to-emerald-900/20',
+  'Apple TV+': 'from-gray-800/20 to-gray-700/20',
+  'Crunchyroll': 'from-orange-900/20 to-amber-900/20',
+  'HBO Max': 'from-purple-900/20 to-violet-900/20',
+  'Paramount+': 'from-blue-900/20 to-sky-900/20',
+};
+const heroGradient = platformColors[platform.name] || 'from-[var(--color-primary)]/10 to-[var(--color-accent)]/10';
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title={`${platform.name} - Movies & Shows Available to Stream`}
+    description={`Browse ${titles.length} movies, TV shows, and anime available on ${platform.name}. Discover what to watch on ${platform.name} and explore the full catalog.`}
+    canonical={`${SITE_URL}/platform/${platform.slug}/`}
+  />
+  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+
+  <Header />
+
+  <main>
+    <!-- Hero Section -->
+    <section class="relative overflow-hidden">
+      <div class={`absolute inset-0 bg-gradient-to-br ${heroGradient}`}></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+
+      <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+        <Breadcrumbs items={breadcrumbs} />
+
+        <div class="mt-4 mb-2 flex items-start gap-6">
+          <!-- Platform Icon -->
+          <div class="hidden sm:flex flex-shrink-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-[var(--color-border)] items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+              <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+          </div>
+
+          <div>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
+              <span class="gradient-text">{platform.name}</span>
+            </h1>
+            <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-2xl">
+              Explore {titles.length} movies, TV shows, and anime available on {platform.name}. Find your next favorite title to stream.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+
+      <!-- Results Count -->
+      <div class="flex items-center justify-between">
+        <p class="text-[var(--color-text-secondary)]">
+          <span class="text-white font-semibold">{titles.length}</span> titles available
+        </p>
+      </div>
+
+      <!-- Titles Grid -->
+      {titles.length > 0 ? (
+        <section>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {titles.map(title => (
+              <TitleCard title={title} />
+            ))}
+          </div>
+        </section>
+      ) : (
+        <section class="glass-card rounded-xl p-12 text-center">
+          <p class="text-[var(--color-text-muted)] text-lg">No titles found on this platform.</p>
+        </section>
+      )}
+
+      <!-- Other Platforms -->
+      <section>
+        <h2 class="section-title mb-6">Other Streaming Platforms</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+          {otherPlatforms.map(p => (
+            <a
+              href={`/platform/${p.slug}/`}
+              class="glass-card rounded-xl px-5 py-4 flex items-center gap-3 hover:border-[var(--color-primary)] transition-colors duration-200"
+            >
+              <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-accent)]/30 to-[var(--color-accent-alt)]/30 flex items-center justify-center flex-shrink-0">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <span class="text-white font-medium text-sm">{p.name}</span>
+                <span class="block text-xs text-[var(--color-text-muted)]">{p.count} titles</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- Legal Disclaimer -->
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host, store, or distribute any copyrighted content. All information provided on this page is for informational purposes only. {platform.name} is a registered trademark of its respective owner. Streaming availability may vary by region and is subject to change. We help users discover titles and find legal streaming options.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

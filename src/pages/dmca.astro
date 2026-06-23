@@ -1,0 +1,104 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEOHead from '../components/SEOHead.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE_URL } from '../lib/seo';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'DMCA Policy', href: '/dmca/' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="DMCA / Copyright Policy"
+    description="Net27 DMCA and copyright policy. Learn how to file a copyright complaint or counter-notification."
+    canonical={`${SITE_URL}/dmca/`}
+  />
+
+  <Header />
+
+  <main class="min-h-screen pt-20">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <h1 class="text-3xl md:text-4xl font-bold mb-8">DMCA / Copyright Policy</h1>
+
+      <div class="space-y-8 text-[var(--color-text-secondary)] leading-relaxed">
+        <p class="text-lg">
+          Last updated: January 1, 2025
+        </p>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Overview</h2>
+          <p>
+            Net27 ("we," "us," or "our") respects the intellectual property rights of others and expects our users to do the same. We operate as a discovery and information platform only — we do not host, upload, store, or stream any copyrighted audio, video, or media content on our servers.
+          </p>
+          <p class="mt-3">
+            All information displayed on Net27, including movie titles, descriptions, ratings, and availability data, is provided for informational and discovery purposes. We direct users to official, legitimate streaming platforms where content can be accessed legally.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">DMCA Notice</h2>
+          <p>
+            If you believe that content accessible via our platform infringes your copyright, you may submit a DMCA notification by providing the following information to our designated copyright agent:
+          </p>
+          <ol class="list-decimal list-inside mt-3 space-y-2">
+            <li>A physical or electronic signature of the copyright owner or authorized agent.</li>
+            <li>Identification of the copyrighted work claimed to have been infringed.</li>
+            <li>Identification of the material that is claimed to be infringing, with sufficient detail to locate it.</li>
+            <li>Your contact information (address, telephone number, email address).</li>
+            <li>A statement that you have a good faith belief that the disputed use is not authorized.</li>
+            <li>A statement, under penalty of perjury, that the information in the notification is accurate and that you are the copyright owner or authorized to act on their behalf.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Counter-Notification</h2>
+          <p>
+            If you believe that material was removed or disabled as a result of mistake or misidentification, you may file a counter-notification containing:
+          </p>
+          <ol class="list-decimal list-inside mt-3 space-y-2">
+            <li>Your physical or electronic signature.</li>
+            <li>Identification of the material that has been removed and the location where it appeared before removal.</li>
+            <li>A statement under penalty of perjury that you have a good faith belief the material was removed by mistake or misidentification.</li>
+            <li>Your name, address, telephone number, and a statement consenting to jurisdiction.</li>
+          </ol>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Contact for DMCA Issues</h2>
+          <p>
+            All DMCA notices and counter-notifications should be sent to:
+          </p>
+          <div class="glass-card rounded-lg p-6 mt-3">
+            <p class="font-medium text-[var(--color-text-primary)]">DMCA Agent</p>
+            <p>Net27</p>
+            <p>Email: dmca@net-27.cc</p>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Repeat Infringers</h2>
+          <p>
+            In accordance with the DMCA and other applicable laws, we have adopted a policy of terminating, in appropriate circumstances, users or account holders who are deemed to be repeat infringers.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Disclaimer</h2>
+          <p>
+            Net27 is a content discovery platform. We do not host, upload, store, cache, or distribute any media files, streams, or copyrighted content. All streaming links and availability information point to third-party, officially licensed platforms. All trademarks, logos, and content belong to their respective owners.
+          </p>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
