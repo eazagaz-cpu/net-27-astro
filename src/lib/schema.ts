@@ -137,6 +137,27 @@ export function articleSchema(post: any): object {
   return schema;
 }
 
+export function personSchema(person: {
+  name: string;
+  bio?: string;
+  birthYear?: number;
+  nationality?: string;
+  jobTitle?: string;
+  url?: string;
+}): object {
+  const schema: Record<string, any> = {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: person.name,
+  };
+  if (person.bio) schema.description = person.bio;
+  if (person.birthYear) schema.birthDate = `${person.birthYear}-01-01`;
+  if (person.nationality) schema.nationality = person.nationality;
+  if (person.jobTitle) schema.jobTitle = person.jobTitle;
+  if (person.url) schema.url = person.url;
+  return schema;
+}
+
 export function faqSchema(
   faqs: { question: string; answer: string }[]
 ): object {

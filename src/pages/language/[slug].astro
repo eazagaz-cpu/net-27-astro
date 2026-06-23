@@ -7,8 +7,9 @@ import SEOHead from '../../components/SEOHead.astro';
 import Schema from '../../components/Schema.astro';
 import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { languages, getTitlesByLanguage } from '../../data/sampleTitles';
-import { breadcrumbSchema } from '../../lib/schema';
+import FAQSection from '../../components/FAQSection.astro';
+import { languages, genres, getTitlesByLanguage } from '../../data/sampleTitles';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 export const getStaticPaths = (() => {
@@ -20,62 +21,80 @@ export const getStaticPaths = (() => {
 
 const { language } = Astro.props;
 const titles = getTitlesByLanguage(language.name);
+const movies = titles.filter(t => t.type === 'movie');
+const shows = titles.filter(t => t.type === 'show');
+const anime = titles.filter(t => t.type === 'anime');
 const breadcrumbs = [
   { label: 'Home', href: '/' },
-  { label: 'Languages', href: '/language/' },
+  { label: 'Languages', href: '/' },
   { label: language.name, href: `/language/${language.slug}/` },
 ];
-
 const otherLanguages = languages.filter(l => l.slug !== language.slug);
+
+const languageDescriptions: Record<string, string> = {
+  'English': 'English-language cinema and television spans Hollywood blockbusters, British dramas, Australian independent films, and much more. As the most widely distributed language in global entertainment, English-language titles dominate streaming platforms worldwide. From Academy Award-winning dramas to binge-worthy series, this collection represents the best of English-language storytelling across every genre.',
+  'Hindi': 'Hindi-language entertainment encompasses the vibrant world of Bollywood and beyond. Known for its musical numbers, colorful cinematography, and emotionally rich storytelling, Hindi cinema has a massive global following. Modern Hindi titles increasingly blend traditional storytelling with contemporary themes, making them accessible to international audiences while retaining their distinctive cultural identity.',
+  'Spanish': 'Spanish-language cinema and television has experienced a golden age in streaming, with titles from Spain, Mexico, Argentina, and Colombia captivating global audiences. From gritty crime thrillers to passionate dramas, Spanish-language content offers diverse perspectives and storytelling traditions that have earned critical acclaim and devoted fan bases worldwide.',
+  'Korean': 'Korean entertainment, or K-content, has taken the global stage by storm. From K-dramas with their compelling romantic storylines to groundbreaking films that challenge genre conventions, Korean-language titles consistently deliver exceptional production quality and innovative storytelling. The Korean wave (Hallyu) continues to shape global pop culture.',
+  'Japanese': 'Japanese-language entertainment encompasses a rich tradition spanning anime, live-action cinema, and television drama. From Studio Ghibli masterpieces to cutting-edge anime series, Japanese content is celebrated for its artistic innovation, deep themes, and unique storytelling approaches. Japanese cinema has influenced filmmakers worldwide and continues to push creative boundaries.',
+  'French': 'French-language cinema holds a prestigious place in world filmmaking, from the innovations of the French New Wave to contemporary auteur cinema. Known for its artistic ambition, philosophical depth, and visual elegance, French-language content offers viewers sophisticated entertainment that challenges and rewards in equal measure.',
+  'German': 'German-language cinema and television has gained international recognition for its bold storytelling and production excellence. From critically acclaimed historical dramas to innovative science fiction series, German-language content combines technical precision with emotional depth, offering viewers a distinctive perspective on universal themes.',
+  'Turkish': 'Turkish dramas (diziler) have become a global phenomenon, captivating audiences across the Middle East, Europe, and beyond. Known for their epic storylines, lavish production values, and emotionally intense performances, Turkish-language series offer sweeping narratives that blend romance, family drama, and historical intrigue.',
+};
+const description = languageDescriptions[language.name] || `Discover the best movies, TV shows, and anime available in ${language.name}. Our curated collection features top-rated titles spanning all genres, available on major streaming platforms worldwide.`;
+
+const faqs = [
+  { question: `What are the best ${language.name} movies and shows?`, answer: `Our top-rated ${language.name} titles include ${titles.slice(0, 3).map(t => t.title).join(', ')}. Browse the full collection to find critically acclaimed and popular titles in ${language.name}.` },
+  { question: `Where can I stream ${language.name} content?`, answer: `${language.name} movies and shows are available on platforms including ${[...new Set(titles.flatMap(t => t.platforms))].slice(0, 4).join(', ')}. Check each title page for specific availability in your region.` },
+  { question: `How many ${language.name} titles are in your database?`, answer: `We currently have ${titles.length} titles available in ${language.name}, including ${movies.length} movies, ${shows.length} TV shows, and ${anime.length} anime series.` },
+  { question: `Do you have ${language.name} subtitled content?`, answer: `Many titles in our ${language.name} collection are available with subtitles on their respective streaming platforms. Check the specific streaming service for subtitle and dubbing options.` },
+  { question: `Is ${language.name} content available globally?`, answer: `Availability varies by region and streaming platform. Some ${language.name} titles may be region-locked on certain platforms. We recommend checking your local streaming service for current availability.` },
+];
 ---
 
 <BaseLayout>
   <SEOHead
     slot="head"
-    title={`${language.name} Movies & Shows - Stream Online`}
-    description={`Browse the best ${language.name} movies, TV shows, and anime. Discover ${titles.length} titles in ${language.name} and find where to watch them legally on streaming platforms.`}
+    title={`Best ${language.name} Movies & Shows (${new Date().getFullYear()}) - Stream Online`}
+    description={`Discover ${titles.length} ${language.name} movies, TV shows, and anime. Find the best ${language.name} content to stream on Netflix, Prime Video, and more.`}
     canonical={`${SITE_URL}/language/${language.slug}/`}
   />
-  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
 
   <Header />
 
-  <main>
-    <!-- Hero Section -->
+  <main class="min-h-screen">
     <section class="relative overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/10 to-[var(--color-accent-alt)]/10"></div>
       <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
-
-      <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+      <div class="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-10">
         <Breadcrumbs items={breadcrumbs} />
-
-        <div class="mt-4 mb-2">
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
-            <span class="gradient-text">{language.name}</span> Movies & Shows
-          </h1>
-          <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-2xl">
-            Explore {titles.length} titles available in {language.name}. Find movies, TV shows, and anime to watch on your favorite streaming platforms.
-          </p>
+        <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+          <span class="gradient-text">{language.name}</span> Movies & Shows
+        </h1>
+        <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">
+          Explore {titles.length} titles available in {language.name}. Find movies, TV shows, and anime on your favorite streaming platforms.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-3 text-sm text-[var(--color-text-muted)]">
+          <span>{movies.length} Movies</span>
+          <span>&middot;</span>
+          <span>{shows.length} TV Shows</span>
+          <span>&middot;</span>
+          <span>{anime.length} Anime</span>
         </div>
       </div>
     </section>
 
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+    <div class="mx-auto max-w-7xl px-4 py-12 space-y-16">
+      <section>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl">{description}</p>
+      </section>
 
-      <!-- Results Count -->
-      <div class="flex items-center justify-between">
-        <p class="text-[var(--color-text-secondary)]">
-          <span class="text-white font-semibold">{titles.length}</span> titles found
-        </p>
-      </div>
-
-      <!-- Titles Grid -->
       {titles.length > 0 ? (
         <section>
+          <h2 class="section-title mb-6">All {language.name} Titles</h2>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {titles.map(title => (
-              <TitleCard title={title} />
-            ))}
+            {titles.map(title => <TitleCard title={title} />)}
           </div>
         </section>
       ) : (
@@ -84,26 +103,31 @@ const otherLanguages = languages.filter(l => l.slug !== language.slug);
         </section>
       )}
 
-      <!-- Other Languages -->
       <section>
-        <h2 class="section-title mb-6">Browse by Language</h2>
+        <h2 class="section-title mb-6">Browse Other Languages</h2>
         <div class="flex flex-wrap gap-3">
           {otherLanguages.map(l => (
-            <a href={`/language/${l.slug}/`} class="chip">
-              {l.name}
-              <span class="ml-1 text-[var(--color-text-muted)]">({l.count})</span>
-            </a>
+            <a href={`/language/${l.slug}/`} class="chip">{l.name} <span class="ml-1 text-[var(--color-text-muted)]">({l.count})</span></a>
           ))}
         </div>
       </section>
 
-      <!-- Legal Disclaimer -->
-      <section class="glass-card rounded-xl p-6">
-        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
-          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host, store, or distribute any copyrighted content. All information provided on this page is for informational purposes only. We help users discover titles and find legal streaming options. All trademarks, service marks, and content referenced belong to their respective owners.
-        </p>
+      <section>
+        <h2 class="section-title mb-6">Browse by Genre</h2>
+        <div class="flex flex-wrap gap-3">
+          {genres.slice(0, 10).map(g => (
+            <a href={`/genre/${g.slug}/`} class="chip">{g.name}</a>
+          ))}
+        </div>
       </section>
 
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host or distribute copyrighted content. All information is for discovery purposes only. Streaming availability varies by region. Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}.
+        </p>
+      </section>
     </div>
   </main>
 

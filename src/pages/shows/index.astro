@@ -6,56 +6,116 @@ import SEOHead from '../../components/SEOHead.astro';
 import Schema from '../../components/Schema.astro';
 import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { getTitlesByType, genres } from '../../data/sampleTitles';
-import { breadcrumbSchema } from '../../lib/schema';
+import FAQSection from '../../components/FAQSection.astro';
+import { getTitlesByType, genres, languages, platforms } from '../../data/sampleTitles';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 const shows = getTitlesByType('show');
+const topRated = [...shows].sort((a, b) => b.rating - a.rating);
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'TV Shows', href: '/shows/' },
+];
+
+const faqs = [
+  { question: 'What TV shows can I find on Net27?', answer: `We feature ${shows.length} TV shows across genres including crime, drama, sci-fi, fantasy, comedy, documentary, and more. Our catalog covers content from all major streaming platforms.` },
+  { question: 'Does Net27 stream TV shows?', answer: 'No. Net27 is a discovery platform. We provide information about where TV shows are available for legal streaming on platforms like Netflix, Prime Video, HBO Max, and others.' },
+  { question: 'How do I find which platform has a show?', answer: 'Click on any TV show to see its detail page. The "Where to Watch" section lists all streaming platforms where the show is currently available.' },
+  { question: 'Can I filter shows by genre?', answer: 'Yes! Use the genre filter chips to browse shows by specific genres like Drama, Crime, Sci-Fi, Comedy, Fantasy, and more.' },
+  { question: 'Are anime shows included here?', answer: 'TV shows and anime are listed separately. Visit our dedicated Anime page at /anime/ for our full anime collection including shonen, mecha, romance, and more.' },
+  { question: 'How are show ratings calculated?', answer: 'Ratings are aggregated from critic and viewer scores. Each show is rated on a scale of 1 to 10, helping you quickly identify highly acclaimed series.' },
 ];
 ---
 
 <BaseLayout>
   <SEOHead
     slot="head"
-    title="TV Shows"
-    description="Browse our collection of TV shows including crime dramas, sci-fi series, fantasy epics, documentaries, and more. Find where to stream your favorite shows legally."
+    title={`Best TV Shows to Watch (${new Date().getFullYear()}) - Stream Online`}
+    description={`Discover ${shows.length} TV shows across all genres. Find crime dramas, sci-fi series, fantasy epics, comedies and more. See where to stream legally.`}
     canonical={`${SITE_URL}/shows/`}
   />
-  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
 
   <Header />
 
-  <main class="min-h-screen pt-20">
-    <div class="max-w-7xl mx-auto px-4 py-8">
-      <Breadcrumbs items={breadcrumbs} />
-
-      <h1 class="text-3xl md:text-4xl font-bold mb-6">TV Shows</h1>
-
-      <!-- Genre Filter Chips -->
-      <div class="flex flex-wrap gap-2 mb-8">
-        <a href="/shows/" class="chip bg-[var(--color-primary)]/20 border-[var(--color-primary)]/50 text-[var(--color-primary)]">
-          All
-        </a>
-        {genres.map(genre => (
-          <a href={`/genre/${genre.slug}/`} class="chip">
-            {genre.name}
-          </a>
-        ))}
+  <main class="min-h-screen">
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/10 to-[var(--color-primary)]/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+      <div class="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-10">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+          <span class="gradient-text">TV Shows</span>
+        </h1>
+        <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">
+          Explore {shows.length} TV series spanning every genre. From binge-worthy dramas to thrilling mysteries, find your next obsession and discover where to stream it legally.
+        </p>
       </div>
+    </section>
 
-      <!-- Shows Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-        {shows.map(title => <TitleCard title={title} />)}
-      </div>
+    <div class="mx-auto max-w-7xl px-4 py-12 space-y-16">
 
-      {shows.length === 0 && (
-        <div class="text-center py-16">
-          <p class="text-[var(--color-text-muted)] text-lg">No TV shows found.</p>
+      <section>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl">
+          Television has entered a golden age of storytelling, with streaming platforms investing billions in original series that rival — and often surpass — cinema in their ambition and quality. Our curated TV show collection brings together the best series from Netflix, Prime Video, HBO Max, Apple TV+, Disney+, Hulu, and Paramount+, giving you a single destination to discover your next binge-worthy show.
+        </p>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl mt-4">
+          Each show page provides comprehensive details including full cast and crew, episode counts, season information, ratings, streaming platform availability, and personalized recommendations. Whether you prefer intense crime procedurals, sweeping fantasy epics, thought-provoking sci-fi, or heartwarming comedies, we have curated collections to match every mood and preference.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="section-title mb-4">Filter by Genre</h2>
+        <div class="flex flex-wrap gap-2">
+          <a href="/shows/" class="chip active">All</a>
+          {genres.map(genre => (
+            <a href={`/genre/${genre.slug}/`} class="chip">{genre.name}</a>
+          ))}
         </div>
+      </section>
+
+      <section>
+        <h2 class="section-title mb-6">All TV Shows</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+          {shows.map(title => <TitleCard title={title} />)}
+        </div>
+      </section>
+
+      {topRated.length > 0 && (
+        <section class="bg-[var(--color-bg-secondary)] -mx-4 px-4 py-12 rounded-xl">
+          <h2 class="section-title mb-6">Highest Rated Shows</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {topRated.slice(0, 6).map(title => <TitleCard title={title} />)}
+          </div>
+        </section>
       )}
+
+      <section>
+        <h2 class="section-title mb-6">Browse by Platform</h2>
+        <div class="flex flex-wrap gap-3">
+          {platforms.map(p => (
+            <a href={`/platform/${p.slug}/`} class="chip">{p.name}</a>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title mb-6">Browse by Language</h2>
+        <div class="flex flex-wrap gap-3">
+          {languages.map(l => (
+            <a href={`/language/${l.slug}/`} class="chip">{l.name}</a>
+          ))}
+        </div>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host or distribute copyrighted content. All information is for discovery purposes only. Streaming availability varies by region. Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}.
+        </p>
+      </section>
     </div>
   </main>
 

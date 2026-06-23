@@ -7,8 +7,9 @@ import SEOHead from '../../components/SEOHead.astro';
 import Schema from '../../components/Schema.astro';
 import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { genres, getTitlesByGenre } from '../../data/sampleTitles';
-import { breadcrumbSchema } from '../../lib/schema';
+import FAQSection from '../../components/FAQSection.astro';
+import { genres, languages, platforms, getTitlesByGenre } from '../../data/sampleTitles';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 export const getStaticPaths = (() => {
@@ -20,58 +21,84 @@ export const getStaticPaths = (() => {
 
 const { genre } = Astro.props;
 const titles = getTitlesByGenre(genre.name);
+const movies = titles.filter(t => t.type === 'movie');
+const shows = titles.filter(t => t.type === 'show');
+const anime = titles.filter(t => t.type === 'anime');
 const breadcrumbs = [
   { label: 'Home', href: '/' },
-  { label: 'Genres', href: '/genre/' },
+  { label: 'Genres', href: '/' },
   { label: genre.name, href: `/genre/${genre.slug}/` },
 ];
-
 const relatedGenres = genres.filter(g => g.slug !== genre.slug);
+const genreDescriptions: Record<string, string> = {
+  'Action': 'Action titles deliver adrenaline-pumping sequences, intense stunts, and high-stakes conflict. From explosive blockbusters to martial arts epics, this genre keeps viewers on the edge of their seats with relentless pacing and visceral thrills. Whether it\'s a lone hero fighting against impossible odds or a team assembling for a critical mission, action stories celebrate courage, determination, and spectacular set pieces.',
+  'Comedy': 'Comedy titles bring laughter and levity through witty dialogue, absurd situations, and memorable characters. Ranging from sharp satirical commentary to feel-good romcoms, comedies provide essential entertainment that helps us see the humor in everyday life. The best comedies balance laughs with genuine heart, creating stories that entertain while also delivering surprising emotional depth.',
+  'Drama': 'Drama titles explore the complexity of human experience through powerful storytelling and nuanced character development. This genre encompasses everything from intimate character studies to sweeping historical epics, united by their focus on authentic emotional truth. Great dramas challenge viewers to empathize with characters facing difficult choices, moral dilemmas, and transformative life events.',
+  'Horror': 'Horror titles tap into our deepest fears through suspense, atmosphere, and the unknown. From psychological terror to supernatural nightmares, this genre explores the dark corners of human experience. The best horror films use fear as a lens to examine societal anxieties, personal trauma, and the boundaries between reality and nightmare.',
+  'Romance': 'Romance titles celebrate love in all its forms, from passionate first encounters to enduring partnerships tested by time. These stories explore attraction, vulnerability, and the transformative power of genuine connection. Whether set in exotic locales or everyday neighborhoods, romance titles remind us that love stories are among the most universal and compelling narratives in cinema.',
+  'Sci-Fi': 'Science fiction titles push the boundaries of imagination, exploring futuristic technologies, alien civilizations, and alternate realities. From hard science speculation to space opera adventures, sci-fi uses speculative concepts to examine present-day issues through a futuristic lens. The genre challenges viewers to consider what might be possible and how technology shapes the human condition.',
+  'Thriller': 'Thriller titles build tension through suspense, mystery, and psychological complexity. These stories keep audiences guessing with unpredictable plot twists, unreliable narrators, and high-stakes situations where every decision matters. From espionage dramas to psychological cat-and-mouse games, thrillers deliver gripping entertainment that demands full attention.',
+  'Fantasy': 'Fantasy titles transport viewers to extraordinary worlds filled with magic, mythical creatures, and epic quests. From high fantasy kingdoms to urban supernatural settings, this genre invites audiences to escape into realms where anything is possible. The best fantasy stories use their fantastical elements to explore timeless themes of heroism, sacrifice, and the battle between good and evil.',
+  'Animation': 'Animation titles showcase the limitless potential of visual storytelling, using artistry and technology to create worlds that live-action cannot. From hand-drawn classics to cutting-edge CGI, animated works span every genre and audience, proving that animation is a medium, not just a children\'s genre. The best animated titles combine stunning visuals with stories that resonate across all ages.',
+  'Documentary': 'Documentary titles illuminate real-world stories, people, and events through carefully crafted narratives and investigative journalism. This genre reveals hidden truths, celebrates remarkable achievements, and challenges conventional wisdom. From nature documentaries to true crime investigations, these titles educate, inspire, and provoke thoughtful discussion.',
+  'Mystery': 'Mystery titles invite viewers to piece together clues alongside detectives, investigators, and amateur sleuths. The genre thrives on suspense, misdirection, and the satisfaction of solving a puzzle. From classic whodunits to modern procedurals, mystery stories test our powers of observation and deduction while delivering compelling character-driven narratives.',
+  'Crime': 'Crime titles explore the world of law enforcement, criminal enterprise, and justice from every angle. Whether following detectives hunting serial killers or examining the inner workings of organized crime, this genre examines the thin line between order and chaos. Crime stories often serve as mirrors to society, revealing systemic issues while delivering gripping, tension-filled entertainment.',
+  'Adventure': 'Adventure titles take characters and audiences on thrilling journeys through uncharted territories, dangerous landscapes, and extraordinary challenges. The genre celebrates exploration, discovery, and the human spirit\'s drive to push beyond known boundaries. From treasure hunts to survival stories, adventure titles deliver excitement while showcasing the beauty and danger of the wider world.',
+  'Family': 'Family titles bring generations together with stories that entertain, educate, and inspire audiences of all ages. These titles balance humor, heart, and wholesome themes without talking down to younger viewers or boring older ones. The best family content creates shared experiences that spark conversation and create lasting memories.',
+};
+const description = genreDescriptions[genre.name] || `Explore the best ${genre.name.toLowerCase()} movies, TV shows, and anime available for streaming. Discover critically acclaimed titles and hidden gems in this genre across all major platforms.`;
+
+const faqs = [
+  { question: `What are the best ${genre.name} movies to watch right now?`, answer: `Some of the highest-rated ${genre.name.toLowerCase()} movies in our collection include ${movies.slice(0, 3).map(t => t.title).join(', ') || 'various critically acclaimed titles'}. We regularly update our database with new releases and trending titles.` },
+  { question: `Where can I stream ${genre.name} movies and shows?`, answer: `${genre.name} titles are available across multiple streaming platforms including Netflix, Prime Video, Disney+, Hulu, Apple TV+, and more. Each title page shows specific platform availability so you can find where to watch legally.` },
+  { question: `What makes a great ${genre.name.toLowerCase()} movie?`, answer: `Great ${genre.name.toLowerCase()} titles combine strong storytelling, compelling characters, and expert craftsmanship. The best entries in this genre push boundaries while honoring the conventions that fans love, creating experiences that resonate long after the credits roll.` },
+  { question: `How many ${genre.name} titles does Net27 have?`, answer: `We currently have ${titles.length} ${genre.name.toLowerCase()} titles in our database, including ${movies.length} movies, ${shows.length} TV shows, and ${anime.length} anime series. Our collection is continuously growing.` },
+  { question: `Are there ${genre.name.toLowerCase()} anime series available?`, answer: anime.length > 0 ? `Yes! We have ${anime.length} ${genre.name.toLowerCase()} anime titles including ${anime.map(t => t.title).join(', ')}. Anime offers unique perspectives on the ${genre.name.toLowerCase()} genre with distinctive animation styles and storytelling approaches.` : `While our current ${genre.name.toLowerCase()} collection primarily features movies and TV shows, we are continuously adding anime titles. Check back regularly for new additions.` },
+];
 ---
 
 <BaseLayout>
   <SEOHead
     slot="head"
-    title={`${genre.name} Movies & Shows - Stream Online`}
-    description={`Browse the best ${genre.name} movies, TV shows, and anime. Discover ${titles.length} ${genre.name.toLowerCase()} titles and find where to watch them legally on streaming platforms.`}
+    title={`Best ${genre.name} Movies & Shows (${new Date().getFullYear()}) - Stream Online`}
+    description={`Discover ${titles.length} ${genre.name.toLowerCase()} movies, TV shows, and anime. Find the best ${genre.name.toLowerCase()} titles to watch on Netflix, Prime Video, Disney+ and more streaming platforms.`}
     canonical={`${SITE_URL}/genre/${genre.slug}/`}
   />
-  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
 
   <Header />
 
-  <main>
-    <!-- Hero Section -->
+  <main class="min-h-screen">
     <section class="relative overflow-hidden">
       <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10"></div>
       <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
-
-      <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+      <div class="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-10">
         <Breadcrumbs items={breadcrumbs} />
-
-        <div class="mt-4 mb-2">
-          <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
-            <span class="gradient-text">{genre.name}</span> Movies & Shows
-          </h1>
-          <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-2xl">
-            Explore {titles.length} {genre.name.toLowerCase()} titles across movies, TV shows, and anime. Find where to watch them on your favorite streaming platforms.
-          </p>
+        <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+          <span class="gradient-text">{genre.name}</span> Movies & Shows
+        </h1>
+        <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">
+          Explore {titles.length} {genre.name.toLowerCase()} titles across movies, TV shows, and anime. Find where to watch them on your favorite streaming platforms.
+        </p>
+        <div class="mt-4 flex flex-wrap gap-3 text-sm text-[var(--color-text-muted)]">
+          <span>{movies.length} Movies</span>
+          <span>&middot;</span>
+          <span>{shows.length} TV Shows</span>
+          <span>&middot;</span>
+          <span>{anime.length} Anime</span>
         </div>
       </div>
     </section>
 
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+    <div class="mx-auto max-w-7xl px-4 py-12 space-y-16">
 
-      <!-- Results Count -->
-      <div class="flex items-center justify-between">
-        <p class="text-[var(--color-text-secondary)]">
-          <span class="text-white font-semibold">{titles.length}</span> titles found
-        </p>
-      </div>
+      <section>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl">{description}</p>
+      </section>
 
-      <!-- Titles Grid -->
       {titles.length > 0 ? (
         <section>
+          <h2 class="section-title mb-6">All {genre.name} Titles</h2>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {titles.map(title => (
               <TitleCard title={title} />
@@ -84,7 +111,6 @@ const relatedGenres = genres.filter(g => g.slug !== genre.slug);
         </section>
       )}
 
-      <!-- Related Genres -->
       <section>
         <h2 class="section-title mb-6">Explore Other Genres</h2>
         <div class="flex flex-wrap gap-3">
@@ -97,13 +123,35 @@ const relatedGenres = genres.filter(g => g.slug !== genre.slug);
         </div>
       </section>
 
-      <!-- Legal Disclaimer -->
-      <section class="glass-card rounded-xl p-6">
-        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
-          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host, store, or distribute any copyrighted content. All information provided on this page is for informational purposes only. We help users discover titles and find legal streaming options. All trademarks, service marks, and content referenced belong to their respective owners.
-        </p>
+      <section>
+        <h2 class="section-title mb-6">Browse by Language</h2>
+        <div class="flex flex-wrap gap-3">
+          {languages.slice(0, 8).map(l => (
+            <a href={`/language/${l.slug}/`} class="chip">
+              {l.name}
+            </a>
+          ))}
+        </div>
       </section>
 
+      <section>
+        <h2 class="section-title mb-6">Browse by Platform</h2>
+        <div class="flex flex-wrap gap-3">
+          {platforms.map(p => (
+            <a href={`/platform/${p.slug}/`} class="chip">
+              {p.name}
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host, store, or distribute any copyrighted content. All information is for discovery and informational purposes only. All trademarks belong to their respective owners. Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}.
+        </p>
+      </section>
     </div>
   </main>
 

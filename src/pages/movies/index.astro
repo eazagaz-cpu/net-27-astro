@@ -6,56 +6,116 @@ import SEOHead from '../../components/SEOHead.astro';
 import Schema from '../../components/Schema.astro';
 import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { getTitlesByType, genres } from '../../data/sampleTitles';
-import { breadcrumbSchema } from '../../lib/schema';
+import FAQSection from '../../components/FAQSection.astro';
+import { getTitlesByType, genres, languages, platforms } from '../../data/sampleTitles';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 const movies = getTitlesByType('movie');
+const topRated = [...movies].sort((a, b) => b.rating - a.rating);
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Movies', href: '/movies/' },
+];
+
+const faqs = [
+  { question: 'How do I find movies to watch on Net27?', answer: 'Use our search and filter tools to browse movies by genre, language, year, or streaming platform. Each movie page shows where it is available for legal streaming.' },
+  { question: 'Does Net27 stream movies?', answer: 'No. Net27 is a discovery platform only. We help you find where movies are available on official streaming platforms like Netflix, Prime Video, Disney+, and more.' },
+  { question: 'How often is the movie catalog updated?', answer: 'We regularly update our catalog with new releases, trending titles, and streaming availability changes. Check back frequently for the latest additions.' },
+  { question: 'Can I filter movies by genre?', answer: 'Yes! Use the genre chips above the movie grid to filter by Action, Drama, Comedy, Sci-Fi, Horror, Thriller, and many more genres.' },
+  { question: 'What movie genres are available?', answer: `We cover ${genres.length} genres including ${genres.slice(0, 6).map(g => g.name).join(', ')}, and more. Each genre has its own dedicated page with curated collections.` },
+  { question: 'How are movie ratings determined?', answer: 'Ratings are based on aggregated critic and viewer scores from recognized review sources. Ratings are on a scale of 1 to 10.' },
 ];
 ---
 
 <BaseLayout>
   <SEOHead
     slot="head"
-    title="Movies"
-    description="Browse our collection of movies across all genres. Find action, drama, comedy, horror, sci-fi, and more. Discover where to watch them on your favorite streaming platforms."
+    title={`Best Movies to Watch (${new Date().getFullYear()}) - Stream Online`}
+    description={`Browse ${movies.length} movies across all genres. Find action, drama, sci-fi, comedy, horror and more. Discover where to watch legally on Netflix, Prime Video, Disney+.`}
     canonical={`${SITE_URL}/movies/`}
   />
-  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
 
   <Header />
 
-  <main class="min-h-screen pt-20">
-    <div class="max-w-7xl mx-auto px-4 py-8">
-      <Breadcrumbs items={breadcrumbs} />
-
-      <h1 class="text-3xl md:text-4xl font-bold mb-6">All Movies</h1>
-
-      <!-- Genre Filter Chips -->
-      <div class="flex flex-wrap gap-2 mb-8">
-        <a href="/movies/" class="chip bg-[var(--color-primary)]/20 border-[var(--color-primary)]/50 text-[var(--color-primary)]">
-          All
-        </a>
-        {genres.map(genre => (
-          <a href={`/genre/${genre.slug}/`} class="chip">
-            {genre.name}
-          </a>
-        ))}
+  <main class="min-h-screen">
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+      <div class="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-10">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+          <span class="gradient-text">Movies</span>
+        </h1>
+        <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">
+          Discover the best movies to watch right now. Browse {movies.length} titles across every genre and find where to stream them legally on your favorite platforms.
+        </p>
       </div>
+    </section>
 
-      <!-- Movies Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-        {movies.map(title => <TitleCard title={title} />)}
-      </div>
+    <div class="mx-auto max-w-7xl px-4 py-12 space-y-16">
 
-      {movies.length === 0 && (
-        <div class="text-center py-16">
-          <p class="text-[var(--color-text-muted)] text-lg">No movies found.</p>
+      <section>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl">
+          Whether you are in the mood for an edge-of-your-seat thriller, a heartfelt drama, a laugh-out-loud comedy, or an epic sci-fi adventure, our curated movie collection has something for every taste. Each title page provides comprehensive details including cast, director, ratings, streaming platform availability, and related recommendations to help you find your next favorite film.
+        </p>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl mt-4">
+          We cover movies available across all major streaming platforms including Netflix, Prime Video, Disney+, Hulu, Apple TV+, HBO Max, and Paramount+. Our database is regularly updated to reflect the latest releases and availability changes so you always have accurate information about where to watch.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="section-title mb-4">Filter by Genre</h2>
+        <div class="flex flex-wrap gap-2">
+          <a href="/movies/" class="chip active">All</a>
+          {genres.map(genre => (
+            <a href={`/genre/${genre.slug}/`} class="chip">{genre.name}</a>
+          ))}
         </div>
+      </section>
+
+      <section>
+        <h2 class="section-title mb-6">All Movies</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+          {movies.map(title => <TitleCard title={title} />)}
+        </div>
+      </section>
+
+      {topRated.length > 0 && (
+        <section class="bg-[var(--color-bg-secondary)] -mx-4 px-4 py-12 rounded-xl">
+          <h2 class="section-title mb-6">Highest Rated</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {topRated.slice(0, 6).map(title => <TitleCard title={title} />)}
+          </div>
+        </section>
       )}
+
+      <section>
+        <h2 class="section-title mb-6">Browse by Language</h2>
+        <div class="flex flex-wrap gap-3">
+          {languages.map(l => (
+            <a href={`/language/${l.slug}/`} class="chip">{l.name} <span class="ml-1 text-[var(--color-text-muted)]">({l.count})</span></a>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title mb-6">Browse by Platform</h2>
+        <div class="flex flex-wrap gap-3">
+          {platforms.map(p => (
+            <a href={`/platform/${p.slug}/`} class="chip">{p.name}</a>
+          ))}
+        </div>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host or distribute copyrighted content. All information is for discovery and informational purposes only. Streaming availability varies by region. Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}.
+        </p>
+      </section>
     </div>
   </main>
 

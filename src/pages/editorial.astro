@@ -1,0 +1,131 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEOHead from '../components/SEOHead.astro';
+import Schema from '../components/Schema.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { breadcrumbSchema } from '../lib/schema';
+import { SITE_URL } from '../lib/seo';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Editorial Policy', href: '/editorial/' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Editorial Policy - Content Standards & Methodology"
+    description="Learn about Net27's editorial standards, content methodology, source attribution, and commitment to accuracy in movie and show discovery."
+    canonical={`${SITE_URL}/editorial/`}
+  />
+  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+
+  <Header />
+
+  <main class="min-h-screen pt-20">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <h1 class="text-3xl md:text-4xl font-bold mb-2 mt-4">Editorial Policy</h1>
+      <p class="text-[var(--color-text-muted)] mb-8">How we research, verify, and present content on Net27</p>
+
+      <div class="space-y-10 text-[var(--color-text-secondary)] leading-relaxed">
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Our Mission</h2>
+          <p>
+            Net27 exists to help viewers make informed decisions about what to watch and where to find it. We believe everyone deserves access to accurate, comprehensive, and up-to-date entertainment discovery tools — free from bias, misinformation, or hidden agendas.
+          </p>
+          <p class="mt-3">
+            Our editorial mission is simple: provide the most reliable, well-organized, and helpful movie and show discovery experience available. Every page we publish is designed to answer real user questions with factual, well-sourced information.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Content Methodology</h2>
+          <p>Our content creation process follows a rigorous methodology:</p>
+          <ul class="list-disc list-inside mt-3 space-y-2">
+            <li><strong class="text-[var(--color-text-primary)]">Research:</strong> Title information is gathered from official sources including studio press releases, official databases, and verified public records.</li>
+            <li><strong class="text-[var(--color-text-primary)]">Verification:</strong> All data points — release dates, cast details, streaming availability — are cross-referenced across multiple reliable sources before publication.</li>
+            <li><strong class="text-[var(--color-text-primary)]">Originality:</strong> All descriptions, reviews, and editorial content on Net27 are original. We do not copy or paraphrase content from other discovery platforms or review sites.</li>
+            <li><strong class="text-[var(--color-text-primary)]">Updates:</strong> Content is reviewed regularly to ensure streaming availability and title information remain accurate as platforms update their catalogs.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Source Attribution</h2>
+          <p>
+            We believe in transparency about where our information comes from. Net27 uses the following types of sources:
+          </p>
+          <div class="glass-card rounded-xl p-6 mt-4 space-y-3">
+            <div>
+              <p class="font-medium text-[var(--color-text-primary)]">Official Databases</p>
+              <p class="text-sm">Publicly available movie and TV databases for core title metadata such as cast, crew, genres, and release information.</p>
+            </div>
+            <div>
+              <p class="font-medium text-[var(--color-text-primary)]">Studio & Platform Sources</p>
+              <p class="text-sm">Official press releases, platform catalogs, and studio announcements for streaming availability and new release information.</p>
+            </div>
+            <div>
+              <p class="font-medium text-[var(--color-text-primary)]">Industry Publications</p>
+              <p class="text-sm">Recognized entertainment industry publications for ratings, awards, and industry context used in editorial content.</p>
+            </div>
+          </div>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Editorial Standards</h2>
+          <p>Every piece of content on Net27 adheres to these standards:</p>
+          <ul class="list-disc list-inside mt-3 space-y-2">
+            <li><strong class="text-[var(--color-text-primary)]">Accuracy:</strong> Facts are verified before publication. If we cannot confirm a data point, we either omit it or clearly indicate that information is unconfirmed.</li>
+            <li><strong class="text-[var(--color-text-primary)]">Objectivity:</strong> Our platform presents information without editorial bias toward any particular streaming service, studio, or title.</li>
+            <li><strong class="text-[var(--color-text-primary)]">Completeness:</strong> We strive to include all relevant information a user might need to make a viewing decision, including genre, cast, runtime, ratings, and availability.</li>
+            <li><strong class="text-[var(--color-text-primary)]">Legality:</strong> We only direct users to official, legitimate streaming options. We never link to, promote, or facilitate access to pirated content.</li>
+            <li><strong class="text-[var(--color-text-primary)]">Accessibility:</strong> Content is structured for readability and accessibility, with proper heading hierarchy, alt text, and semantic HTML throughout the site.</li>
+          </ul>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Accuracy & Corrections</h2>
+          <p>
+            We take accuracy seriously. Despite our best efforts, errors can occasionally occur — particularly with streaming availability, which changes frequently as platform catalogs are updated.
+          </p>
+          <p class="mt-3">
+            If you notice inaccurate information on Net27, we encourage you to <a href="/contact/" class="text-[var(--color-primary)] hover:underline">contact us</a> with the specific details. We investigate all reports and publish corrections promptly when errors are confirmed.
+          </p>
+          <p class="mt-3">
+            All pages include a "Last updated" indicator to help users assess the currency of the information presented.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Independence & Conflicts of Interest</h2>
+          <p>
+            Net27 operates independently. Our editorial decisions — including which titles to feature, how to present information, and what content to create — are made solely by our editorial team based on user value and informational merit.
+          </p>
+          <p class="mt-3">
+            If we ever engage in affiliate partnerships or sponsored content in the future, such relationships will be clearly disclosed in accordance with applicable advertising and disclosure regulations.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">Contact Our Editorial Team</h2>
+          <p>
+            Questions about our editorial practices, content methodology, or a specific piece of content? We welcome your feedback.
+          </p>
+          <div class="glass-card rounded-lg p-6 mt-3">
+            <p>Email: editorial@net-27.cc</p>
+            <p>General inquiries: <a href="/contact/" class="text-[var(--color-primary)] hover:underline">Contact form</a></p>
+            <p>Content corrections: <a href="/contact/" class="text-[var(--color-primary)] hover:underline">Report an issue</a></p>
+          </div>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

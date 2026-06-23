@@ -7,8 +7,9 @@ import SEOHead from '../../components/SEOHead.astro';
 import Schema from '../../components/Schema.astro';
 import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { platforms, getTitlesByPlatform } from '../../data/sampleTitles';
-import { breadcrumbSchema } from '../../lib/schema';
+import FAQSection from '../../components/FAQSection.astro';
+import { platforms, genres, getTitlesByPlatform } from '../../data/sampleTitles';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 export const getStaticPaths = (() => {
@@ -20,13 +21,27 @@ export const getStaticPaths = (() => {
 
 const { platform } = Astro.props;
 const titles = getTitlesByPlatform(platform.name);
+const movies = titles.filter(t => t.type === 'movie');
+const shows = titles.filter(t => t.type === 'show');
+const anime = titles.filter(t => t.type === 'anime');
 const breadcrumbs = [
   { label: 'Home', href: '/' },
-  { label: 'Platforms', href: '/platform/' },
+  { label: 'Platforms', href: '/' },
   { label: platform.name, href: `/platform/${platform.slug}/` },
 ];
-
 const otherPlatforms = platforms.filter(p => p.slug !== platform.slug);
+
+const platformDescriptions: Record<string, string> = {
+  'Netflix': 'Netflix is the world\'s leading streaming entertainment service with over 230 million paid memberships across 190 countries. Known for its vast library of original content and licensed titles, Netflix offers a diverse range of movies, TV shows, documentaries, and anime. From award-winning originals to beloved classics, Netflix continues to shape how audiences discover and enjoy entertainment globally.',
+  'Prime Video': 'Amazon Prime Video offers a compelling blend of original productions and licensed content as part of the Amazon Prime membership. The platform has invested heavily in high-profile originals while maintaining a robust catalog of movies and series. With global availability and integration with Amazon\'s ecosystem, Prime Video provides a comprehensive streaming experience for diverse audiences.',
+  'Disney+': 'Disney+ brings together the worlds of Disney, Pixar, Marvel, Star Wars, and National Geographic under one streaming platform. Launched in 2019, it has quickly become a major force in streaming with its unmatched library of family-friendly content and blockbuster franchises. Disney+ also features an expanding slate of original series and films for viewers of all ages.',
+  'Hulu': 'Hulu distinguishes itself with next-day access to current season TV shows alongside a growing library of originals and classic content. The platform combines live TV options with on-demand streaming, making it a versatile choice for cord-cutters. Hulu\'s original programming spans comedy, drama, horror, and documentary genres, consistently earning critical recognition.',
+  'Apple TV+': 'Apple TV+ focuses on quality over quantity with a curated slate of premium original content. Since its launch, the platform has attracted top creative talent and produced critically acclaimed series and films, including multiple award winners. Apple TV+ emphasizes prestige storytelling with high production values across drama, comedy, thriller, and documentary genres.',
+  'Crunchyroll': 'Crunchyroll is the world\'s largest anime streaming platform, serving over 10 million subscribers with the most comprehensive anime library available. From simulcast episodes airing hours after their Japanese broadcast to classic series and exclusive originals, Crunchyroll is the definitive destination for anime fans. The platform also offers manga, news, and community features.',
+  'HBO Max': 'HBO Max combines HBO\'s prestigious programming legacy with Warner Bros.\' vast entertainment library. The platform offers a mix of critically acclaimed HBO originals, Warner Bros. films, and exclusive Max originals spanning every genre. Known for its commitment to quality storytelling, HBO Max delivers premium entertainment from some of the industry\'s most celebrated creators.',
+  'Paramount+': 'Paramount+ draws from the extensive ViacomCBS library, including content from CBS, Showtime, Paramount Pictures, Nickelodeon, MTV, and BET. The platform offers a mix of live sports, news, and a growing collection of originals alongside a deep catalog of classic films and series. Paramount+ provides diverse entertainment options spanning all demographics and interests.',
+};
+const description = platformDescriptions[platform.name] || `Discover movies, TV shows, and anime available on ${platform.name}. Browse our curated collection and find your next favorite title to stream.`;
 
 const platformColors: Record<string, string> = {
   'Netflix': 'from-red-900/20 to-red-800/20',
@@ -39,65 +54,69 @@ const platformColors: Record<string, string> = {
   'Paramount+': 'from-blue-900/20 to-sky-900/20',
 };
 const heroGradient = platformColors[platform.name] || 'from-[var(--color-primary)]/10 to-[var(--color-accent)]/10';
+
+const faqs = [
+  { question: `What movies and shows are on ${platform.name}?`, answer: `${platform.name} currently offers ${titles.length} titles in our database, including ${movies.length} movies, ${shows.length} TV shows, and ${anime.length} anime. Browse the full catalog above to find specific titles.` },
+  { question: `Is ${platform.name} worth subscribing to?`, answer: `${platform.name} offers a diverse library of content. Whether it's worth it depends on your viewing preferences. Check the titles listed above to see if the available content matches your interests before subscribing.` },
+  { question: `How much does ${platform.name} cost?`, answer: `Pricing varies by region and plan tier. Visit the official ${platform.name} website for the most current subscription pricing and plan options in your area.` },
+  { question: `Can I watch ${platform.name} on my TV?`, answer: `${platform.name} is available on most smart TVs, streaming devices (Roku, Fire TV, Apple TV, Chromecast), gaming consoles, mobile devices, and web browsers. Check the official app store for your device.` },
+  { question: `Does ${platform.name} offer a free trial?`, answer: `Free trial availability varies by region and may change over time. Visit the official ${platform.name} website to check current promotional offers and trial availability in your area.` },
+];
 ---
 
 <BaseLayout>
   <SEOHead
     slot="head"
-    title={`${platform.name} - Movies & Shows Available to Stream`}
-    description={`Browse ${titles.length} movies, TV shows, and anime available on ${platform.name}. Discover what to watch on ${platform.name} and explore the full catalog.`}
+    title={`${platform.name} - Best Movies & Shows to Stream (${new Date().getFullYear()})`}
+    description={`Browse ${titles.length} movies, TV shows, and anime on ${platform.name}. Discover what to watch and explore the full ${platform.name} catalog.`}
     canonical={`${SITE_URL}/platform/${platform.slug}/`}
   />
-  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
 
   <Header />
 
-  <main>
-    <!-- Hero Section -->
+  <main class="min-h-screen">
     <section class="relative overflow-hidden">
       <div class={`absolute inset-0 bg-gradient-to-br ${heroGradient}`}></div>
       <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
-
-      <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 pt-12 pb-8">
+      <div class="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-10">
         <Breadcrumbs items={breadcrumbs} />
-
-        <div class="mt-4 mb-2 flex items-start gap-6">
-          <!-- Platform Icon -->
-          <div class="hidden sm:flex flex-shrink-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-[var(--color-border)] items-center justify-center">
+        <div class="flex items-start gap-6 mt-4">
+          <div class="hidden sm:flex shrink-0 w-20 h-20 rounded-2xl bg-gradient-to-br from-white/10 to-white/5 border border-[var(--color-border)] items-center justify-center">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-10 h-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
               <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
               <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
           </div>
-
           <div>
-            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white leading-tight">
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
               <span class="gradient-text">{platform.name}</span>
             </h1>
-            <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-2xl">
-              Explore {titles.length} movies, TV shows, and anime available on {platform.name}. Find your next favorite title to stream.
+            <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">
+              Explore {titles.length} movies, TV shows, and anime available on {platform.name}.
             </p>
+            <div class="mt-3 flex flex-wrap gap-3 text-sm text-[var(--color-text-muted)]">
+              <span>{movies.length} Movies</span>
+              <span>&middot;</span>
+              <span>{shows.length} TV Shows</span>
+              <span>&middot;</span>
+              <span>{anime.length} Anime</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
-    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+    <div class="mx-auto max-w-7xl px-4 py-12 space-y-16">
+      <section>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl">{description}</p>
+      </section>
 
-      <!-- Results Count -->
-      <div class="flex items-center justify-between">
-        <p class="text-[var(--color-text-secondary)]">
-          <span class="text-white font-semibold">{titles.length}</span> titles available
-        </p>
-      </div>
-
-      <!-- Titles Grid -->
       {titles.length > 0 ? (
         <section>
+          <h2 class="section-title mb-6">Available on {platform.name}</h2>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {titles.map(title => (
-              <TitleCard title={title} />
-            ))}
+            {titles.map(title => <TitleCard title={title} />)}
           </div>
         </section>
       ) : (
@@ -106,16 +125,12 @@ const heroGradient = platformColors[platform.name] || 'from-[var(--color-primary
         </section>
       )}
 
-      <!-- Other Platforms -->
       <section>
         <h2 class="section-title mb-6">Other Streaming Platforms</h2>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
           {otherPlatforms.map(p => (
-            <a
-              href={`/platform/${p.slug}/`}
-              class="glass-card rounded-xl px-5 py-4 flex items-center gap-3 hover:border-[var(--color-primary)] transition-colors duration-200"
-            >
-              <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-accent)]/30 to-[var(--color-accent-alt)]/30 flex items-center justify-center flex-shrink-0">
+            <a href={`/platform/${p.slug}/`} class="glass-card rounded-xl px-5 py-4 flex items-center gap-3 hover:border-[var(--color-primary)] transition-colors">
+              <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-accent)]/30 to-[var(--color-accent-alt)]/30 flex items-center justify-center shrink-0">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                   <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
                   <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -130,13 +145,22 @@ const heroGradient = platformColors[platform.name] || 'from-[var(--color-primary
         </div>
       </section>
 
-      <!-- Legal Disclaimer -->
-      <section class="glass-card rounded-xl p-6">
-        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
-          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host, store, or distribute any copyrighted content. All information provided on this page is for informational purposes only. {platform.name} is a registered trademark of its respective owner. Streaming availability may vary by region and is subject to change. We help users discover titles and find legal streaming options.
-        </p>
+      <section>
+        <h2 class="section-title mb-6">Browse by Genre</h2>
+        <div class="flex flex-wrap gap-3">
+          {genres.slice(0, 10).map(g => (
+            <a href={`/genre/${g.slug}/`} class="chip">{g.name}</a>
+          ))}
+        </div>
       </section>
 
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host or distribute copyrighted content. {platform.name} is a registered trademark of its respective owner. Streaming availability varies by region. Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}.
+        </p>
+      </section>
     </div>
   </main>
 
