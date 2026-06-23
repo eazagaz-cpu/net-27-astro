@@ -1,0 +1,51 @@
+---
+import MovieCard from './MovieCard.astro';
+
+interface RailTitle {
+  slug: string;
+  type: 'movie' | 'show' | 'anime';
+  title: string;
+  year: number;
+  rating: number;
+  poster: string;
+  quality?: string;
+  genres?: string[];
+}
+
+interface Props {
+  title: string;
+  titles: RailTitle[];
+  viewAllHref?: string;
+}
+
+const { title, titles, viewAllHref } = Astro.props;
+---
+
+{titles.length > 0 && (
+  <section class="py-6">
+    <div class="max-w-[1400px] mx-auto px-4">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="section-title">{title}</h2>
+        {viewAllHref && (
+          <a href={viewAllHref} class="text-xs text-[var(--color-primary)] hover:underline font-medium">View All &rarr;</a>
+        )}
+      </div>
+      <div class="scroll-rail">
+        {titles.map(t => (
+          <div class="w-[140px] sm:w-[155px] md:w-[170px]">
+            <MovieCard
+              title={t.title}
+              slug={t.slug}
+              type={t.type}
+              year={t.year}
+              rating={t.rating}
+              poster={t.poster}
+              quality={t.quality}
+              genres={t.genres}
+            />
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}

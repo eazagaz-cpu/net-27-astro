@@ -1,7 +1,8 @@
-export const SITE_NAME = 'Net27';
-export const SITE_URL = 'https://net-27.cc';
-export const SITE_DESCRIPTION =
-  'Discover movies, TV shows, and anime. Find where to watch legally across Netflix, Prime Video, Disney+, and more streaming platforms.';
+import { SITE_NAME, SITE_URL } from './constants';
+
+export { SITE_NAME, SITE_URL };
+
+export const SITE_DESCRIPTION = 'Watch movies, TV shows, and anime. Multi-language audio. 500k+ titles across Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more.';
 
 export interface SEOInput {
   title: string;
@@ -25,7 +26,7 @@ export interface SEOOutput {
 }
 
 export function generateSEO(input: SEOInput): SEOOutput {
-  const title = `${input.title} | ${SITE_NAME} - Movie & Show Discovery`;
+  const title = `${input.title} | ${SITE_NAME}`;
   const description = input.description;
   const canonical = input.canonical ?? SITE_URL;
   const ogImage = input.ogImage ?? `${SITE_URL}/images/og-default.webp`;

@@ -1,4 +1,5 @@
 import { SITE_NAME, SITE_URL } from './seo';
+import { APK_UNIVERSAL_URL, APP_VERSION, CONTACT_EMAIL } from './constants';
 
 export function websiteSchema(): object {
   return {
@@ -156,6 +157,28 @@ export function personSchema(person: {
   if (person.jobTitle) schema.jobTitle = person.jobTitle;
   if (person.url) schema.url = person.url;
   return schema;
+}
+
+export function softwareAppSchema(): object {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    name: SITE_NAME,
+    applicationCategory: 'EntertainmentApplication',
+    operatingSystem: 'Android',
+    softwareVersion: APP_VERSION,
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    downloadUrl: APK_UNIVERSAL_URL,
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      email: CONTACT_EMAIL,
+    },
+  };
 }
 
 export function faqSchema(

@@ -1,6 +1,4 @@
 ---
-const pathname = Astro.url.pathname;
-
 const navLinks = [
   { label: 'Home', href: '/' },
   { label: 'Movies', href: '/movies/' },
@@ -11,140 +9,118 @@ const navLinks = [
   { label: 'Blog', href: '/blog/' },
 ];
 
-function isActive(href: string): boolean {
-  if (href === '/') return pathname === '/';
-  return pathname.startsWith(href);
-}
+const currentPath = Astro.url.pathname;
+
+const platformChips = [
+  { label: 'Trending', href: '/trending/', icon: '🔥' },
+  { label: 'Latest Release', href: '/latest/', icon: '✨' },
+  { label: 'Netflix', href: '/platform/netflix/', icon: 'N' },
+  { label: 'Prime Video', href: '/platform/prime-video/', icon: '▶' },
+  { label: 'JioHotstar', href: '/platform/jiohotstar/', icon: '★' },
+  { label: 'SonyLIV', href: '/platform/sonyliv/', icon: 'S' },
+  { label: 'Crunchyroll', href: '/platform/crunchyroll/', icon: '🍥' },
+  { label: 'Kids', href: '/platform/kids/', icon: '👶' },
+  { label: 'MX Player', href: '/platform/mx-player/', icon: '▷' },
+];
 ---
 
-<header class="fixed top-0 left-0 right-0 z-50 border-b border-[var(--color-border)] bg-[var(--color-bg-glass)] backdrop-blur-xl">
-  <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-    <div class="flex h-16 items-center justify-between">
-      <!-- Logo -->
-      <a href="/" class="flex-shrink-0">
-        <span class="gradient-text text-2xl font-extrabold tracking-tight">NET27</span>
+<header class="fixed top-0 left-0 right-0 z-50">
+  <div class="bg-gradient-to-b from-black/90 via-black/70 to-transparent backdrop-blur-sm">
+    <div class="max-w-[1400px] mx-auto px-4 h-16 flex items-center justify-between gap-4">
+      <a href="/" class="flex items-center gap-1 shrink-0">
+        <span class="text-xl font-extrabold tracking-tight">
+          <span class="text-[var(--color-primary)]">Net</span><span class="text-white">Mirror</span>
+        </span>
       </a>
 
-      <!-- Desktop Navigation -->
       <nav class="hidden lg:flex items-center gap-1" aria-label="Main navigation">
-        {navLinks.map((link) => (
+        {navLinks.map(link => (
           <a
             href={link.href}
             class:list={[
-              'px-3 py-2 rounded-lg text-sm font-medium transition-colors duration-200',
-              isActive(link.href)
-                ? 'text-[var(--color-primary)] bg-[rgba(255,48,69,0.1)]'
-                : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[rgba(255,255,255,0.05)]',
+              'px-3 py-1.5 rounded-lg text-sm font-medium transition-colors',
+              currentPath === link.href || (link.href !== '/' && currentPath.startsWith(link.href))
+                ? 'text-[var(--color-primary)]'
+                : 'text-[var(--color-muted)] hover:text-white',
             ]}
-            aria-current={isActive(link.href) ? 'page' : undefined}
           >
             {link.label}
           </a>
         ))}
       </nav>
 
-      <!-- Right Section -->
       <div class="flex items-center gap-3">
-        <!-- Search Icon -->
-        <a
-          href="/search/"
-          class="flex items-center justify-center w-10 h-10 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[rgba(255,255,255,0.05)] transition-colors duration-200"
-          aria-label="Search"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
-          </svg>
+        <a href="/search/" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-[var(--color-muted)] hover:border-white/20 transition-colors w-56 lg:w-72">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          Search movies, shows, anime...
         </a>
-
-        <!-- Sign In Button (Desktop) -->
-        <a href="/signin/" class="btn-secondary hidden sm:inline-flex text-sm">
-          Sign In
+        <a href="/search/" class="md:hidden p-2 text-[var(--color-muted)] hover:text-white transition-colors" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </a>
-
-        <!-- Mobile Hamburger -->
-        <button
-          id="mobile-menu-btn"
-          class="lg:hidden flex items-center justify-center w-10 h-10 rounded-lg text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[rgba(255,255,255,0.05)] transition-colors duration-200"
-          aria-label="Open menu"
-          aria-expanded="false"
-          aria-controls="mobile-menu"
-        >
-          <svg id="menu-icon-open" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
-          <svg id="menu-icon-close" xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
-          </svg>
+        <a href="#" class="hidden sm:inline-flex btn-primary text-xs px-4 py-2 rounded-lg">Sign In</a>
+        <button id="mobile-menu-toggle" class="lg:hidden p-2 text-[var(--color-muted)] hover:text-white transition-colors" aria-label="Toggle menu" aria-expanded="false">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
+      </div>
+    </div>
+
+    <div class="max-w-[1400px] mx-auto px-4 pb-2 hidden md:block">
+      <div class="flex items-center gap-2 overflow-x-auto pb-1" style="scrollbar-width:none;">
+        {platformChips.map(chip => (
+          <a
+            href={chip.href}
+            class:list={[
+              'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all shrink-0',
+              currentPath === chip.href
+                ? 'bg-[var(--color-primary)] border-[var(--color-primary)] text-white'
+                : 'bg-white/5 border-white/10 text-[var(--color-muted)] hover:border-white/20 hover:text-white',
+            ]}
+          >
+            <span class="text-sm">{chip.icon}</span>
+            {chip.label}
+          </a>
+        ))}
       </div>
     </div>
   </div>
 
-  <!-- Mobile Menu Overlay -->
-  <div
-    id="mobile-menu"
-    class="lg:hidden fixed inset-0 top-16 z-40 hidden bg-[var(--color-bg-primary)]/95 backdrop-blur-xl"
-  >
-    <nav class="flex flex-col px-6 py-8 gap-2" aria-label="Mobile navigation">
-      {navLinks.map((link) => (
-        <a
-          href={link.href}
-          class:list={[
-            'px-4 py-3 rounded-xl text-lg font-medium transition-colors duration-200',
-            isActive(link.href)
-              ? 'text-[var(--color-primary)] bg-[rgba(255,48,69,0.1)]'
-              : 'text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[rgba(255,255,255,0.05)]',
-          ]}
-          aria-current={isActive(link.href) ? 'page' : undefined}
-        >
-          {link.label}
+  <div id="mobile-menu" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 hidden lg:hidden" aria-hidden="true">
+    <div class="flex flex-col h-full">
+      <div class="flex items-center justify-between px-4 h-16">
+        <a href="/" class="text-xl font-extrabold tracking-tight">
+          <span class="text-[var(--color-primary)]">Net</span><span class="text-white">Mirror</span>
         </a>
-      ))}
-      <hr class="border-[var(--color-border)] my-4" />
-      <a
-        href="/search/"
-        class="px-4 py-3 rounded-xl text-lg font-medium text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] hover:bg-[rgba(255,255,255,0.05)] transition-colors duration-200 flex items-center gap-3"
-      >
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M11 19a8 8 0 100-16 8 8 0 000 16z" />
-        </svg>
-        Search
-      </a>
-      <a href="/signin/" class="btn-primary mt-4 justify-center text-lg">
-        Sign In
-      </a>
-    </nav>
+        <button id="mobile-menu-close" class="p-2 text-[var(--color-muted)] hover:text-white" aria-label="Close menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <nav class="flex flex-col px-4 py-6 gap-1" aria-label="Mobile navigation">
+        {navLinks.map(link => (
+          <a href={link.href} class="px-4 py-3 rounded-xl text-lg font-medium text-[var(--color-muted)] hover:text-white hover:bg-white/5 transition-all">{link.label}</a>
+        ))}
+      </nav>
+      <div class="px-4 py-4">
+        <p class="text-xs text-[var(--color-text-muted)] mb-3">Platforms</p>
+        <div class="flex flex-wrap gap-2">
+          {platformChips.map(chip => (
+            <a href={chip.href} class="chip text-xs">{chip.icon} {chip.label}</a>
+          ))}
+        </div>
+      </div>
+      <div class="px-4 mt-auto pb-8">
+        <a href="/search/" class="btn-primary w-full justify-center py-3 rounded-xl">Search</a>
+      </div>
+    </div>
   </div>
 </header>
 
-<!-- Spacer to offset fixed header -->
-<div class="h-16"></div>
-
 <script>
-  const btn = document.getElementById('mobile-menu-btn');
+  const toggle = document.getElementById('mobile-menu-toggle');
+  const close = document.getElementById('mobile-menu-close');
   const menu = document.getElementById('mobile-menu');
-  const iconOpen = document.getElementById('menu-icon-open');
-  const iconClose = document.getElementById('menu-icon-close');
-
-  if (btn && menu && iconOpen && iconClose) {
-    btn.addEventListener('click', () => {
-      const isOpen = !menu.classList.contains('hidden');
-      menu.classList.toggle('hidden');
-      iconOpen.classList.toggle('hidden');
-      iconClose.classList.toggle('hidden');
-      btn.setAttribute('aria-expanded', String(!isOpen));
-      document.body.style.overflow = isOpen ? '' : 'hidden';
-    });
-
-    // Close menu when clicking a link
-    menu.querySelectorAll('a').forEach((link) => {
-      link.addEventListener('click', () => {
-        menu.classList.add('hidden');
-        iconOpen.classList.remove('hidden');
-        iconClose.classList.add('hidden');
-        btn.setAttribute('aria-expanded', 'false');
-        document.body.style.overflow = '';
-      });
-    });
+  if (toggle && close && menu) {
+    toggle.addEventListener('click', () => { menu.classList.remove('hidden'); menu.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; });
+    close.addEventListener('click', () => { menu.classList.add('hidden'); menu.setAttribute('aria-hidden','true'); document.body.style.overflow=''; });
+    menu.querySelectorAll('a').forEach(l => l.addEventListener('click', () => { menu.classList.add('hidden'); menu.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }));
   }
 </script>

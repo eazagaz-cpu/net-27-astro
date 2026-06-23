@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEOHead from '../components/SEOHead.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { SITE_URL } from '../lib/seo';
+import { SITE_NAME, CONTACT_EMAIL } from '../lib/constants';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Disclaimer', href: '/disclaimer/' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Disclaimer"
+    description={`${SITE_NAME} disclaimer. Important information about content, downloads, external links, and limitations of liability.`}
+    canonical={`${SITE_URL}/disclaimer/`}
+  />
+
+  <Header />
+
+  <main class="min-h-screen pt-20">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <h1 class="text-3xl md:text-4xl font-bold mb-8">Disclaimer</h1>
+
+      <div class="space-y-8 text-[var(--color-muted)] leading-relaxed">
+        <p class="text-lg">Last updated: January 1, 2025</p>
+
+        <section>
+          <h2 class="text-xl font-bold text-white mb-3">General Disclaimer</h2>
+          <p>
+            The information provided on {SITE_NAME} (net27.cc) is for general informational and entertainment discovery purposes only. {SITE_NAME} is a content discovery platform that helps users find where to watch movies, TV shows, and anime on official streaming services. We make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of any information on this website.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-white mb-3">Content Hosting</h2>
+          <p>
+            {SITE_NAME} does not host, upload, store, cache, or stream any movies, TV shows, anime, or other copyrighted media content on its servers. All streaming links and availability data refer to third-party, officially licensed platforms. We act solely as an informational directory and discovery tool.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-white mb-3">App Download Disclaimer</h2>
+          <p>
+            The {SITE_NAME} application is available for download from our official sources only. Download APK files only from links provided directly on net27.cc or our official Telegram channel. We are not responsible for any modified, repackaged, or redistributed versions of our application obtained from third-party sources. Always verify download links before installing.
+          </p>
+          <p class="mt-3">
+            The application is provided "as is" without warranty of any kind. We do not guarantee uninterrupted or error-free operation of the app. Use of the application is at your own risk.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-white mb-3">External Links</h2>
+          <p>
+            {SITE_NAME} may contain links to external websites, streaming platforms, and third-party services. These links are provided for convenience and informational purposes. We have no control over the content, privacy policies, or practices of these external sites and accept no responsibility for them. The inclusion of any link does not imply endorsement, recommendation, or affiliation.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-white mb-3">Content Availability</h2>
+          <p>
+            Streaming availability information displayed on {SITE_NAME} may not always be current or accurate. Content availability varies by region, platform, and time. We recommend verifying availability directly on the respective streaming platform before subscribing or making purchasing decisions. {SITE_NAME} is not responsible for any changes in content availability on third-party platforms.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-white mb-3">No Warranty</h2>
+          <p>
+            This website and all information, content, and services provided through it are offered on an "as is" and "as available" basis without any warranties, express or implied. {SITE_NAME} disclaims all warranties, including but not limited to implied warranties of merchantability, fitness for a particular purpose, and non-infringement.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-white mb-3">Limitation of Liability</h2>
+          <p>
+            In no event shall {SITE_NAME}, its operators, employees, or affiliates be liable for any direct, indirect, incidental, special, consequential, or punitive damages arising out of or related to your use of, or inability to use, this website or any information provided on it.
+          </p>
+        </section>
+
+        <section>
+          <h2 class="text-xl font-bold text-white mb-3">Contact</h2>
+          <p>If you have questions about this disclaimer, please contact us:</p>
+          <div class="glass-card rounded-lg p-6 mt-3">
+            <p>Email: <a href={`mailto:${CONTACT_EMAIL}`} class="text-[var(--color-primary)] hover:underline">{CONTACT_EMAIL}</a></p>
+            <p>Website: <a href="/contact/" class="text-[var(--color-primary)] hover:underline">net27.cc/contact</a></p>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
