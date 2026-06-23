@@ -1,0 +1,2 @@
+*.node-version text eol=lf
+.nvmrc text eol=lf
