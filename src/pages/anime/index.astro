@@ -6,56 +6,122 @@ import SEOHead from '../../components/SEOHead.astro';
 import Schema from '../../components/Schema.astro';
 import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { getTitlesByType, genres } from '../../data/sampleTitles';
-import { breadcrumbSchema } from '../../lib/schema';
+import FAQSection from '../../components/FAQSection.astro';
+import { getTitlesByType, genres, platforms } from '../../data/sampleTitles';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 const anime = getTitlesByType('anime');
+const topRated = [...anime].sort((a, b) => b.rating - a.rating);
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Anime', href: '/anime/' },
+];
+
+const faqs = [
+  { question: 'What anime can I find on Net27?', answer: `We feature ${anime.length} anime series spanning action, fantasy, romance, sci-fi, horror, slice-of-life, sports, and psychological genres. Our collection includes both completed series and currently airing titles.` },
+  { question: 'Where can I watch anime legally?', answer: 'Anime is available on platforms like Crunchyroll, Netflix, Prime Video, Hulu, and HBO Max. Each anime page on Net27 shows specific platform availability so you can find legal streaming options.' },
+  { question: 'What is the best anime streaming service?', answer: 'Crunchyroll is the largest dedicated anime platform with the most comprehensive library and simulcast episodes. Netflix and Prime Video also offer growing anime catalogs. The best choice depends on which titles you want to watch.' },
+  { question: 'Does Net27 stream anime?', answer: 'No. Net27 is a discovery platform that helps you find where anime is available on official streaming services. We do not host or stream any content.' },
+  { question: 'What is the difference between subbed and dubbed anime?', answer: 'Subbed anime keeps the original Japanese voice acting with subtitles. Dubbed anime replaces the audio with voice actors speaking your language. Most streaming platforms offer both options — check the specific platform for availability.' },
+  { question: 'How often are new anime added?', answer: 'We update our anime collection regularly with new seasonal releases, currently airing series, and classic titles. Check the Latest Releases page for the most recent additions.' },
+  { question: 'What are the highest rated anime on Net27?', answer: `Our top-rated anime include ${topRated.slice(0, 3).map(t => `${t.title} (${t.rating}/10)`).join(', ')}. Browse our full collection above to discover more highly acclaimed titles.` },
 ];
 ---
 
 <BaseLayout>
   <SEOHead
     slot="head"
-    title="Anime"
-    description="Explore our anime collection featuring action, fantasy, romance, sci-fi, horror, and slice-of-life series. Find where to stream the best anime on Crunchyroll, Netflix, and more."
+    title={`Best Anime to Watch (${new Date().getFullYear()}) - Stream Online`}
+    description={`Discover ${anime.length} anime series. Action, fantasy, romance, sci-fi, horror and more. Find where to watch legally on Crunchyroll, Netflix, and other platforms.`}
     canonical={`${SITE_URL}/anime/`}
   />
-  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
 
   <Header />
 
-  <main class="min-h-screen pt-20">
-    <div class="max-w-7xl mx-auto px-4 py-8">
-      <Breadcrumbs items={breadcrumbs} />
-
-      <h1 class="text-3xl md:text-4xl font-bold mb-6">Anime</h1>
-
-      <!-- Genre Filter Chips -->
-      <div class="flex flex-wrap gap-2 mb-8">
-        <a href="/anime/" class="chip bg-[var(--color-primary)]/20 border-[var(--color-primary)]/50 text-[var(--color-primary)]">
-          All
-        </a>
-        {genres.map(genre => (
-          <a href={`/genre/${genre.slug}/`} class="chip">
-            {genre.name}
-          </a>
-        ))}
+  <main class="min-h-screen">
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/15 to-[var(--color-accent-alt)]/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+      <div class="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-10">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+          <span class="gradient-text">Anime</span>
+        </h1>
+        <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">
+          Explore {anime.length} anime series from Japan's finest studios. From epic shonen battles to intimate romance, find your next favorite anime and discover where to stream it legally.
+        </p>
       </div>
+    </section>
 
-      <!-- Anime Grid -->
-      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-        {anime.map(title => <TitleCard title={title} />)}
-      </div>
+    <div class="mx-auto max-w-7xl px-4 py-12 space-y-16">
 
-      {anime.length === 0 && (
-        <div class="text-center py-16">
-          <p class="text-[var(--color-text-muted)] text-lg">No anime found.</p>
+      <section>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl">
+          Anime has evolved from a niche interest into a global entertainment phenomenon, captivating audiences worldwide with its unique blend of artistic expression, complex storytelling, and imaginative world-building. Japanese animation spans every conceivable genre — from high-octane action and intricate fantasy to nuanced romance and thought-provoking psychological thrillers — offering something for every viewer regardless of age or taste.
+        </p>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl mt-4">
+          Our curated anime collection features both completed series and currently airing titles, available on Crunchyroll, Netflix, Prime Video, and other major streaming platforms. Each anime page provides detailed information including episode counts, seasonal breakdowns, voice cast, studio information, genre classifications, and streaming availability to help you make informed viewing decisions.
+        </p>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl mt-4">
+          Whether you are a seasoned otaku looking for the latest simulcast release or a newcomer curious about where to start your anime journey, Net27 is your comprehensive guide to discovering and watching anime legally.
+        </p>
+      </section>
+
+      <section>
+        <h2 class="section-title mb-4">Filter by Genre</h2>
+        <div class="flex flex-wrap gap-2">
+          <a href="/anime/" class="chip active">All</a>
+          {genres.map(genre => (
+            <a href={`/genre/${genre.slug}/`} class="chip">{genre.name}</a>
+          ))}
         </div>
+      </section>
+
+      <section>
+        <h2 class="section-title mb-6">All Anime</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+          {anime.map(title => <TitleCard title={title} />)}
+        </div>
+      </section>
+
+      {topRated.length > 0 && (
+        <section class="bg-[var(--color-bg-secondary)] -mx-4 px-4 py-12 rounded-xl">
+          <h2 class="section-title mb-6">Highest Rated Anime</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {topRated.slice(0, 6).map(title => <TitleCard title={title} />)}
+          </div>
+        </section>
       )}
+
+      <section>
+        <h2 class="section-title mb-6">Anime Streaming Platforms</h2>
+        <div class="flex flex-wrap gap-3">
+          {platforms.map(p => (
+            <a href={`/platform/${p.slug}/`} class="chip">{p.name}</a>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title mb-4">Explore More Content</h2>
+        <div class="flex flex-wrap gap-3">
+          <a href="/movies/" class="btn-secondary">Movies</a>
+          <a href="/shows/" class="btn-secondary">TV Shows</a>
+          <a href="/trending/" class="btn-secondary">Trending</a>
+          <a href="/latest/" class="btn-secondary">Latest Releases</a>
+          <a href="/language/japanese/" class="btn-secondary">Japanese Content</a>
+        </div>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host or distribute copyrighted content. All anime information is for discovery purposes only. All trademarks belong to their respective owners. Streaming availability varies by region. Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}.
+        </p>
+      </section>
     </div>
   </main>
 
