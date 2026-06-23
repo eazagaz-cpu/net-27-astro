@@ -12,18 +12,18 @@ import FAQSection from '../components/FAQSection.astro';
 import { websiteSchema, organizationSchema, softwareAppSchema, faqSchema } from '../lib/schema';
 import { SITE_URL, SITE_DESCRIPTION } from '../lib/seo';
 import { SITE_NAME } from '../lib/constants';
-import { getTrending, getLatest, getFeatured, getTop10, getByType, getByPlatform } from '../data/titles';
+import { sampleTitles, getTrendingTitles, getLatestTitles, getTitlesByType, getTitlesByPlatform } from '../data/sampleTitles';
 
-const featured = getFeatured();
-const trending = getTrending();
-const latest = getLatest();
-const top10 = getTop10();
-const movies = getByType('movie').slice(0, 12);
-const shows = getByType('show').slice(0, 12);
-const anime = getByType('anime').slice(0, 12);
-const netflixPicks = getByPlatform('Netflix').slice(0, 12);
-const primePicks = getByPlatform('Prime Video').slice(0, 12);
-const crunchyrollPicks = getByPlatform('Crunchyroll').slice(0, 12);
+const trending = getTrendingTitles();
+const latest = getLatestTitles();
+const featured = trending.slice(0, 5);
+const top10 = [...sampleTitles].sort((a, b) => b.rating - a.rating).slice(0, 10);
+const movies = getTitlesByType('movie').slice(0, 12);
+const shows = getTitlesByType('show').slice(0, 12);
+const anime = getTitlesByType('anime').slice(0, 12);
+const netflixPicks = getTitlesByPlatform('Netflix').slice(0, 12);
+const primePicks = getTitlesByPlatform('Prime Video').slice(0, 12);
+const crunchyrollPicks = getTitlesByPlatform('Crunchyroll').slice(0, 12);
 
 const homeFaqs = [
   { question: 'What is NetMirror?', answer: 'NetMirror is a movie and show discovery platform that helps you find where to watch movies, TV shows, and anime across streaming services like Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more. We provide availability information — we do not host or stream any content.' },

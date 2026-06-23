@@ -1,0 +1,91 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SEOHead from '../components/SEOHead.astro';
+import AuthModal from '../components/auth/AuthModal.tsx';
+import { SITE_URL } from '../lib/seo';
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Sign in / Sign Up"
+    description="Sign in to NetMirror. Free account. No credit card. Resume where you left off. Access your watchlist across devices."
+    canonical={`${SITE_URL}/login/`}
+  />
+
+  <main class="min-h-screen relative flex items-center justify-center p-4">
+    <!-- Movie poster collage background -->
+    <div class="absolute inset-0 opacity-[0.12]" style={`
+      background-image:
+        url(https://image.tmdb.org/t/p/w342/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg),
+        url(https://image.tmdb.org/t/p/w342/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg),
+        url(https://image.tmdb.org/t/p/w342/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg),
+        url(https://image.tmdb.org/t/p/w342/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg),
+        url(https://image.tmdb.org/t/p/w342/dDlEmu3EZ0Pgg93K2SVNLCjCSvE.jpg),
+        url(https://image.tmdb.org/t/p/w342/hTP1DtLGFamjfu8WqjnuQdP1n0.jpg),
+        url(https://image.tmdb.org/t/p/w342/wrCwH6WOvXQvVuqBV0agmRIWQrF.jpg),
+        url(https://image.tmdb.org/t/p/w342/49WJfeN0moxb9IPfGn8AIqMGskD.jpg),
+        url(https://image.tmdb.org/t/p/w342/vZloFAK7NmvMGKE7Q2yGRq0QALY.jpg);
+      background-size: 180px;
+      background-repeat: repeat;
+      transform: rotate(-12deg) scale(1.6);
+    `}></div>
+    <div class="absolute inset-0 bg-black/70"></div>
+
+    <!-- Login card -->
+    <div class="relative z-10 w-full max-w-md rounded-2xl p-8" style="background: linear-gradient(180deg, rgba(20,20,25,0.97), rgba(10,10,14,0.99)); border: 1px solid rgba(255,255,255,0.08);">
+      <!-- Logo -->
+      <div class="text-center mb-6">
+        <div class="w-16 h-16 mx-auto mb-3 rounded-2xl flex items-center justify-center" style="background: linear-gradient(135deg, #1a1a1f, #0a0a0e); border: 1px solid rgba(255,255,255,0.1);">
+          <span class="text-2xl font-black text-[var(--color-primary)]">N</span>
+        </div>
+        <h1 class="text-xl font-bold text-white">
+          <span class="text-[var(--color-primary)]">Net</span>Mirror
+        </h1>
+        <p class="text-xs mt-1 text-[var(--color-muted)]">India's #1 streaming platform</p>
+      </div>
+
+      <h2 class="text-lg font-bold text-white text-center mb-1">Sign in / Sign Up</h2>
+      <p class="text-xs text-center mb-6 text-[var(--color-muted)]">Free account. No credit card. Resume where you left off.</p>
+
+      <!-- Email form -->
+      <form class="mb-4" onsubmit="event.preventDefault();">
+        <input
+          type="email"
+          placeholder="you@example.com"
+          required
+          class="w-full px-4 py-3 rounded-xl text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-2 mb-3"
+          style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); --tw-ring-color: var(--color-primary);"
+        />
+        <button type="submit" class="w-full py-3 rounded-xl text-sm font-semibold text-white" style="background: var(--color-primary);">
+          Continue with Email
+        </button>
+      </form>
+
+      <!-- Divider -->
+      <div class="flex items-center gap-3 mb-4">
+        <div class="flex-1 h-px" style="background: rgba(255,255,255,0.1);"></div>
+        <span class="text-xs text-[var(--color-muted)]">OR</span>
+        <div class="flex-1 h-px" style="background: rgba(255,255,255,0.1);"></div>
+      </div>
+
+      <!-- Google sign-in (React component for interactivity) -->
+      <div class="mb-4">
+        <AuthModal client:load />
+      </div>
+
+      <!-- Terms -->
+      <p class="text-[10px] text-center text-[var(--color-muted)]">
+        By continuing, you agree to our
+        <a href="/terms/" class="underline hover:text-white">Terms</a> &
+        <a href="/privacy/" class="underline hover:text-white">Privacy Policy</a>.
+      </p>
+    </div>
+
+    <!-- Back to home -->
+    <a href="/" class="absolute top-6 left-6 z-20 flex items-center gap-2 text-sm text-[var(--color-muted)] hover:text-white transition-colors">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      Back
+    </a>
+  </main>
+</BaseLayout>

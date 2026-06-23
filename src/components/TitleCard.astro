@@ -1,5 +1,6 @@
 ---
 import type { Title } from '../lib/types';
+import { getPosterUrl } from '../lib/media';
 
 interface Props {
   title: Title;
@@ -8,6 +9,7 @@ interface Props {
 const { title } = Astro.props;
 
 const href = title.type === 'movie' ? `/movies/${title.slug}/` : `/shows/${title.slug}/`;
+const posterUrl = getPosterUrl(title.poster);
 
 const displayGenres = title.genres.slice(0, 2);
 
@@ -29,13 +31,15 @@ const placeholderGradient = placeholderGradients[gradientIndex];
 <a href={href} class="title-card group block">
   <!-- Poster Area -->
   <div class="relative aspect-[2/3] overflow-hidden">
-    {title.poster ? (
+    {posterUrl ? (
       <img
-        src={title.poster}
-        alt={title.title}
+        src={posterUrl}
+        alt={`${title.title} official poster`}
         class="w-full h-full object-cover"
         loading="lazy"
         decoding="async"
+        width="342"
+        height="513"
       />
     ) : (
       <div class={`w-full h-full bg-gradient-to-br ${placeholderGradient} flex items-center justify-center`}>
