@@ -115,14 +115,55 @@ src/
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `SITE_URL` | Production URL (https://net-27.cc) | Optional |
+| `SITE_URL` | Production URL (https://net27.cc) | Optional |
+| `PUBLIC_FIREBASE_API_KEY` | Firebase API key for Google login | For auth |
+| `PUBLIC_FIREBASE_AUTH_DOMAIN` | Firebase auth domain | For auth |
+| `PUBLIC_FIREBASE_PROJECT_ID` | Firebase project ID | For auth |
+| `PUBLIC_FIREBASE_APP_ID` | Firebase app ID | For auth |
 
 ### Steps
 
 1. Push this repository to GitHub
 2. Connect the repository to Cloudflare Pages
 3. Set the build settings as shown above
-4. Deploy
+4. Add Firebase environment variables (see below)
+5. Deploy
+
+## Firebase Google Login Setup
+
+### 1. Create Firebase Project
+1. Go to [Firebase Console](https://console.firebase.google.com/)
+2. Create a new project (or use existing)
+3. Go to **Authentication** > **Sign-in method**
+4. Enable **Google** provider
+5. Add authorized domains:
+   - `localhost`
+   - `net27.cc`
+   - `www.net27.cc`
+   - `net-27-astro.pages.dev`
+
+### 2. Get Firebase Config
+1. Go to **Project Settings** > **General** > **Your apps**
+2. Register a Web app if not already done
+3. Copy the config values: `apiKey`, `authDomain`, `projectId`, `appId`
+
+### 3. Local Development
+Create `.env.local` (git-ignored):
+```
+PUBLIC_FIREBASE_API_KEY=your_api_key
+PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+PUBLIC_FIREBASE_PROJECT_ID=your_project_id
+PUBLIC_FIREBASE_APP_ID=your_app_id
+```
+
+### 4. Cloudflare Pages
+Add the same variables in Cloudflare Pages > Settings > Environment Variables.
+
+### 5. Troubleshooting
+- **auth/unauthorized-domain**: Add your deploy domain to Firebase authorized domains
+- **Popup blocked**: Allow popups for the site in browser settings
+- **Missing env vars**: Site works without Firebase — Google button shows "not configured" message
+- **Invalid API key**: Double-check the key matches your Firebase project
 
 ## Content Management
 

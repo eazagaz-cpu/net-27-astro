@@ -25,7 +25,7 @@
 
 @layer base {
   html {
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth removed — causes auto-scroll issues with scroll-snap rails */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -178,7 +178,7 @@
     display: flex;
     gap: 0.75rem;
     overflow-x: auto;
-    scroll-snap-type: x mandatory;
+    scroll-snap-type: x proximity;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
     padding-bottom: 0.5rem;

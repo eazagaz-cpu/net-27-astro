@@ -1,4 +1,6 @@
 ---
+import AuthModal from './auth/AuthModal.tsx';
+
 const navLinks = [
   { label: 'Home', href: '/' },
   { label: 'Movies', href: '/movies/' },
@@ -57,7 +59,7 @@ const platformChips = [
         <a href="/search/" class="md:hidden p-2 text-[var(--color-muted)] hover:text-white transition-colors" aria-label="Search">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </a>
-        <a href="#" class="hidden sm:inline-flex btn-primary text-xs px-4 py-2 rounded-lg">Sign In</a>
+        <div class="hidden sm:block"><AuthModal client:load /></div>
         <button id="mobile-menu-toggle" class="lg:hidden p-2 text-[var(--color-muted)] hover:text-white transition-colors" aria-label="Toggle menu" aria-expanded="false">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
@@ -115,12 +117,38 @@ const platformChips = [
 </header>
 
 <script>
+  let menuScrollY = 0;
   const toggle = document.getElementById('mobile-menu-toggle');
   const close = document.getElementById('mobile-menu-close');
   const menu = document.getElementById('mobile-menu');
+
+  function openMenu() {
+    if (!menu) return;
+    menuScrollY = window.scrollY;
+    menu.classList.remove('hidden');
+    menu.setAttribute('aria-hidden', 'false');
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${menuScrollY}px`;
+    document.body.style.left = '0';
+    document.body.style.right = '0';
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMenu() {
+    if (!menu) return;
+    menu.classList.add('hidden');
+    menu.setAttribute('aria-hidden', 'true');
+    document.body.style.position = '';
+    document.body.style.top = '';
+    document.body.style.left = '';
+    document.body.style.right = '';
+    document.body.style.overflow = '';
+    window.scrollTo({ top: menuScrollY, behavior: 'instant' as ScrollBehavior });
+  }
+
   if (toggle && close && menu) {
-    toggle.addEventListener('click', () => { menu.classList.remove('hidden'); menu.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; });
-    close.addEventListener('click', () => { menu.classList.add('hidden'); menu.setAttribute('aria-hidden','true'); document.body.style.overflow=''; });
-    menu.querySelectorAll('a').forEach(l => l.addEventListener('click', () => { menu.classList.add('hidden'); menu.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }));
+    toggle.addEventListener('click', openMenu);
+    close.addEventListener('click', closeMenu);
+    menu.querySelectorAll('a').forEach(l => l.addEventListener('click', closeMenu));
   }
 </script>
