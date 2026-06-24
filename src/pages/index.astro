@@ -6,25 +6,16 @@ import SEOHead from '../components/SEOHead.astro';
 import Schema from '../components/Schema.astro';
 import HeroSlider from '../components/HeroSlider.astro';
 import AppCTA from '../components/AppCTA.astro';
-import ContentRail from '../components/ContentRail.astro';
 import DynamicRail from '../components/DynamicRail.tsx';
 import SearchBlock from '../components/SearchBlock.astro';
 import FAQSection from '../components/FAQSection.astro';
 import { websiteSchema, organizationSchema, softwareAppSchema, faqSchema } from '../lib/schema';
 import { SITE_URL, SITE_DESCRIPTION } from '../lib/seo';
 import { SITE_NAME } from '../lib/constants';
-import { sampleTitles, getTrendingTitles, getLatestTitles, getTitlesByType, getTitlesByPlatform } from '../data/sampleTitles';
+import { getTrendingTitles } from '../data/sampleTitles';
 
 const trending = getTrendingTitles();
-const latest = getLatestTitles();
 const featured = trending.slice(0, 5);
-const movies = getTitlesByType('movie');
-const shows = getTitlesByType('show');
-const anime = getTitlesByType('anime');
-const top10 = [...sampleTitles].sort((a, b) => b.rating - a.rating).filter(t => !featured.some(f => f.id === t.id)).slice(0, 10);
-const netflixPicks = getTitlesByPlatform('Netflix').filter(t => !movies.slice(0,8).some(m => m.id === t.id)).slice(0, 12);
-const primePicks = getTitlesByPlatform('Prime Video').filter(t => !netflixPicks.some(n => n.id === t.id)).slice(0, 12);
-const crunchyrollPicks = anime.slice(0, 12);
 
 const homeFaqs = [
   { question: 'What is NetMirror?', answer: 'NetMirror is a movie and show discovery platform that helps you find where to watch movies, TV shows, and anime across streaming services like Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more. We provide availability information — we do not host or stream any content.' },
@@ -55,47 +46,30 @@ const homeFaqs = [
     <!-- App Download CTA -->
     <AppCTA />
 
-    <!-- Popular Movies -->
-    <ContentRail title="Popular Movies" titles={movies} viewAllHref="/movies/" />
-
-    <!-- Top 10 Today -->
-    <ContentRail title="Top 10 Today" titles={top10} />
-
-    <!-- Trending Now -->
-    <ContentRail title="Trending Now" titles={trending} viewAllHref="/trending/" />
-
-    <!-- Latest Releases -->
-    <ContentRail title="Latest Releases" titles={latest} viewAllHref="/latest/" />
-
-    <!-- Netflix Picks -->
-    {netflixPicks.length > 0 && (
-      <ContentRail title="Netflix" titles={netflixPicks} viewAllHref="/platform/netflix/" />
-    )}
-
-    <!-- Prime Video Picks -->
-    {primePicks.length > 0 && (
-      <ContentRail title="Prime Video" titles={primePicks} viewAllHref="/platform/prime-video/" />
-    )}
-
-    <!-- Crunchyroll Anime -->
-    {crunchyrollPicks.length > 0 && (
-      <ContentRail title="Crunchyroll" titles={crunchyrollPicks} viewAllHref="/platform/crunchyroll/" />
-    )}
-
-    <!-- TV Shows -->
-    <ContentRail title="TV Shows" titles={shows} viewAllHref="/shows/" />
-
-    <!-- API-Powered Dynamic Rails (auto-refresh from TMDB) -->
-    <DynamicRail client:visible title="Bollywood Hindi" category="bollywood" viewAllHref="/language/hindi/" />
-    <DynamicRail client:visible title="Hollywood" category="hollywood" viewAllHref="/movies/" />
-    <DynamicRail client:visible title="Korean Drama" category="korean-drama" viewAllHref="/language/korean/" />
-    <DynamicRail client:visible title="Comedy" category="comedy" viewAllHref="/genre/comedy/" />
-    <DynamicRail client:visible title="Thriller" category="thriller" viewAllHref="/genre/thriller/" />
-    <DynamicRail client:visible title="Sci-Fi" category="sci-fi" viewAllHref="/genre/sci-fi/" />
-    <DynamicRail client:visible title="Horror" category="horror" viewAllHref="/genre/horror/" />
-    <DynamicRail client:visible title="Romance" category="romance" viewAllHref="/genre/romance/" />
-    <DynamicRail client:visible title="Animation & Family" category="kids" viewAllHref="/genre/kids/" />
-    <DynamicRail client:visible title="Coming Soon" category="upcoming" />
+    <!-- All Real-Time TMDB-Powered Content Rails -->
+    <DynamicRail client:visible title="🔥 Trending Now" category="trending" viewAllHref="/trending/" />
+    <DynamicRail client:visible title="🆕 Latest Releases" category="latest" viewAllHref="/latest/" />
+    <DynamicRail client:visible title="🎬 Popular Movies" category="popular" viewAllHref="/movies/" />
+    <DynamicRail client:visible title="📺 Popular TV Shows" category="tv-popular" viewAllHref="/shows/" />
+    <DynamicRail client:visible title="Netflix" category="netflix" viewAllHref="/platform/netflix/" />
+    <DynamicRail client:visible title="Prime Video" category="prime-video" viewAllHref="/platform/prime-video/" />
+    <DynamicRail client:visible title="JioHotstar" category="jiohotstar" viewAllHref="/platform/jiohotstar/" />
+    <DynamicRail client:visible title="SonyLIV" category="sonyliv" viewAllHref="/platform/sonyliv/" />
+    <DynamicRail client:visible title="🍥 Anime" category="anime" viewAllHref="/anime/" />
+    <DynamicRail client:visible title="Crunchyroll" category="crunchyroll" viewAllHref="/platform/crunchyroll/" />
+    <DynamicRail client:visible title="🇮🇳 Bollywood" category="bollywood" viewAllHref="/language/hindi/" />
+    <DynamicRail client:visible title="🎥 Hollywood" category="hollywood" viewAllHref="/movies/" />
+    <DynamicRail client:visible title="🇰🇷 Korean Drama" category="korean-drama" viewAllHref="/language/korean/" />
+    <DynamicRail client:visible title="😂 Comedy" category="comedy" viewAllHref="/genre/comedy/" />
+    <DynamicRail client:visible title="🔪 Thriller" category="thriller" viewAllHref="/genre/thriller/" />
+    <DynamicRail client:visible title="🚀 Sci-Fi" category="sci-fi" viewAllHref="/genre/sci-fi/" />
+    <DynamicRail client:visible title="👻 Horror" category="horror" viewAllHref="/genre/horror/" />
+    <DynamicRail client:visible title="💕 Romance" category="romance" viewAllHref="/genre/romance/" />
+    <DynamicRail client:visible title="🎨 Animation & Family" category="kids" viewAllHref="/genre/kids/" />
+    <DynamicRail client:visible title="🎭 Drama" category="drama" viewAllHref="/genre/drama/" />
+    <DynamicRail client:visible title="🔫 Action" category="action" viewAllHref="/genre/action/" />
+    <DynamicRail client:visible title="🕵️ Crime" category="crime" viewAllHref="/genre/crime/" />
+    <DynamicRail client:visible title="🔮 Coming Soon" category="upcoming" />
 
     <!-- Search Block -->
     <SearchBlock />
