@@ -150,29 +150,45 @@ const mediaType = title.type === 'movie' ? 'movie' : 'tv';
   }
 
   // Search TMDB for this title to get the numeric ID
-  fetch(`/api/tmdb/search?q=${encodeURIComponent(titleName)}`)
-    .then(r => r.json())
-    .then(data => {
-      const items = data.items || [];
-      // Find best match by title and year
-      const match = items.find(i =>
-        i.title.toLowerCase() === titleName.toLowerCase() &&
-        (!titleYear || i.year === titleYear)
-      ) || items.find(i =>
-        i.title.toLowerCase() === titleName.toLowerCase()
-      ) || items[0];
+  // Try multiple search strategies for best match
+  async function findTmdbId() {
+    // Strategy 1: Search by exact title
+    let res = await fetch(`/api/tmdb/search?q=${encodeURIComponent(titleName)}`);
+    let data = await res.json();
+    let items = data.items || [];
 
-      if (match) {
-        tmdbId = match.id;
-        loadPlayer(0);
-      } else {
-        const loading = document.getElementById('player-loading');
-        const fallback = document.getElementById('player-fallback');
-        if (loading) loading.classList.add('hidden');
-        if (fallback) fallback.classList.remove('hidden');
-      }
-    })
-    .catch(() => {
+    let match = items.find(i => i.title.toLowerCase() === titleName.toLowerCase() && (!titleYear || i.year === titleYear))
+      || items.find(i => i.title.toLowerCase() === titleName.toLowerCase())
+      || items.find(i => i.title.toLowerCase().includes(titleName.toLowerCase().split(':')[0].split(' - ')[0].trim()));
+
+    if (match) return match.id;
+
+    // Strategy 2: Search with first 2 words only
+    const shortName = titleName.split(' ').slice(0, 2).join(' ');
+    if (shortName !== titleName) {
+      res = await fetch(`/api/tmdb/search?q=${encodeURIComponent(shortName)}`);
+      data = await res.json();
+      items = data.items || [];
+      if (items.length > 0) return items[0].id;
+    }
+
+    // Strategy 3: Use first result from any search
+    if ((data.items || []).length > 0) return data.items[0].id;
+
+    return null;
+  }
+
+  findTmdbId().then(id => {
+    if (id) {
+      tmdbId = id;
+      loadPlayer(0);
+    } else {
+      const loading = document.getElementById('player-loading');
+      const fallback = document.getElementById('player-fallback');
+      if (loading) loading.classList.add('hidden');
+      if (fallback) fallback.classList.remove('hidden');
+    }
+  }).catch(() => {
       const loading = document.getElementById('player-loading');
       const fallback = document.getElementById('player-fallback');
       if (loading) loading.classList.add('hidden');
