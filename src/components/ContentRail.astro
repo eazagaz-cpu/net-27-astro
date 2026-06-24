@@ -30,22 +30,47 @@ const { title, titles, viewAllHref } = Astro.props;
           <a href={viewAllHref} class="text-xs text-[var(--color-primary)] hover:underline font-medium">View All &rarr;</a>
         )}
       </div>
-      <div class="scroll-rail">
-        {titles.map(t => (
-          <div class="w-[140px] sm:w-[155px] md:w-[170px]">
-            <MovieCard
-              title={t.title}
-              slug={t.slug}
-              type={t.type}
-              year={t.year}
-              rating={t.rating}
-              poster={t.poster}
-              quality={t.quality}
-              genres={t.genres}
-            />
-          </div>
-        ))}
+      <div class="relative group/rail">
+        <button class="rail-arrow-left absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/70 backdrop-blur flex items-center justify-center text-white opacity-0 group-hover/rail:opacity-100 transition-opacity hover:bg-black/90" aria-label="Scroll left">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" /></svg>
+        </button>
+
+        <div class="scroll-rail">
+          {titles.map(t => (
+            <div class="w-[140px] sm:w-[155px] md:w-[170px]">
+              <MovieCard
+                title={t.title}
+                slug={t.slug}
+                type={t.type}
+                year={t.year}
+                rating={t.rating}
+                poster={t.poster}
+                quality={t.quality}
+                genres={t.genres}
+              />
+            </div>
+          ))}
+        </div>
+
+        <button class="rail-arrow-right absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/70 backdrop-blur flex items-center justify-center text-white opacity-0 group-hover/rail:opacity-100 transition-opacity hover:bg-black/90" aria-label="Scroll right">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" /></svg>
+        </button>
       </div>
+
+      <script>
+        document.querySelectorAll('.rail-arrow-left').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const rail = btn.parentElement?.querySelector('.scroll-rail');
+            if (rail) rail.scrollBy({ left: -200, behavior: 'smooth' });
+          });
+        });
+        document.querySelectorAll('.rail-arrow-right').forEach(btn => {
+          btn.addEventListener('click', () => {
+            const rail = btn.parentElement?.querySelector('.scroll-rail');
+            if (rail) rail.scrollBy({ left: 200, behavior: 'smooth' });
+          });
+        });
+      </script>
     </div>
   </section>
 )}

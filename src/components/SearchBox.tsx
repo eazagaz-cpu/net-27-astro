@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from 'react';
 import { sampleTitles } from '../data/sampleTitles';
+import { getPosterUrl } from '../lib/media';
 
 interface Title {
   id: string;
@@ -359,9 +360,28 @@ export default function SearchBox() {
               >
                 {/* Poster */}
                 <div className="relative aspect-[2/3] overflow-hidden">
+                  {title.poster ? (
+                    <img
+                      src={getPosterUrl(title.poster)}
+                      alt={title.title}
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        target.style.display = 'none';
+                        const fallback = target.nextElementSibling as HTMLElement | null;
+                        if (fallback) fallback.style.display = 'flex';
+                      }}
+                    />
+                  ) : null}
                   <div
                     className="w-full h-full flex items-center justify-center"
-                    style={{ background: gradient }}
+                    style={{
+                      background: gradient,
+                      display: title.poster ? 'none' : 'flex',
+                      position: title.poster ? 'absolute' : 'relative',
+                      inset: title.poster ? '0' : undefined,
+                    }}
                   >
                     <span className="text-5xl font-bold text-white/30 select-none">
                       {title.title.charAt(0).toUpperCase()}

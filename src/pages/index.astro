@@ -18,13 +18,13 @@ import { sampleTitles, getTrendingTitles, getLatestTitles, getTitlesByType, getT
 const trending = getTrendingTitles();
 const latest = getLatestTitles();
 const featured = trending.slice(0, 5);
-const top10 = [...sampleTitles].sort((a, b) => b.rating - a.rating).slice(0, 10);
-const movies = getTitlesByType('movie').slice(0, 12);
-const shows = getTitlesByType('show').slice(0, 12);
-const anime = getTitlesByType('anime').slice(0, 12);
-const netflixPicks = getTitlesByPlatform('Netflix').slice(0, 12);
-const primePicks = getTitlesByPlatform('Prime Video').slice(0, 12);
-const crunchyrollPicks = getTitlesByPlatform('Crunchyroll').slice(0, 12);
+const movies = getTitlesByType('movie');
+const shows = getTitlesByType('show');
+const anime = getTitlesByType('anime');
+const top10 = [...sampleTitles].sort((a, b) => b.rating - a.rating).filter(t => !featured.some(f => f.id === t.id)).slice(0, 10);
+const netflixPicks = getTitlesByPlatform('Netflix').filter(t => !movies.slice(0,8).some(m => m.id === t.id)).slice(0, 12);
+const primePicks = getTitlesByPlatform('Prime Video').filter(t => !netflixPicks.some(n => n.id === t.id)).slice(0, 12);
+const crunchyrollPicks = anime.slice(0, 12);
 
 const homeFaqs = [
   { question: 'What is NetMirror?', answer: 'NetMirror is a movie and show discovery platform that helps you find where to watch movies, TV shows, and anime across streaming services like Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more. We provide availability information — we do not host or stream any content.' },
@@ -81,9 +81,6 @@ const homeFaqs = [
     {crunchyrollPicks.length > 0 && (
       <ContentRail title="Crunchyroll" titles={crunchyrollPicks} viewAllHref="/platform/crunchyroll/" />
     )}
-
-    <!-- Anime Section -->
-    <ContentRail title="Anime" titles={anime} viewAllHref="/anime/" />
 
     <!-- TV Shows -->
     <ContentRail title="TV Shows" titles={shows} viewAllHref="/shows/" />
