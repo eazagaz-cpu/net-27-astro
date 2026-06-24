@@ -42,7 +42,7 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/tmdb/category.json?type=${encodeURIComponent(category)}`)
+    fetch(`/api/tmdb/category?type=${encodeURIComponent(category)}`)
       .then(r => r.json())
       .then(data => {
         setItems(data.items || []);
