@@ -32,20 +32,24 @@ const placeholderGradient = placeholderGradients[gradientIndex];
   <!-- Poster Area -->
   <div class="relative aspect-[2/3] overflow-hidden">
     {posterUrl ? (
-      <img
-        src={posterUrl}
-        alt={`${title.title} official poster`}
-        class="w-full h-full object-cover"
-        loading="lazy"
-        decoding="async"
-        width="342"
-        height="513"
-      />
+      <>
+        <img
+          src={posterUrl}
+          alt={`${title.title} poster`}
+          class="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
+          width="342"
+          height="513"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"
+        />
+        <div class={`w-full h-full bg-gradient-to-br ${placeholderGradient} items-center justify-center absolute inset-0`} style="display:none">
+          <span class="text-lg font-bold text-white/50 text-center px-2 leading-tight select-none">{title.title}</span>
+        </div>
+      </>
     ) : (
       <div class={`w-full h-full bg-gradient-to-br ${placeholderGradient} flex items-center justify-center`}>
-        <span class="text-5xl font-bold text-white/30 select-none">
-          {title.title.charAt(0).toUpperCase()}
-        </span>
+        <span class="text-lg font-bold text-white/50 text-center px-2 leading-tight select-none">{title.title}</span>
       </div>
     )}
 

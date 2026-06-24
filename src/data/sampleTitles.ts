@@ -18,7 +18,7 @@ export const sampleTitles: Title[] = [
       'A retired covert operative is pulled back into action when a shadowy organization threatens to destabilize global communications. Racing across three continents, she must outmaneuver enemies who know her every move and confront the ghosts of missions she thought were buried forever.',
     genres: ['Action', 'Thriller'],
     languages: ['English', 'French'],
-    platforms: ['Netflix', 'Prime Video'],
+    platforms: ['Netflix', 'Prime Video', 'JioHotstar'],
     cast: [
       { name: 'Elena Voss', role: 'Commander Nadia Serova' },
       { name: 'Marcus Hale', role: 'Agent Dominic Park' },
@@ -48,7 +48,7 @@ export const sampleTitles: Title[] = [
       'When a retired postman discovers an undelivered letter from 1945, he embarks on a cross-country journey to find its intended recipient. Along the way, he uncovers a love story that spans decades and forces him to confront the choices he made in his own life.',
     genres: ['Drama', 'Romance'],
     languages: ['English'],
-    platforms: ['Apple TV+', 'Prime Video'],
+    platforms: ['Apple TV+', 'Prime Video', 'JioHotstar'],
     cast: [
       { name: 'Robert Calloway', role: 'Henry Marsh' },
       { name: 'Sophia Laurent', role: 'Claire Beaumont' },
@@ -79,7 +79,7 @@ export const sampleTitles: Title[] = [
       'In a sprawling megacity where corporations control every aspect of life, a young data courier stumbles upon encrypted files that could expose the ruling elite. Hunted by private security forces and aided by a rogue AI, she must decide how far she is willing to go to set the truth free.',
     genres: ['Sci-Fi', 'Action', 'Thriller'],
     languages: ['English', 'Korean'],
-    platforms: ['Netflix', 'HBO Max'],
+    platforms: ['Netflix', 'HBO Max', 'SonyLIV'],
     cast: [
       { name: 'Ji-Yeon Park', role: 'Mira Kang' },
       { name: 'Alexander Stein', role: 'Viktor Holt' },
@@ -109,7 +109,7 @@ export const sampleTitles: Title[] = [
       'An intelligence analyst discovers a mole within her own agency after a covert operation goes catastrophically wrong. With her colleagues turning against her, she has forty-eight hours to prove her innocence and expose the real traitor before state secrets are sold to hostile powers.',
     genres: ['Thriller', 'Mystery'],
     languages: ['English', 'German'],
-    platforms: ['Paramount+', 'Prime Video'],
+    platforms: ['Paramount+', 'Prime Video', 'JioHotstar'],
     cast: [
       { name: 'Natalie Cross', role: 'Agent Sarah Keller' },
       { name: 'Idris Bakare', role: 'Deputy Director Monroe' },
@@ -140,7 +140,7 @@ export const sampleTitles: Title[] = [
       'A washed-up stand-up comedian takes a job writing jokes for a late-night talk show, only to discover the host is stealing material from amateur performers. Torn between loyalty to his paycheck and doing the right thing, he hatches a plan that could either revive his career or end it for good.',
     genres: ['Comedy', 'Drama'],
     languages: ['English'],
-    platforms: ['Hulu', 'HBO Max'],
+    platforms: ['Hulu', 'HBO Max', 'MX Player'],
     cast: [
       { name: 'Chris Dalton', role: 'Mike Brennan' },
       { name: 'Lucy Chang', role: 'Dana Kim' },
@@ -170,7 +170,7 @@ export const sampleTitles: Title[] = [
       'A family moves into a centuries-old farmhouse in rural New England, hoping for a fresh start after personal tragedy. But the house holds memories of its own, and the children begin seeing figures that the adults cannot. As the line between past and present erodes, the family must face what was left behind in the walls.',
     genres: ['Horror', 'Mystery'],
     languages: ['English'],
-    platforms: ['Netflix', 'Paramount+'],
+    platforms: ['Netflix', 'Paramount+', 'SonyLIV'],
     cast: [
       { name: 'Rebecca Moore', role: 'Sarah Thorn' },
       { name: 'Ethan Briggs', role: 'David Thorn' },
@@ -229,9 +229,9 @@ export const sampleTitles: Title[] = [
     backdrop: '/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg',
     overview:
       'A young girl discovers that her grandmother\'s watercolor paintings are portals to a living forest where animals speak and ancient spirits guard forgotten knowledge. When a creeping darkness threatens to consume this world, she must find the courage to become the guardian the forest needs.',
-    genres: ['Animation', 'Fantasy', 'Adventure', 'Family'],
+    genres: ['Animation', 'Fantasy', 'Adventure', 'Family', 'Kids'],
     languages: ['English', 'Japanese'],
-    platforms: ['Disney+', 'Netflix'],
+    platforms: ['Disney+', 'Netflix', 'JioHotstar'],
     cast: [
       { name: 'Mia Tanaka', role: 'Hana (voice)' },
       { name: 'Patrick Stewart', role: 'Elder Oak (voice)' },
@@ -265,7 +265,7 @@ export const sampleTitles: Title[] = [
       'A retired detective partners with a forensic data analyst to reopen unsolved cases using modern technology and unconventional methods. Each season follows a single case from cold files to courtroom, revealing how time can both bury evidence and bring it to light.',
     genres: ['Crime', 'Drama', 'Mystery'],
     languages: ['English'],
-    platforms: ['HBO Max', 'Prime Video'],
+    platforms: ['HBO Max', 'Prime Video', 'SonyLIV'],
     cast: [
       { name: 'Gerald Hunt', role: 'Detective Ray Dalton' },
       { name: 'Zara Ahmed', role: 'Dr. Farah Naeem' },
@@ -363,7 +363,7 @@ export const sampleTitles: Title[] = [
       'The detectives of a busy metropolitan precinct navigate complex cases, office politics, and personal lives with a mix of sharp wit and genuine heart. From petty theft to high-profile investigations, no two days are ever the same at Precinct Nine.',
     genres: ['Comedy', 'Crime'],
     languages: ['English'],
-    platforms: ['Hulu', 'Paramount+'],
+    platforms: ['Hulu', 'Paramount+', 'MX Player'],
     cast: [
       { name: 'Andre Mitchell', role: 'Detective Jake Torres' },
       { name: 'Hannah Kwan', role: 'Sergeant Lisa Ng' },
@@ -428,7 +428,7 @@ export const sampleTitles: Title[] = [
       'A visually breathtaking documentary series that explores ecosystems hidden from the human eye, from bioluminescent ocean depths to microscopic jungle kingdoms. Cutting-edge camera technology reveals the extraordinary dramas playing out in nature\'s most secret theaters.',
     genres: ['Documentary', 'Adventure'],
     languages: ['English', 'French'],
-    platforms: ['Disney+', 'Netflix'],
+    platforms: ['Disney+', 'Netflix', 'MX Player'],
     cast: [
       { name: 'Dr. Lena Okafor', role: 'Narrator' },
       { name: 'Professor Yves Martin', role: 'Marine Biologist' },
@@ -459,7 +459,7 @@ export const sampleTitles: Title[] = [
       'Three estranged siblings inherit a sprawling estate with a dark history and a condition: they must live together for one year to claim their fortune. As the house reveals its secrets, the siblings must confront their own hidden truths and the legacy their parents left behind.',
     genres: ['Drama', 'Mystery', 'Thriller'],
     languages: ['English', 'Spanish'],
-    platforms: ['Prime Video', 'Hulu'],
+    platforms: ['Prime Video', 'Hulu', 'SonyLIV'],
     cast: [
       { name: 'Carlos Mendez', role: 'Rafael Castillo' },
       { name: 'Ingrid Larsson', role: 'Helena Castillo' },
@@ -492,7 +492,7 @@ export const sampleTitles: Title[] = [
       'A documentary series following conservationists, rangers, and scientists working on the front lines of wildlife preservation across six continents. From anti-poaching patrols in remote mountains to coral reef restoration in warming oceans, each episode captures the triumphs and heartbreaks of protecting the natural world.',
     genres: ['Documentary', 'Adventure'],
     languages: ['English', 'French', 'Spanish'],
-    platforms: ['Disney+', 'Apple TV+'],
+    platforms: ['Disney+', 'Apple TV+', 'MX Player'],
     cast: [
       { name: 'David Mwangi', role: 'Narrator / Host' },
       { name: 'Dr. Sofia Alvarez', role: 'Marine Ecologist' },
@@ -809,6 +809,7 @@ export const genres: Genre[] = [
   'Crime',
   'Adventure',
   'Family',
+  'Kids',
 ].map((name) => ({
   slug: slugify(name),
   name,
@@ -841,6 +842,9 @@ export const platforms: Platform[] = [
   'Crunchyroll',
   'HBO Max',
   'Paramount+',
+  'JioHotstar',
+  'SonyLIV',
+  'MX Player',
 ].map((name) => ({
   slug: slugify(name),
   name,
