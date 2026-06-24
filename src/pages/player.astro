@@ -9,17 +9,18 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
   <SEOHead slot="head" title="Watch | NetMirror" description="Watch movies and shows on NetMirror." canonical={`${SITE_URL}/player/`} noindex={true} />
 
   <main class="min-h-screen bg-black text-white">
-    <div class="fixed top-0 left-0 right-0 z-50 bg-black/90 backdrop-blur-sm border-b border-white/5">
+    <!-- Top bar -->
+    <div class="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-white/5">
       <div class="flex items-center justify-between px-4 h-12">
         <button onclick="history.back()" class="flex items-center gap-2 text-sm text-zinc-400 hover:text-white cursor-pointer">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
           Back
         </button>
-        <h1 class="text-sm font-medium truncate max-w-[50%]" id="player-title">Loading...</h1>
+        <h1 class="text-sm font-medium truncate max-w-[40%]" id="player-title">Loading...</h1>
         <div class="flex items-center gap-2">
           <select id="server-select" class="bg-white/10 text-xs text-white border border-white/10 rounded px-2 py-1 cursor-pointer">
-            <option value="1">Server 1</option>
-            <option value="2">Server 2</option>
+            <option value="0">Server 1</option>
+            <option value="1">Server 2</option>
           </select>
           <a href="/" class="p-1 text-zinc-400 hover:text-white" aria-label="Close">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -28,30 +29,44 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
       </div>
     </div>
 
-    <div id="tv-controls" class="fixed top-12 left-0 right-0 z-40 bg-black/80 border-b border-white/5 px-4 py-2 hidden">
-      <div class="flex items-center gap-3 max-w-[1400px] mx-auto">
+    <!-- TV controls -->
+    <div id="tv-controls" class="fixed top-12 left-0 right-0 z-40 bg-black/90 border-b border-white/5 px-4 py-2 hidden">
+      <div class="flex items-center gap-3">
         <select id="season-select" class="bg-white/10 text-xs text-white border border-white/10 rounded px-2 py-1 cursor-pointer"></select>
-        <select id="episode-select" class="bg-white/10 text-xs text-white border border-white/10 rounded px-2 py-1 cursor-pointer"></select>
+        <select id="episode-select" class="bg-white/10 text-xs text-white border border-white/10 rounded px-2 py-1 cursor-pointer">
+          <option value="1">Episode 1</option>
+        </select>
       </div>
     </div>
 
-    <div class="pt-12 flex flex-col items-center justify-center min-h-screen">
-      <div class="text-center px-4 max-w-lg">
-        <h2 class="text-xl font-bold mb-2">Choose a server</h2>
-        <p class="text-sm text-zinc-400 mb-6">Server 1 recommended · Server 2 is a fallback</p>
-        <div class="flex items-center justify-center gap-4 mb-8">
-          <button class="px-8 py-3 rounded-xl text-sm font-semibold text-white cursor-pointer transition-all hover:scale-105" style="background: var(--color-primary);">Server 1</button>
-          <button class="px-8 py-3 rounded-xl text-sm font-semibold text-white cursor-pointer border border-white/15 hover:bg-white/5 transition-all">Server 2</button>
+    <!-- Player iframe container -->
+    <div id="player-container" class="pt-12 w-full" style="height:100vh;">
+      <div id="player-loading" class="flex items-center justify-center h-full">
+        <div class="text-center">
+          <div class="w-10 h-10 border-2 border-white/20 border-t-[var(--color-primary)] rounded-full animate-spin mx-auto mb-4"></div>
+          <p class="text-zinc-400 text-sm">Loading player...</p>
         </div>
-        <div class="glass-card rounded-2xl p-6 text-left mb-6">
-          <p class="text-sm text-zinc-400 mb-4">Streaming source is not configured for this title. Use the NetMirror app for the best experience.</p>
-          <div class="flex flex-wrap gap-3">
-            <a href={APK_UNIVERSAL_URL} download class="btn-primary text-xs px-4 py-2 rounded-lg" rel="noopener noreferrer">⬇ Download App</a>
-            <button onclick="history.back()" class="btn-glass text-xs px-4 py-2 rounded-lg cursor-pointer">More Info</button>
-          </div>
+      </div>
+      <iframe
+        id="player-iframe"
+        class="w-full hidden"
+        style="height:calc(100vh - 48px);border:none;"
+        allowfullscreen
+        allow="autoplay; encrypted-media; picture-in-picture"
+        referrerpolicy="origin"
+      ></iframe>
+    </div>
+
+    <!-- Fallback (shown if no source) -->
+    <div id="player-fallback" class="hidden pt-12 flex flex-col items-center justify-center min-h-screen">
+      <div class="text-center px-4 max-w-lg">
+        <h2 class="text-xl font-bold mb-2">Source Unavailable</h2>
+        <p class="text-sm text-zinc-400 mb-6">Streaming source could not be loaded. Try another server or use the app.</p>
+        <div class="flex items-center justify-center gap-4 mb-6">
+          <a href={APK_UNIVERSAL_URL} download class="btn-primary text-xs px-6 py-2.5 rounded-lg" rel="noopener noreferrer">⬇ Download App</a>
+          <button onclick="history.back()" class="btn-glass text-xs px-6 py-2.5 rounded-lg cursor-pointer">Go Back</button>
         </div>
         <p id="trailer-link" class="hidden mb-4"></p>
-        <p class="text-[10px] text-zinc-600">NetMirror does not host any content. Streams are provided by third-party services.</p>
       </div>
     </div>
   </main>
@@ -61,7 +76,64 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
   const params = new URLSearchParams(window.location.search);
   const type = params.get('type') || 'movie';
   const id = params.get('id') || '';
-  if (type && id) {
+  let season = parseInt(params.get('s') || '1');
+  let episode = parseInt(params.get('e') || '1');
+  let totalSeasons = 0;
+
+  function getEmbedUrl(serverIdx: number): string {
+    if (type === 'movie') {
+      return serverIdx === 0
+        ? `https://vidsrc.xyz/embed/movie/${id}`
+        : `https://vidsrc.cc/v2/embed/movie/${id}`;
+    } else {
+      return serverIdx === 0
+        ? `https://vidsrc.xyz/embed/tv/${id}/${season}/${episode}`
+        : `https://vidsrc.cc/v2/embed/tv/${id}/${season}/${episode}`;
+    }
+  }
+
+  function loadPlayer(serverIdx: number) {
+    const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
+    const loading = document.getElementById('player-loading');
+    const fallback = document.getElementById('player-fallback');
+
+    if (!iframe || !id) {
+      if (fallback) fallback.classList.remove('hidden');
+      return;
+    }
+
+    const url = getEmbedUrl(serverIdx);
+    iframe.src = url;
+    iframe.classList.remove('hidden');
+    if (loading) loading.classList.add('hidden');
+    if (fallback) fallback.classList.add('hidden');
+  }
+
+  // Server selector
+  const serverSelect = document.getElementById('server-select') as HTMLSelectElement;
+  if (serverSelect) {
+    serverSelect.addEventListener('change', () => loadPlayer(parseInt(serverSelect.value)));
+  }
+
+  // Season/episode selectors
+  const seasonSelect = document.getElementById('season-select') as HTMLSelectElement;
+  const episodeSelect = document.getElementById('episode-select') as HTMLSelectElement;
+
+  if (seasonSelect) {
+    seasonSelect.addEventListener('change', () => {
+      season = parseInt(seasonSelect.value);
+      loadPlayer(parseInt(serverSelect?.value || '0'));
+    });
+  }
+  if (episodeSelect) {
+    episodeSelect.addEventListener('change', () => {
+      episode = parseInt(episodeSelect.value);
+      loadPlayer(parseInt(serverSelect?.value || '0'));
+    });
+  }
+
+  // Fetch title info and init
+  if (id) {
     fetch(`/api/tmdb/details?type=${type}&id=${id}`)
       .then(r => r.json())
       .then(data => {
@@ -69,16 +141,33 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
           const el = document.getElementById('player-title');
           if (el) el.textContent = data.title;
           document.title = `Watch ${data.title} | NetMirror`;
+
           if (data.trailerKey) {
             const link = document.getElementById('trailer-link');
-            if (link) { link.classList.remove('hidden'); link.innerHTML = `<a href="https://www.youtube.com/watch?v=${data.trailerKey}" target="_blank" rel="noopener" class="text-[var(--color-accent)] text-sm hover:underline">▶ Watch Official Trailer on YouTube</a>`; }
+            if (link) {
+              link.classList.remove('hidden');
+              link.innerHTML = `<a href="https://www.youtube.com/watch?v=${data.trailerKey}" target="_blank" rel="noopener" class="text-blue-400 text-sm hover:underline">▶ Watch Trailer on YouTube</a>`;
+            }
           }
+
           if (type === 'tv' && data.seasons > 0) {
+            totalSeasons = data.seasons;
             const tc = document.getElementById('tv-controls');
-            const ss = document.getElementById('season-select');
-            if (tc && ss) { tc.classList.remove('hidden'); ss.innerHTML = Array.from({length: data.seasons}, (_, i) => `<option value="${i+1}">Season ${i+1}</option>`).join(''); }
+            if (tc && seasonSelect) {
+              tc.classList.remove('hidden');
+              seasonSelect.innerHTML = Array.from({ length: data.seasons }, (_, i) =>
+                `<option value="${i + 1}" ${i + 1 === season ? 'selected' : ''}>Season ${i + 1}</option>`
+              ).join('');
+              episodeSelect.innerHTML = Array.from({ length: 20 }, (_, i) =>
+                `<option value="${i + 1}" ${i + 1 === episode ? 'selected' : ''}>Episode ${i + 1}</option>`
+              ).join('');
+            }
           }
         }
-      }).catch(() => {});
+      })
+      .catch(() => {});
+
+    // Start playing
+    loadPlayer(0);
   }
 </script>

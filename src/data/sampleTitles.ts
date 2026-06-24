@@ -13,7 +13,7 @@ export const sampleTitles: Title[] = [
     rating: 8.2,
     runtime: '2h 18m',
     poster: '/6FfCtAuVAW8XJjZ7eWeLibRLWTw.jpg',
-    backdrop: '/ii8QGacT3MXMkomiSbEq60GF11c.jpg',
+    backdrop: '/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg',
     overview:
       'A retired covert operative is pulled back into action when a shadowy organization threatens to destabilize global communications. Racing across three continents, she must outmaneuver enemies who know her every move and confront the ghosts of missions she thought were buried forever.',
     genres: ['Action', 'Thriller'],
@@ -42,8 +42,8 @@ export const sampleTitles: Title[] = [
     year: 2025,
     rating: 8.7,
     runtime: '2h 05m',
-    poster: '/v4QfYZMACODlWul0bMtLOZ0J3MV.jpg',
-    backdrop: '/bQS43HSLZzMjZkcHJz4fGc9fqdw.jpg',
+    poster: '/q6y0Go1tsGEsmtFryDOJo3dEmqu.jpg',
+    backdrop: '/s3TBrRGB1iav7gFOCNx3H31MoES.jpg',
     overview:
       'When a retired postman discovers an undelivered letter from 1945, he embarks on a cross-country journey to find its intended recipient. Along the way, he uncovers a love story that spans decades and forces him to confront the choices he made in his own life.',
     genres: ['Drama', 'Romance'],
@@ -103,8 +103,8 @@ export const sampleTitles: Title[] = [
     year: 2023,
     rating: 7.4,
     runtime: '1h 52m',
-    poster: '/qNBAXBIQlnOThrVvhRkby1WOf0G.jpg',
-    backdrop: '/7RyHsO4yDXtBv1zUU3mTpHeQ0d.jpg',
+    poster: '/oYuLEt3zVCKq57qu2F8dT7NIa6f.jpg',
+    backdrop: '/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg',
     overview:
       'An intelligence analyst discovers a mole within her own agency after a covert operation goes catastrophically wrong. With her colleagues turning against her, she has forty-eight hours to prove her innocence and expose the real traitor before state secrets are sold to hostile powers.',
     genres: ['Thriller', 'Mystery'],
@@ -134,7 +134,7 @@ export const sampleTitles: Title[] = [
     year: 2025,
     rating: 7.1,
     runtime: '1h 45m',
-    poster: '/BbJJ8mHEgrLmLnhDwEnOsM1gXC.jpg',
+    poster: '/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg',
     backdrop: '/nmGWzTLMXy9x7mKd8NKPLmHtWGa.jpg',
     overview:
       'A washed-up stand-up comedian takes a job writing jokes for a late-night talk show, only to discover the host is stealing material from amateur performers. Torn between loyalty to his paycheck and doing the right thing, he hatches a plan that could either revive his career or end it for good.',
@@ -164,7 +164,7 @@ export const sampleTitles: Title[] = [
     year: 2024,
     rating: 7.6,
     runtime: '1h 58m',
-    poster: '/b4gYVcl8pParX8AjkN5GmuKIwNi.jpg',
+    poster: '/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg',
     backdrop: '/hO7KbdvGOtDdeg0W4Y5nKEHeDDh.jpg',
     overview:
       'A family moves into a centuries-old farmhouse in rural New England, hoping for a fresh start after personal tragedy. But the house holds memories of its own, and the children begin seeing figures that the adults cannot. As the line between past and present erodes, the family must face what was left behind in the walls.',
@@ -326,7 +326,7 @@ export const sampleTitles: Title[] = [
     rating: 8.3,
     runtime: '48m',
     poster: '/49WJfeN0moxb9IPfGn8AIqMGskD.jpg',
-    backdrop: '/56v2KjBlYlypkSIAt7piCRVkOXA.jpg',
+    backdrop: '/s3TBrRGB1iav7gFOCNx3H31MoES.jpg',
     overview:
       'The crew of a deep-space research vessel discovers an anomaly that defies known physics, setting off a chain of events that tests their loyalties, sanity, and understanding of reality. As they drift further from Earth, the line between discovery and disaster grows thinner.',
     genres: ['Sci-Fi', 'Drama', 'Mystery'],
@@ -358,7 +358,7 @@ export const sampleTitles: Title[] = [
     rating: 8.0,
     runtime: '42m',
     poster: '/stTEycfG9928HYGEISBFaG1ngjM.jpg',
-    backdrop: '/7UPFfBYBR0l2V49OXHNI9qFP3Vy.jpg',
+    backdrop: '/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg',
     overview:
       'The detectives of a busy metropolitan precinct navigate complex cases, office politics, and personal lives with a mix of sharp wit and genuine heart. From petty theft to high-profile investigations, no two days are ever the same at Precinct Nine.',
     genres: ['Comedy', 'Crime'],
@@ -391,7 +391,7 @@ export const sampleTitles: Title[] = [
     rating: 8.8,
     runtime: '50m',
     poster: '/dDlEmu3EZ0Pgg93K2SVNLCjCSvE.jpg',
-    backdrop: '/oVr0pTLmKYq9MMR2PXC6GEYuUqH.jpg',
+    backdrop: '/TU9NIjwzjoKPwQHoHshkFcQUCG.jpg',
     overview:
       'A psychological thriller following a therapist who begins to suspect that her patients are connected by a shared trauma they cannot remember. Each session peels back another layer, revealing a conspiracy that reaches into the highest echelons of power.',
     genres: ['Thriller', 'Drama', 'Mystery'],
@@ -423,7 +423,7 @@ export const sampleTitles: Title[] = [
     rating: 9.0,
     runtime: '52m',
     poster: '/rTmal9fDbwh5F0waol2hq35U4ah.jpg',
-    backdrop: '/g7YhfGxCWnNF3bNotVY4AcLnSVE.jpg',
+    backdrop: '/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg',
     overview:
       'A visually breathtaking documentary series that explores ecosystems hidden from the human eye, from bioluminescent ocean depths to microscopic jungle kingdoms. Cutting-edge camera technology reveals the extraordinary dramas playing out in nature\'s most secret theaters.',
     genres: ['Documentary', 'Adventure'],
@@ -454,7 +454,7 @@ export const sampleTitles: Title[] = [
     rating: 7.8,
     runtime: '46m',
     poster: '/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg',
-    backdrop: '/n6bUvigpRFqSwmPp1m2YMDm2eTQ.jpg',
+    backdrop: '/suopoADq0k8YZr4dQXcU6pToj6s.jpg',
     overview:
       'Three estranged siblings inherit a sprawling estate with a dark history and a condition: they must live together for one year to claim their fortune. As the house reveals its secrets, the siblings must confront their own hidden truths and the legacy their parents left behind.',
     genres: ['Drama', 'Mystery', 'Thriller'],
@@ -487,7 +487,7 @@ export const sampleTitles: Title[] = [
     rating: 8.6,
     runtime: '58m',
     poster: '/9PFonBhy4cQy7Jz20NpMygczOkv.jpg',
-    backdrop: '/iHSwvRVsNBfc0HRDlMQKzXrl8h.jpg',
+    backdrop: '/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg',
     overview:
       'A documentary series following conservationists, rangers, and scientists working on the front lines of wildlife preservation across six continents. From anti-poaching patrols in remote mountains to coral reef restoration in warming oceans, each episode captures the triumphs and heartbreaks of protecting the natural world.',
     genres: ['Documentary', 'Adventure'],
@@ -522,8 +522,8 @@ export const sampleTitles: Title[] = [
     year: 2024,
     rating: 8.9,
     runtime: '24m',
-    poster: '/hTP1DtLGFamjfu8WqjnuQdP1n0.jpg',
-    backdrop: '/sHfloBOvHGxOQusDSpO2pCIHzM.jpg',
+    poster: '/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg',
+    backdrop: '/kXfqcdQKsToO0OUXHcrrNCHDBzO.jpg',
     overview:
       'In a world where warriors channel spiritual energy through enchanted blades, a young blacksmith\'s apprentice discovers he can forge weapons that amplify their wielder\'s power tenfold. Recruited by a legendary swordmaster, he must master both the forge and the battlefield before an ancient evil awakens.',
     genres: ['Action', 'Fantasy', 'Adventure'],
@@ -554,8 +554,8 @@ export const sampleTitles: Title[] = [
     year: 2025,
     rating: 8.1,
     runtime: '24m',
-    poster: '/wrCwH6WOvXQvVuqBV0agmRIWQrF.jpg',
-    backdrop: '/4MEhU3pRRuZ3bm7cqZYJBnXKlZN.jpg',
+    poster: '/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg',
+    backdrop: '/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg',
     overview:
       'Fifty years after a catastrophic war left the planet scarred, humanity survives in fortified city-states defended by colossal mechanized units called Frames. When a new pilot bonds with a prototype Frame that seems to possess its own will, she is thrust into a conflict that could determine the future of civilization.',
     genres: ['Sci-Fi', 'Action'],
@@ -587,8 +587,8 @@ export const sampleTitles: Title[] = [
     year: 2024,
     rating: 8.6,
     runtime: '24m',
-    poster: '/3r4LYFnRKBixIeBOoS9eSGEpNmW.jpg',
-    backdrop: '/qPT2qVLwzRhYEqjRhJFZPBKRbQO.jpg',
+    poster: '/7IiTTgloJzvGI1TAYymCfbfl3vT.jpg',
+    backdrop: '/TU9NIjwzjoKPwQHoHshkFcQUCG.jpg',
     overview:
       'Two high school students from rival schools are paired together for a year-long community project. What begins as reluctant cooperation slowly blossoms into a profound connection that neither anticipated, told across four seasons with each arc reflecting the changing weather and emotions.',
     genres: ['Romance', 'Drama'],
@@ -652,8 +652,8 @@ export const sampleTitles: Title[] = [
     year: 2024,
     rating: 7.8,
     runtime: '24m',
-    poster: '/iigTJJMCMWxNRoC1KOOmj1rGJiL.jpg',
-    backdrop: '/ai24Ks6tE4IdxXMpkMCwGFJBFNY.jpg',
+    poster: '/reEMJA1uzscCbkpeRJeTT2bjqUp.jpg',
+    backdrop: '/s3TBrRGB1iav7gFOCNx3H31MoES.jpg',
     overview:
       'Students at a prestigious academy begin experiencing shared nightmares centered on a sealed corridor in the oldest building on campus. As a small group investigates, they uncover the school\'s horrifying past and realize the nightmares are not dreams at all but warnings from those who came before.',
     genres: ['Horror', 'Mystery', 'Drama'],
@@ -684,8 +684,8 @@ export const sampleTitles: Title[] = [
     year: 2025,
     rating: 7.5,
     runtime: '24m',
-    poster: '/hFWP5HkbVEe40hrXbghBMRTy6mL.jpg',
-    backdrop: '/sI2gMk6vFYMiakYQjRXjsQkBxa3.jpg',
+    poster: '/dDlEmu3EZ0Pgg93K2SVNLCjCSvE.jpg',
+    backdrop: '/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg',
     overview:
       'A young woman juggles three part-time jobs, a tiny apartment shared with a chaotic roommate, and the dream of opening her own bakery. Warm, funny, and surprisingly poignant, the series captures the beauty and absurdity of everyday life in a bustling city.',
     genres: ['Comedy', 'Drama'],
@@ -716,8 +716,8 @@ export const sampleTitles: Title[] = [
     year: 2024,
     rating: 8.3,
     runtime: '24m',
-    poster: '/vauCEnR4CnEPMbyMOJhYEAgO1IW.jpg',
-    backdrop: '/i5aEm3KsFcKB3zbbGn8FaKEzYGJ.jpg',
+    poster: '/49WJfeN0moxb9IPfGn8AIqMGskD.jpg',
+    backdrop: '/s3TBrRGB1iav7gFOCNx3H31MoES.jpg',
     overview:
       'A gifted but undisciplined soccer prodigy transfers to a struggling high school team with a legendary coach who refuses to let talent go to waste. Through grueling training, bitter rivalries, and the bonds forged on the pitch, the team aims for the national championship against impossible odds.',
     genres: ['Action', 'Drama'],
