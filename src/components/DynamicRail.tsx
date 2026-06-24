@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 interface RailItem {
   id: number;
@@ -40,6 +40,10 @@ function SkeletonRail() {
 export default function DynamicRail({ title, category, viewAllHref }: Props) {
   const [items, setItems] = useState<RailItem[]>([]);
   const [loading, setLoading] = useState(true);
+  const railRef = useRef<HTMLDivElement>(null);
+
+  const scrollLeft = () => railRef.current?.scrollBy({ left: -600, behavior: 'smooth' });
+  const scrollRight = () => railRef.current?.scrollBy({ left: 600, behavior: 'smooth' });
 
   useEffect(() => {
     fetch(`/api/tmdb/category?type=${encodeURIComponent(category)}`)
@@ -75,7 +79,18 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
             <a href={viewAllHref} style={{ fontSize: 12, color: 'var(--color-primary)', fontWeight: 500 }}>View All →</a>
           )}
         </div>
-        <div className="scroll-rail">
+        <div style={{ position: 'relative' }} className="group/dynrail">
+          {/* Left Arrow */}
+          <button
+            onClick={scrollLeft}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/80 backdrop-blur flex items-center justify-center text-white opacity-0 group-hover/dynrail:opacity-100 transition-opacity hover:bg-black cursor-pointer"
+            style={{ transform: 'translateY(-50%)' }}
+            aria-label="Scroll left"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" /></svg>
+          </button>
+
+          <div className="scroll-rail" ref={railRef}>
           {items.map(item => {
             const href = `/detail/?type=${item.type}&id=${item.id}`;
             const grad = FALLBACK_GRADIENTS[item.id % FALLBACK_GRADIENTS.length];
@@ -144,6 +159,17 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
               </a>
             );
           })}
+          </div>
+
+          {/* Right Arrow */}
+          <button
+            onClick={scrollRight}
+            className="absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 rounded-full bg-black/80 backdrop-blur flex items-center justify-center text-white opacity-0 group-hover/dynrail:opacity-100 transition-opacity hover:bg-black cursor-pointer"
+            style={{ transform: 'translateY(-50%)' }}
+            aria-label="Scroll right"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" /></svg>
+          </button>
         </div>
       </div>
     </section>

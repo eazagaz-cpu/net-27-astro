@@ -70,8 +70,9 @@ const mediaType = title.type === 'movie' ? 'movie' : 'tv';
     <div id="player-container" class={`w-full ${(title.type === 'show' || title.type === 'anime') ? 'pt-[88px]' : 'pt-12'}`} style="height:100vh;">
       <div id="player-loading" class="flex items-center justify-center h-full">
         <div class="text-center">
-          <div class="w-10 h-10 border-2 border-white/20 border-t-[var(--color-primary)] rounded-full animate-spin mx-auto mb-4"></div>
-          <p class="text-zinc-400 text-sm">Finding stream for {title.title}...</p>
+          <div class="w-12 h-12 border-3 border-white/10 border-t-[var(--color-primary)] rounded-full animate-spin mx-auto mb-4"></div>
+          <p class="text-white text-sm font-medium mb-1">Loading {title.title}...</p>
+          <p class="text-zinc-500 text-xs" id="loading-status">Connecting to server...</p>
         </div>
       </div>
       <iframe
@@ -115,10 +116,13 @@ const mediaType = title.type === 'movie' ? 'movie' : 'tv';
     }
   }
 
+  let retryTimer = null;
+
   function loadPlayer(serverIdx) {
     const iframe = document.getElementById('player-iframe');
     const loading = document.getElementById('player-loading');
     const fallback = document.getElementById('player-fallback');
+    const status = document.getElementById('loading-status');
     const url = getEmbedUrl(serverIdx);
 
     if (!url || !iframe) {
@@ -127,10 +131,39 @@ const mediaType = title.type === 'movie' ? 'movie' : 'tv';
       return;
     }
 
-    iframe.src = url;
-    iframe.classList.remove('hidden');
-    if (loading) loading.classList.add('hidden');
+    // Show loading
+    if (loading) loading.classList.remove('hidden');
     if (fallback) fallback.classList.add('hidden');
+    iframe.classList.add('hidden');
+    if (status) status.textContent = `Connecting to Server ${serverIdx + 1}...`;
+
+    // Clear previous retry
+    if (retryTimer) clearTimeout(retryTimer);
+
+    // Load iframe
+    iframe.onload = function() {
+      iframe.classList.remove('hidden');
+      if (loading) loading.classList.add('hidden');
+      if (retryTimer) clearTimeout(retryTimer);
+    };
+
+    iframe.src = url;
+
+    // Show iframe after short delay even if onload doesn't fire (cross-origin)
+    setTimeout(() => {
+      iframe.classList.remove('hidden');
+      if (loading) loading.classList.add('hidden');
+    }, 3000);
+
+    // Auto-retry with Server 2 if Server 1 selected and takes too long
+    if (serverIdx === 0) {
+      retryTimer = setTimeout(() => {
+        if (status) status.textContent = 'Trying Server 2...';
+        const serverSelect = document.getElementById('server-select');
+        if (serverSelect) serverSelect.value = '1';
+        loadPlayer(1);
+      }, 12000);
+    }
   }
 
   // Server selector
