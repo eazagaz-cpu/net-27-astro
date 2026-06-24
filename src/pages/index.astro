@@ -7,6 +7,7 @@ import Schema from '../components/Schema.astro';
 import HeroSlider from '../components/HeroSlider.astro';
 import AppCTA from '../components/AppCTA.astro';
 import ContentRail from '../components/ContentRail.astro';
+import DynamicRail from '../components/DynamicRail.tsx';
 import SearchBlock from '../components/SearchBlock.astro';
 import FAQSection from '../components/FAQSection.astro';
 import { websiteSchema, organizationSchema, softwareAppSchema, faqSchema } from '../lib/schema';
@@ -86,6 +87,18 @@ const homeFaqs = [
 
     <!-- TV Shows -->
     <ContentRail title="TV Shows" titles={shows} viewAllHref="/shows/" />
+
+    <!-- API-Powered Dynamic Rails (auto-refresh from TMDB) -->
+    <DynamicRail client:visible title="Bollywood Hindi" category="bollywood" viewAllHref="/language/hindi/" />
+    <DynamicRail client:visible title="Hollywood" category="hollywood" viewAllHref="/movies/" />
+    <DynamicRail client:visible title="Korean Drama" category="korean-drama" viewAllHref="/language/korean/" />
+    <DynamicRail client:visible title="Comedy" category="comedy" viewAllHref="/genre/comedy/" />
+    <DynamicRail client:visible title="Thriller" category="thriller" viewAllHref="/genre/thriller/" />
+    <DynamicRail client:visible title="Sci-Fi" category="sci-fi" viewAllHref="/genre/sci-fi/" />
+    <DynamicRail client:visible title="Horror" category="horror" viewAllHref="/genre/horror/" />
+    <DynamicRail client:visible title="Romance" category="romance" viewAllHref="/genre/romance/" />
+    <DynamicRail client:visible title="Animation & Family" category="kids" viewAllHref="/genre/kids/" />
+    <DynamicRail client:visible title="Coming Soon" category="upcoming" />
 
     <!-- Search Block -->
     <SearchBlock />
