@@ -35,7 +35,7 @@ const slides = titles.slice(0, 5);
           <img
             src={bgUrl}
             alt={`${slide.title} backdrop image`}
-            class="absolute inset-0 w-full h-full object-cover"
+            class="absolute inset-0 w-full h-full object-cover object-top"
             loading={i === 0 ? 'eager' : 'lazy'}
             decoding={i === 0 ? 'sync' : 'async'}
             fetchpriority={i === 0 ? 'high' : 'low'}

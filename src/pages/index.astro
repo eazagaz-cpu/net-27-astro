@@ -5,6 +5,7 @@ import Footer from '../components/Footer.astro';
 import SEOHead from '../components/SEOHead.astro';
 import Schema from '../components/Schema.astro';
 import HeroSlider from '../components/HeroSlider.astro';
+import DynamicHero from '../components/DynamicHero.tsx';
 import AppCTA from '../components/AppCTA.astro';
 import DynamicRail from '../components/DynamicRail.tsx';
 import SearchBlock from '../components/SearchBlock.astro';
@@ -40,8 +41,10 @@ const homeFaqs = [
   <Header />
 
   <main>
-    <!-- Hero Slider -->
-    <HeroSlider titles={featured.length > 0 ? featured : trending.slice(0, 5)} />
+    <!-- Dynamic Hero from TMDB Trending -->
+    <DynamicHero client:load />
+    <!-- Static fallback hero (hidden when dynamic loads) -->
+    <noscript><HeroSlider titles={featured.length > 0 ? featured : trending.slice(0, 5)} /></noscript>
 
     <!-- App Download CTA -->
     <AppCTA />
