@@ -238,43 +238,32 @@ const schemaData = [
       <!-- Cast Section -->
       <section>
         <h2 class="section-title mb-6">Cast</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-          {castActors.map(member => {
-            const inner = (
-              <>
-                <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-[var(--color-primary)]/30 to-[var(--color-accent)]/30 flex items-center justify-center">
-                  <span class="text-xl font-bold text-white/60">{member.name.charAt(0)}</span>
-                </div>
-                <p class="text-sm font-semibold text-white truncate">{member.name}</p>
-                <p class="text-xs text-[var(--color-text-muted)] truncate mt-1">{member.role}</p>
-              </>
-            );
-            return member.actor ? (
-              <a href={`/actor/${member.actor.slug}/`} class="glass-card rounded-xl p-4 text-center hover:border-[var(--color-primary)]/50 transition-all">
-                {inner}
-              </a>
-            ) : (
-              <div class="glass-card rounded-xl p-4 text-center">{inner}</div>
-            );
-          })}
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="cast-grid">
+          {castActors.map(member => (
+            <div class="glass-card rounded-xl p-4 text-center" data-person-name={member.name}>
+              <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-[var(--color-primary)]/30 to-[var(--color-accent)]/30 flex items-center justify-center overflow-hidden person-avatar">
+                <span class="text-xl font-bold text-white/60 person-initial">{member.name.charAt(0)}</span>
+              </div>
+              <p class="text-sm font-semibold text-white truncate">{member.name}</p>
+              <p class="text-xs text-[var(--color-text-muted)] truncate mt-1">{member.role}</p>
+            </div>
+          ))}
         </div>
       </section>
 
       <!-- Director Section -->
-      {directorEntry && (
-        <section>
-          <h2 class="section-title mb-4">{isAnime ? 'Director' : 'Creator'}</h2>
-          <a href={`/director/${directorEntry.slug}/`} class="glass-card rounded-xl p-5 inline-flex items-center gap-4 hover:border-[var(--color-primary)]/50 transition-all">
-            <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--color-accent)]/30 to-[var(--color-primary)]/30 flex items-center justify-center shrink-0">
-              <span class="text-xl font-bold text-white/60">{title.director.charAt(0)}</span>
-            </div>
-            <div>
-              <p class="font-semibold text-white">{title.director}</p>
-              <p class="text-xs text-[var(--color-text-muted)]">{directorEntry.nationality} &middot; {directorEntry.style}</p>
-            </div>
-          </a>
-        </section>
-      )}
+      <section>
+        <h2 class="section-title mb-4">{isAnime ? 'Director' : 'Creator'}</h2>
+        <div class="glass-card rounded-xl p-5 inline-flex items-center gap-4" data-person-name={title.director}>
+          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--color-accent)]/30 to-[var(--color-primary)]/30 flex items-center justify-center shrink-0 overflow-hidden person-avatar">
+            <span class="text-xl font-bold text-white/60 person-initial">{title.director.charAt(0)}</span>
+          </div>
+          <div>
+            <p class="font-semibold text-white">{title.director}</p>
+            <p class="text-xs text-[var(--color-text-muted)]">{isAnime ? 'Director' : 'Creator'}</p>
+          </div>
+        </div>
+      </section>
 
       <!-- Show Details Table -->
       <section>
@@ -409,3 +398,27 @@ const schemaData = [
 
   <Footer />
 </BaseLayout>
+
+<script>
+  document.querySelectorAll('[data-person-name]').forEach(el => {
+    const name = el.getAttribute('data-person-name');
+    if (!name) return;
+    const avatar = el.querySelector('.person-avatar');
+    if (!avatar) return;
+    fetch(`/api/tmdb/person?name=${encodeURIComponent(name)}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.profileUrl) {
+          const img = document.createElement('img');
+          img.src = data.profileUrl;
+          img.alt = name;
+          img.className = 'w-full h-full object-cover';
+          img.loading = 'lazy';
+          const initial = avatar.querySelector('.person-initial') as HTMLElement;
+          if (initial) initial.style.display = 'none';
+          avatar.appendChild(img);
+        }
+      })
+      .catch(() => {});
+  });
+</script>
