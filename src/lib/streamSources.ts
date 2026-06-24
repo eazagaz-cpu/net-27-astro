@@ -14,15 +14,15 @@ export function getStreamSources(params: {
 
   if (type === 'movie') {
     return [
-      { name: 'Server 1', url: `https://embed.su/embed/movie/${tmdbId}`, type: 'iframe' },
-      { name: 'Server 2', url: `https://vidlink.pro/movie/${tmdbId}`, type: 'iframe' },
+      { name: 'Server 1', url: `https://www.2embed.cc/embed/${tmdbId}`, type: 'iframe' },
+      { name: 'Server 2', url: `https://autoembed.co/movie/tmdb/${tmdbId}`, type: 'iframe' },
     ];
   }
 
   const s = season || 1;
   const e = episode || 1;
   return [
-    { name: 'Server 1', url: `https://embed.su/embed/tv/${tmdbId}/${s}/${e}`, type: 'iframe' },
-    { name: 'Server 2', url: `https://vidlink.pro/tv/${tmdbId}/${s}/${e}`, type: 'iframe' },
+    { name: 'Server 1', url: `https://www.2embed.cc/embedtv/${tmdbId}&s=${s}&e=${e}`, type: 'iframe' },
+    { name: 'Server 2', url: `https://autoembed.co/tv/tmdb/${tmdbId}-${s}-${e}`, type: 'iframe' },
   ];
 }
