@@ -106,11 +106,11 @@ const mediaType = title.type === 'movie' ? 'movie' : 'tv';
     if (!tmdbId) return '';
     if (mediaType === 'movie') {
       return serverIdx === 0
-        ? `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1`
+        ? `https://embed.su/embed/movie/${tmdbId}`
         : `https://vidlink.pro/movie/${tmdbId}`;
     } else {
       return serverIdx === 0
-        ? `https://multiembed.mov/?video_id=${tmdbId}&tmdb=1&s=${season}&e=${episode}`
+        ? `https://embed.su/embed/tv/${tmdbId}/${season}/${episode}`
         : `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}`;
     }
   }
