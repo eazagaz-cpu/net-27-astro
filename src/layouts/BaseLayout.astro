@@ -18,24 +18,6 @@ import '../styles/global.css';
   <link rel="dns-prefetch" href="https://autoembed.co" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
   <slot name="head" />
-  <script is:inline>
-    // Block unwanted popups and redirects from embed iframes
-    (function() {
-      var origOpen = window.open;
-      window.open = function(url, target, features) {
-        // Block if it looks like an ad popup
-        if (!url || url === '' || url === 'about:blank') return null;
-        if (typeof url === 'string' && (url.includes('click') || url.includes('track') || url.includes('ad') || url.includes('pop'))) return null;
-        return origOpen.call(window, url, target, features);
-      };
-      // Prevent beforeunload hijack
-      window.addEventListener('beforeunload', function(e) {
-        if (document.querySelector('#player-iframe, #player-container')) {
-          e.stopImmediatePropagation();
-        }
-      }, true);
-    })();
-  </script>
 </head>
 <body class="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
   <slot />

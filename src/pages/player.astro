@@ -49,12 +49,11 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
       </div>
       <iframe
         id="player-iframe"
-        class="w-full hidden"
-        style="height:calc(100vh - 48px);border:none;"
+        class="player-frame hidden"
+        style="height:calc(100vh - 48px);"
         allowfullscreen
-        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-        referrerpolicy="origin"
-        
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+        referrerpolicy="no-referrer-when-downgrade"
       ></iframe>
     </div>
 

@@ -77,12 +77,11 @@ const mediaType = title.type === 'movie' ? 'movie' : 'tv';
       </div>
       <iframe
         id="player-iframe"
-        class="w-full hidden border-0"
+        class="player-frame hidden"
         style={`height:calc(100vh - ${(title.type === 'show' || title.type === 'anime') ? '88px' : '48px'});`}
         allowfullscreen
-        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-        referrerpolicy="origin"
-        
+        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+        referrerpolicy="no-referrer-when-downgrade"
       ></iframe>
       <!-- Fallback -->
       <div id="player-fallback" class="hidden flex items-center justify-center h-full">
