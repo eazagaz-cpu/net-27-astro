@@ -1,7 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SEOHead from '../components/SEOHead.astro';
-import AuthModal from '../components/auth/AuthModal.tsx';
+import GoogleSignInButton from '../components/auth/GoogleSignInButton.tsx';
 import { SITE_URL } from '../lib/seo';
 ---
 
@@ -71,7 +71,7 @@ import { SITE_URL } from '../lib/seo';
 
       <!-- Google sign-in (React component for interactivity) -->
       <div class="mb-4">
-        <AuthModal client:load />
+        <GoogleSignInButton client:load />
       </div>
 
       <!-- Terms -->
