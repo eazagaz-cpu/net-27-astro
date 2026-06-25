@@ -83,10 +83,49 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
             </div>
           </div>
           <div class="max-w-[1400px] mx-auto px-4 py-10 space-y-10">
+            <div id="enrichment-section"></div>
             ${castHtml ? `<section><h2 class="section-title mb-4">Cast</h2><div class="scroll-rail gap-4">${castHtml}</div></section>` : ''}
             ${recsHtml ? `<section><h2 class="section-title mb-4">More Like This</h2><div class="scroll-rail gap-3">${recsHtml}</div></section>` : ''}
             <section class="glass-card rounded-xl p-5 text-xs text-zinc-500">NetMirror does not host or stream content. Discovery and availability information only.</section>
           </div>`;
+
+        // Fetch enrichment data (OMDb ratings, Watchmode availability, YouTube trailer)
+        fetch(`/api/media/enrich?title=${encodeURIComponent(data.title)}&year=${data.year}&type=${type}`)
+          .then(r => r.json())
+          .then(enrich => {
+            const section = document.getElementById('enrichment-section');
+            if (!section) return;
+            let html = '';
+
+            // Ratings from OMDb
+            if (enrich.ratings && (enrich.ratings.imdb || enrich.ratings.rottenTomatoes || enrich.ratings.metacritic)) {
+              html += '<section><h2 class="section-title mb-4">Ratings</h2><div class="flex flex-wrap gap-4">';
+              if (enrich.ratings.imdb) html += `<div class="glass-card rounded-xl px-5 py-3 text-center"><p class="text-xs text-zinc-400 mb-1">IMDb</p><p class="text-lg font-bold text-yellow-400">⭐ ${enrich.ratings.imdb}</p></div>`;
+              if (enrich.ratings.rottenTomatoes) html += `<div class="glass-card rounded-xl px-5 py-3 text-center"><p class="text-xs text-zinc-400 mb-1">Rotten Tomatoes</p><p class="text-lg font-bold text-red-400">🍅 ${enrich.ratings.rottenTomatoes}</p></div>`;
+              if (enrich.ratings.metacritic) html += `<div class="glass-card rounded-xl px-5 py-3 text-center"><p class="text-xs text-zinc-400 mb-1">Metacritic</p><p class="text-lg font-bold text-green-400">🟢 ${enrich.ratings.metacritic}</p></div>`;
+              html += '</div>';
+              if (enrich.awards) html += `<p class="text-sm text-zinc-400 mt-3">🏆 ${enrich.awards}</p>`;
+              html += '</section>';
+            }
+
+            // Availability from Watchmode
+            if (enrich.availability && enrich.availability.length > 0) {
+              const unique = [...new Map(enrich.availability.map(a => [a.name, a])).values()];
+              html += '<section><h2 class="section-title mb-4">Where to Watch</h2><div class="flex flex-wrap gap-3">';
+              for (const src of unique) {
+                html += `<a href="${src.webUrl}" target="_blank" rel="noopener" class="glass-card rounded-xl px-4 py-3 flex items-center gap-2 hover:border-[var(--color-primary)]/50 transition-all text-sm"><span class="text-white font-medium">${src.name}</span><span class="text-[10px] text-zinc-500 uppercase">${src.type}</span></a>`;
+              }
+              html += '</div></section>';
+            }
+
+            // YouTube trailer
+            if (enrich.trailer && enrich.trailer.embedUrl) {
+              html += `<section><h2 class="section-title mb-4">Official Trailer</h2><div class="aspect-video rounded-xl overflow-hidden max-w-3xl"><iframe src="${enrich.trailer.embedUrl}" class="w-full h-full" allowfullscreen allow="autoplay; encrypted-media" loading="lazy"></iframe></div></section>`;
+            }
+
+            if (html) section.innerHTML = html;
+          })
+          .catch(() => {});
       })
       .catch(() => {
         root.innerHTML = '<div class="flex items-center justify-center min-h-[60vh] text-center"><div><h2 class="text-2xl font-bold mb-2">Error</h2><p class="text-zinc-400 mb-4">Could not load title.</p><a href="/" class="btn-primary inline-flex">Go Home</a></div></div>';

@@ -115,11 +115,30 @@ src/
 
 | Variable | Description | Required |
 |----------|-------------|----------|
-| `SITE_URL` | Production URL (https://net27.cc) | Optional |
-| `PUBLIC_FIREBASE_API_KEY` | Firebase API key for Google login | For auth |
-| `PUBLIC_FIREBASE_AUTH_DOMAIN` | Firebase auth domain | For auth |
-| `PUBLIC_FIREBASE_PROJECT_ID` | Firebase project ID | For auth |
-| `PUBLIC_FIREBASE_APP_ID` | Firebase app ID | For auth |
+| `TMDB_API_KEY` | TMDB API key — primary metadata/images | **Required** |
+| `PUBLIC_TMDB_IMAGE_BASE` | TMDB image base URL | Optional (default: https://image.tmdb.org/t/p) |
+| `OMDB_API_KEY` | OMDb API key — IMDb/RT/Metacritic ratings | Optional |
+| `YOUTUBE_API_KEY` | YouTube Data API — official trailers | Optional |
+| `TVMAZE_API_KEY` | TVmaze API key — TV episode data | Optional |
+| `WATCHMODE_API_KEY` | Watchmode API — streaming availability | Optional |
+| `PUBLIC_FIREBASE_API_KEY` | Firebase API key for Google login | Optional |
+| `PUBLIC_FIREBASE_AUTH_DOMAIN` | Firebase auth domain | Optional |
+| `PUBLIC_FIREBASE_PROJECT_ID` | Firebase project ID | Optional |
+| `PUBLIC_FIREBASE_APP_ID` | Firebase app ID | Optional |
+| `STREAM_API_BASE_URL` | Additional stream server URL | Optional |
+| `STREAM_API_TOKEN` | Additional stream server token | Optional |
+
+## Multi-Source API Architecture
+
+| API | Purpose | Endpoint |
+|-----|---------|----------|
+| **TMDB** | Metadata, images, trending, discovery, cast | `/api/tmdb/category`, `/api/tmdb/details`, `/api/tmdb/search` |
+| **OMDb** | IMDb/RT/Metacritic ratings, awards, poster fallback | `/api/media/enrich` |
+| **YouTube** | Official trailers (search + embed) | `/api/media/enrich` |
+| **TVmaze** | TV episode data, seasons, cast | `/api/media/enrich` |
+| **Watchmode** | Streaming provider availability | `/api/media/enrich` |
+
+All API keys are server-side only (Cloudflare Pages Functions). Never exposed in browser.
 
 ### Steps
 
