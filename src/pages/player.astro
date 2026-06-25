@@ -84,12 +84,12 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
   function getEmbedUrl(serverIdx: number): string {
     if (type === 'movie') {
       return serverIdx === 0
-        ? `https://www.2embed.cc/embed/${id}`
-        : `https://autoembed.co/movie/tmdb/${id}`;
+        ? `https://autoembed.co/movie/tmdb/${id}`
+        : `https://www.2embed.cc/embed/${id}`;
     } else {
       return serverIdx === 0
-        ? `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}`
-        : `https://autoembed.co/tv/tmdb/${id}-${season}-${episode}`;
+        ? `https://autoembed.co/tv/tmdb/${id}-${season}-${episode}`
+        : `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}`;
     }
   }
 
