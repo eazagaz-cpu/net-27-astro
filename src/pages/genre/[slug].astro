@@ -5,9 +5,9 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import SEOHead from '../../components/SEOHead.astro';
 import Schema from '../../components/Schema.astro';
-import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
+import DynamicGrid from '../../components/DynamicGrid.tsx';
 import { genres, languages, platforms, getTitlesByGenre } from '../../data/sampleTitles';
 import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
@@ -96,18 +96,14 @@ const faqs = [
         <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl">{description}</p>
       </section>
 
-      {titles.length > 0 ? (
-        <section>
-          <h2 class="section-title mb-6">All {genre.name} Titles</h2>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {titles.map(title => (
-              <TitleCard title={title} />
-            ))}
-          </div>
-        </section>
-      ) : (
-        <section class="glass-card rounded-xl p-12 text-center">
-          <p class="text-[var(--color-text-muted)] text-lg">No titles found in this genre.</p>
+      <section>
+        <h2 class="section-title mb-6">All {genre.name} Titles</h2>
+        <DynamicGrid client:load category={genre.slug} title={genre.name} />
+      </section>
+
+      {titles.length === 0 && (
+        <section class="glass-card rounded-xl p-12 text-center hidden">
+          <p class="text-[var(--color-text-muted)] text-lg">Loading titles...</p>
         </section>
       )}
 
