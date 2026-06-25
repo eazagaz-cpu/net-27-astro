@@ -4,25 +4,17 @@ import { getAuth, type Auth } from 'firebase/auth';
 let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 
-function getConfig() {
-  const apiKey = (import.meta as any).env?.PUBLIC_FIREBASE_API_KEY;
-  const authDomain = (import.meta as any).env?.PUBLIC_FIREBASE_AUTH_DOMAIN;
-  const projectId = (import.meta as any).env?.PUBLIC_FIREBASE_PROJECT_ID;
-  const appId = (import.meta as any).env?.PUBLIC_FIREBASE_APP_ID;
-
-  if (!apiKey || !authDomain || !projectId || !appId) {
-    return null;
-  }
-
-  return { apiKey, authDomain, projectId, appId };
-}
+const FIREBASE_CONFIG = {
+  apiKey: 'AIzaSyDMwZDCGMAqGf3qTEzdMeW0bAaxXgbm0',
+  authDomain: 'net-27-a4cd1.firebaseapp.com',
+  projectId: 'net-27-a4cd1',
+  appId: '1:334281971333:web:1a6fcb777687b04b187bec',
+};
 
 export function getFirebaseApp(): FirebaseApp | null {
   if (app) return app;
-  const config = getConfig();
-  if (!config) return null;
   try {
-    app = initializeApp(config);
+    app = initializeApp(FIREBASE_CONFIG);
     return app;
   } catch {
     return null;
@@ -42,5 +34,5 @@ export function getFirebaseAuth(): Auth | null {
 }
 
 export function isFirebaseConfigured(): boolean {
-  return getConfig() !== null;
+  return true;
 }
