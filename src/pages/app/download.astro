@@ -1,0 +1,205 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import { breadcrumbSchema, faqSchema, softwareAppSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { APK_UNIVERSAL_URL, APK_ARM64_URL, APK_ARM32_URL, CONTACT_EMAIL } from '../../lib/constants';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'App', href: '/app/download/' },
+  { label: 'Download', href: '/app/download/' },
+];
+
+const faqs = [
+  { question: 'Is the NetMirror APK safe to install?', answer: 'Yes. The NetMirror APK is distributed directly from our official website and CDN. We do not bundle any adware, malware, or tracking software. You can verify the file integrity by checking the file size against the values listed on this page before installing.' },
+  { question: 'Do I need to uninstall the old version before updating?', answer: 'In most cases, no. You can install the new APK directly over the existing version and your data will be preserved. If you encounter an "App Not Installed" error during the update, uninstall the old version first, then install the new APK.' },
+  { question: 'Which APK version should I download?', answer: 'If you are unsure about your device architecture, download the Universal version. It works on all Android devices. If you want a smaller file, check your device processor type in Settings > About Phone and choose ARM64 for newer devices or ARM32 for older ones.' },
+  { question: 'Why does Android show a security warning during installation?', answer: 'Android displays a warning for any APK installed outside of the Google Play Store. This is a standard security measure. You need to enable "Install from unknown sources" for your browser or file manager to proceed with the installation.' },
+  { question: 'What Android version do I need to run NetMirror?', answer: 'NetMirror requires Android 6.0 (Marshmallow) or higher. Most devices manufactured after 2016 meet this requirement. For the best experience, we recommend Android 10 or newer.' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Download NetMirror APK — Latest Version 2.0.10 for Android"
+    description="Download NetMirror APK v2.0.10 for Android. Choose Universal, ARM64, or ARM32 version. Safe installation guide included."
+    canonical={`${SITE_URL}/app/download/`}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs), softwareAppSchema()]} />
+
+  <Header />
+
+  <main class="min-h-screen pt-20">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <h1 class="text-3xl md:text-4xl font-bold mt-4 mb-4">
+        Download <span class="gradient-text">NetMirror</span> APK
+      </h1>
+
+      <div class="glass-card rounded-xl p-6 mb-8">
+        <p class="text-[var(--color-text-secondary)] leading-relaxed">
+          NetMirror is a content discovery platform for Android that helps you find movies, TV shows, and anime across multiple streaming services in one place. Download the latest version below and install it on your Android device in under two minutes.
+        </p>
+      </div>
+
+      <!-- Download Table -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-6">Available Downloads</h2>
+        <div class="space-y-4">
+          <div class="glass-card rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="font-bold text-lg">Universal APK</h3>
+              <p class="text-sm text-[var(--color-text-muted)]">Version 2.0.10 &middot; ~25 MB &middot; Works on all devices</p>
+              <p class="text-sm text-[var(--color-text-secondary)] mt-1">Recommended for most users. Contains support for all CPU architectures.</p>
+            </div>
+            <a href={APK_UNIVERSAL_URL} class="btn-primary whitespace-nowrap">
+              Download Universal
+            </a>
+          </div>
+
+          <div class="glass-card rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="font-bold text-lg">ARM64 (64-bit)</h3>
+              <p class="text-sm text-[var(--color-text-muted)]">Version 2.0.10 &middot; ~15 MB &middot; Modern devices</p>
+              <p class="text-sm text-[var(--color-text-secondary)] mt-1">Smaller file for devices with 64-bit processors (most phones from 2017 onward).</p>
+            </div>
+            <a href={APK_ARM64_URL} class="btn-primary whitespace-nowrap">
+              Download ARM64
+            </a>
+          </div>
+
+          <div class="glass-card rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div>
+              <h3 class="font-bold text-lg">ARM32 (32-bit)</h3>
+              <p class="text-sm text-[var(--color-text-muted)]">Version 2.0.10 &middot; ~13 MB &middot; Older devices</p>
+              <p class="text-sm text-[var(--color-text-secondary)] mt-1">For older Android devices with 32-bit processors.</p>
+            </div>
+            <a href={APK_ARM32_URL} class="btn-primary whitespace-nowrap">
+              Download ARM32
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Which version -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Which Version Should You Choose?</h2>
+        <div class="text-[var(--color-text-secondary)] space-y-4 leading-relaxed">
+          <p>
+            If you are not sure which version to download, the <strong class="text-[var(--color-text-primary)]">Universal APK</strong> is the safest choice. It includes support for all processor architectures and will work on any Android device running Android 6.0 or higher.
+          </p>
+          <p>
+            For users who want a smaller download, you can check your device's processor type by going to <strong class="text-[var(--color-text-primary)]">Settings &gt; About Phone &gt; Processor</strong> on your Android device. If you see terms like "arm64-v8a" or "aarch64," download the ARM64 version. If you see "armeabi-v7a" or "armv7," use the ARM32 version.
+          </p>
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-3">Quick Guide</h3>
+            <ul class="space-y-2 text-sm">
+              <li class="flex items-start gap-2">
+                <span class="text-[var(--color-primary)] font-bold">Universal:</span>
+                <span>Any Android phone or tablet. Best if you are unsure about your device specs.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[var(--color-primary)] font-bold">ARM64:</span>
+                <span>Samsung Galaxy S8 and newer, Google Pixel, OnePlus 5 and newer, most phones from 2017+.</span>
+              </li>
+              <li class="flex items-start gap-2">
+                <span class="text-[var(--color-primary)] font-bold">ARM32:</span>
+                <span>Older devices like Samsung Galaxy S5, Moto G (1st-3rd gen), budget phones before 2017.</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Installation Steps -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">How to Install NetMirror APK</h2>
+        <div class="text-[var(--color-text-secondary)] leading-relaxed">
+          <ol class="space-y-4 list-none">
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">1</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Download the APK</p>
+                <p class="text-sm mt-1">Tap the download button above for your preferred version. The file will begin downloading to your device.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">2</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Enable Unknown Sources</p>
+                <p class="text-sm mt-1">Go to <strong>Settings &gt; Security &gt; Install unknown apps</strong> and enable permission for your browser or file manager. On Android 8+, you will be prompted automatically.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">3</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Open the APK File</p>
+                <p class="text-sm mt-1">Tap the downloaded file from your notification bar, or find it in your Downloads folder using a file manager.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">4</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Tap Install</p>
+                <p class="text-sm mt-1">Android will show a confirmation dialog. Tap "Install" and wait for the process to complete. This usually takes less than 30 seconds.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">5</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Open NetMirror</p>
+                <p class="text-sm mt-1">Tap "Open" when the installation finishes, or find NetMirror in your app drawer. You are ready to start discovering content.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Troubleshooting Links -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Having Installation Issues?</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <a href="/help/app-not-installed/" class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)] transition-colors group">
+            <h3 class="font-semibold group-hover:text-[var(--color-primary)] transition-colors">App Not Installed Error</h3>
+            <p class="text-sm text-[var(--color-text-muted)] mt-1">Fix the most common installation error on Android devices.</p>
+          </a>
+          <a href="/help/parsing-package-error/" class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)] transition-colors group">
+            <h3 class="font-semibold group-hover:text-[var(--color-primary)] transition-colors">Parsing Package Error</h3>
+            <p class="text-sm text-[var(--color-text-muted)] mt-1">Resolve "problem parsing the package" when installing the APK.</p>
+          </a>
+        </div>
+      </section>
+
+      <!-- Related -->
+      <section class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Related Resources</h2>
+        <ul class="space-y-2 text-[var(--color-text-secondary)]">
+          <li>
+            <a href="/help/app-not-installed/" class="hover:text-[var(--color-primary)] transition-colors">Fix "App Not Installed" error</a>
+          </li>
+          <li>
+            <a href="/help/parsing-package-error/" class="hover:text-[var(--color-primary)] transition-colors">Fix parsing package error</a>
+          </li>
+        </ul>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="mt-12 glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> NetMirror is a content discovery platform. It does not host, store, or distribute copyrighted content. All streaming availability information is for reference only. Android is a trademark of Google LLC. For support, contact <a href={`mailto:${CONTACT_EMAIL}`} class="text-[var(--color-primary)] hover:underline">{CONTACT_EMAIL}</a>.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

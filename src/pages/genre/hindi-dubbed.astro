@@ -1,0 +1,160 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import DynamicGrid from '../../components/DynamicGrid.tsx';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { CONTACT_EMAIL } from '../../lib/constants';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Genres', href: '/' },
+  { label: 'Hindi Dubbed', href: '/genre/hindi-dubbed/' },
+];
+
+const faqs = [
+  { question: 'What Hindi dubbed movies and shows are available on NetMirror?', answer: 'NetMirror provides a broad selection of Hindi dubbed content including Hollywood blockbusters, South Indian films (Tamil, Telugu, Malayalam, and Kannada), Korean dramas, and popular anime series. Availability varies as our content library is continuously updated with new releases and classic titles.' },
+  { question: 'Are Hindi dubbed versions the same quality as the original?', answer: 'Hindi dubbed versions maintain the same video quality as the original release. The dubbing is performed by professional voice artists and studios. Audio quality matches the original language track. Some titles offer both Hindi dubbed audio and Hindi subtitles, giving you the choice between the two.' },
+  { question: 'Can I switch between Hindi dubbed and original audio?', answer: 'Audio language options depend on the specific server and source. Some servers offer multiple audio tracks that you can switch between in the player settings, while others provide only the Hindi dubbed version. Try different servers if you want to toggle between the original and dubbed audio.' },
+  { question: 'Why are some movies not available in Hindi dubbed?', answer: 'Not every title receives an official Hindi dub. Dubbing depends on the distribution rights, the studio behind the release, and the expected audience demand. Newer and more popular titles are more likely to have Hindi dubbed versions available. Our library is updated regularly as new dubbed versions become available.' },
+  { question: 'Where can I find Hindi dubbed anime on NetMirror?', answer: 'Many popular anime series are available with Hindi audio on NetMirror. Titles like Naruto, Dragon Ball, Death Note, and Attack on Titan have official Hindi dubs. You can browse the anime section and look for titles that list Hindi as an available language. Availability may vary depending on the server.' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Hindi Dubbed Movies & Shows — Watch Online"
+    description="Browse Hindi dubbed movies and shows. Hollywood, South Indian, and anime titles available in Hindi audio."
+    canonical={`${SITE_URL}/genre/hindi-dubbed/`}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+
+  <Header />
+
+  <main class="min-h-screen">
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+      <div class="relative z-10 mx-auto max-w-7xl px-4 pt-24 pb-10">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+          <span class="gradient-text">Hindi Dubbed</span> Movies & Shows
+        </h1>
+        <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">
+          Discover a wide collection of Hindi dubbed movies and shows on NetMirror. From Hollywood action films and South Indian blockbusters to Korean dramas and popular anime series, enjoy your favorite content in Hindi audio.
+        </p>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-7xl px-4 py-12 space-y-16">
+
+      <section>
+        <div class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl space-y-4">
+          <p>
+            Hindi dubbed content has become one of the most popular ways to enjoy international entertainment in India and across the Hindi-speaking world. What was once limited to a handful of Hollywood releases now spans thousands of titles from every corner of global cinema. South Indian films, particularly from Tamil and Telugu industries, have found massive audiences through high-quality Hindi dubs. Korean dramas and anime series have similarly gained dedicated fanbases among Hindi-speaking viewers.
+          </p>
+          <p>
+            NetMirror makes it easy to find Hindi dubbed versions of the titles you want to watch. Our discovery platform aggregates content across multiple streaming sources, so you can check availability and find where a specific title is offered with Hindi audio. Whether you are looking for the latest dubbed Hollywood release, a South Indian action thriller, or a classic anime series with Hindi voice acting, you can browse and discover it all in one place.
+          </p>
+          <p>
+            The quality of Hindi dubbing has improved significantly over the years, with professional studios now handling localization for major releases. Voice actors bring authentic emotion and energy to the performances, making dubbed versions feel natural and engaging. Many viewers prefer watching in Hindi for a more comfortable and immersive viewing experience, especially for content originally in languages they do not understand.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2 class="section-title mb-6">Hindi Dubbed Titles</h2>
+        <DynamicGrid client:load category="bollywood" title="Hindi Dubbed" />
+      </section>
+
+      <!-- Content Categories -->
+      <section>
+        <h2 class="section-title mb-6">What You Can Find</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">Hollywood in Hindi</h3>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              Major Hollywood releases including Marvel, DC, Fast & Furious, and other franchise films are regularly available with official Hindi dubbing. Action, sci-fi, and animated films tend to receive Hindi dubs most frequently.
+            </p>
+          </div>
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">South Indian Films</h3>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              Tamil, Telugu, Malayalam, and Kannada blockbusters dubbed in Hindi. Films starring Allu Arjun, Yash, Prabhas, Rajinikanth, and other South Indian stars are hugely popular with Hindi-speaking audiences.
+            </p>
+          </div>
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">Anime in Hindi</h3>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              Popular anime series including Naruto, Dragon Ball Z, Death Note, and Attack on Titan with Hindi voice acting. The anime Hindi dubbing community continues to grow with new titles being localized regularly.
+            </p>
+          </div>
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">Korean Dramas</h3>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              Select Korean dramas and movies are available with Hindi dubbing, particularly those distributed through major streaming platforms. The K-drama wave in India has accelerated the availability of Hindi dubbed Korean content.
+            </p>
+          </div>
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">Turkish Series</h3>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              Popular Turkish dramas dubbed in Hindi have gained a dedicated audience. Historical epics and romantic dramas from Turkey are increasingly available with Hindi audio on various streaming platforms.
+            </p>
+          </div>
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">Animated Films</h3>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              Disney, Pixar, DreamWorks, and other animated features are almost always released with Hindi dubs. These are popular with families and younger viewers who prefer watching in their native language.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Browse Other Genres -->
+      <section>
+        <h2 class="section-title mb-6">Browse Other Genres</h2>
+        <div class="flex flex-wrap gap-3">
+          <a href="/genre/action/" class="chip">Action</a>
+          <a href="/genre/comedy/" class="chip">Comedy</a>
+          <a href="/genre/drama/" class="chip">Drama</a>
+          <a href="/genre/horror/" class="chip">Horror</a>
+          <a href="/genre/romance/" class="chip">Romance</a>
+          <a href="/genre/sci-fi/" class="chip">Sci-Fi</a>
+          <a href="/genre/thriller/" class="chip">Thriller</a>
+          <a href="/genre/fantasy/" class="chip">Fantasy</a>
+          <a href="/genre/animation/" class="chip">Animation</a>
+          <a href="/genre/adventure/" class="chip">Adventure</a>
+        </div>
+      </section>
+
+      <!-- Browse by Language -->
+      <section>
+        <h2 class="section-title mb-6">Browse by Language</h2>
+        <div class="flex flex-wrap gap-3">
+          <a href="/language/hindi/" class="chip">Hindi</a>
+          <a href="/language/english/" class="chip">English</a>
+          <a href="/language/korean/" class="chip">Korean</a>
+          <a href="/language/japanese/" class="chip">Japanese</a>
+          <a href="/language/spanish/" class="chip">Spanish</a>
+          <a href="/language/french/" class="chip">French</a>
+        </div>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> NetMirror does not host, store, or distribute any copyrighted content. All information is for discovery and informational purposes only. Content availability varies by region and source. Hindi dubbed versions are produced and distributed by their respective studios and distributors. All trademarks belong to their respective owners. Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

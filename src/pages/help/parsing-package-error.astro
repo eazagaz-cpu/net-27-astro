@@ -1,0 +1,199 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { APK_UNIVERSAL_URL, CONTACT_EMAIL } from '../../lib/constants';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Help', href: '/help/parsing-package-error/' },
+  { label: 'Parsing Package Error', href: '/help/parsing-package-error/' },
+];
+
+const faqs = [
+  { question: 'What does "There was a problem parsing the package" mean?', answer: 'This error message means that Android\'s package installer could not read and verify the APK file you are trying to install. The file may be corrupted, incompatible with your Android version, or incomplete. It is a generic error that covers several different underlying causes.' },
+  { question: 'Can a parsing error be caused by my Android version being too old?', answer: 'Yes. NetMirror requires Android 6.0 (Marshmallow) or higher. If your device runs an older version, the APK will contain features and API calls that your system cannot understand, which triggers the parsing error. Check your Android version in Settings > About Phone > Android Version.' },
+  { question: 'I downloaded the APK from the official site but still get this error. Why?', answer: 'Even when downloading from the official source, network issues can cause partial or corrupted downloads. Try deleting the APK file, clearing your browser cache, and downloading it again on a stable Wi-Fi connection. Verify that the file size matches what is shown on the download page.' },
+  { question: 'Does renaming the APK file cause parsing errors?', answer: 'Renaming the APK file extension (for example, changing .apk to .zip and back) can corrupt the file metadata. However, simply renaming the file while keeping the .apk extension should not cause issues. If you have renamed the file, try downloading a fresh copy instead.' },
+  { question: 'Will clearing my device cache fix the parsing error?', answer: 'Clearing the system cache partition can sometimes resolve persistent parsing errors caused by corrupted cache data. To clear the cache partition, restart your device in recovery mode and select "Wipe Cache Partition." This does not delete your personal data or apps. For most users, simply re-downloading the APK is sufficient.' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Fix Parsing Package Error — NetMirror APK Installation"
+    description="Fix 'There was a problem parsing the package' error when installing NetMirror APK. Causes and solutions."
+    canonical={`${SITE_URL}/help/parsing-package-error/`}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+
+  <Header />
+
+  <main class="min-h-screen pt-20">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <h1 class="text-3xl md:text-4xl font-bold mt-4 mb-4">
+        Fix: <span class="gradient-text">Parsing Package Error</span>
+      </h1>
+
+      <div class="glass-card rounded-xl p-6 mb-8">
+        <p class="text-[var(--color-text-secondary)] leading-relaxed">
+          The "There was a problem parsing the package" error appears when Android's built-in package installer cannot read or verify the APK file. This prevents the installation from starting at all. Unlike the "App Not Installed" error which occurs during installation, the parsing error means Android could not even begin the process. The issue is almost always related to the APK file itself or your device's compatibility.
+        </p>
+      </div>
+
+      <!-- Causes and Fixes -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Causes and How to Fix Them</h2>
+        <div class="space-y-6">
+
+          <div class="glass-card rounded-xl p-6">
+            <h3 class="font-bold text-lg mb-3">1. Corrupted or Incomplete Download</h3>
+            <p class="text-[var(--color-text-secondary)] text-sm mb-3">
+              This is the most common cause. If your internet connection dropped or fluctuated during the download, the APK file may have been only partially saved. Android cannot parse an incomplete file.
+            </p>
+            <div class="bg-[var(--color-bg-primary)] rounded-lg p-4">
+              <h4 class="font-semibold text-sm mb-2">Solution:</h4>
+              <ol class="text-sm text-[var(--color-text-secondary)] space-y-1.5 list-decimal list-inside">
+                <li>Delete the existing APK file from your Downloads folder.</li>
+                <li>Connect to a stable Wi-Fi network.</li>
+                <li>Clear your browser's cache and downloads history.</li>
+                <li>Download the APK again from the <a href="/app/download/" class="text-[var(--color-primary)] hover:underline">official download page</a>.</li>
+                <li>Wait for the download to finish completely before tapping the file.</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-6">
+            <h3 class="font-bold text-lg mb-3">2. Incompatible Android Version</h3>
+            <p class="text-[var(--color-text-secondary)] text-sm mb-3">
+              NetMirror requires Android 6.0 (Marshmallow, API level 23) or higher. If your device runs an older version of Android, the system will not be able to parse the APK because it contains features not available on your OS version.
+            </p>
+            <div class="bg-[var(--color-bg-primary)] rounded-lg p-4">
+              <h4 class="font-semibold text-sm mb-2">Solution:</h4>
+              <ol class="text-sm text-[var(--color-text-secondary)] space-y-1.5 list-decimal list-inside">
+                <li>Check your Android version: <strong>Settings &gt; About Phone &gt; Android Version</strong>.</li>
+                <li>If your version is below 6.0, check if a system update is available: <strong>Settings &gt; System &gt; Software Update</strong>.</li>
+                <li>If no update is available, your device may not be supported. Consider using NetMirror through the web browser at <strong>net27.cc</strong> instead.</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-6">
+            <h3 class="font-bold text-lg mb-3">3. File Was Modified or Tampered With</h3>
+            <p class="text-[var(--color-text-secondary)] text-sm mb-3">
+              Some file managers, cloud storage services, or download managers modify the APK file during transfer. Antivirus apps may also quarantine or alter parts of the file, making it unparseable.
+            </p>
+            <div class="bg-[var(--color-bg-primary)] rounded-lg p-4">
+              <h4 class="font-semibold text-sm mb-2">Solution:</h4>
+              <ol class="text-sm text-[var(--color-text-secondary)] space-y-1.5 list-decimal list-inside">
+                <li>Download the APK directly from your browser (Chrome, Firefox, or Brave) without using a third-party download manager.</li>
+                <li>Temporarily disable any antivirus or security app, download the APK, then re-enable the security app.</li>
+                <li>Do not transfer the APK through messaging apps (WhatsApp, Telegram file share) as they may compress or modify the file.</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-6">
+            <h3 class="font-bold text-lg mb-3">4. Android Package Installer Is Malfunctioning</h3>
+            <p class="text-[var(--color-text-secondary)] text-sm mb-3">
+              In rare cases, the Android package installer itself can have cached bad data that causes it to fail when parsing any APK file, not just NetMirror.
+            </p>
+            <div class="bg-[var(--color-bg-primary)] rounded-lg p-4">
+              <h4 class="font-semibold text-sm mb-2">Solution:</h4>
+              <ol class="text-sm text-[var(--color-text-secondary)] space-y-1.5 list-decimal list-inside">
+                <li>Go to <strong>Settings &gt; Apps &gt; Show system apps</strong>.</li>
+                <li>Find "Package Installer" or "Package Manager" in the list.</li>
+                <li>Tap <strong>Clear Cache</strong> and <strong>Clear Data</strong>.</li>
+                <li>Restart your device.</li>
+                <li>Try installing the APK again.</li>
+              </ol>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-6">
+            <h3 class="font-bold text-lg mb-3">5. APK File Extension Was Changed</h3>
+            <p class="text-[var(--color-text-secondary)] text-sm mb-3">
+              Some browsers or file managers may change the file extension during download (for example, saving it as .zip instead of .apk). If the file extension is incorrect, Android will not recognize it as an installable package.
+            </p>
+            <div class="bg-[var(--color-bg-primary)] rounded-lg p-4">
+              <h4 class="font-semibold text-sm mb-2">Solution:</h4>
+              <ol class="text-sm text-[var(--color-text-secondary)] space-y-1.5 list-decimal list-inside">
+                <li>Open your file manager and navigate to the Downloads folder.</li>
+                <li>Check that the file name ends with <strong>.apk</strong> (not .zip, .bin, or anything else).</li>
+                <li>If the extension is wrong, rename the file to end with <strong>.apk</strong>.</li>
+                <li>If renaming does not help, delete the file and download a fresh copy.</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Quick Fix Checklist -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Quick Fix Checklist</h2>
+        <div class="glass-card rounded-xl p-6">
+          <ul class="space-y-3 text-[var(--color-text-secondary)]">
+            <li class="flex items-start gap-3">
+              <span class="text-[var(--color-primary)] mt-0.5">&#10003;</span>
+              <span>Delete the APK and re-download it on a stable connection</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-[var(--color-primary)] mt-0.5">&#10003;</span>
+              <span>Verify your Android version is 6.0 or higher</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-[var(--color-primary)] mt-0.5">&#10003;</span>
+              <span>Download using Chrome, Firefox, or Brave directly from the official site</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-[var(--color-primary)] mt-0.5">&#10003;</span>
+              <span>Check that the file ends with .apk</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-[var(--color-primary)] mt-0.5">&#10003;</span>
+              <span>Try the <a href={APK_UNIVERSAL_URL} class="text-[var(--color-primary)] hover:underline">Universal APK</a> if a specific version fails</span>
+            </li>
+            <li class="flex items-start gap-3">
+              <span class="text-[var(--color-primary)] mt-0.5">&#10003;</span>
+              <span>Clear the Package Installer cache and restart your device</span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- Related Links -->
+      <section class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Related Help Articles</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <a href="/app/download/" class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)] transition-colors group">
+            <h3 class="font-semibold group-hover:text-[var(--color-primary)] transition-colors">Download NetMirror APK</h3>
+            <p class="text-sm text-[var(--color-text-muted)] mt-1">Get the latest version with verified file sizes.</p>
+          </a>
+          <a href="/help/app-not-installed/" class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)] transition-colors group">
+            <h3 class="font-semibold group-hover:text-[var(--color-primary)] transition-colors">App Not Installed Error</h3>
+            <p class="text-sm text-[var(--color-text-muted)] mt-1">Different error that occurs during installation, not parsing.</p>
+          </a>
+        </div>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="mt-12 glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> NetMirror is a content discovery platform. It does not host, store, or distribute copyrighted content. Android is a trademark of Google LLC. All device manufacturer names are trademarks of their respective owners. For further assistance, contact <a href={`mailto:${CONTACT_EMAIL}`} class="text-[var(--color-primary)] hover:underline">{CONTACT_EMAIL}</a>.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

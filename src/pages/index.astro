@@ -10,7 +10,7 @@ import AppCTA from '../components/AppCTA.astro';
 import DynamicRail from '../components/DynamicRail.tsx';
 import SearchBlock from '../components/SearchBlock.astro';
 import FAQSection from '../components/FAQSection.astro';
-import { websiteSchema, organizationSchema, softwareAppSchema, faqSchema } from '../lib/schema';
+import { websiteSchema, organizationSchema, softwareAppSchema } from '../lib/schema';
 import { SITE_URL, SITE_DESCRIPTION } from '../lib/seo';
 import { SITE_NAME } from '../lib/constants';
 import { getTrendingTitles } from '../data/sampleTitles';
@@ -32,11 +32,11 @@ const homeFaqs = [
 <BaseLayout>
   <SEOHead
     slot="head"
-    title="NetMirror — Watch Movies, TV Shows & Anime Online Free"
-    description="Discover and watch movies, TV shows, and anime across Netflix, Prime Video, Disney+, Crunchyroll. Find where to stream 500K+ titles legally."
+    title="NetMirror — Watch Movies, TV Shows, Anime & Hindi Dubbed Titles Online"
+    description="Explore NetMirror for trending movies, TV shows, anime, Hindi dubbed titles, Bollywood releases, platform-based discovery, and Android app download guidance."
     canonical={`${SITE_URL}/`}
   />
-  <Schema slot="head" schema={[websiteSchema(), organizationSchema(), softwareAppSchema(), faqSchema(homeFaqs)]} />
+  <Schema slot="head" schema={[websiteSchema(), organizationSchema(), softwareAppSchema()]} />
 
   <Header />
 

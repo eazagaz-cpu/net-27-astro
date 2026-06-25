@@ -799,6 +799,7 @@ export const genres: Genre[] = [
   'Adventure',
   'Family',
   'Kids',
+  'Hindi Dubbed',
 ].map((name) => ({
   slug: slugify(name),
   name,

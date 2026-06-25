@@ -1,0 +1,252 @@
+[
+  {
+    "slug": "netmirror-apk-download-guide",
+    "title": "NetMirror APK Download Guide 2026",
+    "priority": "P1",
+    "category": "app",
+    "primaryKeyword": "netmirror apk download",
+    "targetRoute": "/blog/netmirror-apk-download-guide/",
+    "relatedPages": ["/app/download/", "/app/arm64/", "/app/arm32/", "/app/universal-apk/"],
+    "schemaTypes": ["BlogPosting", "HowTo", "FAQPage"]
+  },
+  {
+    "slug": "netmirror-android-tv-guide",
+    "title": "How to Install NetMirror on Android TV",
+    "priority": "P1",
+    "category": "app",
+    "primaryKeyword": "netmirror android tv",
+    "targetRoute": "/blog/netmirror-android-tv-guide/",
+    "relatedPages": ["/app/download/", "/blog/arm64-vs-arm32-apk/"],
+    "schemaTypes": ["BlogPosting", "HowTo", "FAQPage"]
+  },
+  {
+    "slug": "netmirror-for-pc",
+    "title": "How to Use NetMirror on PC",
+    "priority": "P1",
+    "category": "app",
+    "primaryKeyword": "netmirror for pc",
+    "targetRoute": "/blog/netmirror-for-pc/",
+    "relatedPages": ["/app/download/", "/blog/netmirror-apk-download-guide/"],
+    "schemaTypes": ["BlogPosting", "HowTo", "FAQPage"]
+  },
+  {
+    "slug": "arm64-vs-arm32-apk",
+    "title": "arm64 vs arm32 vs Universal APK Explained",
+    "priority": "P1",
+    "category": "app",
+    "primaryKeyword": "arm64 vs arm32 apk",
+    "targetRoute": "/blog/arm64-vs-arm32-apk/",
+    "relatedPages": ["/app/arm64/", "/app/arm32/", "/app/universal-apk/", "/app/download/"],
+    "schemaTypes": ["BlogPosting", "FAQPage"]
+  },
+  {
+    "slug": "fix-app-not-installed",
+    "title": "Fix \"App Not Installed\" Error on NetMirror",
+    "priority": "P1",
+    "category": "help",
+    "primaryKeyword": "netmirror app not installed",
+    "targetRoute": "/blog/fix-app-not-installed/",
+    "relatedPages": ["/help/app-not-installed/", "/app/download/", "/app/update/"],
+    "schemaTypes": ["BlogPosting", "HowTo", "FAQPage"]
+  },
+  {
+    "slug": "fix-parsing-package-error",
+    "title": "Fix Parsing Package Error on NetMirror",
+    "priority": "P1",
+    "category": "help",
+    "primaryKeyword": "netmirror parse error",
+    "targetRoute": "/blog/fix-parsing-package-error/",
+    "relatedPages": ["/help/parsing-package-error/", "/app/download/", "/help/app-not-installed/"],
+    "schemaTypes": ["BlogPosting", "HowTo", "FAQPage"]
+  },
+  {
+    "slug": "fix-video-not-playing",
+    "title": "Fix Video Not Playing on NetMirror",
+    "priority": "P1",
+    "category": "help",
+    "primaryKeyword": "netmirror video not playing",
+    "targetRoute": "/blog/fix-video-not-playing/",
+    "relatedPages": ["/help/video-not-playing/", "/help/server-not-working/", "/help/buffering-fix/"],
+    "schemaTypes": ["BlogPosting", "HowTo", "FAQPage"]
+  },
+  {
+    "slug": "is-netmirror-safe",
+    "title": "Is NetMirror Safe? Complete Safety Guide",
+    "priority": "P1",
+    "category": "trust",
+    "primaryKeyword": "is netmirror safe",
+    "targetRoute": "/blog/is-netmirror-safe/",
+    "relatedPages": ["/app/download/", "/contact/", "/blog/netmirror-permissions-guide/"],
+    "schemaTypes": ["BlogPosting", "FAQPage"]
+  },
+  {
+    "slug": "netmirror-server-not-working",
+    "title": "NetMirror Server Not Working -- Fix Guide",
+    "priority": "P1",
+    "category": "help",
+    "primaryKeyword": "netmirror server not working",
+    "targetRoute": "/blog/netmirror-server-not-working/",
+    "relatedPages": ["/help/server-not-working/", "/help/video-not-playing/", "/blog/how-to-switch-servers/"],
+    "schemaTypes": ["BlogPosting", "HowTo", "FAQPage"]
+  },
+  {
+    "slug": "universal-apk-guide",
+    "title": "NetMirror Universal APK -- Complete Guide",
+    "priority": "P1",
+    "category": "app",
+    "primaryKeyword": "netmirror universal apk",
+    "targetRoute": "/blog/universal-apk-guide/",
+    "relatedPages": ["/app/universal-apk/", "/app/download/", "/blog/arm64-vs-arm32-apk/"],
+    "schemaTypes": ["BlogPosting", "FAQPage"]
+  },
+  {
+    "slug": "best-hindi-dubbed-movies",
+    "title": "Best Hindi Dubbed Movies to Watch in 2026",
+    "priority": "P2",
+    "category": "discovery",
+    "primaryKeyword": "best hindi dubbed movies",
+    "targetRoute": "/blog/best-hindi-dubbed-movies/",
+    "relatedPages": ["/genre/hindi-dubbed/", "/platform/netflix/", "/genre/bollywood/"],
+    "schemaTypes": ["BlogPosting", "ItemList"]
+  },
+  {
+    "slug": "best-bollywood-movies",
+    "title": "Best Bollywood Movies on Streaming in 2026",
+    "priority": "P2",
+    "category": "discovery",
+    "primaryKeyword": "best bollywood movies streaming",
+    "targetRoute": "/blog/best-bollywood-movies/",
+    "relatedPages": ["/genre/bollywood/", "/platform/jiohotstar/", "/movies/"],
+    "schemaTypes": ["BlogPosting", "ItemList"]
+  },
+  {
+    "slug": "best-hollywood-hindi-dubbed",
+    "title": "Best Hollywood Movies in Hindi Dubbed",
+    "priority": "P2",
+    "category": "discovery",
+    "primaryKeyword": "hollywood hindi dubbed movies",
+    "targetRoute": "/blog/best-hollywood-hindi-dubbed/",
+    "relatedPages": ["/genre/hollywood/", "/genre/hindi-dubbed/", "/platform/prime-video/"],
+    "schemaTypes": ["BlogPosting", "ItemList"]
+  },
+  {
+    "slug": "best-anime-to-watch",
+    "title": "Best Anime to Watch on NetMirror",
+    "priority": "P2",
+    "category": "discovery",
+    "primaryKeyword": "best anime netmirror",
+    "targetRoute": "/blog/best-anime-to-watch/",
+    "relatedPages": ["/anime/", "/genre/anime/", "/trending/"],
+    "schemaTypes": ["BlogPosting", "ItemList"]
+  },
+  {
+    "slug": "best-kids-movies",
+    "title": "Best Kids Movies and Shows to Stream",
+    "priority": "P2",
+    "category": "discovery",
+    "primaryKeyword": "best kids movies streaming",
+    "targetRoute": "/blog/best-kids-movies/",
+    "relatedPages": ["/genre/kids/", "/movies/", "/shows/"],
+    "schemaTypes": ["BlogPosting", "ItemList"]
+  },
+  {
+    "slug": "best-web-series",
+    "title": "Best Web Series to Binge Watch in 2026",
+    "priority": "P2",
+    "category": "discovery",
+    "primaryKeyword": "best web series 2026",
+    "targetRoute": "/blog/best-web-series/",
+    "relatedPages": ["/shows/", "/trending/", "/genre/hindi-dubbed/"],
+    "schemaTypes": ["BlogPosting", "ItemList"]
+  },
+  {
+    "slug": "netmirror-alternatives",
+    "title": "NetMirror Alternatives Compared",
+    "priority": "P2",
+    "category": "comparison",
+    "primaryKeyword": "netmirror alternatives",
+    "targetRoute": "/blog/netmirror-alternatives/",
+    "relatedPages": ["/app/download/", "/blog/is-netmirror-safe/"],
+    "schemaTypes": ["BlogPosting", "FAQPage"]
+  },
+  {
+    "slug": "how-to-update-netmirror",
+    "title": "How to Update NetMirror to Latest Version",
+    "priority": "P2",
+    "category": "app",
+    "primaryKeyword": "netmirror update",
+    "targetRoute": "/blog/how-to-update-netmirror/",
+    "relatedPages": ["/app/download/", "/app/update/", "/help/app-not-installed/"],
+    "schemaTypes": ["BlogPosting", "HowTo", "FAQPage"]
+  },
+  {
+    "slug": "fix-buffering-issues",
+    "title": "How to Fix Buffering on NetMirror",
+    "priority": "P3",
+    "category": "help",
+    "primaryKeyword": "netmirror buffering fix",
+    "targetRoute": "/blog/fix-buffering-issues/",
+    "relatedPages": ["/help/buffering-fix/", "/help/video-not-playing/", "/help/server-not-working/"],
+    "schemaTypes": ["BlogPosting", "HowTo", "FAQPage"]
+  },
+  {
+    "slug": "netmirror-permissions-guide",
+    "title": "NetMirror Permissions Explained",
+    "priority": "P3",
+    "category": "trust",
+    "primaryKeyword": "netmirror permissions",
+    "targetRoute": "/blog/netmirror-permissions-guide/",
+    "relatedPages": ["/blog/is-netmirror-safe/", "/app/download/"],
+    "schemaTypes": ["BlogPosting", "FAQPage"]
+  },
+  {
+    "slug": "how-to-search-movies",
+    "title": "How to Search Movies on NetMirror",
+    "priority": "P3",
+    "category": "guide",
+    "primaryKeyword": "netmirror search movies",
+    "targetRoute": "/blog/how-to-search-movies/",
+    "relatedPages": ["/movies/", "/trending/", "/genre/hindi-dubbed/"],
+    "schemaTypes": ["BlogPosting", "HowTo"]
+  },
+  {
+    "slug": "platform-filters-guide",
+    "title": "Using Platform Filters on NetMirror",
+    "priority": "P3",
+    "category": "guide",
+    "primaryKeyword": "netmirror platform filter",
+    "targetRoute": "/blog/platform-filters-guide/",
+    "relatedPages": ["/platform/netflix/", "/platform/prime-video/", "/movies/"],
+    "schemaTypes": ["BlogPosting", "HowTo"]
+  },
+  {
+    "slug": "how-to-switch-servers",
+    "title": "How to Switch Servers on NetMirror",
+    "priority": "P3",
+    "category": "help",
+    "primaryKeyword": "netmirror switch server",
+    "targetRoute": "/blog/how-to-switch-servers/",
+    "relatedPages": ["/help/server-not-working/", "/help/video-not-playing/", "/blog/netmirror-server-not-working/"],
+    "schemaTypes": ["BlogPosting", "HowTo", "FAQPage"]
+  },
+  {
+    "slug": "movie-not-found-fix",
+    "title": "Movie Not Found on NetMirror -- What to Do",
+    "priority": "P3",
+    "category": "help",
+    "primaryKeyword": "netmirror movie not found",
+    "targetRoute": "/blog/movie-not-found-fix/",
+    "relatedPages": ["/movies/", "/blog/how-to-search-movies/", "/contact/"],
+    "schemaTypes": ["BlogPosting", "FAQPage"]
+  },
+  {
+    "slug": "clear-cache-guide",
+    "title": "How to Clear Cache on NetMirror",
+    "priority": "P3",
+    "category": "help",
+    "primaryKeyword": "netmirror clear cache",
+    "targetRoute": "/blog/clear-cache-guide/",
+    "relatedPages": ["/help/buffering-fix/", "/help/video-not-playing/", "/app/download/"],
+    "schemaTypes": ["BlogPosting", "HowTo", "FAQPage"]
+  }
+]

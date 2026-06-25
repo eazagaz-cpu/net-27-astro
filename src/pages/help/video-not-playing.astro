@@ -1,0 +1,231 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { CONTACT_EMAIL } from '../../lib/constants';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Help', href: '/help/video-not-playing/' },
+  { label: 'Video Not Playing', href: '/help/video-not-playing/' },
+];
+
+const faqs = [
+  { question: 'Why does the video show a black screen with audio?', answer: 'A black screen with working audio usually indicates a hardware decoding issue. Try switching to a different server or player within NetMirror. Some older devices struggle with certain video codecs, especially H.265/HEVC. If the problem persists, lowering the video quality can help since it often switches to a more compatible codec.' },
+  { question: 'Why does video keep buffering or loading?', answer: 'Buffering is typically caused by a slow or unstable internet connection. NetMirror streams content from external servers, so performance depends on your connection speed and the server load. Try switching to a different server, connecting to Wi-Fi instead of mobile data, or lowering the playback quality. A minimum connection speed of 5 Mbps is recommended for smooth playback.' },
+  { question: 'Can I download videos for offline viewing?', answer: 'NetMirror is a content discovery platform that aggregates streaming availability information. Download and offline viewing features depend on the specific content source and server. Some servers may support this feature while others do not. Availability may vary by title and region.' },
+  { question: 'Why does the player say "Server Error" or "Not Available"?', answer: 'Server errors occur when the content source is temporarily down or the specific link has expired. Content availability changes frequently as sources update their libraries. Try switching to a different server using the server selector in the player. If all servers show errors for a particular title, the content may have been recently removed from those sources.' },
+  { question: 'Does NetMirror support Chromecast or casting to TV?', answer: 'Casting support depends on the video player and server being used. Some embedded players support Chromecast natively, while others may not. For the best casting experience, try different servers until you find one that supports your preferred casting method. You can also use Android screen mirroring as an alternative.' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Fix Video Not Playing — NetMirror Troubleshooting Guide"
+    description="Fix video playback issues on NetMirror. Solutions for buffering, black screen, server errors on Android and PC."
+    canonical={`${SITE_URL}/help/video-not-playing/`}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+
+  <Header />
+
+  <main class="min-h-screen pt-20">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <h1 class="text-3xl md:text-4xl font-bold mt-4 mb-4">
+        Fix: <span class="gradient-text">Video Not Playing</span>
+      </h1>
+
+      <div class="glass-card rounded-xl p-6 mb-8">
+        <p class="text-[var(--color-text-secondary)] leading-relaxed">
+          Video playback issues on NetMirror can range from complete failure to load, to buffering, black screens, or audio-only playback. Since NetMirror aggregates content from multiple external sources, the solution often involves switching servers or adjusting your device settings. This guide covers the most common causes and their fixes.
+        </p>
+      </div>
+
+      <!-- Common Causes -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Common Causes and Fixes</h2>
+        <div class="space-y-6">
+
+          <div class="glass-card rounded-xl p-6">
+            <h3 class="font-bold text-lg mb-3">Slow or Unstable Internet Connection</h3>
+            <p class="text-[var(--color-text-secondary)] text-sm mb-3">
+              The most frequent cause of video playback problems is an unreliable internet connection. Streaming video requires a consistent minimum bandwidth, and even brief dropouts can cause the player to stall.
+            </p>
+            <div class="bg-[var(--color-bg-primary)] rounded-lg p-4">
+              <h4 class="font-semibold text-sm mb-2">How to fix:</h4>
+              <ul class="text-sm text-[var(--color-text-secondary)] space-y-1.5">
+                <li>Switch from mobile data to Wi-Fi, or vice versa, to test which connection is more stable.</li>
+                <li>Move closer to your Wi-Fi router if you are on a wireless connection.</li>
+                <li>Close other apps and browser tabs that may be consuming bandwidth.</li>
+                <li>Run a speed test to confirm you have at least 5 Mbps download speed.</li>
+                <li>If using a VPN, try disconnecting it temporarily as VPNs can add latency.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-6">
+            <h3 class="font-bold text-lg mb-3">Server Is Down or Overloaded</h3>
+            <p class="text-[var(--color-text-secondary)] text-sm mb-3">
+              NetMirror sources content from multiple external servers. Individual servers can go offline or become overloaded during peak viewing hours, causing playback failures or slow loading times.
+            </p>
+            <div class="bg-[var(--color-bg-primary)] rounded-lg p-4">
+              <h4 class="font-semibold text-sm mb-2">How to fix:</h4>
+              <ul class="text-sm text-[var(--color-text-secondary)] space-y-1.5">
+                <li>Use the server selector in the player to switch to a different source.</li>
+                <li>Try at least 3-4 different servers before concluding a title is unavailable.</li>
+                <li>Wait a few minutes and try again if all servers are failing during peak hours.</li>
+                <li>Some servers work better in certain regions due to CDN location.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-6">
+            <h3 class="font-bold text-lg mb-3">Black Screen or Audio-Only Playback</h3>
+            <p class="text-[var(--color-text-secondary)] text-sm mb-3">
+              When you can hear the audio but see only a black screen, the issue is usually related to video codec compatibility. Some older devices or certain browsers do not support newer video formats like H.265/HEVC.
+            </p>
+            <div class="bg-[var(--color-bg-primary)] rounded-lg p-4">
+              <h4 class="font-semibold text-sm mb-2">How to fix:</h4>
+              <ul class="text-sm text-[var(--color-text-secondary)] space-y-1.5">
+                <li>Switch to a different server that may use a more compatible video codec.</li>
+                <li>If using a browser, try a different one (Chrome, Firefox, or Brave).</li>
+                <li>Lower the video quality setting if available in the player controls.</li>
+                <li>On the Android app, ensure hardware acceleration is enabled in your device settings.</li>
+                <li>Update your browser or the NetMirror app to the latest version.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-6">
+            <h3 class="font-bold text-lg mb-3">Player Shows Error Message</h3>
+            <p class="text-[var(--color-text-secondary)] text-sm mb-3">
+              Error messages like "Playback failed," "Content not available," or "403 Forbidden" indicate that the specific content link has expired or the source is blocking access from your location.
+            </p>
+            <div class="bg-[var(--color-bg-primary)] rounded-lg p-4">
+              <h4 class="font-semibold text-sm mb-2">How to fix:</h4>
+              <ul class="text-sm text-[var(--color-text-secondary)] space-y-1.5">
+                <li>Switch to a different server immediately as the current source link may have expired.</li>
+                <li>Refresh the page completely and select the title again.</li>
+                <li>Clear your browser cache and cookies, then try again.</li>
+                <li>If you see "403 Forbidden," the server may be geo-restricted. Try a different server.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-6">
+            <h3 class="font-bold text-lg mb-3">Subtitles Not Loading</h3>
+            <p class="text-[var(--color-text-secondary)] text-sm mb-3">
+              Subtitle availability varies by server and title. Not all servers provide subtitle tracks, and some may only offer subtitles in certain languages.
+            </p>
+            <div class="bg-[var(--color-bg-primary)] rounded-lg p-4">
+              <h4 class="font-semibold text-sm mb-2">How to fix:</h4>
+              <ul class="text-sm text-[var(--color-text-secondary)] space-y-1.5">
+                <li>Check the subtitle settings within the video player controls.</li>
+                <li>Switch to a different server that may have better subtitle support.</li>
+                <li>Some servers embed subtitles into the video (hardcoded) while others offer selectable tracks.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Server Switching Guide -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">How to Switch Servers</h2>
+        <div class="text-[var(--color-text-secondary)] leading-relaxed">
+          <p class="mb-4">
+            Switching servers is the single most effective troubleshooting step for video playback issues on NetMirror. Here is how to do it:
+          </p>
+          <ol class="space-y-4 list-none">
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">1</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Open the Player</p>
+                <p class="text-sm mt-1">Navigate to the title you want to watch and open the player page.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">2</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Find the Server List</p>
+                <p class="text-sm mt-1">Look for server options or tabs near the player. They are usually labeled as "Server 1," "Server 2," or by server name.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">3</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Select a Different Server</p>
+                <p class="text-sm mt-1">Tap on a different server option. The player will reload with the new source. Wait a few seconds for it to buffer and begin playback.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">4</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Try Multiple Servers</p>
+                <p class="text-sm mt-1">If the first alternative server does not work, keep trying others. Different servers have different content libraries and performance characteristics.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Device-Specific Tips -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Device-Specific Tips</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">Android App</h3>
+            <ul class="text-sm text-[var(--color-text-secondary)] space-y-1.5">
+              <li>Keep the NetMirror app updated to the latest version.</li>
+              <li>Clear the app cache: Settings &gt; Apps &gt; NetMirror &gt; Clear Cache.</li>
+              <li>Ensure battery optimization is not killing the app in the background.</li>
+            </ul>
+          </div>
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">Web Browser (PC / Mobile)</h3>
+            <ul class="text-sm text-[var(--color-text-secondary)] space-y-1.5">
+              <li>Disable ad blockers for the NetMirror website, as they can block player scripts.</li>
+              <li>Use Chrome, Firefox, Brave, or Edge for the best compatibility.</li>
+              <li>Clear browser cache and cookies if the player fails to load.</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- Related Links -->
+      <section class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Related Help Articles</h2>
+        <ul class="space-y-2 text-[var(--color-text-secondary)]">
+          <li>
+            <a href="/app/download/" class="hover:text-[var(--color-primary)] transition-colors">Download the latest NetMirror APK</a>
+          </li>
+          <li>
+            <a href="/help/app-not-installed/" class="hover:text-[var(--color-primary)] transition-colors">Fix "App Not Installed" error</a>
+          </li>
+          <li>
+            <a href="/contact/" class="hover:text-[var(--color-primary)] transition-colors">Contact support for further help</a>
+          </li>
+        </ul>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="mt-12 glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> NetMirror is a content discovery platform. Video availability may vary by region and is subject to change. NetMirror does not host or distribute video content. All trademarks belong to their respective owners. For support, contact <a href={`mailto:${CONTACT_EMAIL}`} class="text-[var(--color-primary)] hover:underline">{CONTACT_EMAIL}</a>.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

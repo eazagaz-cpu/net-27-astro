@@ -1,0 +1,150 @@
+{
+  "/app/download/": [
+    "/app/arm64/",
+    "/app/arm32/",
+    "/app/universal-apk/",
+    "/help/app-not-installed/",
+    "/blog/arm64-vs-arm32-apk/",
+    "/blog/netmirror-apk-download-guide/",
+    "/blog/is-netmirror-safe/"
+  ],
+  "/app/arm64/": [
+    "/app/download/",
+    "/app/arm32/",
+    "/app/universal-apk/",
+    "/blog/arm64-vs-arm32-apk/"
+  ],
+  "/app/arm32/": [
+    "/app/download/",
+    "/app/arm64/",
+    "/app/universal-apk/",
+    "/blog/arm64-vs-arm32-apk/"
+  ],
+  "/app/universal-apk/": [
+    "/app/download/",
+    "/app/arm64/",
+    "/app/arm32/",
+    "/blog/universal-apk-guide/"
+  ],
+  "/app/update/": [
+    "/app/download/",
+    "/blog/how-to-update-netmirror/",
+    "/help/app-not-installed/"
+  ],
+  "/platform/netflix/": [
+    "/genre/hindi-dubbed/",
+    "/movies/",
+    "/blog/best-hindi-dubbed-movies/",
+    "/genre/bollywood/",
+    "/trending/"
+  ],
+  "/platform/prime-video/": [
+    "/genre/hindi-dubbed/",
+    "/genre/hollywood/",
+    "/movies/",
+    "/blog/best-hollywood-hindi-dubbed/"
+  ],
+  "/platform/jiohotstar/": [
+    "/genre/bollywood/",
+    "/genre/hindi-dubbed/",
+    "/movies/",
+    "/blog/best-bollywood-movies/"
+  ],
+  "/genre/hindi-dubbed/": [
+    "/genre/bollywood/",
+    "/genre/hollywood/",
+    "/blog/best-hindi-dubbed-movies/",
+    "/platform/netflix/",
+    "/platform/prime-video/"
+  ],
+  "/genre/bollywood/": [
+    "/genre/hindi-dubbed/",
+    "/movies/",
+    "/blog/best-bollywood-movies/",
+    "/platform/jiohotstar/"
+  ],
+  "/genre/hollywood/": [
+    "/genre/hindi-dubbed/",
+    "/movies/",
+    "/blog/best-hollywood-hindi-dubbed/",
+    "/platform/netflix/"
+  ],
+  "/genre/anime/": [
+    "/anime/",
+    "/blog/best-anime-to-watch/",
+    "/trending/",
+    "/genre/kids/"
+  ],
+  "/genre/kids/": [
+    "/movies/",
+    "/blog/best-kids-movies/",
+    "/genre/anime/",
+    "/shows/"
+  ],
+  "/help/app-not-installed/": [
+    "/app/download/",
+    "/app/update/",
+    "/help/parsing-package-error/",
+    "/blog/fix-app-not-installed/"
+  ],
+  "/help/parsing-package-error/": [
+    "/app/download/",
+    "/help/app-not-installed/",
+    "/blog/fix-parsing-package-error/"
+  ],
+  "/help/video-not-playing/": [
+    "/help/server-not-working/",
+    "/help/buffering-fix/",
+    "/blog/fix-video-not-playing/"
+  ],
+  "/help/server-not-working/": [
+    "/help/video-not-playing/",
+    "/blog/netmirror-server-not-working/",
+    "/help/buffering-fix/"
+  ],
+  "/help/buffering-fix/": [
+    "/help/video-not-playing/",
+    "/help/server-not-working/",
+    "/blog/fix-buffering-issues/"
+  ],
+  "/blog/": [
+    "/app/download/",
+    "/help/app-not-installed/",
+    "/movies/",
+    "/trending/",
+    "/blog/netmirror-apk-download-guide/",
+    "/blog/is-netmirror-safe/"
+  ],
+  "/movies/": [
+    "/trending/",
+    "/genre/hindi-dubbed/",
+    "/genre/bollywood/",
+    "/genre/hollywood/",
+    "/blog/best-hindi-dubbed-movies/"
+  ],
+  "/shows/": [
+    "/trending/",
+    "/blog/best-web-series/",
+    "/genre/hindi-dubbed/",
+    "/movies/"
+  ],
+  "/anime/": [
+    "/genre/anime/",
+    "/blog/best-anime-to-watch/",
+    "/trending/",
+    "/movies/"
+  ],
+  "/trending/": [
+    "/movies/",
+    "/shows/",
+    "/anime/",
+    "/genre/hindi-dubbed/",
+    "/blog/"
+  ],
+  "/contact/": [
+    "/help/app-not-installed/",
+    "/help/video-not-playing/",
+    "/blog/is-netmirror-safe/",
+    "/app/download/"
+  ]
+}

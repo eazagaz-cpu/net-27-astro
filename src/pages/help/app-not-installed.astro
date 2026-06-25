@@ -1,0 +1,187 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { APK_UNIVERSAL_URL, CONTACT_EMAIL } from '../../lib/constants';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Help', href: '/help/app-not-installed/' },
+  { label: 'App Not Installed', href: '/help/app-not-installed/' },
+];
+
+const faqs = [
+  { question: 'Why does my phone say "App Not Installed" when I try to install NetMirror?', answer: 'This error typically occurs when there is a signature mismatch between the existing app and the update, insufficient storage space, or when the APK was downloaded for the wrong CPU architecture. Follow the step-by-step solutions on this page to resolve the issue.' },
+  { question: 'Will I lose my data if I uninstall and reinstall NetMirror?', answer: 'If you uninstall the existing version before installing the new one, any locally stored preferences or history may be cleared. However, if you have an account, your watchlist and settings are synced and will be restored after you sign in again.' },
+  { question: 'How do I check if I have enough storage for NetMirror?', answer: 'Go to Settings > Storage on your Android device. NetMirror requires approximately 50 MB of free space for the installation and initial data. If your storage is low, try clearing cache from other apps or moving media files to an SD card.' },
+  { question: 'Can I install NetMirror on an SD card?', answer: 'While Android allows some apps to be moved to an SD card after installation, the initial installation must happen on internal storage. After installing, you may be able to move it via Settings > Apps > NetMirror > Storage > Change.' },
+  { question: 'The error persists after trying all solutions. What should I do?', answer: 'If you have tried all the steps on this page and the error continues, your device may have a restriction set by your manufacturer or mobile carrier. Try downloading the Universal APK from our website on a different browser, or contact us at ' + CONTACT_EMAIL + ' with your device model and Android version for personalized help.' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Fix 'App Not Installed' Error — NetMirror Troubleshooting"
+    description="Fix the App Not Installed error when installing NetMirror APK. Step-by-step solutions for Android devices."
+    canonical={`${SITE_URL}/help/app-not-installed/`}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+
+  <Header />
+
+  <main class="min-h-screen pt-20">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <h1 class="text-3xl md:text-4xl font-bold mt-4 mb-4">
+        Fix: <span class="gradient-text">App Not Installed</span>
+      </h1>
+
+      <div class="glass-card rounded-xl p-6 mb-8">
+        <p class="text-[var(--color-text-secondary)] leading-relaxed">
+          The "App Not Installed" error appears when Android cannot complete the APK installation process. This is one of the most common issues Android users encounter when installing apps from outside the Play Store. The good news is that it is almost always fixable by following a few straightforward steps.
+        </p>
+      </div>
+
+      <!-- Causes -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Common Causes</h2>
+        <div class="space-y-4">
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">1. Insufficient Storage Space</h3>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              Android needs free space not only for the APK file itself but also for unpacking and installing it. If your device has less than 100 MB of free internal storage, the installation may fail silently with this error. Apps that report their size as 15-25 MB may need up to 50 MB during the installation process.
+            </p>
+          </div>
+
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">2. Unknown Sources Not Enabled</h3>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              Android blocks installations from sources other than the Play Store by default. On Android 8.0 and newer, you need to grant installation permission to the specific app you use to open the APK (usually your browser or file manager). On older versions, there is a single toggle under Settings &gt; Security.
+            </p>
+          </div>
+
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">3. Corrupted or Incomplete Download</h3>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              If your internet connection was interrupted during the download, or if the file was modified in transit, the APK may be corrupted. A corrupted file cannot be verified by Android's package installer, resulting in an installation failure.
+            </p>
+          </div>
+
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">4. Wrong CPU Architecture</h3>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              If you downloaded the ARM64 version but your device uses a 32-bit processor (or vice versa), the APK will not install. This is the most common cause when the Universal version works but a specific architecture version does not.
+            </p>
+          </div>
+
+          <div class="glass-card rounded-xl p-5">
+            <h3 class="font-semibold mb-2">5. Signature Mismatch</h3>
+            <p class="text-sm text-[var(--color-text-secondary)]">
+              If you have an older version of NetMirror installed that was signed with a different certificate, Android will prevent the update. This can happen if the previous version was obtained from an unofficial source.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Step by Step Fix -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Step-by-Step Solutions</h2>
+        <div class="text-[var(--color-text-secondary)] leading-relaxed">
+          <ol class="space-y-6 list-none">
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">1</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Free Up Storage Space</p>
+                <p class="text-sm mt-1">Go to <strong>Settings &gt; Storage</strong> and ensure you have at least 100 MB of free internal storage. Clear cache from large apps if needed: <strong>Settings &gt; Apps &gt; [App Name] &gt; Clear Cache</strong>. Do not clear data unless you want to reset that app.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">2</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Enable Installation from Unknown Sources</p>
+                <p class="text-sm mt-1"><strong>Android 8.0+:</strong> Go to <strong>Settings &gt; Apps &gt; Special Access &gt; Install unknown apps</strong> and enable it for your browser (Chrome, Firefox, etc.). <strong>Android 7 and below:</strong> Go to <strong>Settings &gt; Security</strong> and toggle on "Unknown Sources."</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">3</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Re-download the APK</p>
+                <p class="text-sm mt-1">Delete the existing APK file from your Downloads folder, then download it again from the <a href="/app/download/" class="text-[var(--color-primary)] hover:underline">official download page</a>. Make sure the download completes fully before attempting installation.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">4</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Use the Universal APK</p>
+                <p class="text-sm mt-1">If you downloaded a specific architecture version (ARM64 or ARM32), try the <a href={APK_UNIVERSAL_URL} class="text-[var(--color-primary)] hover:underline">Universal APK</a> instead. It supports all device types and eliminates architecture mismatch issues.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">5</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Uninstall the Previous Version</p>
+                <p class="text-sm mt-1">If you are updating from an older version, uninstall the existing NetMirror app first: <strong>Settings &gt; Apps &gt; NetMirror &gt; Uninstall</strong>. Then install the new APK. This resolves signature mismatch issues.</p>
+              </div>
+            </li>
+            <li class="flex items-start gap-4">
+              <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">6</span>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">Restart Your Device</p>
+                <p class="text-sm mt-1">A simple restart can clear temporary system issues that may be blocking the installation. After restarting, try the installation again.</p>
+              </div>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <!-- Additional Tips -->
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">Additional Tips</h2>
+        <div class="text-[var(--color-text-secondary)] leading-relaxed space-y-3">
+          <p>
+            If you are using a Samsung device, check whether <strong class="text-[var(--color-text-primary)]">Secure Folder</strong> or <strong class="text-[var(--color-text-primary)]">Knox</strong> is interfering with the installation. Some enterprise-managed devices have additional restrictions that block sideloaded apps.
+          </p>
+          <p>
+            On Xiaomi and MIUI devices, you may need to disable <strong class="text-[var(--color-text-primary)]">MIUI Optimization</strong> temporarily in Developer Options, or grant additional permissions through the Security app.
+          </p>
+          <p>
+            If you are using a <strong class="text-[var(--color-text-primary)]">Huawei</strong> device without Google services, the installation process is the same. NetMirror does not depend on Google Play Services to function.
+          </p>
+        </div>
+      </section>
+
+      <!-- Related Links -->
+      <section class="mb-8">
+        <h2 class="text-2xl font-bold mb-4">Related Help Articles</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <a href="/app/download/" class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)] transition-colors group">
+            <h3 class="font-semibold group-hover:text-[var(--color-primary)] transition-colors">Download NetMirror APK</h3>
+            <p class="text-sm text-[var(--color-text-muted)] mt-1">Get the latest version of NetMirror for your device.</p>
+          </a>
+          <a href="/help/parsing-package-error/" class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)] transition-colors group">
+            <h3 class="font-semibold group-hover:text-[var(--color-primary)] transition-colors">Parsing Package Error</h3>
+            <p class="text-sm text-[var(--color-text-muted)] mt-1">Fix "problem parsing the package" during installation.</p>
+          </a>
+        </div>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="mt-12 glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> NetMirror is a content discovery platform. It does not host, store, or distribute copyrighted content. Android is a trademark of Google LLC. Device manufacturer names are trademarks of their respective owners. For further assistance, contact <a href={`mailto:${CONTACT_EMAIL}`} class="text-[var(--color-primary)] hover:underline">{CONTACT_EMAIL}</a>.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

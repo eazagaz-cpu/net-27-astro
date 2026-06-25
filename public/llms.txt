@@ -1,0 +1,18 @@
+# NetMirror (net27.cc)
+> Movie discovery platform for trending movies, TV shows, anime, Hindi dubbed titles
+
+## About
+NetMirror is a movie and show discovery platform. We help users find where to watch content across Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and other streaming services.
+
+## Key Pages
+- Homepage: https://net27.cc/
+- Movies: https://net27.cc/movies/
+- TV Shows: https://net27.cc/shows/
+- Anime: https://net27.cc/anime/
+- Trending: https://net27.cc/trending/
+- Blog: https://net27.cc/blog/
+- App Download: https://net27.cc/app/download/
+- Contact: https://net27.cc/contact/
+
+## Contact
+Email: net27.cc@gmail.com
