@@ -52,6 +52,16 @@
     background-color: #111;
     color: #fff;
   }
+
+  :focus-visible {
+    outline: 2px solid var(--color-primary);
+    outline-offset: 2px;
+  }
+
+  a:focus:not(:focus-visible),
+  button:focus:not(:focus-visible) {
+    outline: none;
+  }
 }
 
 @layer components {
@@ -401,6 +411,66 @@
     }
   }
 
+  .announcement-bar {
+    overflow: hidden;
+    height: 28px;
+    background: linear-gradient(90deg, rgba(255,31,61,0.06), rgba(47,128,255,0.06));
+    border-top: 1px solid rgba(255,255,255,0.04);
+  }
+
+  .announcement-track {
+    display: flex;
+    flex-direction: column;
+    animation: announcementSlide 20s ease-in-out infinite;
+  }
+
+  .announcement-item {
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--color-muted);
+    padding: 0 16px;
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+
+  @media (max-width: 768px) {
+    .announcement-item {
+      justify-content: flex-start;
+      animation: marqueeX 14s linear infinite;
+    }
+
+    @keyframes marqueeX {
+      0% { transform: translateX(100%); }
+      100% { transform: translateX(-100%); }
+    }
+  }
+
+  @keyframes announcementSlide {
+    0%, 16% { transform: translateY(0); }
+    20%, 36% { transform: translateY(-28px); }
+    40%, 56% { transform: translateY(-56px); }
+    60%, 76% { transform: translateY(-84px); }
+    80%, 96% { transform: translateY(-112px); }
+    100% { transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    .announcement-item {
+      font-size: 10px;
+    }
+  }
+
+  .top10-poster {
+    transition: transform 0.25s ease;
+  }
+  a:hover .top10-poster {
+    transform: scale(1.05);
+  }
+
   .player-frame {
     width: 100%;
     border: 0;
@@ -419,5 +489,45 @@
   @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+
+  .rail-section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 320px;
+  }
+}
+
+@layer utilities {
+  .img-poster {
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    background: var(--color-surface-soft);
+  }
+
+  .img-backdrop {
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+    background: var(--color-surface-soft);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .hero-slide {
+    transition: none !important;
+  }
+
+  .title-card:hover {
+    transform: none !important;
+  }
+
+  .title-card:hover img {
+    transform: none !important;
   }
 }

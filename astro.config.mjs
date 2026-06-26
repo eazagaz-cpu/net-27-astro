@@ -12,7 +12,7 @@ export default defineConfig({
   },
   integrations: [
     react(),
-    sitemap(),
+    sitemap({ entryLimit: 50000 }),
   ],
   image: {
     domains: ['image.tmdb.org'],

@@ -5,10 +5,13 @@ let app: FirebaseApp | null = null;
 let auth: Auth | null = null;
 
 const FIREBASE_CONFIG = {
-  apiKey: 'AIzaSyDMwZDCGMAqGf3qTEzdMeW0bAaxXgbm0',
+  apiKey: 'AIzaSyDHvvZDCGWAaGf3qTEzdMeW06zAaKXgbm0',
   authDomain: 'net-27-a4cd1.firebaseapp.com',
   projectId: 'net-27-a4cd1',
-  appId: '1:334281971333:web:1a6fcb777687b04b187bec',
+  storageBucket: 'net-27-a4cd1.firebasestorage.app',
+  messagingSenderId: '334281971333',
+  appId: '1:334281971333:web:1a5fcb777687b04b187bec',
+  measurementId: 'G-BEV78WNW13',
 };
 
 export function getFirebaseApp(): FirebaseApp | null {

@@ -68,16 +68,25 @@ function normalizeItem(i) {
     title: i.title || i.name || '',
     year: parseInt((i.release_date || i.first_air_date || '').slice(0, 4)) || 0,
     rating: Math.round((i.vote_average || 0) * 10) / 10,
-    posterUrl: i.poster_path ? `https://image.tmdb.org/t/p/w500${i.poster_path}` : (i.backdrop_path ? `https://image.tmdb.org/t/p/w500${i.backdrop_path}` : ''),
+    posterUrl: i.poster_path ? `https://image.tmdb.org/t/p/w342${i.poster_path}` : (i.backdrop_path ? `https://image.tmdb.org/t/p/w342${i.backdrop_path}` : ''),
     backdropUrl: i.backdrop_path ? `https://image.tmdb.org/t/p/w1280${i.backdrop_path}` : '',
     overview: (i.overview || '').slice(0, 200),
   };
 }
 
+const LANG_MAP = {
+  hi: 'hi-IN', es: 'es-ES', ru: 'ru-RU', fr: 'fr-FR', de: 'de-DE',
+  it: 'it-IT', pt: 'pt-BR', bn: 'bn-BD', ja: 'ja-JP', ko: 'ko-KR',
+  ms: 'ms-MY', pl: 'pl-PL', id: 'id-ID', ar: 'ar-SA', bg: 'bg-BG',
+  tr: 'tr-TR', sv: 'sv-SE', ur: 'ur-PK',
+};
+
 export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const type = url.searchParams.get('type') || 'popular';
   const pages = Math.min(parseInt(url.searchParams.get('pages') || '1'), 3);
+  const lang = url.searchParams.get('lang') || '';
+  const tmdbLang = LANG_MAP[lang] || 'en-US';
   const apiKey = context.env.TMDB_API_KEY;
 
   const headers = { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' };
@@ -98,6 +107,7 @@ export async function onRequestGet(context) {
         try {
           const tmdbUrl = new URL(`${TMDB_BASE}${ep.path}`);
           tmdbUrl.searchParams.set('api_key', apiKey);
+          tmdbUrl.searchParams.set('language', tmdbLang);
           tmdbUrl.searchParams.set('page', String(page));
           for (const [k, v] of Object.entries(ep.params)) tmdbUrl.searchParams.set(k, v);
 

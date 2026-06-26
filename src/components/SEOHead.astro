@@ -11,6 +11,7 @@ interface Props {
 }
 
 const seo = generateSEO(Astro.props);
+const ogImageAlt = 'NetMirror - Movies, TV Shows, Anime and Hindi Dubbed Discovery';
 ---
 
 <title>{seo.title}</title>
@@ -21,6 +22,11 @@ const seo = generateSEO(Astro.props);
 <meta property="og:title" content={seo.ogTitle} />
 <meta property="og:description" content={seo.ogDescription} />
 <meta property="og:image" content={seo.ogImage} />
+<meta property="og:image:secure_url" content={seo.ogImage} />
+<meta property="og:image:type" content="image/png" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+<meta property="og:image:alt" content={ogImageAlt} />
 <meta property="og:url" content={seo.canonical} />
 <meta property="og:type" content={seo.ogType} />
 <meta property="og:site_name" content="NetMirror" />
@@ -30,5 +36,6 @@ const seo = generateSEO(Astro.props);
 <meta name="twitter:title" content={seo.ogTitle} />
 <meta name="twitter:description" content={seo.ogDescription} />
 <meta name="twitter:image" content={seo.ogImage} />
+<meta name="twitter:image:alt" content={ogImageAlt} />
 
 {seo.noindex && <meta name="robots" content="noindex, nofollow" />}

@@ -1,5 +1,5 @@
 export const SITE_NAME = 'NetMirror';
-export const SITE_URL = 'https://net27.cc';
+export const SITE_URL = 'https://net-27.cc';
 export const SITE_DESCRIPTION = 'Watch movies, TV shows, and anime. Multi-language audio. 500k+ titles across Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more.';
 export const CONTACT_EMAIL = 'net27.cc@gmail.com';
 export const APP_VERSION = '2.0.10';

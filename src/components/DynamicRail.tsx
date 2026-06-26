@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 interface RailItem {
   id: number;
@@ -42,11 +42,13 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
   const [loading, setLoading] = useState(true);
   const railRef = useRef<HTMLDivElement>(null);
 
-  const scrollLeft = () => railRef.current?.scrollBy({ left: -600, behavior: 'smooth' });
-  const scrollRight = () => railRef.current?.scrollBy({ left: 600, behavior: 'smooth' });
+  const scrollLeft = useCallback(() => railRef.current?.scrollBy({ left: -600, behavior: 'smooth' }), []);
+  const scrollRight = useCallback(() => railRef.current?.scrollBy({ left: 600, behavior: 'smooth' }), []);
 
   useEffect(() => {
-    fetch(`/api/tmdb/category?type=${encodeURIComponent(category)}`)
+    const lang = typeof window !== 'undefined' ? localStorage.getItem('netmirror_lang') || 'en' : 'en';
+    const langParam = lang !== 'en' ? `&lang=${lang}` : '';
+    fetch(`/api/tmdb/category?type=${encodeURIComponent(category)}${langParam}`)
       .then(r => r.json())
       .then(data => {
         setItems(data.items || []);
@@ -71,7 +73,7 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
   if (items.length === 0) return null;
 
   return (
-    <section style={{ padding: '1rem 0' }}>
+    <section className="rail-section" style={{ padding: '1rem 0' }}>
       <div style={{ maxWidth: 1400, margin: '0 auto', padding: '0 1rem' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
           <h2 className="section-title">{title}</h2>

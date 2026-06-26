@@ -39,7 +39,7 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
         }
         document.title = `${data.title} (${data.year}) | NetMirror`;
 
-        const trailerBtn = data.trailerKey ? `<a href="https://www.youtube.com/watch?v=${data.trailerKey}" target="_blank" rel="noopener" class="btn-glass px-5 py-2.5 rounded-lg text-sm">▶ Trailer</a>` : '';
+        const trailerBtn = data.trailerKey ? `<a href="https://www.youtube.com/watch?v=${data.trailerKey}" target="_blank" rel="noopener noreferrer nofollow" class="btn-glass px-5 py-2.5 rounded-lg text-sm">▶ Trailer</a>` : '';
         const castHtml = (data.cast || []).slice(0, 10).map(c =>
           `<div class="flex flex-col items-center gap-1 w-20 shrink-0">
             ${c.profileUrl ? `<img src="${c.profileUrl}" alt="${c.name}" class="w-14 h-14 rounded-full object-cover" loading="lazy"/>` : `<div class="w-14 h-14 rounded-full bg-white/10 flex items-center justify-center text-lg font-bold text-white/40">${c.name.charAt(0)}</div>`}
@@ -113,7 +113,7 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
               const unique = [...new Map(enrich.availability.map(a => [a.name, a])).values()];
               html += '<section><h2 class="section-title mb-4">Where to Watch</h2><div class="flex flex-wrap gap-3">';
               for (const src of unique) {
-                html += `<a href="${src.webUrl}" target="_blank" rel="noopener" class="glass-card rounded-xl px-4 py-3 flex items-center gap-2 hover:border-[var(--color-primary)]/50 transition-all text-sm"><span class="text-white font-medium">${src.name}</span><span class="text-[10px] text-zinc-500 uppercase">${src.type}</span></a>`;
+                html += `<a href="${src.webUrl}" target="_blank" rel="noopener noreferrer nofollow" class="glass-card rounded-xl px-4 py-3 flex items-center gap-2 hover:border-[var(--color-primary)]/50 transition-all text-sm"><span class="text-white font-medium">${src.name}</span><span class="text-[10px] text-zinc-500 uppercase">${src.type}</span></a>`;
               }
               html += '</div></section>';
             }

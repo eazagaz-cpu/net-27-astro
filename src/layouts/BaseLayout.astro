@@ -1,25 +1,159 @@
 ---
 import '../styles/global.css';
+import { getLangFromUrl, getDir, getAlternateLinks } from '../i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const dir = getDir(lang);
+const alternates = getAlternateLinks(Astro.url.pathname);
 ---
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang={lang} dir={dir}>
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#050509" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://image.tmdb.org" />
-  <link rel="preconnect" href="https://www.2embed.cc" />
-  <link rel="preconnect" href="https://autoembed.co" />
-  <link rel="dns-prefetch" href="https://image.tmdb.org" />
   <link rel="dns-prefetch" href="https://www.2embed.cc" />
   <link rel="dns-prefetch" href="https://autoembed.co" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
+  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" /></noscript>
+  {alternates.map(alt => (
+    <link rel="alternate" hreflang={alt.lang} href={alt.href} />
+  ))}
   <slot name="head" />
+  <!-- Google Analytics -->
+  <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-BEV78WNW13"></script>
+  <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-BEV78WNW13');
+  </script>
 </head>
 <body class="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
   <slot />
+  <!-- i18n Client Translation Engine -->
+  <script is:inline>
+  (function(){
+    var KEY='netmirror_lang';
+    var lang=localStorage.getItem(KEY)||'en';
+    if(lang==='en')return;
+    fetch('/locales/'+lang+'.json').then(function(r){return r.json()}).then(function(data){
+      document.documentElement.setAttribute('lang',lang);
+      if(lang==='ar'||lang==='ur')document.documentElement.setAttribute('dir','rtl');
+      translatePage(data);
+    }).catch(function(){});
+
+    function get(obj,path){
+      var keys=path.split('.');
+      var v=obj;
+      for(var i=0;i<keys.length;i++){v=v&&v[keys[i]];}
+      return typeof v==='string'?v:null;
+    }
+
+    function translatePage(t){
+      // Update browser tab title based on current page
+      var p=location.pathname;
+      var titleMap={
+        '/':'seo.homeTitle',
+        '/movies/':'seo.moviesTitle',
+        '/shows/':'seo.showsTitle',
+        '/anime/':'seo.animeTitle',
+        '/trending/':'seo.trendingTitle',
+        '/latest/':'seo.latestTitle',
+        '/blog/':'seo.blogTitle',
+        '/search/':'seo.searchTitle',
+        '/login/':'seo.loginTitle',
+        '/player/':'seo.playerTitle'
+      };
+      var titleKey=titleMap[p];
+      if(titleKey){
+        var newTitle=get(t,titleKey);
+        if(newTitle)document.title=newTitle;
+      }
+
+      // data-t attribute based
+      var els=document.querySelectorAll('[data-t]');
+      for(var i=0;i<els.length;i++){
+        var val=get(t,els[i].getAttribute('data-t'));
+        if(val){
+          if(els[i].tagName==='INPUT'||els[i].tagName==='TEXTAREA'){
+            els[i].setAttribute('placeholder',val);
+          } else {
+            els[i].textContent=val;
+          }
+        }
+      }
+
+      // Nav links
+      tByText('Home',get(t,'nav.home'));
+      tByText('Movies',get(t,'nav.movies'));
+      tByText('TV Shows',get(t,'nav.tvShows'));
+      tByText('Anime',get(t,'nav.anime'));
+      tByText('Trending',get(t,'nav.trending'));
+      tByText('Latest',get(t,'nav.latest'));
+      tByText('Blog',get(t,'nav.blog'));
+      tByText('Sign In',get(t,'nav.signIn'));
+
+      // Common buttons
+      tByText('Watch Now',get(t,'common.watchNow'));
+      tByText('More Info',get(t,'common.moreInfo'));
+      tByText('View All →',get(t,'common.viewAll')+' →');
+      tByText('Get the app',get(t,'common.getTheApp'));
+      tByText('Phone',get(t,'common.phone'));
+
+      // Footer headings
+      tByText('QUICK LINKS',get(t,'footer.quickLinks'));
+      tByText('PLATFORMS',get(t,'footer.platforms'));
+      tByText('GENRES',get(t,'footer.genres'));
+      tByText('LEGAL',get(t,'footer.legal'));
+      tByText('FOLLOW US',get(t,'footer.followUs'));
+      tByText('About',get(t,'footer.about'));
+      tByText('Contact',get(t,'footer.contact'));
+      tByText('Privacy Policy',get(t,'footer.privacyPolicy'));
+      tByText('Terms of Service',get(t,'footer.termsOfService'));
+      tByText('Editorial Policy',get(t,'footer.editorialPolicy'));
+      tByText('DMCA Policy',get(t,'footer.dmcaPolicy'));
+      tByText('Disclaimer',get(t,'footer.disclaimerPage'));
+
+      // Search placeholder
+      var searchInputs=document.querySelectorAll('input[type="email"],input[placeholder*="Search"],input[placeholder*="search"]');
+      var sp=get(t,'search.placeholder');
+      if(sp){for(var j=0;j<searchInputs.length;j++){
+        if(searchInputs[j].placeholder.toLowerCase().indexOf('search')!==-1)searchInputs[j].placeholder=sp;
+      }}
+
+      // Hero label
+      tByText('Trending Now',get(t,'common.trendingNow'));
+      tByText('TRENDING NOW',get(t,'common.trendingNow'));
+
+      // Announcement tips
+      var tips=document.querySelectorAll('.announcement-item');
+      var tipKeys=['announcement.tip1','announcement.tip2','announcement.tip3','announcement.tip4','announcement.tip5'];
+      for(var k=0;k<tips.length&&k<tipKeys.length;k++){
+        var tv=get(t,tipKeys[k]);
+        if(tv)tips[k].textContent=tv;
+      }
+
+      // Section titles with text matching
+      tByText('Frequently Asked Questions',get(t,'blog.faqs'));
+    }
+
+    function tByText(original,translated){
+      if(!translated||!original)return;
+      var walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,null,false);
+      while(walker.nextNode()){
+        var node=walker.currentNode;
+        if(node.nodeValue.trim()===original){
+          node.nodeValue=translated;
+        }
+      }
+    }
+  })();
+  </script>
 </body>
 </html>

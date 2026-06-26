@@ -6,6 +6,7 @@ import SEOHead from '../../components/SEOHead.astro';
 import Schema from '../../components/Schema.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import { getAllBlogPosts } from '../../data/blogPosts';
+import { getBlogImage } from '../../data/blogImages';
 import { breadcrumbSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
@@ -14,60 +15,108 @@ const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Blog', href: '/blog/' },
 ];
-
 ---
 
 <BaseLayout>
   <SEOHead
     slot="head"
-    title="Blog — Movie News, Streaming Guides & Reviews"
-    description="Read expert articles about movies, TV shows, anime, and streaming platforms. Guides, reviews, and industry analysis from NetMirror Editorial."
+    title="Blog — Streaming Guides & Movie News"
+    description="Expert articles about movies, TV shows, anime and streaming platforms. Download guides, troubleshooting tips and industry analysis."
     canonical={`${SITE_URL}/blog/`}
   />
   <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
 
   <Header />
 
-  <main class="min-h-screen pt-20">
+  <main class="min-h-screen pt-36">
     <div class="max-w-7xl mx-auto px-4 py-8">
       <Breadcrumbs items={breadcrumbs} />
 
-      <h1 class="text-3xl md:text-4xl font-bold mb-2">Blog</h1>
-      <p class="text-[var(--color-text-secondary)] mb-10">Latest news, guides, and insights about movies, shows, and streaming.</p>
+      <div class="mb-10">
+        <h1 class="text-3xl md:text-4xl font-bold mb-2">Blog</h1>
+        <p class="text-[var(--color-text-secondary)] text-sm md:text-base max-w-2xl">
+          Latest news, guides, and insights about movies, shows, streaming platforms, and the NetMirror app.
+        </p>
+      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {posts.map((post) => (
-          <a href={`/blog/${post.slug}/`} class="glass-card group rounded-xl overflow-hidden hover:border-[var(--color-primary)]/50 transition-all duration-300">
-            <div class="aspect-video overflow-hidden">
+      <!-- Featured Post (first post, larger card) -->
+      {posts.length > 0 && (
+        <a href={`/blog/${posts[0].slug}/`} class="block glass-card group rounded-xl overflow-hidden hover:border-[var(--color-primary)]/40 transition-all duration-300 mb-8">
+          <div class="grid md:grid-cols-2 gap-0">
+            <div class="aspect-[16/9] md:aspect-auto overflow-hidden">
               <img
-                src={post.image}
-                alt={post.title}
-                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                loading="lazy"
+                src={getBlogImage(posts[0].slug, posts[0].tags).url}
+                alt={getBlogImage(posts[0].slug, posts[0].tags).alt}
+                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="eager"
+                decoding="async"
+                width="640"
+                height="360"
               />
             </div>
-            <div class="p-5">
-              <div class="flex items-center gap-3 mb-3 text-xs text-[var(--color-text-muted)]">
-                <time>{post.date}</time>
-                <span>&middot;</span>
-                <span>{post.readTime}</span>
+            <div class="p-6 md:p-8 flex flex-col justify-center">
+              <div class="flex flex-wrap items-center gap-2 mb-3">
+                <span class="text-[10px] px-2.5 py-1 rounded-full bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-semibold uppercase tracking-wider">{posts[0].category}</span>
+                <span class="text-[10px] text-[var(--color-text-muted)]">{posts[0].readTime}</span>
               </div>
-              <h2 class="text-lg font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">
-                {post.title}
+              <h2 class="text-xl md:text-2xl font-bold mb-3 group-hover:text-[var(--color-primary)] transition-colors leading-tight">
+                {posts[0].title}
               </h2>
-              <p class="text-sm text-[var(--color-text-secondary)] line-clamp-3 mb-4">
-                {post.excerpt}
+              <p class="text-sm text-[var(--color-text-secondary)] mb-4 line-clamp-3">
+                {posts[0].excerpt}
               </p>
-              <div class="flex flex-wrap gap-2">
-                {post.tags.slice(0, 3).map(tag => (
-                  <span class="text-[10px] px-2 py-0.5 rounded-full bg-[var(--color-bg-card)] text-[var(--color-text-muted)] border border-[var(--color-border)]">
-                    {tag}
-                  </span>
-                ))}
+              <div class="flex items-center gap-3 text-xs text-[var(--color-text-muted)]">
+                <time>{new Date(posts[0].date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</time>
+                <span>&middot;</span>
+                <span>{posts[0].author}</span>
               </div>
             </div>
-          </a>
-        ))}
+          </div>
+        </a>
+      )}
+
+      <!-- Remaining Posts Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        {posts.slice(1).map((post, i) => {
+          const img = getBlogImage(post.slug, post.tags);
+          return (
+            <a href={`/blog/${post.slug}/`} class="glass-card group rounded-xl overflow-hidden hover:border-[var(--color-primary)]/40 transition-all duration-300 flex flex-col">
+              <div class="aspect-[16/9] overflow-hidden">
+                <img
+                  src={img.url}
+                  alt={img.alt}
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading={i < 3 ? 'eager' : 'lazy'}
+                  decoding="async"
+                  width="400"
+                  height="225"
+                />
+              </div>
+              <div class="p-5 flex flex-col flex-1">
+                <div class="flex flex-wrap items-center gap-2 mb-2.5">
+                  <span class="text-[9px] px-2 py-0.5 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-semibold uppercase tracking-wider">{post.category}</span>
+                  <span class="text-[10px] text-[var(--color-text-muted)]">{post.readTime}</span>
+                </div>
+                <h2 class="text-base font-bold mb-2 group-hover:text-[var(--color-primary)] transition-colors line-clamp-2 leading-snug">
+                  {post.title}
+                </h2>
+                <p class="text-xs text-[var(--color-text-secondary)] line-clamp-2 mb-3 flex-1">
+                  {post.excerpt}
+                </p>
+                <div class="flex items-center justify-between text-[10px] text-[var(--color-text-muted)] pt-3 border-t border-[var(--color-border)]/50">
+                  <time>{new Date(post.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}</time>
+                  <div class="flex gap-1.5">
+                    {post.tags.slice(0, 2).map(tag => (
+                      <span class="px-1.5 py-0.5 rounded bg-[var(--color-bg-card)] text-[var(--color-text-muted)] border border-[var(--color-border)]">
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </a>
+          );
+        })}
       </div>
     </div>
   </main>

@@ -26,10 +26,11 @@ export interface SEOOutput {
 }
 
 export function generateSEO(input: SEOInput): SEOOutput {
-  const title = `${input.title} | ${SITE_NAME}`;
+  const hasBrand = input.title.toLowerCase().includes('netmirror') || input.title.toLowerCase().includes('net mirror');
+  const title = hasBrand ? input.title : `${input.title} | ${SITE_NAME}`;
   const description = input.description;
   const canonical = input.canonical ?? SITE_URL;
-  const ogImage = input.ogImage ?? `${SITE_URL}/images/og-default.webp`;
+  const ogImage = input.ogImage ?? `${SITE_URL}/og-image.png`;
   const ogType = input.ogType ?? 'website';
 
   return {

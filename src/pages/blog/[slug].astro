@@ -6,9 +6,20 @@ import Footer from '../../components/Footer.astro';
 import SEOHead from '../../components/SEOHead.astro';
 import Schema from '../../components/Schema.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { blogPosts, getAllBlogPosts } from '../../data/blogPosts';
-import { breadcrumbSchema, articleSchema } from '../../lib/schema';
+import QuickAnswer from '../../components/blog/QuickAnswer.astro';
+import TableOfContents from '../../components/blog/TableOfContents.astro';
+import ArticleTable from '../../components/blog/ArticleTable.astro';
+import ProsCons from '../../components/blog/ProsCons.astro';
+import SafetyNote from '../../components/blog/SafetyNote.astro';
+import BlogFAQ from '../../components/blog/BlogFAQ.astro';
+import RelatedPosts from '../../components/blog/RelatedPosts.astro';
+import ArticleCTA from '../../components/blog/ArticleCTA.astro';
+import AuthorBox from '../../components/blog/AuthorBox.astro';
+import { blogPosts, getRelatedPosts } from '../../data/blogPosts';
+import { getBlogImage } from '../../data/blogImages';
+import { breadcrumbSchema, articleSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
+import { SITE_NAME } from '../../lib/constants';
 
 export const getStaticPaths = (() => {
   return blogPosts.map(post => ({
@@ -18,8 +29,8 @@ export const getStaticPaths = (() => {
 }) satisfies GetStaticPaths;
 
 const { post } = Astro.props;
-const allPosts = getAllBlogPosts().filter(p => p.slug !== post.slug);
-const relatedPosts = allPosts.slice(0, 3);
+const relatedPosts = getRelatedPosts(post);
+const blogImage = getBlogImage(post.slug, post.tags);
 
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -27,6 +38,22 @@ const breadcrumbs = [
   { label: post.title, href: `/blog/${post.slug}/` },
 ];
 
+const schemas: object[] = [
+  breadcrumbSchema(breadcrumbs),
+  articleSchema({
+    title: post.title,
+    excerpt: post.excerpt,
+    datePublished: post.date,
+    dateModified: post.modifiedDate || post.date,
+    author: post.author,
+    image: blogImage.url,
+    slug: post.slug,
+  }),
+];
+
+if (post.faqs && post.faqs.length > 0) {
+  schemas.push(faqSchema(post.faqs));
+}
 ---
 
 <BaseLayout>
@@ -35,77 +62,228 @@ const breadcrumbs = [
     title={post.title}
     description={post.excerpt}
     canonical={`${SITE_URL}/blog/${post.slug}/`}
+    ogImage={blogImage.url}
     ogType="article"
   />
-  <Schema slot="head" schema={[
-    breadcrumbSchema(breadcrumbs),
-    articleSchema({ title: post.title, excerpt: post.excerpt, datePublished: post.date, author: post.author, image: post.image })
-  ]} />
+  <Schema slot="head" schema={schemas} />
 
   <Header />
 
-  <main class="min-h-screen pt-20">
-    <article class="max-w-4xl mx-auto px-4 py-8">
+  <main class="min-h-screen pt-36">
+    <article class="max-w-[860px] mx-auto px-4 py-8">
+      <!-- Breadcrumbs -->
       <Breadcrumbs items={breadcrumbs} />
 
-      <header class="mb-10">
-        <div class="flex flex-wrap gap-2 mb-4">
-          {post.tags.map(tag => (
-            <span class="chip text-xs">{tag}</span>
+      <!-- Article Header -->
+      <header class="mb-8">
+        <div class="flex flex-wrap items-center gap-2 mb-4">
+          <span class="text-[10px] px-2.5 py-1 rounded-full bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-semibold uppercase tracking-wider">{post.category}</span>
+          {post.tags.slice(0, 3).map(tag => (
+            <span class="text-[10px] px-2 py-0.5 rounded-full bg-[var(--color-bg-card)] text-[var(--color-text-muted)] border border-[var(--color-border)]">{tag}</span>
           ))}
         </div>
-        <h1 class="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 leading-tight">
+
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 leading-tight text-[var(--color-text-primary)]">
           {post.title}
         </h1>
-        <div class="flex items-center gap-4 text-sm text-[var(--color-text-muted)]">
+
+        <div class="flex flex-wrap items-center gap-3 text-xs text-[var(--color-text-muted)]">
           <span>By {post.author}</span>
-          <span>&middot;</span>
-          <time>{post.date}</time>
-          <span>&middot;</span>
+          <span class="text-[var(--color-border)]">&bull;</span>
+          <time datetime={post.date}>Updated {new Date(post.date).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}</time>
+          <span class="text-[var(--color-border)]">&bull;</span>
           <span>{post.readTime}</span>
+          <span class="text-[var(--color-border)]">&bull;</span>
+          <span>{post.category}</span>
         </div>
       </header>
 
-      <div class="aspect-video rounded-xl overflow-hidden mb-10">
+      <!-- Feature Image -->
+      <div class="aspect-[16/9] rounded-xl overflow-hidden mb-8 border border-[var(--color-border)]">
         <img
-          src={post.image}
-          alt={post.title}
+          src={blogImage.url}
+          alt={blogImage.alt}
+          width={blogImage.width}
+          height={blogImage.height}
           class="w-full h-full object-cover"
           loading="eager"
+          decoding="async"
         />
       </div>
 
-      <div class="space-y-6 text-[var(--color-text-secondary)] text-lg leading-relaxed">
-        {post.content.split('\n\n').map(paragraph => (
-          <p>{paragraph}</p>
-        ))}
+      <!-- Quick Answer -->
+      {post.quickAnswer && <QuickAnswer answer={post.quickAnswer} />}
+
+      <!-- Table of Contents -->
+      {post.toc && post.toc.length > 0 && <TableOfContents items={post.toc} />}
+
+      <!-- Article Body -->
+      <div class="blog-content" set:html={post.content} />
+
+      <!-- Tables -->
+      {post.tables && post.tables.map(table => (
+        <ArticleTable headers={table.headers} rows={table.rows} caption={table.caption} />
+      ))}
+
+      <!-- Pros / Cons -->
+      {post.pros && post.cons && (
+        <ProsCons pros={post.pros} cons={post.cons} />
+      )}
+
+      <!-- Safety Note -->
+      {post.safetyNote && <SafetyNote note={post.safetyNote} />}
+
+      <!-- FAQs -->
+      {post.faqs && post.faqs.length > 0 && <BlogFAQ faqs={post.faqs} />}
+
+      <!-- CTA Block -->
+      <ArticleCTA
+        title={post.ctaTitle}
+        description={post.ctaDescription}
+      />
+
+      <!-- Author / Publisher -->
+      <AuthorBox author={post.author} />
+
+      <!-- Related Posts -->
+      {relatedPosts.length > 0 && (
+        <RelatedPosts posts={relatedPosts.map(p => ({
+          slug: p.slug,
+          title: p.title,
+          excerpt: p.excerpt,
+          image: getBlogImage(p.slug, p.tags).url,
+          readTime: p.readTime,
+          tags: p.tags,
+        }))} />
+      )}
+
+      <!-- Disclaimer -->
+      <div class="mt-10 pt-6 border-t border-[var(--color-border)]">
+        <p class="text-[10px] text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> {SITE_NAME} does not host, store, or distribute any media content. All information is for discovery purposes. Streaming availability varies by region. All trademarks belong to their respective owners. Last updated: {new Date(post.date).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}.
+        </p>
       </div>
-
-      <footer class="mt-12 pt-8 border-t border-[var(--color-border)]">
-        <div class="flex flex-wrap gap-2 mb-8">
-          {post.tags.map(tag => (
-            <span class="chip text-xs">{tag}</span>
-          ))}
-        </div>
-
-        {relatedPosts.length > 0 && (
-          <div>
-            <h2 class="section-title mb-6">Related Articles</h2>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {relatedPosts.map((related) => (
-                <a href={`/blog/${related.slug}/`} class="glass-card rounded-lg p-5 hover:border-[var(--color-primary)]/50 transition-all">
-                  <h3 class="font-semibold mb-2 line-clamp-2 hover:text-[var(--color-primary)] transition-colors">
-                    {related.title}
-                  </h3>
-                  <p class="text-sm text-[var(--color-text-muted)]">{related.readTime}</p>
-                </a>
-              ))}
-            </div>
-          </div>
-        )}
-      </footer>
     </article>
   </main>
 
   <Footer />
 </BaseLayout>
+
+<style is:global>
+  .blog-content {
+    color: var(--color-text-secondary);
+    font-size: 1rem;
+    line-height: 1.75;
+  }
+
+  .blog-content p {
+    margin-bottom: 1.25rem;
+  }
+
+  .blog-content h2 {
+    font-size: 1.375rem;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    margin-top: 2.5rem;
+    margin-bottom: 1rem;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .blog-content h2:first-of-type {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .blog-content h3 {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    margin-top: 1.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .blog-content a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    transition: color 0.2s;
+  }
+
+  .blog-content a:hover {
+    color: var(--color-primary);
+  }
+
+  .blog-content strong {
+    color: var(--color-text-primary);
+    font-weight: 600;
+  }
+
+  .blog-content ul,
+  .blog-content ol {
+    margin-bottom: 1.25rem;
+    padding-left: 1.5rem;
+  }
+
+  .blog-content ul {
+    list-style-type: disc;
+  }
+
+  .blog-content ol {
+    list-style-type: decimal;
+  }
+
+  .blog-content li {
+    margin-bottom: 0.5rem;
+    padding-left: 0.25rem;
+  }
+
+  .blog-content code {
+    background: var(--color-bg-card);
+    color: var(--color-primary);
+    padding: 0.15rem 0.4rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    border: 1px solid var(--color-border);
+  }
+
+  .blog-content blockquote {
+    border-left: 3px solid var(--color-primary);
+    padding: 0.75rem 1rem;
+    margin: 1.25rem 0;
+    background: var(--color-bg-card);
+    border-radius: 0 0.5rem 0.5rem 0;
+    font-style: italic;
+  }
+
+  .blog-content img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.75rem;
+    margin: 1.5rem 0;
+  }
+
+  .blog-content table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-size: 0.875rem;
+  }
+
+  .blog-content table th,
+  .blog-content table td {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-border);
+    text-align: left;
+  }
+
+  .blog-content table th {
+    background: var(--color-bg-card);
+    font-weight: 600;
+    color: var(--color-text-primary);
+  }
+
+  .blog-content table td {
+    color: var(--color-text-secondary);
+  }
+</style>

@@ -35,15 +35,15 @@ const features = [
 <BaseLayout>
   <SEOHead
     slot="head"
-    title="About NetMirror — Movie & Show Discovery Platform"
-    description="Learn about NetMirror - your ultimate movie, TV show, and anime discovery platform. Find where to watch legally across all streaming platforms."
+    title="About NetMirror — Movie Discovery Platform"
+    description="NetMirror helps you discover where to watch movies, TV shows and anime legally across Netflix, Prime Video and 30+ streaming platforms."
     canonical={`${SITE_URL}/about/`}
   />
   <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), organizationSchema()]} />
 
   <Header />
 
-  <main class="min-h-screen pt-20">
+  <main class="min-h-screen pt-36">
     <section class="relative py-16 md:py-24 bg-gradient-to-br from-[var(--color-bg-primary)] via-[var(--color-bg-secondary)] to-[var(--color-bg-primary)]">
       <div class="max-w-7xl mx-auto px-4">
         <Breadcrumbs items={breadcrumbs} />

@@ -1,7 +1,10 @@
-# Redirect trailing slashes for consistency
-# Cloudflare Pages handles most of these automatically
+# www to non-www
+https://www.net-27.cc/* https://net-27.cc/:splat 301
 
-# Legacy redirects (add as needed)
+# Sitemap aliases
+/sitemap.xml /sitemap-index.xml 301
+
+# Legacy redirects
 /home /
 /movie/* /movies/:splat
 /tv/* /shows/:splat

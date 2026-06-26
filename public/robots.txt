@@ -1,5 +1,4 @@
-User-agent: *
-Allow: /
 Disallow: /api/
+Disallow: /player/
 
 Sitemap: https://net-27.cc/sitemap-index.xml

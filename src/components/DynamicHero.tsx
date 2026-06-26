@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 
 interface HeroItem {
   id: number;
@@ -15,9 +15,12 @@ export default function DynamicHero() {
   const [slides, setSlides] = useState<HeroItem[]>([]);
   const [current, setCurrent] = useState(0);
   const [loaded, setLoaded] = useState(false);
+  const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   useEffect(() => {
-    fetch('/api/tmdb/category?type=trending')
+    const lang = typeof window !== 'undefined' ? localStorage.getItem('netmirror_lang') || 'en' : 'en';
+    const langParam = lang !== 'en' ? `&lang=${lang}` : '';
+    fetch(`/api/tmdb/category?type=trending${langParam}`)
       .then(r => r.json())
       .then(data => {
         const items = (data.items || []).filter((i: HeroItem) => i.backdropUrl).slice(0, 5);
@@ -28,8 +31,27 @@ export default function DynamicHero() {
 
   useEffect(() => {
     if (slides.length < 2) return;
-    const interval = setInterval(() => setCurrent(prev => (prev + 1) % slides.length), 6000);
-    return () => clearInterval(interval);
+
+    function startInterval() {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      intervalRef.current = setInterval(() => setCurrent(prev => (prev + 1) % slides.length), 6000);
+    }
+
+    function handleVisibility() {
+      if (document.hidden) {
+        if (intervalRef.current) clearInterval(intervalRef.current);
+      } else {
+        startInterval();
+      }
+    }
+
+    startInterval();
+    document.addEventListener('visibilitychange', handleVisibility);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
   }, [slides.length]);
 
   const goTo = useCallback((idx: number) => setCurrent(idx), []);
@@ -45,27 +67,30 @@ export default function DynamicHero() {
             alt={`${slide.title} backdrop`}
             className="hero-bg"
             loading={i === 0 ? 'eager' : 'lazy'}
+            decoding={i === 0 ? 'sync' : 'async'}
+            fetchPriority={i === 0 ? 'high' : undefined}
+            width={1280}
+            height={720}
           />
-          {/* Overlays */}
           <div className="hero-overlay-lr" />
           <div className="hero-overlay-tb" />
 
           <div className="hero-content-wrap">
             <div className="hero-content">
               <div style={{ marginBottom: 10 }}>
-                <span className="hero-label">🔥 Trending Now</span>
+                <span className="hero-label">Trending Now</span>
               </div>
               <h2 className="hero-title">{slide.title}</h2>
               <div className="hero-meta">
                 <span className="hero-rating">{slide.rating}</span>
                 <span className="hero-meta-text">{slide.year}</span>
-                <span className="hero-meta-text">·</span>
+                <span className="hero-meta-text">&middot;</span>
                 <span className="hero-meta-text" style={{ textTransform: 'uppercase', fontSize: 12 }}>{slide.type === 'tv' ? 'Series' : 'Movie'}</span>
               </div>
               <p className="hero-description">{slide.overview}</p>
               <div className="hero-actions">
-                <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-primary hero-btn">▶ Watch Now</a>
-                <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-glass hero-btn">ⓘ More Info</a>
+                <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-primary hero-btn">Watch Now</a>
+                <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-glass hero-btn">More Info</a>
               </div>
             </div>
           </div>

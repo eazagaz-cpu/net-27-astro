@@ -37,9 +37,21 @@ export interface BlogPost {
   content: string;
   author: string;
   date: string;
+  modifiedDate?: string;
   image: string;
   tags: string[];
+  category: string;
   readTime: string;
+  quickAnswer?: string;
+  toc?: { id: string; title: string; level: number }[];
+  faqs?: { question: string; answer: string }[];
+  tables?: { caption?: string; headers: string[]; rows: string[][] }[];
+  pros?: string[];
+  cons?: string[];
+  safetyNote?: string;
+  relatedSlugs?: string[];
+  ctaTitle?: string;
+  ctaDescription?: string;
 }
 
 export interface Genre {

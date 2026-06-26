@@ -19,15 +19,15 @@ const breadcrumbs = [
 <BaseLayout>
   <SEOHead
     slot="head"
-    title="Search Movies & Shows — Find Any Title Instantly"
-    description="Search 500K+ movies, TV shows, and anime. Find any title by name, actor, director, genre, or platform. Instant results."
+    title="Search Movies, TV Shows & Anime"
+    description="Search 500K+ movies, TV shows and anime. Find any title by name, actor, genre or platform. Instant results powered by TMDB."
     canonical={`${SITE_URL}/search/`}
   />
   <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
 
   <Header />
 
-  <main class="min-h-screen pt-20">
+  <main class="min-h-screen pt-36">
     <div class="max-w-7xl mx-auto px-4 py-8">
       <Breadcrumbs items={breadcrumbs} />
 

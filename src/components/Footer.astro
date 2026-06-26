@@ -1,5 +1,6 @@
 ---
 import { SITE_NAME, CONTACT_EMAIL } from '../lib/constants';
+import LanguageSwitcher from './i18n/LanguageSwitcher.astro';
 
 const quickLinks = [
   { label: 'Home', href: '/' },
@@ -37,6 +38,7 @@ const legalLinks = [
   { label: 'Terms of Service', href: '/terms/' },
   { label: 'DMCA Policy', href: '/dmca/' },
   { label: 'Disclaimer', href: '/disclaimer/' },
+  { label: 'Sitemap', href: '/sitemap/' },
 ];
 
 const socials = [
@@ -112,12 +114,12 @@ const socials = [
       <!-- Follow Us -->
       <div>
         <h3 class="text-xs font-semibold uppercase tracking-wider text-white mb-3">Follow Us</h3>
-        <div class="grid grid-cols-4 gap-2">
+        <div class="grid grid-cols-4 gap-2 max-w-[180px]">
           {socials.map(s => (
             <a
               href={s.href}
               target="_blank"
-              rel="noopener noreferrer"
+              rel="noopener noreferrer nofollow"
               aria-label={s.label}
               class="social-icon-3d"
               style={`--icon-color: ${s.color}; --icon-glow: ${s.glow};`}
@@ -127,22 +129,30 @@ const socials = [
           ))}
         </div>
       </div>
+
     </div>
   </div>
 
-  <!-- Bottom Bar -->
+  <!-- Bottom Bar: Copyright + Socials -->
   <div class="border-t border-white/5">
     <div class="max-w-[1400px] mx-auto px-4 py-4 flex flex-col sm:flex-row items-center justify-between gap-3">
-      <p class="text-[11px] text-[var(--color-text-muted)]">
+      <p class="text-[11px] text-[var(--color-text-muted)] text-center sm:text-left">
         &copy; {new Date().getFullYear()} {SITE_NAME}. All rights reserved. Contact: {CONTACT_EMAIL}
       </p>
       <div class="flex items-center gap-2">
         {socials.slice(0, 5).map(s => (
-          <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={s.label} class="text-[var(--color-muted)] hover:text-white transition-colors" style={`color: var(--color-muted);`}>
+          <a href={s.href} target="_blank" rel="noopener noreferrer nofollow" aria-label={s.label} class="text-[var(--color-muted)] hover:text-white transition-colors" style={`color: var(--color-muted);`}>
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" set:html={s.icon} />
           </a>
         ))}
       </div>
+    </div>
+  </div>
+
+  <!-- Languages Bar -->
+  <div class="border-t border-white/5 bg-[var(--color-bg-primary)]">
+    <div class="max-w-[1400px] mx-auto px-4 py-4">
+      <LanguageSwitcher />
     </div>
   </div>
 </footer>

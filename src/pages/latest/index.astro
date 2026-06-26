@@ -16,15 +16,15 @@ const breadcrumbs = [
 ---
 
 <BaseLayout>
-  <SEOHead slot="head" title="New Releases — Latest Movies & Shows Added Today" description="Latest movie and show releases. New titles added daily across Netflix, Prime Video, Disney+, Crunchyroll." canonical={`${SITE_URL}/latest/`} />
+  <SEOHead slot="head" title="Latest Releases — New Movies & Shows Today" description="Discover the newest movies and TV shows. Fresh titles added daily across Netflix, Prime Video, Disney+ and more streaming platforms." canonical={`${SITE_URL}/latest/`} />
   <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
   <Header />
-  <main class="min-h-screen pt-20">
+  <main class="min-h-screen pt-36">
     <div class="max-w-[1400px] mx-auto px-4 py-8">
       <Breadcrumbs items={breadcrumbs} />
       <h1 class="text-3xl md:text-4xl font-bold mb-2">🆕 Latest Releases</h1>
       <p class="text-[var(--color-muted)] mb-8">Newest movies and TV shows released across all streaming platforms.</p>
-      <DynamicGrid client:load category="latest" title="Latest Releases" />
+      <DynamicGrid client:idle category="latest" title="Latest Releases" />
     </div>
   </main>
   <Footer />

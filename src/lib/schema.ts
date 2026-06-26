@@ -115,22 +115,42 @@ export function tvSeriesSchema(show: any): object {
 export function articleSchema(post: any): object {
   const schema: Record<string, any> = {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: post.headline ?? post.title,
     description: post.description ?? post.excerpt,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': post.url ?? `${SITE_URL}/blog/${post.slug}/`,
+    },
+    publisher: {
+      '@type': 'Organization',
+      name: SITE_NAME,
+      url: SITE_URL,
+    },
   };
 
   if (post.image) {
-    schema.image = post.image;
+    schema.image = {
+      '@type': 'ImageObject',
+      url: post.image,
+      width: 1280,
+      height: 720,
+    };
   }
 
   if (post.datePublished) {
     schema.datePublished = post.datePublished;
   }
 
+  if (post.dateModified ?? post.modifiedDate) {
+    schema.dateModified = post.dateModified ?? post.modifiedDate;
+  } else if (post.datePublished) {
+    schema.dateModified = post.datePublished;
+  }
+
   if (post.author) {
     schema.author = {
-      '@type': 'Person',
+      '@type': 'Organization',
       name: typeof post.author === 'string' ? post.author : post.author.name,
     };
   }

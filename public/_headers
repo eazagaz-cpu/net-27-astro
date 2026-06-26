@@ -1,17 +1,47 @@
 /*
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
-  X-XSS-Protection: 1; mode=block
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
 
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/fallbacks/*
+  Cache-Control: public, max-age=31536000, immutable
+
 /images/*
   Cache-Control: public, max-age=86400
 
 /favicon.svg
+  Cache-Control: public, max-age=86400
+
+/og-image.png
+  Content-Type: image/png
+  Cache-Control: public, max-age=86400
+
+/og-image.svg
+  Content-Type: image/svg+xml
+  Cache-Control: public, max-age=86400
+
+/robots.txt
+  Content-Type: text/plain
+  Cache-Control: public, max-age=86400
+
+/sitemap-index.xml
+  Content-Type: application/xml
+  Cache-Control: public, max-age=3600
+  X-Robots-Tag: noindex
+
+/sitemap-0.xml
+  Content-Type: application/xml
+  Cache-Control: public, max-age=3600
+  X-Robots-Tag: noindex
+
+/llms.txt
   Cache-Control: public, max-age=86400
 
 /watch/*
