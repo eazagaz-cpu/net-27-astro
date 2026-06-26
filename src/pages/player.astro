@@ -55,8 +55,18 @@ import { SITE_URL } from '../lib/seo';
       <!-- Loading state -->
       <div id="player-loading" class="flex items-center justify-center h-full">
         <div class="text-center">
-          <div class="w-10 h-10 border-2 border-white/20 border-t-[var(--color-primary)] rounded-full animate-spin mx-auto mb-4"></div>
-          <p class="text-zinc-400 text-sm" id="loading-status">Loading player...</p>
+          <div class="w-10 h-10 border-2 border-white/15 border-t-white/80 rounded-full animate-spin mx-auto mb-5"></div>
+          <p class="text-sm font-medium text-white mb-1.5">Resolving stream...</p>
+          <p class="text-xs text-zinc-500" id="loading-movie-title"></p>
+        </div>
+      </div>
+
+      <!-- Server chooser (first visit — no saved preference) -->
+      <div id="player-chooser" class="hidden flex items-center justify-center h-full">
+        <div class="text-center px-4 max-w-sm w-full">
+          <h2 class="text-xl font-bold mb-1.5">Choose a server</h2>
+          <p class="text-sm text-zinc-500 mb-8">Server 1 is recommended · others are fallbacks</p>
+          <div class="grid grid-cols-2 gap-3" id="chooser-btns"></div>
         </div>
       </div>
 
@@ -152,7 +162,12 @@ import { SITE_URL } from '../lib/seo';
   .player-frame { width: 100%; height: 100%; border: 0; background: #000; }
   .report-option { display: block; width: 100%; text-align: left; padding: 10px 14px; border-radius: 10px; font-size: 13px; color: #ccc; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: all 0.15s; }
   .report-option:hover { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.12); }
-  #player-fallback, #player-blocked, #player-notfound, #player-loading { height: calc(100svh - 48px); }
+  #player-fallback, #player-blocked, #player-notfound, #player-loading, #player-chooser { height: calc(100svh - 48px); }
+  .chooser-btn { padding: 18px 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.15s, transform 0.1s; border: none; width: 100%; }
+  .chooser-btn:hover { opacity: 0.85; transform: translateY(-1px); }
+  .chooser-btn:active { transform: translateY(0); }
+  .chooser-btn.s-primary { background: var(--color-primary); color: #fff; }
+  .chooser-btn.s-alt { background: rgba(255,255,255,0.07); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
   .lang-dropdown { z-index: 55; }
   .lang-opt { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 12px; font-size: 12px; color: #ccc; background: transparent; border: none; cursor: pointer; transition: background 0.1s; text-align: left; }
   .lang-opt:hover { background: rgba(255,255,255,0.06); color: #fff; }
@@ -162,7 +177,7 @@ import { SITE_URL } from '../lib/seo';
 <script>
   import { getServers } from '../lib/player/servers';
   import { applySandbox } from '../lib/player/iframePolicy';
-  import { loadSavedServer, saveSelectedServer } from '../lib/player/serverMemory';
+  import { loadSavedServer, saveSelectedServer, hasSavedServer } from '../lib/player/serverMemory';
   import { LANGUAGES, loadLang, saveLang, buildUrlWithLang } from '../lib/player/languages';
   import { reportIssue } from '../lib/serverQuality';
   import type { ReportType } from '../lib/serverQuality';
@@ -194,15 +209,17 @@ import { SITE_URL } from '../lib/seo';
 
   // ── DOM helpers ────────────────────────────────────────────────────────────
   function hideAllStates() {
-    ['player-loading', 'player-iframe', 'player-fallback', 'player-blocked', 'player-notfound']
+    ['player-loading', 'player-iframe', 'player-fallback', 'player-blocked', 'player-notfound', 'player-chooser']
       .forEach(elId => document.getElementById(elId)?.classList.add('hidden'));
   }
 
   type ErrorVariant = 'timeout' | 'blocked' | 'metadata';
 
-  function setState(state: 'loading' | 'ready' | 'error', variant?: ErrorVariant) {
+  function setState(state: 'loading' | 'ready' | 'error' | 'chooser', variant?: ErrorVariant) {
     hideAllStates();
-    if (state === 'loading') {
+    if (state === 'chooser') {
+      document.getElementById('player-chooser')?.classList.remove('hidden');
+    } else if (state === 'loading') {
       document.getElementById('player-loading')?.classList.remove('hidden');
     } else if (state === 'ready') {
       document.getElementById('player-iframe')?.classList.remove('hidden');
@@ -215,6 +232,21 @@ import { SITE_URL } from '../lib/seo';
         document.getElementById('player-fallback')?.classList.remove('hidden');
       }
     }
+  }
+
+  // ── Server chooser (first visit) ──────────────────────────────────────────
+  function populateChooser() {
+    const container = document.getElementById('chooser-btns');
+    if (!container) return;
+    const servers = getServers({ type, id, season, episode });
+    container.innerHTML = servers.map((srv, i) =>
+      `<button class="chooser-btn ${i === 0 ? 's-primary' : 's-alt'}" data-idx="${i}">${srv.name}</button>`
+    ).join('');
+    container.querySelectorAll('.chooser-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        loadPlayer(parseInt((btn as HTMLElement).dataset.idx || '0'));
+      });
+    });
   }
 
   // ── Server list + dropdown ─────────────────────────────────────────────────
@@ -236,7 +268,6 @@ import { SITE_URL } from '../lib/seo';
     playerConfirmed = false;
 
     const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
-    const statusEl = document.getElementById('loading-status');
 
     if (!iframe || !id) {
       setState('error', 'metadata');
@@ -252,7 +283,6 @@ import { SITE_URL } from '../lib/seo';
     iframe.removeAttribute('src');
 
     setState('loading');
-    if (statusEl) statusEl.textContent = `Loading player...`;
 
     // Apply per-server sandbox policy
     applySandbox(iframe, srv.sandboxMode);
@@ -457,6 +487,8 @@ import { SITE_URL } from '../lib/seo';
     currentServerIdx = loadSavedServer(type, id);
     populateServers();
 
+    const firstVisit = !hasSavedServer(type, id);
+
     fetch(`/api/tmdb/details?type=${type}&id=${id}`)
       .then(r => r.json())
       .then(data => {
@@ -464,6 +496,8 @@ import { SITE_URL } from '../lib/seo';
           const el = document.getElementById('player-title');
           if (el) el.textContent = data.title;
           document.title = `Watch ${data.title} | NetMirror`;
+          const movieTitleEl = document.getElementById('loading-movie-title');
+          if (movieTitleEl) movieTitleEl.textContent = data.title;
 
           if (data.trailerKey) {
             const link = document.getElementById('trailer-link');
@@ -491,7 +525,12 @@ import { SITE_URL } from '../lib/seo';
       })
       .catch(() => setState('error', 'metadata'));
 
-    loadPlayer(currentServerIdx);
+    if (firstVisit) {
+      populateChooser();
+      setState('chooser');
+    } else {
+      loadPlayer(currentServerIdx);
+    }
   } else {
     setState('error', 'metadata');
   }
