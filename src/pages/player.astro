@@ -132,6 +132,7 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
   let timeoutTimer: ReturnType<typeof setTimeout> | null = null;
   let confirmTimer: ReturnType<typeof setTimeout> | null = null;
   let watchTimer: ReturnType<typeof setTimeout> | null = null;
+  let interactionTimer: ReturnType<typeof setTimeout> | null = null;
   let loadTimestamp = 0;
   let playerConfirmed = false; // true = embed is definitely playing
   let switching = false;       // guard against double-switch
@@ -147,13 +148,11 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
     return null;
   };
 
-  // After onload, wait this long for an error postMessage before showing iframe.
-  // Keeps 404 pages hidden while giving playing signals time to arrive.
-  const CONFIRM_MS = 1500;
-  // If no playing confirmation in this time, auto-switch to next server.
-  const TIMEOUT_MS = 10000;
+  const CONFIRM_MS = 500;    // ms after onload to catch error postMessage before revealing iframe
+  const TIMEOUT_MS = 8000;   // ms for hung connection (onload never fires) → switch
+  const INTERACT_MS = 3500;  // ms after iframe shown — if no play signal, switch (catches silent error pages)
   const LONG_WATCH_MS = 60000;
-  const QUICK_SWITCH_MS = 8000;
+  const QUICK_SWITCH_MS = 5000;
   const SQ_KEY = 'netmirror_server_quality';
 
   function sqLoad(): Record<string, any> {
@@ -208,6 +207,7 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
   // Silently move to next server — user just sees "Trying Server N..." loading
   function silentSwitch() {
     if (switching) return;
+    if (interactionTimer) { clearTimeout(interactionTimer); interactionTimer = null; }
     const servers = getServers();
     const next = currentServerIdx + 1;
     if (next >= servers.length) {
@@ -221,7 +221,7 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
     if (status) status.textContent = `Trying ${servers[next].name}...`;
     hideAllStates();
     document.getElementById('player-loading')?.classList.remove('hidden');
-    setTimeout(() => { switching = false; loadPlayer(next); }, 600);
+    setTimeout(() => { switching = false; loadPlayer(next); }, 300);
   }
 
   function showIframe() {
@@ -257,6 +257,7 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
     if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
     if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; }
     if (watchTimer) { clearTimeout(watchTimer); watchTimer = null; }
+    if (interactionTimer) { clearTimeout(interactionTimer); interactionTimer = null; }
 
     iframe.removeAttribute('src');
     loadTimestamp = Date.now();
@@ -273,43 +274,49 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
     requestAnimationFrame(() => {
       iframe.src = srv.url;
 
+      // Hung-connection safety: if onload never fires (server down/DNS fail), switch after TIMEOUT_MS
+      timeoutTimer = setTimeout(() => {
+        timeoutTimer = null;
+        if (playerConfirmed || switching) return;
+        sqUpdate(srv.id, s => { s.timeoutCount++; s.qualityScore -= 20; });
+        if (isLast) {
+          hideAllStates();
+          document.getElementById('player-fallback')?.classList.remove('hidden');
+        } else {
+          silentSwitch();
+        }
+      }, TIMEOUT_MS);
+
       iframe.onload = () => {
+        // Cancel hung-connection timer — page responded
+        if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
+
         if (playerConfirmed || switching) {
-          // Already confirmed via postMessage — show immediately
           if (!switching) showIframe();
-          if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
           return;
         }
 
-        // Brief window to catch an error postMessage before revealing the iframe.
-        // If the server sent an error (e.g. videasy 404), silentSwitch fires first.
+        // 500ms window: if server sends error postMessage (e.g. 404), silentSwitch fires first
         confirmTimer = setTimeout(() => {
           confirmTimer = null;
-          if (switching) return;
-          // No error postMessage arrived — show iframe (may be working player or 404)
+          if (switching || playerConfirmed) return;
+
           showIframe();
           sqUpdate(srv.id, s => { s.successfulLoads++; s.qualityScore += 5; });
           watchTimer = setTimeout(() => {
             if (playerConfirmed) sqUpdate(srv.id, s => { s.qualityScore += 15; });
           }, LONG_WATCH_MS);
+
+          // If not last server: give user INTERACT_MS to interact (click/blur).
+          // Silent error pages (e.g. "unavailable") get no interaction → auto-switch.
+          if (!isLast) {
+            interactionTimer = setTimeout(() => {
+              interactionTimer = null;
+              if (!playerConfirmed && !switching) silentSwitch();
+            }, INTERACT_MS);
+          }
         }, CONFIRM_MS);
       };
-
-      // Overall timeout: if still not confirmed after TIMEOUT_MS, auto-switch
-      timeoutTimer = setTimeout(() => {
-        timeoutTimer = null;
-        if (playerConfirmed || switching) return;
-        if (isLast) {
-          // Last server: if nothing loaded at all show fallback, else leave what's showing
-          if (iframe.classList.contains('hidden')) {
-            hideAllStates();
-            document.getElementById('player-fallback')?.classList.remove('hidden');
-          }
-          sqUpdate(srv.id, s => { s.timeoutCount++; s.qualityScore -= 20; });
-        } else {
-          silentSwitch();
-        }
-      }, TIMEOUT_MS);
     });
 
     const select = document.getElementById('server-select') as HTMLSelectElement;
@@ -325,22 +332,29 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
       d.type === 'error' || d.event === 'error' ||
       d.status === 404 || d.code === 404 ||
       d.type === 'player:error' || d.type === 'content_not_found' ||
-      d.reason === 'not_found' || d.error === true;
+      d.reason === 'not_found' || d.error === true ||
+      d.type === 'unavailable' || d.available === false ||
+      d.message === 'unavailable' || d.event === 'unavailable';
 
     const isPlaying =
       d.event === 'play' || d.event === 'playing' || d.event === 'timeupdate' ||
+      d.event === 'canplay' || d.event === 'loadeddata' || d.event === 'loadedmetadata' ||
       d.type === 'timeupdate' || d.type === 'play' || d.type === 'playing' ||
-      d.type === 'playerReady' || d.type === 'ready' || d.action === 'play' ||
+      d.type === 'playerReady' || d.type === 'ready' || d.type === 'canplay' ||
+      d.type === 'loaded' || d.type === 'hlsready' || d.type === 'mediaready' ||
+      d.action === 'play' ||
       (d.currentTime !== undefined && Number(d.currentTime) > 0);
 
     if (isError && !playerConfirmed && !switching) {
       if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; }
       if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
+      if (interactionTimer) { clearTimeout(interactionTimer); interactionTimer = null; }
       silentSwitch();
     } else if (isPlaying) {
       playerConfirmed = true;
       if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
       if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; }
+      if (interactionTimer) { clearTimeout(interactionTimer); interactionTimer = null; }
       const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
       if (iframe?.classList.contains('hidden')) showIframe();
       sqUpdate(getServers()[currentServerIdx]?.id || '', s => { s.successfulLoads++; s.qualityScore += 10; });
@@ -353,6 +367,7 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
     if (iframe && !iframe.classList.contains('hidden')) {
       playerConfirmed = true;
       if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
+      if (interactionTimer) { clearTimeout(interactionTimer); interactionTimer = null; }
     }
   });
 
