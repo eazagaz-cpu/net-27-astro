@@ -136,6 +136,17 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
   let playerConfirmed = false; // true = embed is definitely playing
   let switching = false;       // guard against double-switch
 
+  // Block external popup ads triggered from our page's window context.
+  // Cross-origin iframe popups are handled separately via per-server sandbox below.
+  const _origOpen = window.open;
+  window.open = function(url?: string | URL, target?: string, features?: string): WindowProxy | null {
+    const href = url ? url.toString() : '';
+    if (!href || href.startsWith(location.origin) || href.startsWith('/') || href.startsWith('#')) {
+      return _origOpen.call(window, url, target, features);
+    }
+    return null;
+  };
+
   // After onload, wait this long for an error postMessage before showing iframe.
   // Keeps 404 pages hidden while giving playing signals time to arrive.
   const CONFIRM_MS = 1500;
@@ -249,6 +260,15 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
 
     iframe.removeAttribute('src');
     loadTimestamp = Date.now();
+
+    // Per-server sandbox: videasy (server-1) detects the sandbox attribute and shows
+    // a blocking error page, so we skip it there. All other servers get sandbox applied,
+    // which prevents popup ads (no allow-popups) and top-level redirects (no allow-top-navigation).
+    if (srv.id === 'server-1') {
+      iframe.removeAttribute('sandbox');
+    } else {
+      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock');
+    }
 
     requestAnimationFrame(() => {
       iframe.src = srv.url;

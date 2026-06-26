@@ -49,3 +49,4 @@
 
 /player/*
   Referrer-Policy: no-referrer-when-downgrade
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()
