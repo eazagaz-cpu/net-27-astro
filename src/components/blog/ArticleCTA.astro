@@ -1,0 +1,29 @@
+---
+import { APK_UNIVERSAL_URL } from '../../lib/constants';
+
+interface Props {
+  title?: string;
+  description?: string;
+  primaryText?: string;
+  primaryHref?: string;
+  secondaryText?: string;
+  secondaryHref?: string;
+}
+const {
+  title = 'Download NetMirror',
+  description = 'Find where to stream any movie or show. Free for Android.',
+  primaryText = 'Download APK',
+  primaryHref = APK_UNIVERSAL_URL,
+  secondaryText = 'Learn More',
+  secondaryHref = '/app/download/',
+} = Astro.props;
+---
+
+<div class="blog-cta my-10 rounded-xl border border-[var(--color-primary)]/30 bg-gradient-to-r from-[var(--color-primary)]/10 to-[var(--color-accent)]/5 p-6 md:p-8 text-center">
+  <h3 class="text-lg md:text-xl font-bold text-[var(--color-text-primary)] mb-2">{title}</h3>
+  <p class="text-sm text-[var(--color-text-secondary)] mb-5 max-w-md mx-auto">{description}</p>
+  <div class="flex flex-wrap items-center justify-center gap-3">
+    <a href={primaryHref} class="btn-primary text-sm px-6 py-2.5 rounded-lg" download>{primaryText}</a>
+    <a href={secondaryHref} class="btn-glass text-sm px-6 py-2.5 rounded-lg">{secondaryText}</a>
+  </div>
+</div>

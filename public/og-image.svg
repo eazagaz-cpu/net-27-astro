@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#050509"/>
+      <stop offset="50%" stop-color="#0a0a14"/>
+      <stop offset="100%" stop-color="#0f0520"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#ff1f3d"/>
+      <stop offset="100%" stop-color="#2f80ff"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0.5" y1="0" x2="0.5" y2="1">
+      <stop offset="0%" stop-color="#ff1f3d" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#ff1f3d" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <!-- Subtle glow -->
+  <ellipse cx="600" cy="280" rx="500" ry="250" fill="url(#glow)"/>
+
+  <!-- Accent line -->
+  <rect x="100" y="380" width="120" height="4" rx="2" fill="url(#accent)"/>
+
+  <!-- Brand: Net -->
+  <text x="100" y="320" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="96" font-weight="900" fill="#ff1f3d" letter-spacing="-2">Net</text>
+  <!-- Brand: Mirror -->
+  <text x="310" y="320" font-family="Inter, system-ui, -apple-system, sans-serif" font-size="96" font-weight="900" fill="#ffffff" letter-spacing="-2">Mirror</text>
+
+  <!-- Subtitle -->
+  <text x="100" y="430" font-family="Inter, system-ui, sans-serif" font-size="32" font-weight="500" fill="#a1a1aa">Movies · TV Shows · Anime · Hindi Dubbed</text>
+
+  <!-- Description -->
+  <text x="100" y="480" font-family="Inter, system-ui, sans-serif" font-size="22" font-weight="400" fill="#52525b">Discover where to watch across 30+ streaming platforms</text>
+
+  <!-- Chips -->
+  <rect x="100" y="520" width="90" height="32" rx="16" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="145" y="541" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#a1a1aa" text-anchor="middle">Movies</text>
+
+  <rect x="205" y="520" width="100" height="32" rx="16" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="255" y="541" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#a1a1aa" text-anchor="middle">TV Shows</text>
+
+  <rect x="320" y="520" width="80" height="32" rx="16" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="360" y="541" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#a1a1aa" text-anchor="middle">Anime</text>
+
+  <rect x="415" y="520" width="120" height="32" rx="16" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="475" y="541" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#a1a1aa" text-anchor="middle">Hindi Dubbed</text>
+
+  <rect x="550" y="520" width="110" height="32" rx="16" fill="rgba(255,31,61,0.15)" stroke="rgba(255,31,61,0.3)" stroke-width="1"/>
+  <text x="605" y="541" font-family="Inter, system-ui, sans-serif" font-size="14" font-weight="600" fill="#ff1f3d" text-anchor="middle">Free APK ↓</text>
+
+  <!-- Domain -->
+  <text x="1100" y="590" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="500" fill="#52525b" text-anchor="end">net-27.cc</text>
+
+  <!-- Decorative circles -->
+  <circle cx="1050" cy="200" r="80" fill="none" stroke="rgba(255,31,61,0.08)" stroke-width="1"/>
+  <circle cx="1050" cy="200" r="120" fill="none" stroke="rgba(47,128,255,0.05)" stroke-width="1"/>
+  <circle cx="1050" cy="200" r="160" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+</svg>

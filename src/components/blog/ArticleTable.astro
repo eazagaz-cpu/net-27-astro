@@ -1,0 +1,30 @@
+---
+interface Props {
+  headers: string[];
+  rows: string[][];
+  caption?: string;
+}
+const { headers, rows, caption } = Astro.props;
+---
+
+<div class="blog-table-wrapper my-8 overflow-x-auto rounded-xl border border-[var(--color-border)]">
+  <table class="w-full text-sm">
+    {caption && <caption class="px-4 pt-4 pb-2 text-left text-xs font-bold uppercase tracking-wider text-[var(--color-text-muted)]">{caption}</caption>}
+    <thead>
+      <tr class="border-b border-[var(--color-border)] bg-[var(--color-bg-card)]">
+        {headers.map(h => (
+          <th class="px-4 py-3 text-left text-xs font-bold uppercase tracking-wider text-[var(--color-text-secondary)]">{h}</th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {rows.map((row, i) => (
+        <tr class={`border-b border-[var(--color-border)]/50 ${i % 2 === 0 ? 'bg-[var(--color-bg-secondary)]' : 'bg-[var(--color-bg-card)]/30'}`}>
+          {row.map((cell, j) => (
+            <td class={`px-4 py-3 text-[var(--color-text-secondary)] ${j === 0 ? 'font-medium text-[var(--color-text-primary)]' : ''}`} set:html={cell} />
+          ))}
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>

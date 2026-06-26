@@ -1,0 +1,17 @@
+---
+interface Props {
+  note: string;
+  title?: string;
+}
+const { note, title = 'Safety Note' } = Astro.props;
+---
+
+<div class="blog-safety my-8 rounded-xl border border-yellow-500/30 bg-yellow-500/5 p-5 md:p-6">
+  <div class="flex items-start gap-3">
+    <span class="mt-0.5 text-lg shrink-0">&#x1F6E1;</span>
+    <div>
+      <p class="text-xs font-bold uppercase tracking-wider text-yellow-400 mb-2">{title}</p>
+      <p class="text-[var(--color-text-secondary)] text-sm leading-relaxed">{note}</p>
+    </div>
+  </div>
+</div>

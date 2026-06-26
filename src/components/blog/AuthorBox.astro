@@ -1,0 +1,21 @@
+---
+import { CONTACT_EMAIL, SITE_NAME } from '../../lib/constants';
+
+interface Props {
+  author?: string;
+}
+const { author = 'NetMirror Editorial' } = Astro.props;
+---
+
+<div class="blog-author my-10 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-5 md:p-6">
+  <div class="flex items-center gap-4">
+    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-[var(--color-primary)] to-[var(--color-accent)] flex items-center justify-center text-white font-bold text-lg shrink-0">
+      {author.charAt(0)}
+    </div>
+    <div>
+      <p class="text-sm font-bold text-[var(--color-text-primary)]">{author}</p>
+      <p class="text-xs text-[var(--color-text-muted)]">Published by {SITE_NAME}</p>
+      <p class="text-xs text-[var(--color-text-muted)] mt-0.5">Contact: <a href={`mailto:${CONTACT_EMAIL}`} class="text-[var(--color-accent)] hover:underline">{CONTACT_EMAIL}</a></p>
+    </div>
+  </div>
+</div>

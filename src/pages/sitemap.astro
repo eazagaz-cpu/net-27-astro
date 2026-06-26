@@ -1,0 +1,126 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEOHead from '../components/SEOHead.astro';
+import Schema from '../components/Schema.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import { getSitemapSections } from '../data/sitemapLinks';
+import { getAllBlogPosts } from '../data/blogPosts';
+import { breadcrumbSchema } from '../lib/schema';
+import { SITE_URL } from '../lib/seo';
+import { SITE_NAME } from '../lib/constants';
+import { LANGUAGES, LANG_CODES } from '../i18n/config';
+
+const sections = getSitemapSections();
+const blogPosts = getAllBlogPosts();
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Sitemap', href: '/sitemap/' },
+];
+
+const sitemapSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: `Sitemap | ${SITE_NAME}`,
+  description: `Browse all ${SITE_NAME} pages — movies, TV shows, anime, app downloads, help guides, platforms, genres, blog articles, and legal pages.`,
+  url: `${SITE_URL}/sitemap/`,
+};
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title={`Sitemap — ${SITE_NAME}`}
+    description={`Browse all important ${SITE_NAME} pages, including movies, TV shows, anime, app download pages, help guides, platform pages, genre pages, blog articles, legal pages, and language versions.`}
+    canonical={`${SITE_URL}/sitemap/`}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), sitemapSchema]} />
+
+  <Header />
+
+  <main class="min-h-screen pt-36">
+    <div class="max-w-6xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+
+      <h1 class="text-3xl md:text-4xl font-bold mb-3">Sitemap</h1>
+      <p class="text-sm text-[var(--color-text-secondary)] mb-10 max-w-2xl">
+        Browse all {SITE_NAME} pages — movies, TV shows, anime, app downloads, help guides, streaming platforms, genres, blog articles, and legal information.
+      </p>
+
+      <!-- Main sections grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
+        {sections.map(section => (
+          <div class="glass-card rounded-xl p-5">
+            <h2 class="text-sm font-bold uppercase tracking-wider text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
+              <span class="w-1 h-4 bg-[var(--color-primary)] rounded-full"></span>
+              {section.heading}
+            </h2>
+            <ul class="space-y-2">
+              {section.links.map(link => (
+                <li>
+                  <a href={link.href} class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors flex items-start gap-2">
+                    <span class="text-[var(--color-text-muted)] mt-0.5 shrink-0">›</span>
+                    <span>
+                      {link.title}
+                      {link.description && <span class="text-[10px] text-[var(--color-text-muted)] block">{link.description}</span>}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+        ))}
+      </div>
+
+      <!-- Blog Articles -->
+      <div class="mb-12">
+        <h2 class="text-lg font-bold mb-5 flex items-center gap-2">
+          <span class="w-1 h-5 bg-[var(--color-primary)] rounded-full"></span>
+          Blog Articles
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          {blogPosts.map(post => (
+            <a href={`/blog/${post.slug}/`} class="glass-card rounded-lg p-4 hover:border-[var(--color-primary)]/30 transition-all group">
+              <h3 class="text-sm font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors mb-1 line-clamp-1">{post.title}</h3>
+              <div class="flex items-center gap-2 text-[10px] text-[var(--color-text-muted)]">
+                <span>{post.category}</span>
+                <span>&middot;</span>
+                <span>{post.readTime}</span>
+                <span>&middot;</span>
+                <time>{post.date}</time>
+              </div>
+            </a>
+          ))}
+        </div>
+      </div>
+
+      <!-- Language Versions -->
+      <div class="mb-12">
+        <h2 class="text-lg font-bold mb-5 flex items-center gap-2">
+          <span class="w-1 h-5 bg-[var(--color-primary)] rounded-full"></span>
+          Language Versions
+        </h2>
+        <div class="flex flex-wrap gap-2">
+          {LANG_CODES.map(code => {
+            const lang = LANGUAGES[code];
+            return (
+              <span class="px-3 py-1.5 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-[var(--color-text-secondary)]" title={lang.name}>
+                {lang.nativeName} ({lang.name})
+              </span>
+            );
+          })}
+        </div>
+      </div>
+
+      <!-- Disclaimer -->
+      <div class="border-t border-white/5 pt-6">
+        <p class="text-[10px] text-[var(--color-text-muted)] text-center leading-relaxed max-w-2xl mx-auto">
+          {SITE_NAME} does not host, store, or distribute any media content. All information is for discovery purposes only. All trademarks belong to their respective owners.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

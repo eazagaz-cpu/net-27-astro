@@ -1,0 +1,76 @@
+---
+import { LANGUAGES, LANG_CODES } from '../../i18n/config';
+---
+
+<div class="flex flex-wrap gap-2 justify-center" id="lang-switcher">
+  {LANG_CODES.map(code => {
+    const lang = LANGUAGES[code];
+    return (
+      <a
+        href="#"
+        data-lang={code}
+        class="lang-chip"
+        lang={code}
+        hreflang={code}
+        title={lang.name}
+      >
+        {lang.nativeName}
+      </a>
+    );
+  })}
+</div>
+
+<style>
+  .lang-chip {
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 500;
+    border: 1px solid rgba(255,255,255,0.1);
+    background: rgba(255,255,255,0.03);
+    color: var(--color-muted);
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .lang-chip:hover {
+    border-color: rgba(255,255,255,0.25);
+    color: #fff;
+  }
+  .lang-chip.active {
+    background: var(--color-primary) !important;
+    border-color: var(--color-primary) !important;
+    color: #fff !important;
+  }
+</style>
+
+<script is:inline>
+  (function() {
+    var KEY = 'netmirror_lang';
+    var saved = localStorage.getItem(KEY) || 'en';
+    var switcher = document.getElementById('lang-switcher');
+    if (!switcher) return;
+
+    var chips = switcher.querySelectorAll('.lang-chip');
+    for (var i = 0; i < chips.length; i++) {
+      if (chips[i].getAttribute('data-lang') === saved) {
+        chips[i].classList.add('active');
+      }
+    }
+
+    switcher.addEventListener('click', function(e) {
+      var target = e.target;
+      while (target && !target.classList.contains('lang-chip')) {
+        target = target.parentElement;
+      }
+      if (!target) return;
+      e.preventDefault();
+
+      var code = target.getAttribute('data-lang');
+      if (!code || code === saved) return;
+
+      localStorage.setItem(KEY, code);
+      window.location.reload();
+    });
+  })();
+</script>

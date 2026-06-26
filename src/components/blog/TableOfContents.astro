@@ -1,0 +1,20 @@
+---
+interface Props {
+  items: { id: string; title: string; level: number }[];
+}
+const { items } = Astro.props;
+---
+
+<nav class="blog-toc my-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-5 md:p-6">
+  <p class="text-sm font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-3">Table of Contents</p>
+  <ol class="space-y-1.5 list-none pl-0">
+    {items.map((item, i) => (
+      <li class={item.level === 3 ? 'pl-5' : ''}>
+        <a href={`#${item.id}`} class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors flex items-start gap-2">
+          <span class="text-[var(--color-text-muted)] shrink-0">{i + 1}.</span>
+          <span>{item.title}</span>
+        </a>
+      </li>
+    ))}
+  </ol>
+</nav>

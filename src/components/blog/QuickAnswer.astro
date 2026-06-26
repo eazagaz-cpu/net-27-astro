@@ -1,0 +1,16 @@
+---
+interface Props {
+  answer: string;
+}
+const { answer } = Astro.props;
+---
+
+<div class="blog-quick-answer my-8 rounded-xl border border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 p-5 md:p-6">
+  <div class="flex items-start gap-3">
+    <span class="mt-0.5 text-lg shrink-0">&#x26A1;</span>
+    <div>
+      <p class="text-xs font-bold uppercase tracking-wider text-[var(--color-accent)] mb-2">Quick Answer</p>
+      <p class="text-[var(--color-text-primary)] text-sm md:text-base leading-relaxed">{answer}</p>
+    </div>
+  </div>
+</div>

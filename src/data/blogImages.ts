@@ -1,0 +1,130 @@
+export interface BlogImage {
+  url: string;
+  alt: string;
+  width: number;
+  height: number;
+}
+
+const TMDB = 'https://image.tmdb.org/t/p/w1280';
+
+export const blogImages: Record<string, BlogImage> = {
+  'netmirror-apk-download-guide': {
+    url: `${TMDB}/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg`,
+    alt: 'Android smartphone showing app download interface — NetMirror APK download guide',
+    width: 1280,
+    height: 720,
+  },
+  'arm64-vs-arm32-apk': {
+    url: `${TMDB}/4HodYYKEIsGOdinkGi2Ucz6X9i0.jpg`,
+    alt: 'Technology and device comparison — ARM64 vs ARM32 architecture guide',
+    width: 1280,
+    height: 720,
+  },
+  'is-netmirror-safe': {
+    url: `${TMDB}/2rmK7mnchw9Xr3XdiTFSxTTLXqv.jpg`,
+    alt: 'Digital security concept with shield and lock — Is NetMirror safe to download',
+    width: 1280,
+    height: 720,
+  },
+  'best-hindi-dubbed-movies-2026': {
+    url: `${TMDB}/xOMo8BRK7PfcJv9JCnx7s5hj0PX.jpg`,
+    alt: 'Indian cinema hall with Bollywood movie posters — best Hindi dubbed movies 2026',
+    width: 1280,
+    height: 720,
+  },
+  'best-movies-2026': {
+    url: `${TMDB}/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg`,
+    alt: 'Modern cinema experience with widescreen projection — best movies to watch in 2026',
+    width: 1280,
+    height: 720,
+  },
+  'anime-streaming-guide-2026': {
+    url: `${TMDB}/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg`,
+    alt: 'Anime characters in action scene — anime streaming guide for all major platforms',
+    width: 1280,
+    height: 720,
+  },
+  'streaming-platform-comparison': {
+    url: `${TMDB}/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg`,
+    alt: 'Living room with smart TV displaying streaming services — Netflix vs Prime Video vs Disney+',
+    width: 1280,
+    height: 720,
+  },
+  'movie-rating-systems-explained': {
+    url: `${TMDB}/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg`,
+    alt: 'Movie rating certificates and classification board stamps — MPAA CBFC rating systems explained',
+    width: 1280,
+    height: 720,
+  },
+  'sci-fi-renaissance-modern-cinema': {
+    url: `${TMDB}/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg`,
+    alt: 'Futuristic space landscape from science fiction cinema — how sci-fi dominates modern film',
+    width: 1280,
+    height: 720,
+  },
+  'how-tv-shows-get-made': {
+    url: `${TMDB}/stTEycfG9928HYGEISBFaG1ngjM.jpg`,
+    alt: 'Film production set with cameras and crew — how TV shows get made from script to screen',
+    width: 1280,
+    height: 720,
+  },
+};
+
+const categoryFallbacks: Record<string, BlogImage> = {
+  apk: {
+    url: `${TMDB}/udDclJoHjfjb8Ekgsd4FDteOkCU.jpg`,
+    alt: 'Android app download interface',
+    width: 1280,
+    height: 720,
+  },
+  safety: {
+    url: `${TMDB}/2rmK7mnchw9Xr3XdiTFSxTTLXqv.jpg`,
+    alt: 'Digital security concept',
+    width: 1280,
+    height: 720,
+  },
+  movies: {
+    url: `${TMDB}/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg`,
+    alt: 'Cinema and movies',
+    width: 1280,
+    height: 720,
+  },
+  anime: {
+    url: `${TMDB}/tsRy63Mu5cu8etL1X7ZLyf7UP1M.jpg`,
+    alt: 'Anime streaming',
+    width: 1280,
+    height: 720,
+  },
+  streaming: {
+    url: `${TMDB}/fm6KqXpk3M2HVveHwCrBSSBaO0V.jpg`,
+    alt: 'Streaming platforms',
+    width: 1280,
+    height: 720,
+  },
+  default: {
+    url: `${TMDB}/9PFonBhy4cQy7Jz20NpMygczOkv.jpg`,
+    alt: 'Entertainment and streaming',
+    width: 1280,
+    height: 720,
+  },
+};
+
+export function getBlogImage(slug: string, tags?: string[]): BlogImage {
+  if (blogImages[slug]) return blogImages[slug];
+
+  if (tags) {
+    const lowerTags = tags.map(t => t.toLowerCase());
+    if (lowerTags.some(t => t.includes('apk') || t.includes('download') || t.includes('android')))
+      return categoryFallbacks.apk;
+    if (lowerTags.some(t => t.includes('safe') || t.includes('privacy')))
+      return categoryFallbacks.safety;
+    if (lowerTags.some(t => t.includes('anime')))
+      return categoryFallbacks.anime;
+    if (lowerTags.some(t => t.includes('streaming') || t.includes('netflix') || t.includes('platform')))
+      return categoryFallbacks.streaming;
+    if (lowerTags.some(t => t.includes('movie') || t.includes('film') || t.includes('cinema')))
+      return categoryFallbacks.movies;
+  }
+
+  return categoryFallbacks.default;
+}
