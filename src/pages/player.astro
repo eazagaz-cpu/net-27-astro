@@ -2,11 +2,10 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SEOHead from '../components/SEOHead.astro';
 import { SITE_URL } from '../lib/seo';
-import { APK_UNIVERSAL_URL } from '../lib/constants';
 ---
 
 <BaseLayout>
-  <SEOHead slot="head" title="Watch Now — NetMirror Player" description="Watch movies and TV shows on NetMirror. Multiple servers with instant switching for smooth playback." canonical={`${SITE_URL}/player/`} noindex={true} />
+  <SEOHead slot="head" title="Watch Now — NetMirror Player" description="Watch movies and TV shows on NetMirror. Multiple servers for smooth playback." canonical={`${SITE_URL}/player/`} noindex={true} />
 
   <main class="player-shell">
     <!-- Top bar -->
@@ -41,6 +40,7 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
 
     <!-- Player iframe container -->
     <div id="player-container" class="player-frame-wrap pt-12">
+
       <!-- Loading state -->
       <div id="player-loading" class="flex items-center justify-center h-full">
         <div class="text-center">
@@ -59,21 +59,43 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
         referrerpolicy="no-referrer-when-downgrade"
       ></iframe>
 
-      <!-- Playback unavailable -->
+      <!-- Server/timeout error (State B) -->
       <div id="player-fallback" class="hidden flex items-center justify-center h-full">
         <div class="text-center px-4 max-w-lg">
+          <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-red-500/10 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/>
+            </svg>
+          </div>
           <h2 class="text-lg font-bold mb-2">Playback Unavailable</h2>
-          <p class="text-sm text-zinc-400 mb-6">This title is temporarily unavailable. Try switching servers or use the app for better playback.</p>
-          <div class="flex items-center justify-center gap-3 mb-6">
-            <button id="fallback-switch" class="btn-primary text-xs px-5 py-2.5 rounded-lg cursor-pointer">Switch Server</button>
-            <a href={APK_UNIVERSAL_URL} download class="btn-glass text-xs px-5 py-2.5 rounded-lg" rel="noopener noreferrer nofollow">Download App</a>
+          <p class="text-sm text-zinc-400 mb-6">This server is not responding right now. Please retry or switch to another server.</p>
+          <div class="flex items-center justify-center gap-3 flex-wrap">
+            <button id="fallback-retry" class="btn-primary text-xs px-5 py-2.5 rounded-lg cursor-pointer">Retry</button>
+            <button id="fallback-switch" class="btn-glass text-xs px-5 py-2.5 rounded-lg cursor-pointer">Switch Server</button>
             <button onclick="history.back()" class="btn-glass text-xs px-5 py-2.5 rounded-lg cursor-pointer">Back</button>
           </div>
-          <p id="trailer-link" class="hidden mb-4"></p>
+          <p id="trailer-link" class="hidden mt-4"></p>
         </div>
       </div>
 
-      <!-- Title not found (metadata error) -->
+      <!-- Iframe blocked (State C) -->
+      <div id="player-blocked" class="hidden flex items-center justify-center h-full">
+        <div class="text-center px-4 max-w-lg">
+          <div class="w-12 h-12 mx-auto mb-4 rounded-full bg-yellow-500/10 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-yellow-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/>
+            </svg>
+          </div>
+          <h2 class="text-lg font-bold mb-2">Player Blocked</h2>
+          <p class="text-sm text-zinc-400 mb-6">This server cannot be loaded in the current player. Please switch to another server.</p>
+          <div class="flex items-center justify-center gap-3">
+            <button id="blocked-switch" class="btn-primary text-xs px-5 py-2.5 rounded-lg cursor-pointer">Switch Server</button>
+            <button onclick="history.back()" class="btn-glass text-xs px-5 py-2.5 rounded-lg cursor-pointer">Back</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Title not found / metadata error (State A) -->
       <div id="player-notfound" class="hidden flex items-center justify-center h-full">
         <div class="text-center px-4 max-w-md">
           <h2 class="text-lg font-bold mb-2">Title Not Found</h2>
@@ -85,7 +107,6 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
         </div>
       </div>
     </div>
-
 
     <!-- Report modal -->
     <div id="report-modal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
@@ -120,25 +141,31 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
   .player-frame { width: 100%; height: 100%; border: 0; background: #000; }
   .report-option { display: block; width: 100%; text-align: left; padding: 10px 14px; border-radius: 10px; font-size: 13px; color: #ccc; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: all 0.15s; }
   .report-option:hover { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.12); }
+  #player-fallback, #player-blocked, #player-notfound, #player-loading { height: calc(100svh - 48px); }
 </style>
 
 <script>
+  import { getServers } from '../lib/player/servers';
+  import { applySandbox } from '../lib/player/iframePolicy';
+  import { loadSavedServer, saveSelectedServer } from '../lib/player/serverMemory';
+  import { reportIssue } from '../lib/serverQuality';
+  import type { ReportType } from '../lib/serverQuality';
+
+  // ── URL params ─────────────────────────────────────────────────────────────
   const params = new URLSearchParams(window.location.search);
-  const type = params.get('type') || 'movie';
+  const type = (params.get('type') || 'movie') as 'movie' | 'tv';
   const id = params.get('id') || '';
   let season = parseInt(params.get('s') || '1');
   let episode = parseInt(params.get('e') || '1');
-  let currentServerIdx = 0;
-  let timeoutTimer: ReturnType<typeof setTimeout> | null = null;
-  let confirmTimer: ReturnType<typeof setTimeout> | null = null;
-  let watchTimer: ReturnType<typeof setTimeout> | null = null;
-  let interactionTimer: ReturnType<typeof setTimeout> | null = null;
-  let loadTimestamp = 0;
-  let playerConfirmed = false; // true = embed is definitely playing
-  let switching = false;       // guard against double-switch
 
-  // Block external popup ads triggered from our page's window context.
-  // Cross-origin iframe popups are handled separately via per-server sandbox below.
+  // ── State ──────────────────────────────────────────────────────────────────
+  let currentServerIdx = 0;
+  let loadTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
+  let playerConfirmed = false;
+
+  const LOAD_TIMEOUT = 15000; // 15s: if onload never fires → show error (no auto-switch)
+
+  // ── Block external popups from parent window context ───────────────────────
   const _origOpen = window.open;
   window.open = function(url?: string | URL, target?: string, features?: string): WindowProxy | null {
     const href = url ? url.toString() : '';
@@ -148,184 +175,106 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
     return null;
   };
 
-  const CONFIRM_MS = 500;    // ms after onload to catch error postMessage before revealing iframe
-  const TIMEOUT_MS = 8000;   // ms for hung connection (onload never fires) → switch
-  const INTERACT_MS = 3500;  // ms after iframe shown — if no play signal, switch (catches silent error pages)
-  const LONG_WATCH_MS = 60000;
-  const QUICK_SWITCH_MS = 5000;
-  const SQ_KEY = 'netmirror_server_quality';
-
-  function sqLoad(): Record<string, any> {
-    try { return JSON.parse(localStorage.getItem(SQ_KEY) || '{}'); } catch { return {}; }
-  }
-  function sqSave(d: Record<string, any>) {
-    try { localStorage.setItem(SQ_KEY, JSON.stringify(d)); } catch {}
-  }
-  function sqUpdate(sid: string, fn: (s: any) => void) {
-    const all = sqLoad();
-    const s = all[sid] || { qualityScore: 70, successfulLoads: 0, failedLoads: 0, timeoutCount: 0 };
-    fn(s);
-    s.qualityScore = Math.max(0, Math.min(100, Math.round(s.qualityScore)));
-    all[sid] = s;
-    sqSave(all);
+  // ── DOM helpers ────────────────────────────────────────────────────────────
+  function hideAllStates() {
+    ['player-loading', 'player-iframe', 'player-fallback', 'player-blocked', 'player-notfound']
+      .forEach(elId => document.getElementById(elId)?.classList.add('hidden'));
   }
 
-  function getServers() {
-    if (type === 'movie') {
-      return [
-        { id: 'server-1', name: 'Server 1', url: `https://vidsrc.to/embed/movie/${id}` },
-        { id: 'server-2', name: 'Server 2', url: `https://player.videasy.net/movie/${id}` },
-        { id: 'server-3', name: 'Server 3', url: `https://vidsrc.me/embed/movie?tmdb=${id}` },
-        { id: 'server-4', name: 'Server 4', url: `https://autoembed.co/movie/tmdb/${id}` },
-      ];
+  type ErrorVariant = 'timeout' | 'blocked' | 'metadata';
+
+  function setState(state: 'loading' | 'ready' | 'error', variant?: ErrorVariant) {
+    hideAllStates();
+    if (state === 'loading') {
+      document.getElementById('player-loading')?.classList.remove('hidden');
+    } else if (state === 'ready') {
+      document.getElementById('player-iframe')?.classList.remove('hidden');
+    } else {
+      if (variant === 'metadata') {
+        document.getElementById('player-notfound')?.classList.remove('hidden');
+      } else if (variant === 'blocked') {
+        document.getElementById('player-blocked')?.classList.remove('hidden');
+      } else {
+        document.getElementById('player-fallback')?.classList.remove('hidden');
+      }
     }
-    return [
-      { id: 'server-1', name: 'Server 1', url: `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` },
-      { id: 'server-2', name: 'Server 2', url: `https://player.videasy.net/tv/${id}/${season}/${episode}` },
-      { id: 'server-3', name: 'Server 3', url: `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` },
-      { id: 'server-4', name: 'Server 4', url: `https://autoembed.co/tv/tmdb/${id}-${season}-${episode}` },
-    ];
   }
 
+  // ── Server list + dropdown ─────────────────────────────────────────────────
   function populateServers() {
     const select = document.getElementById('server-select') as HTMLSelectElement;
     if (!select) return;
-    const servers = getServers();
+    const servers = getServers({ type, id, season, episode });
     select.innerHTML = servers.map((srv, i) =>
       `<option value="${i}">${srv.name}</option>`
     ).join('');
     select.value = String(currentServerIdx);
   }
 
-  function hideAllStates() {
-    document.getElementById('player-loading')?.classList.add('hidden');
-    document.getElementById('player-fallback')?.classList.add('hidden');
-    document.getElementById('player-notfound')?.classList.add('hidden');
-    document.getElementById('player-iframe')?.classList.add('hidden');
-  }
-
-  // Silently move to next server — user just sees "Trying Server N..." loading
-  function silentSwitch() {
-    if (switching) return;
-    if (interactionTimer) { clearTimeout(interactionTimer); interactionTimer = null; }
-    const servers = getServers();
-    const next = currentServerIdx + 1;
-    if (next >= servers.length) {
-      hideAllStates();
-      document.getElementById('player-fallback')?.classList.remove('hidden');
-      return;
-    }
-    switching = true;
-    sqUpdate(servers[currentServerIdx].id, s => { s.timeoutCount++; s.qualityScore -= 20; });
-    const status = document.getElementById('loading-status');
-    if (status) status.textContent = `Trying ${servers[next].name}...`;
-    hideAllStates();
-    document.getElementById('player-loading')?.classList.remove('hidden');
-    setTimeout(() => { switching = false; loadPlayer(next); }, 300);
-  }
-
-  function showIframe() {
-    const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
-    if (!iframe) return;
-    hideAllStates();
-    iframe.classList.remove('hidden');
-  }
-
+  // ── Core: load a server by index ───────────────────────────────────────────
   function loadPlayer(serverIdx: number) {
-    const servers = getServers();
+    const servers = getServers({ type, id, season, episode });
     if (serverIdx < 0 || serverIdx >= servers.length) serverIdx = 0;
     currentServerIdx = serverIdx;
     playerConfirmed = false;
 
     const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
-    const loading = document.getElementById('player-loading');
-    const status = document.getElementById('loading-status');
+    const statusEl = document.getElementById('loading-status');
 
     if (!iframe || !id) {
-      hideAllStates();
-      document.getElementById('player-fallback')?.classList.remove('hidden');
+      setState('error', 'metadata');
       return;
     }
 
     const srv = servers[serverIdx];
-    const isLast = serverIdx === servers.length - 1;
 
-    hideAllStates();
-    if (loading) loading.classList.remove('hidden');
-    if (status) status.textContent = `Connecting to ${srv.name}...`;
+    // Cancel previous load timer
+    if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
 
-    if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
-    if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; }
-    if (watchTimer) { clearTimeout(watchTimer); watchTimer = null; }
-    if (interactionTimer) { clearTimeout(interactionTimer); interactionTimer = null; }
-
+    // Destroy previous iframe src
     iframe.removeAttribute('src');
-    loadTimestamp = Date.now();
 
-    // videasy detects the sandbox attribute and shows a blocking error — skip sandbox for it.
-    // All other servers get sandbox: blocks popup ads (no allow-popups) and
-    // top-level page redirects (no allow-top-navigation).
-    if (srv.url.includes('videasy.net')) {
-      iframe.removeAttribute('sandbox');
-    } else {
-      iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock');
-    }
+    setState('loading');
+    if (statusEl) statusEl.textContent = `Loading player...`;
+
+    // Apply per-server sandbox policy
+    applySandbox(iframe, srv.sandboxMode);
+
+    // Persist selection immediately
+    saveSelectedServer(type, id, serverIdx);
+
+    // Sync dropdown
+    const select = document.getElementById('server-select') as HTMLSelectElement;
+    if (select) select.value = String(serverIdx);
 
     requestAnimationFrame(() => {
       iframe.src = srv.url;
 
-      // Hung-connection safety: if onload never fires (server down/DNS fail), switch after TIMEOUT_MS
-      timeoutTimer = setTimeout(() => {
-        timeoutTimer = null;
-        if (playerConfirmed || switching) return;
-        sqUpdate(srv.id, s => { s.timeoutCount++; s.qualityScore -= 20; });
-        if (isLast) {
-          hideAllStates();
-          document.getElementById('player-fallback')?.classList.remove('hidden');
-        } else {
-          silentSwitch();
-        }
-      }, TIMEOUT_MS);
+      // If onload never fires (server down / DNS fail) → show error after 15s
+      loadTimeoutTimer = setTimeout(() => {
+        loadTimeoutTimer = null;
+        if (playerConfirmed) return;
+        setState('error', 'timeout');
+      }, LOAD_TIMEOUT);
 
       iframe.onload = () => {
-        // Cancel hung-connection timer — page responded
-        if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
-
-        if (playerConfirmed || switching) {
-          if (!switching) showIframe();
-          return;
+        if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
+        if (!playerConfirmed) {
+          // Server responded — show whatever it loaded (player UI or its own error page)
+          setState('ready');
         }
-
-        // 500ms window: if server sends error postMessage (e.g. 404), silentSwitch fires first
-        confirmTimer = setTimeout(() => {
-          confirmTimer = null;
-          if (switching || playerConfirmed) return;
-
-          showIframe();
-          sqUpdate(srv.id, s => { s.successfulLoads++; s.qualityScore += 5; });
-          watchTimer = setTimeout(() => {
-            if (playerConfirmed) sqUpdate(srv.id, s => { s.qualityScore += 15; });
-          }, LONG_WATCH_MS);
-
-          // If not last server: give user time to interact.
-          // videasy shows a click-to-play thumbnail (not an error) — user needs 12s to click.
-          // Other servers: 3.5s catches silent "unavailable" pages that load fast with no video.
-          if (!isLast) {
-            const interactDelay = srv.url.includes('videasy.net') ? 12000 : INTERACT_MS;
-            interactionTimer = setTimeout(() => {
-              interactionTimer = null;
-              if (!playerConfirmed && !switching) silentSwitch();
-            }, interactDelay);
-          }
-        }, CONFIRM_MS);
       };
     });
-
-    const select = document.getElementById('server-select') as HTMLSelectElement;
-    if (select) select.value = String(serverIdx);
   }
 
-  // postMessage: embed providers send error/playing signals
+  // ── Advance to next server (manual only) ───────────────────────────────────
+  function switchServer() {
+    const servers = getServers({ type, id, season, episode });
+    const next = (currentServerIdx + 1) % servers.length;
+    loadPlayer(next);
+  }
+
+  // ── postMessage from embed providers ──────────────────────────────────────
   window.addEventListener('message', (event) => {
     const d = event.data;
     if (!d || typeof d !== 'object') return;
@@ -347,78 +296,73 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
       d.action === 'play' ||
       (d.currentTime !== undefined && Number(d.currentTime) > 0);
 
-    if (isError && !playerConfirmed && !switching) {
-      if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; }
-      if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
-      if (interactionTimer) { clearTimeout(interactionTimer); interactionTimer = null; }
-      silentSwitch();
+    if (isError && !playerConfirmed) {
+      // Server signalled content unavailable — show error overlay (no auto-switch)
+      if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
+      setState('error', 'timeout');
     } else if (isPlaying) {
       playerConfirmed = true;
-      if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
-      if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; }
-      if (interactionTimer) { clearTimeout(interactionTimer); interactionTimer = null; }
+      if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
       const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
-      if (iframe?.classList.contains('hidden')) showIframe();
-      sqUpdate(getServers()[currentServerIdx]?.id || '', s => { s.successfulLoads++; s.qualityScore += 10; });
+      if (iframe?.classList.contains('hidden')) setState('ready');
     }
   });
 
-  // User clicked inside iframe = player is definitely working
-  window.addEventListener('blur', () => {
-    const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
-    if (iframe && !iframe.classList.contains('hidden')) {
-      playerConfirmed = true;
-      if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
-      if (interactionTimer) { clearTimeout(interactionTimer); interactionTimer = null; }
-    }
-  });
-
-  function tryNextServer() {
-    const servers = getServers();
-    if (Date.now() - loadTimestamp < QUICK_SWITCH_MS) {
-      sqUpdate(servers[currentServerIdx]?.id || '', s => { s.qualityScore -= 5; });
-    }
-    playerConfirmed = false;
-    const next = (currentServerIdx + 1) % servers.length;
-    loadPlayer(next);
+  // ── Event listeners ────────────────────────────────────────────────────────
+  const serverSelect = document.getElementById('server-select') as HTMLSelectElement;
+  if (serverSelect) {
+    serverSelect.addEventListener('change', () => {
+      const idx = parseInt(serverSelect.value);
+      saveSelectedServer(type, id, idx);
+      loadPlayer(idx);
+    });
   }
 
-  // Event listeners
-  const serverSelect = document.getElementById('server-select') as HTMLSelectElement;
-  if (serverSelect) serverSelect.addEventListener('change', () => { playerConfirmed = false; loadPlayer(parseInt(serverSelect.value)); });
-
-  document.getElementById('fallback-switch')?.addEventListener('click', tryNextServer);
+  document.getElementById('fallback-retry')?.addEventListener('click', () => {
+    loadPlayer(currentServerIdx);
+  });
+  document.getElementById('fallback-switch')?.addEventListener('click', switchServer);
+  document.getElementById('blocked-switch')?.addEventListener('click', switchServer);
 
   const seasonSelect = document.getElementById('season-select') as HTMLSelectElement;
   const episodeSelect = document.getElementById('episode-select') as HTMLSelectElement;
-  if (seasonSelect) seasonSelect.addEventListener('change', () => { season = parseInt(seasonSelect.value); populateServers(); loadPlayer(currentServerIdx); });
-  if (episodeSelect) episodeSelect.addEventListener('change', () => { episode = parseInt(episodeSelect.value); populateServers(); loadPlayer(currentServerIdx); });
 
-  // Report system
+  if (seasonSelect) {
+    seasonSelect.addEventListener('change', () => {
+      season = parseInt(seasonSelect.value);
+      populateServers();
+      loadPlayer(currentServerIdx);
+    });
+  }
+  if (episodeSelect) {
+    episodeSelect.addEventListener('change', () => {
+      episode = parseInt(episodeSelect.value);
+      populateServers();
+      loadPlayer(currentServerIdx);
+    });
+  }
+
+  // ── Report system ──────────────────────────────────────────────────────────
   const reportModal = document.getElementById('report-modal');
   const reportToast = document.getElementById('report-toast');
+
   document.getElementById('report-btn')?.addEventListener('click', () => {
     if (reportModal) reportModal.classList.remove('hidden');
     if (reportToast) reportToast.classList.add('hidden');
     document.getElementById('report-options')?.classList.remove('hidden');
   });
-  document.getElementById('report-close')?.addEventListener('click', () => { if (reportModal) reportModal.classList.add('hidden'); });
-  reportModal?.addEventListener('click', (e) => { if (e.target === reportModal) reportModal.classList.add('hidden'); });
+  document.getElementById('report-close')?.addEventListener('click', () => {
+    if (reportModal) reportModal.classList.add('hidden');
+  });
+  reportModal?.addEventListener('click', (e) => {
+    if (e.target === reportModal) reportModal.classList.add('hidden');
+  });
 
   document.querySelectorAll('.report-option').forEach(btn => {
     btn.addEventListener('click', () => {
-      const issue = (btn as HTMLElement).dataset.issue || '';
-      const srv = getServers()[currentServerIdx];
-      if (srv) {
-        sqUpdate(srv.id, s => {
-          switch (issue) {
-            case 'not_playing': s.failedLoads = (s.failedLoads || 0) + 1; s.qualityScore -= 30; break;
-            case 'buffering': s.qualityScore -= 10; break;
-            case 'black_screen': s.qualityScore -= 25; break;
-            default: s.qualityScore -= 5; break;
-          }
-        });
-      }
+      const issue = ((btn as HTMLElement).dataset.issue || 'not_playing') as ReportType;
+      const srv = getServers({ type, id, season, episode })[currentServerIdx];
+      if (srv) reportIssue(srv.id, issue);
       if (reportToast) reportToast.classList.remove('hidden');
       document.getElementById('report-options')?.classList.add('hidden');
     });
@@ -426,10 +370,16 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
 
   document.getElementById('report-try-next')?.addEventListener('click', () => {
     if (reportModal) reportModal.classList.add('hidden');
-    tryNextServer();
+    switchServer();
   });
 
-  // Fullscreen
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && reportModal && !reportModal.classList.contains('hidden')) {
+      reportModal.classList.add('hidden');
+    }
+  });
+
+  // ── Fullscreen: hide topbar ────────────────────────────────────────────────
   function onFullscreenChange() {
     const isFs = !!document.fullscreenElement;
     const topbar = document.querySelector('.player-topbar') as HTMLElement;
@@ -438,14 +388,9 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
   document.addEventListener('fullscreenchange', onFullscreenChange);
   document.addEventListener('webkitfullscreenchange', onFullscreenChange);
 
-  document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape' && reportModal && !reportModal.classList.contains('hidden')) {
-      reportModal.classList.add('hidden');
-    }
-  });
-
-  // Init
+  // ── Init ───────────────────────────────────────────────────────────────────
   if (id) {
+    currentServerIdx = loadSavedServer(type, id);
     populateServers();
 
     fetch(`/api/tmdb/details?type=${type}&id=${id}`)
@@ -477,18 +422,13 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
             }
           }
         } else {
-          hideAllStates();
-          document.getElementById('player-notfound')?.classList.remove('hidden');
+          setState('error', 'metadata');
         }
       })
-      .catch(() => {
-        hideAllStates();
-        document.getElementById('player-notfound')?.classList.remove('hidden');
-      });
+      .catch(() => setState('error', 'metadata'));
 
-    loadPlayer(0);
+    loadPlayer(currentServerIdx);
   } else {
-    hideAllStates();
-    document.getElementById('player-notfound')?.classList.remove('hidden');
+    setState('error', 'metadata');
   }
 </script>

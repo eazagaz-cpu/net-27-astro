@@ -129,14 +129,8 @@ export function reportIssue(serverId: string, issue: ReportType) {
   });
 }
 
-export function getServerLabel(serverId: string): string {
-  const stats = getServerStats(serverId);
-  switch (stats.status) {
-    case 'recommended': return 'Recommended';
-    case 'ad_heavy': return 'May show ads';
-    case 'unstable': return 'Unstable';
-    default: return '';
-  }
+export function getServerLabel(_serverId: string): string {
+  return '';
 }
 
 export function sortServersByQuality(serverIds: string[]): string[] {
