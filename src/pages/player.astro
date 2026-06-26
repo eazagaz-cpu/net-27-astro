@@ -6,26 +6,24 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
 ---
 
 <BaseLayout>
-  <SEOHead slot="head" title="Watch | NetMirror" description="Watch movies and shows on NetMirror." canonical={`${SITE_URL}/player/`} noindex={true} />
+  <SEOHead slot="head" title="Watch Now — NetMirror Player" description="Watch movies and TV shows on NetMirror. Multiple servers with instant switching for smooth playback." canonical={`${SITE_URL}/player/`} noindex={true} />
 
-  <main class="min-h-screen bg-black text-white">
+  <main class="player-shell">
     <!-- Top bar -->
-    <div class="fixed top-0 left-0 right-0 z-50 bg-black/95 backdrop-blur-sm border-b border-white/5">
-      <div class="flex items-center justify-between px-4 h-12">
-        <button onclick="history.back()" class="flex items-center gap-2 text-sm text-zinc-400 hover:text-white cursor-pointer">
+    <div class="player-topbar">
+      <div class="flex items-center justify-between px-3 sm:px-4 h-12">
+        <button onclick="history.back()" class="flex items-center gap-2 text-sm text-zinc-400 hover:text-white cursor-pointer" aria-label="Go back">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-          Back
+          <span class="hidden sm:inline">Back</span>
         </button>
-        <h1 class="text-sm font-medium truncate max-w-[40%]" id="player-title">Loading...</h1>
-        <div class="flex items-center gap-2">
-          <select id="server-select" class="bg-black text-xs text-white border border-white/10 rounded px-2 py-1 cursor-pointer">
-            <option value="0">Server 1</option>
-            <option value="1">Server 2</option>
-            <option value="2">Server 3</option>
-            <option value="3">Server 4</option>
-          </select>
-          <a href="/" class="p-1 text-zinc-400 hover:text-white" aria-label="Close">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        <h1 class="text-xs sm:text-sm font-medium truncate max-w-[35%] sm:max-w-[40%]" id="player-title">Loading...</h1>
+        <div class="flex items-center gap-1.5 sm:gap-2">
+          <select id="server-select" class="bg-black text-[11px] sm:text-xs text-white border border-white/10 rounded px-1.5 sm:px-2 py-1 cursor-pointer" aria-label="Select server"></select>
+          <button id="report-btn" class="text-zinc-500 hover:text-zinc-300 cursor-pointer p-1 transition-colors" aria-label="Report issue" title="Report problem">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
+          </button>
+          <a href="/" class="p-1 text-zinc-400 hover:text-white" aria-label="Close player">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 sm:w-5 sm:h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
           </a>
         </div>
       </div>
@@ -34,45 +32,96 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
     <!-- TV controls -->
     <div id="tv-controls" class="fixed top-12 left-0 right-0 z-40 bg-black/90 border-b border-white/5 px-4 py-2 hidden">
       <div class="flex items-center gap-3">
-        <select id="season-select" class="bg-black text-xs text-white border border-white/10 rounded px-2 py-1 cursor-pointer"></select>
-        <select id="episode-select" class="bg-black text-xs text-white border border-white/10 rounded px-2 py-1 cursor-pointer">
+        <select id="season-select" class="bg-black text-xs text-white border border-white/10 rounded px-2 py-1 cursor-pointer" aria-label="Select season"></select>
+        <select id="episode-select" class="bg-black text-xs text-white border border-white/10 rounded px-2 py-1 cursor-pointer" aria-label="Select episode">
           <option value="1">Episode 1</option>
         </select>
       </div>
     </div>
 
     <!-- Player iframe container -->
-    <div id="player-container" class="pt-12 w-full" style="height:100vh;">
+    <div id="player-container" class="player-frame-wrap pt-12">
+      <!-- Loading state -->
       <div id="player-loading" class="flex items-center justify-center h-full">
         <div class="text-center">
           <div class="w-10 h-10 border-2 border-white/20 border-t-[var(--color-primary)] rounded-full animate-spin mx-auto mb-4"></div>
-          <p class="text-zinc-400 text-sm">Loading player...</p>
+          <p class="text-zinc-400 text-sm" id="loading-status">Loading player...</p>
         </div>
       </div>
+
+      <!-- Iframe -->
       <iframe
         id="player-iframe"
         class="player-frame hidden"
-        style="height:calc(100vh - 48px);"
+        style="height:calc(100svh - 48px);"
         allowfullscreen
         allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-        referrerpolicy="no-referrer-when-downgrade"
+        sandbox="allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock"
+        referrerpolicy="no-referrer"
       ></iframe>
+
+      <!-- Playback unavailable -->
+      <div id="player-fallback" class="hidden flex items-center justify-center h-full">
+        <div class="text-center px-4 max-w-lg">
+          <h2 class="text-lg font-bold mb-2">Playback Unavailable</h2>
+          <p class="text-sm text-zinc-400 mb-6">This title is temporarily unavailable. Try switching servers or use the app for better playback.</p>
+          <div class="flex items-center justify-center gap-3 mb-6">
+            <button id="fallback-switch" class="btn-primary text-xs px-5 py-2.5 rounded-lg cursor-pointer">Switch Server</button>
+            <a href={APK_UNIVERSAL_URL} download class="btn-glass text-xs px-5 py-2.5 rounded-lg" rel="noopener noreferrer nofollow">Download App</a>
+            <button onclick="history.back()" class="btn-glass text-xs px-5 py-2.5 rounded-lg cursor-pointer">Back</button>
+          </div>
+          <p id="trailer-link" class="hidden mb-4"></p>
+        </div>
+      </div>
+
+      <!-- Title not found (metadata error) -->
+      <div id="player-notfound" class="hidden flex items-center justify-center h-full">
+        <div class="text-center px-4 max-w-md">
+          <h2 class="text-lg font-bold mb-2">Title Not Found</h2>
+          <p class="text-sm text-zinc-400 mb-6">We could not find details for this title. Please go back and choose another title.</p>
+          <div class="flex items-center justify-center gap-3">
+            <button onclick="history.back()" class="btn-primary text-xs px-5 py-2.5 rounded-lg cursor-pointer">Back</button>
+            <a href="/search/" class="btn-glass text-xs px-5 py-2.5 rounded-lg">Search Titles</a>
+          </div>
+        </div>
+      </div>
     </div>
 
-    <!-- Fallback (shown if no source) -->
-    <div id="player-fallback" class="hidden pt-12 flex flex-col items-center justify-center min-h-screen">
-      <div class="text-center px-4 max-w-lg">
-        <h2 class="text-xl font-bold mb-2">Source Unavailable</h2>
-        <p class="text-sm text-zinc-400 mb-6">Streaming source could not be loaded. Try another server or use the app.</p>
-        <div class="flex items-center justify-center gap-4 mb-6">
-          <a href={APK_UNIVERSAL_URL} download class="btn-primary text-xs px-6 py-2.5 rounded-lg" rel="noopener noreferrer">⬇ Download App</a>
-          <button onclick="history.back()" class="btn-glass text-xs px-6 py-2.5 rounded-lg cursor-pointer">Go Back</button>
+
+    <!-- Report modal -->
+    <div id="report-modal" class="fixed inset-0 z-[60] bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
+      <div class="bg-[#111] border border-white/10 rounded-2xl p-5 w-full max-w-sm">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="text-sm font-bold">Report Problem</h3>
+          <button id="report-close" class="text-zinc-500 hover:text-white cursor-pointer" aria-label="Close">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
         </div>
-        <p id="trailer-link" class="hidden mb-4"></p>
+        <div class="space-y-2" id="report-options">
+          <button data-issue="not_playing" class="report-option">Server not playing</button>
+          <button data-issue="buffering" class="report-option">Buffering</button>
+          <button data-issue="black_screen" class="report-option">Black screen</button>
+          <button data-issue="wrong_title" class="report-option">Wrong title</button>
+          <button data-issue="audio" class="report-option">Audio issue</button>
+          <button data-issue="subtitle" class="report-option">Subtitle issue</button>
+        </div>
+        <div id="report-toast" class="hidden mt-4 p-3 rounded-lg bg-green-500/10 border border-green-500/20">
+          <p class="text-xs text-green-400 text-center">Thanks for your feedback.</p>
+          <button id="report-try-next" class="mt-2 w-full text-xs text-center text-[var(--color-primary)] hover:underline cursor-pointer">Switch server</button>
+        </div>
       </div>
     </div>
   </main>
 </BaseLayout>
+
+<style>
+  .player-shell { min-height: 100svh; background: #000; overflow: hidden; }
+  .player-topbar { position: fixed; top: 0; left: 0; right: 0; z-index: 50; background: rgba(0,0,0,0.95); backdrop-filter: blur(8px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .player-frame-wrap { width: 100%; height: 100svh; background: #000; }
+  .player-frame { width: 100%; height: 100%; border: 0; background: #000; }
+  .report-option { display: block; width: 100%; text-align: left; padding: 10px 14px; border-radius: 10px; font-size: 13px; color: #ccc; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: all 0.15s; }
+  .report-option:hover { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.12); }
+</style>
 
 <script>
   const params = new URLSearchParams(window.location.search);
@@ -80,65 +129,289 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
   const id = params.get('id') || '';
   let season = parseInt(params.get('s') || '1');
   let episode = parseInt(params.get('e') || '1');
-  let totalSeasons = 0;
+  let currentServerIdx = 0;
+  let timeoutTimer: ReturnType<typeof setTimeout> | null = null;
+  let confirmTimer: ReturnType<typeof setTimeout> | null = null;
+  let watchTimer: ReturnType<typeof setTimeout> | null = null;
+  let loadTimestamp = 0;
+  let playerConfirmed = false; // true = embed is definitely playing
+  let switching = false;       // guard against double-switch
 
-  function getEmbedUrl(serverIdx: number): string {
-    const servers = type === 'movie' ? [
-      `https://autoembed.co/movie/tmdb/${id}`,
-      `https://www.2embed.cc/embed/${id}`,
-      `https://player.videasy.net/movie/${id}`,
-      `https://embed.smashystream.com/playere.php?tmdb=${id}`,
-    ] : [
-      `https://autoembed.co/tv/tmdb/${id}-${season}-${episode}`,
-      `https://www.2embed.cc/embedtv/${id}&s=${season}&e=${episode}`,
-      `https://player.videasy.net/tv/${id}/${season}/${episode}`,
-      `https://embed.smashystream.com/playere.php?tmdb=${id}&season=${season}&episode=${episode}`,
+  // After onload, wait this long for an error postMessage before showing iframe.
+  // Keeps 404 pages hidden while giving playing signals time to arrive.
+  const CONFIRM_MS = 1500;
+  // If no playing confirmation in this time, auto-switch to next server.
+  const TIMEOUT_MS = 10000;
+  const LONG_WATCH_MS = 60000;
+  const QUICK_SWITCH_MS = 8000;
+  const SQ_KEY = 'netmirror_server_quality';
+
+  function sqLoad(): Record<string, any> {
+    try { return JSON.parse(localStorage.getItem(SQ_KEY) || '{}'); } catch { return {}; }
+  }
+  function sqSave(d: Record<string, any>) {
+    try { localStorage.setItem(SQ_KEY, JSON.stringify(d)); } catch {}
+  }
+  function sqUpdate(sid: string, fn: (s: any) => void) {
+    const all = sqLoad();
+    const s = all[sid] || { qualityScore: 70, successfulLoads: 0, failedLoads: 0, timeoutCount: 0 };
+    fn(s);
+    s.qualityScore = Math.max(0, Math.min(100, Math.round(s.qualityScore)));
+    all[sid] = s;
+    sqSave(all);
+  }
+
+  function getServers() {
+    if (type === 'movie') {
+      return [
+        { id: 'server-1', name: 'Server 1', url: `https://player.videasy.net/movie/${id}` },
+        { id: 'server-2', name: 'Server 2', url: `https://autoembed.co/movie/tmdb/${id}` },
+        { id: 'server-3', name: 'Server 3', url: `https://vidsrc.to/embed/movie/${id}` },
+        { id: 'server-4', name: 'Server 4', url: `https://vidsrc.me/embed/movie?tmdb=${id}` },
+      ];
+    }
+    return [
+      { id: 'server-1', name: 'Server 1', url: `https://player.videasy.net/tv/${id}/${season}/${episode}` },
+      { id: 'server-2', name: 'Server 2', url: `https://autoembed.co/tv/tmdb/${id}-${season}-${episode}` },
+      { id: 'server-3', name: 'Server 3', url: `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` },
+      { id: 'server-4', name: 'Server 4', url: `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` },
     ];
-    return servers[serverIdx] || servers[0];
+  }
+
+  function populateServers() {
+    const select = document.getElementById('server-select') as HTMLSelectElement;
+    if (!select) return;
+    const servers = getServers();
+    select.innerHTML = servers.map((srv, i) =>
+      `<option value="${i}">${srv.name}</option>`
+    ).join('');
+    select.value = String(currentServerIdx);
+  }
+
+  function hideAllStates() {
+    document.getElementById('player-loading')?.classList.add('hidden');
+    document.getElementById('player-fallback')?.classList.add('hidden');
+    document.getElementById('player-notfound')?.classList.add('hidden');
+    document.getElementById('player-iframe')?.classList.add('hidden');
+  }
+
+  // Silently move to next server — user just sees "Trying Server N..." loading
+  function silentSwitch() {
+    if (switching) return;
+    const servers = getServers();
+    const next = currentServerIdx + 1;
+    if (next >= servers.length) {
+      hideAllStates();
+      document.getElementById('player-fallback')?.classList.remove('hidden');
+      return;
+    }
+    switching = true;
+    sqUpdate(servers[currentServerIdx].id, s => { s.timeoutCount++; s.qualityScore -= 20; });
+    const status = document.getElementById('loading-status');
+    if (status) status.textContent = `Trying ${servers[next].name}...`;
+    hideAllStates();
+    document.getElementById('player-loading')?.classList.remove('hidden');
+    setTimeout(() => { switching = false; loadPlayer(next); }, 600);
+  }
+
+  function showIframe() {
+    const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
+    if (!iframe) return;
+    hideAllStates();
+    iframe.classList.remove('hidden');
   }
 
   function loadPlayer(serverIdx: number) {
+    const servers = getServers();
+    if (serverIdx < 0 || serverIdx >= servers.length) serverIdx = 0;
+    currentServerIdx = serverIdx;
+    playerConfirmed = false;
+
     const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
     const loading = document.getElementById('player-loading');
-    const fallback = document.getElementById('player-fallback');
+    const status = document.getElementById('loading-status');
 
     if (!iframe || !id) {
-      if (fallback) fallback.classList.remove('hidden');
+      hideAllStates();
+      document.getElementById('player-fallback')?.classList.remove('hidden');
       return;
     }
 
-    const url = getEmbedUrl(serverIdx);
-    iframe.src = url;
-    iframe.classList.remove('hidden');
-    if (loading) loading.classList.add('hidden');
-    if (fallback) fallback.classList.add('hidden');
+    const srv = servers[serverIdx];
+    const isLast = serverIdx === servers.length - 1;
+
+    hideAllStates();
+    if (loading) loading.classList.remove('hidden');
+    if (status) status.textContent = `Connecting to ${srv.name}...`;
+
+    if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
+    if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; }
+    if (watchTimer) { clearTimeout(watchTimer); watchTimer = null; }
+
+    iframe.removeAttribute('src');
+    loadTimestamp = Date.now();
+
+    requestAnimationFrame(() => {
+      iframe.src = srv.url;
+
+      iframe.onload = () => {
+        if (playerConfirmed || switching) {
+          // Already confirmed via postMessage — show immediately
+          if (!switching) showIframe();
+          if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
+          return;
+        }
+
+        // Brief window to catch an error postMessage before revealing the iframe.
+        // If the server sent an error (e.g. videasy 404), silentSwitch fires first.
+        confirmTimer = setTimeout(() => {
+          confirmTimer = null;
+          if (switching) return;
+          // No error postMessage arrived — show iframe (may be working player or 404)
+          showIframe();
+          sqUpdate(srv.id, s => { s.successfulLoads++; s.qualityScore += 5; });
+          watchTimer = setTimeout(() => {
+            if (playerConfirmed) sqUpdate(srv.id, s => { s.qualityScore += 15; });
+          }, LONG_WATCH_MS);
+        }, CONFIRM_MS);
+      };
+
+      // Overall timeout: if still not confirmed after TIMEOUT_MS, auto-switch
+      timeoutTimer = setTimeout(() => {
+        timeoutTimer = null;
+        if (playerConfirmed || switching) return;
+        if (isLast) {
+          // Last server: if nothing loaded at all show fallback, else leave what's showing
+          if (iframe.classList.contains('hidden')) {
+            hideAllStates();
+            document.getElementById('player-fallback')?.classList.remove('hidden');
+          }
+          sqUpdate(srv.id, s => { s.timeoutCount++; s.qualityScore -= 20; });
+        } else {
+          silentSwitch();
+        }
+      }, TIMEOUT_MS);
+    });
+
+    const select = document.getElementById('server-select') as HTMLSelectElement;
+    if (select) select.value = String(serverIdx);
   }
 
-  // Server selector
+  // postMessage: embed providers send error/playing signals
+  window.addEventListener('message', (event) => {
+    const d = event.data;
+    if (!d || typeof d !== 'object') return;
+
+    const isError =
+      d.type === 'error' || d.event === 'error' ||
+      d.status === 404 || d.code === 404 ||
+      d.type === 'player:error' || d.type === 'content_not_found' ||
+      d.reason === 'not_found' || d.error === true;
+
+    const isPlaying =
+      d.event === 'play' || d.event === 'playing' || d.event === 'timeupdate' ||
+      d.type === 'timeupdate' || d.type === 'play' || d.type === 'playing' ||
+      d.type === 'playerReady' || d.type === 'ready' || d.action === 'play' ||
+      (d.currentTime !== undefined && Number(d.currentTime) > 0);
+
+    if (isError && !playerConfirmed && !switching) {
+      if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; }
+      if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
+      silentSwitch();
+    } else if (isPlaying) {
+      playerConfirmed = true;
+      if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
+      if (confirmTimer) { clearTimeout(confirmTimer); confirmTimer = null; }
+      const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
+      if (iframe?.classList.contains('hidden')) showIframe();
+      sqUpdate(getServers()[currentServerIdx]?.id || '', s => { s.successfulLoads++; s.qualityScore += 10; });
+    }
+  });
+
+  // User clicked inside iframe = player is definitely working
+  window.addEventListener('blur', () => {
+    const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
+    if (iframe && !iframe.classList.contains('hidden')) {
+      playerConfirmed = true;
+      if (timeoutTimer) { clearTimeout(timeoutTimer); timeoutTimer = null; }
+    }
+  });
+
+  function tryNextServer() {
+    const servers = getServers();
+    if (Date.now() - loadTimestamp < QUICK_SWITCH_MS) {
+      sqUpdate(servers[currentServerIdx]?.id || '', s => { s.qualityScore -= 5; });
+    }
+    playerConfirmed = false;
+    const next = (currentServerIdx + 1) % servers.length;
+    loadPlayer(next);
+  }
+
+  // Event listeners
   const serverSelect = document.getElementById('server-select') as HTMLSelectElement;
-  if (serverSelect) {
-    serverSelect.addEventListener('change', () => loadPlayer(parseInt(serverSelect.value)));
-  }
+  if (serverSelect) serverSelect.addEventListener('change', () => { playerConfirmed = false; loadPlayer(parseInt(serverSelect.value)); });
 
-  // Season/episode selectors
+  document.getElementById('fallback-switch')?.addEventListener('click', tryNextServer);
+
   const seasonSelect = document.getElementById('season-select') as HTMLSelectElement;
   const episodeSelect = document.getElementById('episode-select') as HTMLSelectElement;
+  if (seasonSelect) seasonSelect.addEventListener('change', () => { season = parseInt(seasonSelect.value); populateServers(); loadPlayer(currentServerIdx); });
+  if (episodeSelect) episodeSelect.addEventListener('change', () => { episode = parseInt(episodeSelect.value); populateServers(); loadPlayer(currentServerIdx); });
 
-  if (seasonSelect) {
-    seasonSelect.addEventListener('change', () => {
-      season = parseInt(seasonSelect.value);
-      loadPlayer(parseInt(serverSelect?.value || '0'));
-    });
-  }
-  if (episodeSelect) {
-    episodeSelect.addEventListener('change', () => {
-      episode = parseInt(episodeSelect.value);
-      loadPlayer(parseInt(serverSelect?.value || '0'));
-    });
-  }
+  // Report system
+  const reportModal = document.getElementById('report-modal');
+  const reportToast = document.getElementById('report-toast');
+  document.getElementById('report-btn')?.addEventListener('click', () => {
+    if (reportModal) reportModal.classList.remove('hidden');
+    if (reportToast) reportToast.classList.add('hidden');
+    document.getElementById('report-options')?.classList.remove('hidden');
+  });
+  document.getElementById('report-close')?.addEventListener('click', () => { if (reportModal) reportModal.classList.add('hidden'); });
+  reportModal?.addEventListener('click', (e) => { if (e.target === reportModal) reportModal.classList.add('hidden'); });
 
-  // Fetch title info and init
+  document.querySelectorAll('.report-option').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const issue = (btn as HTMLElement).dataset.issue || '';
+      const srv = getServers()[currentServerIdx];
+      if (srv) {
+        sqUpdate(srv.id, s => {
+          switch (issue) {
+            case 'not_playing': s.failedLoads = (s.failedLoads || 0) + 1; s.qualityScore -= 30; break;
+            case 'buffering': s.qualityScore -= 10; break;
+            case 'black_screen': s.qualityScore -= 25; break;
+            default: s.qualityScore -= 5; break;
+          }
+        });
+      }
+      if (reportToast) reportToast.classList.remove('hidden');
+      document.getElementById('report-options')?.classList.add('hidden');
+    });
+  });
+
+  document.getElementById('report-try-next')?.addEventListener('click', () => {
+    if (reportModal) reportModal.classList.add('hidden');
+    tryNextServer();
+  });
+
+  // Fullscreen
+  function onFullscreenChange() {
+    const isFs = !!document.fullscreenElement;
+    const topbar = document.querySelector('.player-topbar') as HTMLElement;
+    if (topbar) topbar.style.display = isFs ? 'none' : '';
+  }
+  document.addEventListener('fullscreenchange', onFullscreenChange);
+  document.addEventListener('webkitfullscreenchange', onFullscreenChange);
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && reportModal && !reportModal.classList.contains('hidden')) {
+      reportModal.classList.add('hidden');
+    }
+  });
+
+  // Init
   if (id) {
+    populateServers();
+
     fetch(`/api/tmdb/details?type=${type}&id=${id}`)
       .then(r => r.json())
       .then(data => {
@@ -151,12 +424,11 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
             const link = document.getElementById('trailer-link');
             if (link) {
               link.classList.remove('hidden');
-              link.innerHTML = `<a href="https://www.youtube.com/watch?v=${data.trailerKey}" target="_blank" rel="noopener" class="text-blue-400 text-sm hover:underline">▶ Watch Trailer on YouTube</a>`;
+              link.innerHTML = `<a href="https://www.youtube.com/watch?v=${data.trailerKey}" target="_blank" rel="noopener noreferrer nofollow" class="text-blue-400 text-sm hover:underline">Watch Trailer on YouTube</a>`;
             }
           }
 
           if (type === 'tv' && data.seasons > 0) {
-            totalSeasons = data.seasons;
             const tc = document.getElementById('tv-controls');
             if (tc && seasonSelect) {
               tc.classList.remove('hidden');
@@ -168,11 +440,19 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
               ).join('');
             }
           }
+        } else {
+          hideAllStates();
+          document.getElementById('player-notfound')?.classList.remove('hidden');
         }
       })
-      .catch(() => {});
+      .catch(() => {
+        hideAllStates();
+        document.getElementById('player-notfound')?.classList.remove('hidden');
+      });
 
-    // Start playing
     loadPlayer(0);
+  } else {
+    hideAllStates();
+    document.getElementById('player-notfound')?.classList.remove('hidden');
   }
 </script>
