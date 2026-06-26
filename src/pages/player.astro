@@ -63,10 +63,10 @@ import { SITE_URL } from '../lib/seo';
 
       <!-- Server chooser (first visit — no saved preference) -->
       <div id="player-chooser" class="hidden flex items-center justify-center h-full">
-        <div class="text-center px-4 max-w-sm w-full">
-          <h2 class="text-xl font-bold mb-1.5">Choose a server</h2>
-          <p class="text-sm text-zinc-500 mb-8">HD Stream is recommended · others are fallbacks</p>
-          <div class="grid grid-cols-2 gap-3" id="chooser-btns"></div>
+        <div class="text-center px-5 w-full" style="max-width:420px">
+          <h2 class="text-2xl font-bold mb-2">Choose a server</h2>
+          <p class="text-sm text-zinc-500 mb-7">HD Stream recommended &middot; others are fallbacks</p>
+          <div class="flex flex-col gap-3" id="chooser-btns"></div>
         </div>
       </div>
 
@@ -174,11 +174,49 @@ import { SITE_URL } from '../lib/seo';
   .report-option { display: block; width: 100%; text-align: left; padding: 10px 14px; border-radius: 10px; font-size: 13px; color: #ccc; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.06); cursor: pointer; transition: all 0.15s; }
   .report-option:hover { background: rgba(255,255,255,0.08); color: #fff; border-color: rgba(255,255,255,0.12); }
   #player-fallback, #player-blocked, #player-notfound, #player-loading, #player-chooser { height: calc(100svh - 48px); }
-  .chooser-btn { padding: 18px 12px; border-radius: 12px; font-size: 14px; font-weight: 600; cursor: pointer; transition: opacity 0.15s, transform 0.1s; border: none; width: 100%; }
-  .chooser-btn:hover { opacity: 0.85; transform: translateY(-1px); }
-  .chooser-btn:active { transform: translateY(0); }
-  .chooser-btn.s-primary { background: var(--color-primary); color: #fff; }
-  .chooser-btn.s-alt { background: rgba(255,255,255,0.07); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
+  .chooser-btn {
+    padding: 20px 24px;
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+    cursor: pointer;
+    transition: transform 0.18s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.18s ease, background 0.15s ease;
+    border: none;
+    width: 100%;
+    position: relative;
+    overflow: hidden;
+    user-select: none;
+  }
+  .chooser-btn::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(255,255,255,0);
+    transition: background 0.15s ease;
+  }
+  .chooser-btn:hover::after { background: rgba(255,255,255,0.06); }
+  .chooser-btn:hover { transform: scale(1.025); }
+  .chooser-btn:active { transform: scale(0.97); transition-duration: 0.08s; }
+  .chooser-btn.s-primary {
+    background: var(--color-primary);
+    color: #fff;
+    box-shadow: 0 4px 20px rgba(220,38,38,0.35);
+  }
+  .chooser-btn.s-primary:hover {
+    box-shadow: 0 6px 28px rgba(220,38,38,0.55);
+  }
+  .chooser-btn.s-alt {
+    background: rgba(255,255,255,0.07);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .chooser-btn.s-alt:hover {
+    background: rgba(255,255,255,0.11);
+    border-color: rgba(255,255,255,0.22);
+    box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  }
+  .chooser-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
   .lang-dropdown { z-index: 55; }
   .lang-opt { display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 8px 12px; font-size: 12px; color: #ccc; background: transparent; border: none; cursor: pointer; transition: background 0.1s; text-align: left; }
   .lang-opt:hover { background: rgba(255,255,255,0.06); color: #fff; }
@@ -258,9 +296,21 @@ import { SITE_URL } from '../lib/seo';
     const container = document.getElementById('chooser-btns');
     if (!container) return;
     const servers = getServers({ type, id, season, episode });
-    container.innerHTML = servers.map((srv, i) =>
-      `<button class="chooser-btn ${i === 0 ? 's-primary' : 's-alt'}" data-idx="${i}">${srv.name}</button>`
-    ).join('');
+
+    // Primary server full-width; remaining in 2-col rows
+    const [primary, ...alts] = servers;
+    let html = `<button class="chooser-btn s-primary" data-idx="0">${primary.name}</button>`;
+
+    for (let i = 0; i < alts.length; i += 2) {
+      const a = alts[i];
+      const b = alts[i + 1];
+      html += `<div class="chooser-row">
+        <button class="chooser-btn s-alt" data-idx="${i + 1}">${a.name}</button>
+        ${b ? `<button class="chooser-btn s-alt" data-idx="${i + 2}">${b.name}</button>` : ''}
+      </div>`;
+    }
+
+    container.innerHTML = html;
     container.querySelectorAll('.chooser-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         loadPlayer(parseInt((btn as HTMLElement).dataset.idx || '0'));
