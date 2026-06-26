@@ -65,7 +65,7 @@ import { SITE_URL } from '../lib/seo';
       <div id="player-chooser" class="hidden flex items-center justify-center h-full">
         <div class="text-center px-4 max-w-sm w-full">
           <h2 class="text-xl font-bold mb-1.5">Choose a server</h2>
-          <p class="text-sm text-zinc-500 mb-8">Server 1 is recommended · others are fallbacks</p>
+          <p class="text-sm text-zinc-500 mb-8">HD Stream is recommended · others are fallbacks</p>
           <div class="grid grid-cols-2 gap-3" id="chooser-btns"></div>
         </div>
       </div>
@@ -352,6 +352,8 @@ import { SITE_URL } from '../lib/seo';
     if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
 
     setState('loading');
+    const loadingMsg = document.querySelector('#player-loading p.text-sm');
+    if (loadingMsg) loadingMsg.textContent = srv.streamMode ? 'Resolving stream...' : 'Loading player...';
     saveSelectedServer(type, id, serverIdx);
 
     const select = document.getElementById('server-select') as HTMLSelectElement;

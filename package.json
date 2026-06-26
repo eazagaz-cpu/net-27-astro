@@ -23,6 +23,7 @@
   "dependencies": {
     "@astrojs/react": "^4.2.0",
     "@astrojs/sitemap": "^3.3.0",
+    "@movie-web/providers": "^2.4.13",
     "astro": "^5.7.0",
     "firebase": "^12.15.0",
     "hls.js": "^1.6.16",
