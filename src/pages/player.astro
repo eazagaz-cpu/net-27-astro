@@ -307,13 +307,15 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
             if (playerConfirmed) sqUpdate(srv.id, s => { s.qualityScore += 15; });
           }, LONG_WATCH_MS);
 
-          // If not last server: give user INTERACT_MS to interact (click/blur).
-          // Silent error pages (e.g. "unavailable") get no interaction → auto-switch.
+          // If not last server: give user time to interact.
+          // videasy shows a click-to-play thumbnail (not an error) — user needs 12s to click.
+          // Other servers: 3.5s catches silent "unavailable" pages that load fast with no video.
           if (!isLast) {
+            const interactDelay = srv.url.includes('videasy.net') ? 12000 : INTERACT_MS;
             interactionTimer = setTimeout(() => {
               interactionTimer = null;
               if (!playerConfirmed && !switching) silentSwitch();
-            }, INTERACT_MS);
+            }, interactDelay);
           }
         }, CONFIRM_MS);
       };
