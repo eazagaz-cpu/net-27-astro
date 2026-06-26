@@ -24,27 +24,27 @@ export function getStreamSources(params: {
     return [
       {
         id: 'server-1', name: 'Server 1', label: 'Default',
-        url: `https://player.videasy.net/movie/${tmdbId}`,
+        url: `https://vidsrc.to/embed/movie/${tmdbId}`,
         type: 'iframe', priority: 1, enabled: true,
-        adExperience: 'minimal', qualityScore: 85,
+        adExperience: 'minimal', qualityScore: 90,
       },
       {
         id: 'server-2', name: 'Server 2', label: 'Backup',
-        url: `https://autoembed.co/movie/tmdb/${tmdbId}`,
+        url: `https://player.videasy.net/movie/${tmdbId}`,
         type: 'iframe', priority: 2, enabled: true,
-        adExperience: 'moderate', qualityScore: 75,
+        adExperience: 'minimal', qualityScore: 85,
       },
       {
         id: 'server-3', name: 'Server 3', label: 'Alternate',
-        url: `https://vidsrc.to/embed/movie/${tmdbId}`,
+        url: `https://vidsrc.me/embed/movie?tmdb=${tmdbId}`,
         type: 'iframe', priority: 3, enabled: true,
         adExperience: 'minimal', qualityScore: 80,
       },
       {
         id: 'server-4', name: 'Server 4', label: 'Alternate',
-        url: `https://vidsrc.me/embed/movie?tmdb=${tmdbId}`,
+        url: `https://autoembed.co/movie/tmdb/${tmdbId}`,
         type: 'iframe', priority: 4, enabled: true,
-        adExperience: 'minimal', qualityScore: 78,
+        adExperience: 'moderate', qualityScore: 65,
       },
     ];
   }
@@ -52,27 +52,27 @@ export function getStreamSources(params: {
   return [
     {
       id: 'server-1', name: 'Server 1', label: 'Default',
-      url: `https://player.videasy.net/tv/${tmdbId}/${s}/${e}`,
+      url: `https://vidsrc.to/embed/tv/${tmdbId}/${s}/${e}`,
       type: 'iframe', priority: 1, enabled: true,
-      adExperience: 'minimal', qualityScore: 85,
+      adExperience: 'minimal', qualityScore: 90,
     },
     {
       id: 'server-2', name: 'Server 2', label: 'Backup',
-      url: `https://autoembed.co/tv/tmdb/${tmdbId}-${s}-${e}`,
+      url: `https://player.videasy.net/tv/${tmdbId}/${s}/${e}`,
       type: 'iframe', priority: 2, enabled: true,
-      adExperience: 'moderate', qualityScore: 75,
+      adExperience: 'minimal', qualityScore: 85,
     },
     {
       id: 'server-3', name: 'Server 3', label: 'Alternate',
-      url: `https://vidsrc.to/embed/tv/${tmdbId}/${s}/${e}`,
+      url: `https://vidsrc.me/embed/tv?tmdb=${tmdbId}&season=${s}&episode=${e}`,
       type: 'iframe', priority: 3, enabled: true,
       adExperience: 'minimal', qualityScore: 80,
     },
     {
       id: 'server-4', name: 'Server 4', label: 'Alternate',
-      url: `https://vidsrc.me/embed/tv?tmdb=${tmdbId}&season=${s}&episode=${e}`,
+      url: `https://autoembed.co/tv/tmdb/${tmdbId}-${s}-${e}`,
       type: 'iframe', priority: 4, enabled: true,
-      adExperience: 'minimal', qualityScore: 78,
+      adExperience: 'moderate', qualityScore: 65,
     },
   ];
 }

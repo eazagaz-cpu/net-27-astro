@@ -174,17 +174,17 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
   function getServers() {
     if (type === 'movie') {
       return [
-        { id: 'server-1', name: 'Server 1', url: `https://player.videasy.net/movie/${id}` },
-        { id: 'server-2', name: 'Server 2', url: `https://autoembed.co/movie/tmdb/${id}` },
-        { id: 'server-3', name: 'Server 3', url: `https://vidsrc.to/embed/movie/${id}` },
-        { id: 'server-4', name: 'Server 4', url: `https://vidsrc.me/embed/movie?tmdb=${id}` },
+        { id: 'server-1', name: 'Server 1', url: `https://vidsrc.to/embed/movie/${id}` },
+        { id: 'server-2', name: 'Server 2', url: `https://player.videasy.net/movie/${id}` },
+        { id: 'server-3', name: 'Server 3', url: `https://vidsrc.me/embed/movie?tmdb=${id}` },
+        { id: 'server-4', name: 'Server 4', url: `https://autoembed.co/movie/tmdb/${id}` },
       ];
     }
     return [
-      { id: 'server-1', name: 'Server 1', url: `https://player.videasy.net/tv/${id}/${season}/${episode}` },
-      { id: 'server-2', name: 'Server 2', url: `https://autoembed.co/tv/tmdb/${id}-${season}-${episode}` },
-      { id: 'server-3', name: 'Server 3', url: `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` },
-      { id: 'server-4', name: 'Server 4', url: `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` },
+      { id: 'server-1', name: 'Server 1', url: `https://vidsrc.to/embed/tv/${id}/${season}/${episode}` },
+      { id: 'server-2', name: 'Server 2', url: `https://player.videasy.net/tv/${id}/${season}/${episode}` },
+      { id: 'server-3', name: 'Server 3', url: `https://vidsrc.me/embed/tv?tmdb=${id}&season=${season}&episode=${episode}` },
+      { id: 'server-4', name: 'Server 4', url: `https://autoembed.co/tv/tmdb/${id}-${season}-${episode}` },
     ];
   }
 
@@ -261,10 +261,10 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
     iframe.removeAttribute('src');
     loadTimestamp = Date.now();
 
-    // Per-server sandbox: videasy (server-1) detects the sandbox attribute and shows
-    // a blocking error page, so we skip it there. All other servers get sandbox applied,
-    // which prevents popup ads (no allow-popups) and top-level redirects (no allow-top-navigation).
-    if (srv.id === 'server-1') {
+    // videasy detects the sandbox attribute and shows a blocking error — skip sandbox for it.
+    // All other servers get sandbox: blocks popup ads (no allow-popups) and
+    // top-level page redirects (no allow-top-navigation).
+    if (srv.url.includes('videasy.net')) {
       iframe.removeAttribute('sandbox');
     } else {
       iframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock');
