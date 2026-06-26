@@ -70,7 +70,7 @@ import { SITE_URL } from '../lib/seo';
         </div>
       </div>
 
-      <!-- Iframe -->
+      <!-- Iframe (classic server mode) -->
       <iframe
         id="player-iframe"
         class="player-frame hidden"
@@ -79,6 +79,17 @@ import { SITE_URL } from '../lib/seo';
         allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
         referrerpolicy="no-referrer-when-downgrade"
       ></iframe>
+
+      <!-- Video element (stream mode — ad-free) -->
+      <video
+        id="player-video"
+        class="player-frame hidden"
+        style="height:calc(100svh - 48px);background:#000;"
+        controls
+        controlslist="nodownload"
+        crossorigin="anonymous"
+        playsinline
+      ></video>
 
       <!-- Server/timeout error (State B) -->
       <div id="player-fallback" class="hidden flex items-center justify-center h-full">
@@ -175,6 +186,7 @@ import { SITE_URL } from '../lib/seo';
 </style>
 
 <script>
+  import Hls from 'hls.js';
   import { getServers } from '../lib/player/servers';
   import { applySandbox } from '../lib/player/iframePolicy';
   import { loadSavedServer, saveSelectedServer, hasSavedServer } from '../lib/player/serverMemory';
@@ -192,8 +204,10 @@ import { SITE_URL } from '../lib/seo';
   // ── State ──────────────────────────────────────────────────────────────────
   let currentServerIdx = 0;
   let currentLang = 'default';
+  let currentStreamMode = false;
   let loadTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
   let playerConfirmed = false;
+  let hlsInstance: Hls | null = null;
 
   const LOAD_TIMEOUT = 15000; // 15s: if onload never fires → show error (no auto-switch)
 
@@ -209,7 +223,7 @@ import { SITE_URL } from '../lib/seo';
 
   // ── DOM helpers ────────────────────────────────────────────────────────────
   function hideAllStates() {
-    ['player-loading', 'player-iframe', 'player-fallback', 'player-blocked', 'player-notfound', 'player-chooser']
+    ['player-loading', 'player-iframe', 'player-video', 'player-fallback', 'player-blocked', 'player-notfound', 'player-chooser']
       .forEach(elId => document.getElementById(elId)?.classList.add('hidden'));
   }
 
@@ -222,7 +236,8 @@ import { SITE_URL } from '../lib/seo';
     } else if (state === 'loading') {
       document.getElementById('player-loading')?.classList.remove('hidden');
     } else if (state === 'ready') {
-      document.getElementById('player-iframe')?.classList.remove('hidden');
+      const elId = currentStreamMode ? 'player-video' : 'player-iframe';
+      document.getElementById(elId)?.classList.remove('hidden');
     } else {
       if (variant === 'metadata') {
         document.getElementById('player-notfound')?.classList.remove('hidden');
@@ -232,6 +247,10 @@ import { SITE_URL } from '../lib/seo';
         document.getElementById('player-fallback')?.classList.remove('hidden');
       }
     }
+  }
+
+  function clearLoadTimeout() {
+    if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
   }
 
   // ── Server chooser (first visit) ──────────────────────────────────────────
@@ -260,6 +279,57 @@ import { SITE_URL } from '../lib/seo';
     select.value = String(currentServerIdx);
   }
 
+  // ── HLS stream loader (stream mode) ───────────────────────────────────────
+  async function loadHLSStream(streamUrl: string, subtitles: { url: string; lang: string }[]) {
+    const video = document.getElementById('player-video') as HTMLVideoElement;
+    if (!video) return;
+
+    // Remove old subtitle tracks
+    Array.from(video.querySelectorAll('track')).forEach(t => t.remove());
+
+    if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
+
+    if (Hls.isSupported()) {
+      hlsInstance = new Hls({ enableWorker: true });
+      hlsInstance.loadSource(streamUrl);
+      hlsInstance.attachMedia(video);
+
+      hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
+        playerConfirmed = true;
+        clearLoadTimeout();
+        setState('ready');
+        video.play().catch(() => {});
+      });
+
+      hlsInstance.on(Hls.Events.ERROR, (_e: unknown, data: { fatal: boolean }) => {
+        if (data.fatal) { clearLoadTimeout(); setState('error', 'timeout'); }
+      });
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      // Safari native HLS
+      video.src = streamUrl;
+      video.addEventListener('loadedmetadata', () => {
+        playerConfirmed = true;
+        clearLoadTimeout();
+        setState('ready');
+      }, { once: true });
+      video.play().catch(() => {});
+    } else {
+      clearLoadTimeout();
+      setState('error', 'timeout');
+      return;
+    }
+
+    // Attach external subtitle tracks
+    subtitles.forEach(sub => {
+      const track = document.createElement('track');
+      track.kind = 'subtitles';
+      track.label = sub.lang;
+      track.src = sub.url;
+      if (sub.lang === 'English') track.default = true;
+      video.appendChild(track);
+    });
+  }
+
   // ── Core: load a server by index ───────────────────────────────────────────
   function loadPlayer(serverIdx: number) {
     const servers = getServers({ type, id, season, episode });
@@ -267,51 +337,61 @@ import { SITE_URL } from '../lib/seo';
     currentServerIdx = serverIdx;
     playerConfirmed = false;
 
-    const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
-
-    if (!iframe || !id) {
-      setState('error', 'metadata');
-      return;
-    }
+    if (!id) { setState('error', 'metadata'); return; }
 
     const srv = servers[serverIdx];
+    currentStreamMode = srv.streamMode;
 
-    // Cancel previous load timer
-    if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
+    clearLoadTimeout();
 
-    // Destroy previous iframe src
-    iframe.removeAttribute('src');
+    // Clean up previous playback
+    const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
+    const video  = document.getElementById('player-video')  as HTMLVideoElement;
+    if (iframe) iframe.removeAttribute('src');
+    if (video)  { video.pause(); video.removeAttribute('src'); video.load(); }
+    if (hlsInstance) { hlsInstance.destroy(); hlsInstance = null; }
 
     setState('loading');
-
-    // Apply per-server sandbox policy
-    applySandbox(iframe, srv.sandboxMode);
-
-    // Persist selection immediately
     saveSelectedServer(type, id, serverIdx);
 
-    // Sync dropdown
     const select = document.getElementById('server-select') as HTMLSelectElement;
     if (select) select.value = String(serverIdx);
 
-    requestAnimationFrame(() => {
-      iframe.src = buildUrlWithLang(srv.url, currentLang);
-
-      // If onload never fires (server down / DNS fail) → show error after 15s
+    if (srv.streamMode) {
+      // ── Stream mode: resolve via /api/stream ──────────────────────────────
       loadTimeoutTimer = setTimeout(() => {
         loadTimeoutTimer = null;
-        if (playerConfirmed) return;
-        setState('error', 'timeout');
+        if (!playerConfirmed) setState('error', 'timeout');
       }, LOAD_TIMEOUT);
 
-      iframe.onload = () => {
-        if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
-        if (!playerConfirmed) {
-          // Server responded — show whatever it loaded (player UI or its own error page)
-          setState('ready');
-        }
-      };
-    });
+      fetch(`/api/stream?type=${encodeURIComponent(type)}&id=${encodeURIComponent(id)}&s=${season}&e=${episode}`)
+        .then(r => r.json())
+        .then((data: { sources?: { url: string; quality: string }[]; subtitles?: { url: string; lang: string }[]; error?: string }) => {
+          if (!data.sources?.length) { clearLoadTimeout(); setState('error', 'timeout'); return; }
+          const src = data.sources.find(s => s.quality === 'auto') || data.sources[0];
+          loadHLSStream(src.url, data.subtitles || []);
+        })
+        .catch(() => { clearLoadTimeout(); setState('error', 'timeout'); });
+
+    } else {
+      // ── Iframe mode: existing behavior ────────────────────────────────────
+      if (!iframe) { setState('error', 'metadata'); return; }
+      applySandbox(iframe, srv.sandboxMode);
+
+      requestAnimationFrame(() => {
+        iframe.src = buildUrlWithLang(srv.url, currentLang);
+
+        loadTimeoutTimer = setTimeout(() => {
+          loadTimeoutTimer = null;
+          if (!playerConfirmed) setState('error', 'timeout');
+        }, LOAD_TIMEOUT);
+
+        iframe.onload = () => {
+          clearLoadTimeout();
+          if (!playerConfirmed) setState('ready');
+        };
+      });
+    }
   }
 
   // ── Language UI ────────────────────────────────────────────────────────────
@@ -389,14 +469,15 @@ import { SITE_URL } from '../lib/seo';
       (d.currentTime !== undefined && Number(d.currentTime) > 0);
 
     if (isError && !playerConfirmed) {
-      // Server signalled content unavailable — show error overlay (no auto-switch)
-      if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
+      clearLoadTimeout();
       setState('error', 'timeout');
     } else if (isPlaying) {
       playerConfirmed = true;
-      if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
-      const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
-      if (iframe?.classList.contains('hidden')) setState('ready');
+      clearLoadTimeout();
+      if (!currentStreamMode) {
+        const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
+        if (iframe?.classList.contains('hidden')) setState('ready');
+      }
     }
   });
 
