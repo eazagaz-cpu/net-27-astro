@@ -34,12 +34,10 @@
 /sitemap-index.xml
   Content-Type: application/xml
   Cache-Control: public, max-age=3600
-  X-Robots-Tag: noindex
 
 /sitemap-0.xml
   Content-Type: application/xml
   Cache-Control: public, max-age=3600
-  X-Robots-Tag: noindex
 
 /llms.txt
   Cache-Control: public, max-age=86400
