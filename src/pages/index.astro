@@ -8,6 +8,7 @@ import HeroSlider from '../components/HeroSlider.astro';
 import DynamicHero from '../components/DynamicHero.tsx';
 import AppCTA from '../components/AppCTA.astro';
 import DynamicRail from '../components/DynamicRail.tsx';
+import StaticRail from '../components/StaticRail.astro';
 import Top10Rail from '../components/Top10Rail.tsx';
 import SearchBlock from '../components/SearchBlock.astro';
 import FAQSection from '../components/FAQSection.astro';
@@ -15,9 +16,22 @@ import { websiteSchema, organizationSchema, softwareAppSchema } from '../lib/sch
 import { SITE_URL } from '../lib/seo';
 import { SITE_NAME } from '../lib/constants';
 import { getTrendingTitles } from '../data/sampleTitles';
+import { getCachedItems } from '../lib/movie-cache';
 
 const trending = getTrendingTitles();
 const featured = trending.slice(0, 5);
+
+// Build-time pre-fetched data (from movie-sync.mjs cache).
+// Returns [] gracefully if sync hasn't been run yet.
+const cachedTrending     = getCachedItems('trending',         20);
+const cachedLatest       = getCachedItems('latest-movies',    20);
+const cachedPopular      = getCachedItems('popular-movies',   20);
+const cachedNowPlaying   = getCachedItems('now-playing',      20);
+const cachedUpcoming     = getCachedItems('upcoming',         20);
+const cachedTopRated     = getCachedItems('top-rated-movies', 20);
+const cachedPopularTV    = getCachedItems('popular-tv',       20);
+const cachedLatestTV     = getCachedItems('latest-tv',        20);
+const cachedTopRatedTV   = getCachedItems('top-rated-tv',     20);
 
 const homeFaqs = [
   { question: 'What is NetMirror?', answer: 'NetMirror is a movie and show discovery platform that helps you find where to watch movies, TV shows, and anime across streaming services like Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more. We provide availability information — we do not host or stream any content.' },
@@ -54,11 +68,20 @@ const homeFaqs = [
     <Top10Rail client:visible mediaType="movie" />
     <Top10Rail client:visible mediaType="tv" />
 
-    <!-- All Real-Time TMDB-Powered Content Rails -->
-    <DynamicRail client:visible title="🔥 Trending Now" category="trending" viewAllHref="/trending/" />
-    <DynamicRail client:visible title="🆕 Latest Releases" category="latest" viewAllHref="/latest/" />
-    <DynamicRail client:visible title="🎬 Popular Movies" category="popular" viewAllHref="/movies/" />
-    <DynamicRail client:visible title="📺 Popular TV Shows" category="tv-popular" viewAllHref="/shows/" />
+    <!-- ── Static (build-time) rails — visible immediately, SEO-friendly ────── -->
+    <!-- Falls back gracefully to nothing if sync hasn't been run yet -->
+    <StaticRail title="🔥 Trending Now"      items={cachedTrending}   viewAllHref="/trending/"  railKey="trending" />
+    <StaticRail title="🆕 Latest Releases"   items={cachedLatest}     viewAllHref="/latest/"    railKey="latest-movies" />
+    <StaticRail title="🎬 Popular Movies"    items={cachedPopular}    viewAllHref="/movies/"    railKey="popular-movies" />
+    <StaticRail title="🎭 Now Playing"       items={cachedNowPlaying}                           railKey="now-playing" badge="In Theaters" />
+    <StaticRail title="📺 Popular TV Shows"  items={cachedPopularTV}  viewAllHref="/shows/"     railKey="popular-tv" />
+    <StaticRail title="🆕 Latest TV Shows"   items={cachedLatestTV}   viewAllHref="/shows/"     railKey="latest-tv" />
+    <StaticRail title="⭐ Top Rated Movies"  items={cachedTopRated}   viewAllHref="/movies/"    railKey="top-rated" />
+    <StaticRail title="⭐ Top Rated TV"      items={cachedTopRatedTV} viewAllHref="/shows/"     railKey="top-rated-tv" />
+    <StaticRail title="🔮 Coming Soon"       items={cachedUpcoming}                             railKey="upcoming" badge="Upcoming" />
+
+    <!-- ── Dynamic (client-side) rails — fresh on every page load ──────────── -->
+    <!-- Platform-specific sections (provider data changes frequently) -->
     <DynamicRail client:visible title="Netflix" category="netflix" viewAllHref="/platform/netflix/" />
     <DynamicRail client:visible title="Prime Video" category="prime-video" viewAllHref="/platform/prime-video/" />
     <DynamicRail client:visible title="JioHotstar" category="jiohotstar" viewAllHref="/platform/jiohotstar/" />
@@ -77,7 +100,6 @@ const homeFaqs = [
     <DynamicRail client:visible title="🎭 Drama" category="drama" viewAllHref="/genre/drama/" />
     <DynamicRail client:visible title="🔫 Action" category="action" viewAllHref="/genre/action/" />
     <DynamicRail client:visible title="🕵️ Crime" category="crime" viewAllHref="/genre/crime/" />
-    <DynamicRail client:visible title="🔮 Coming Soon" category="upcoming" />
 
     <!-- Search Block -->
     <SearchBlock />
