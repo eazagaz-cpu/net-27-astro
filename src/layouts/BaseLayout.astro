@@ -1,10 +1,9 @@
 ---
 import '../styles/global.css';
-import { getLangFromUrl, getDir, getAlternateLinks } from '../i18n/utils';
+import { getLangFromUrl, getDir } from '../i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const dir = getDir(lang);
-const alternates = getAlternateLinks(Astro.url.pathname);
 ---
 
 <!DOCTYPE html>
@@ -21,9 +20,8 @@ const alternates = getAlternateLinks(Astro.url.pathname);
   <link rel="dns-prefetch" href="https://autoembed.co" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
   <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" /></noscript>
-  {alternates.map(alt => (
-    <link rel="alternate" hreflang={alt.lang} href={alt.href} />
-  ))}
+  <link rel="alternate" hreflang="x-default" href={`https://net-27.cc${Astro.url.pathname}`} />
+  <link rel="alternate" hreflang="en" href={`https://net-27.cc${Astro.url.pathname}`} />
   <slot name="head" />
   <!-- Google Analytics -->
   <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-BEV78WNW13"></script>
