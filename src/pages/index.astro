@@ -32,6 +32,12 @@ const cachedTopRated     = getCachedItems('top-rated-movies', 20);
 const cachedPopularTV    = getCachedItems('popular-tv',       20);
 const cachedLatestTV     = getCachedItems('latest-tv',        20);
 const cachedTopRatedTV   = getCachedItems('top-rated-tv',     20);
+const cachedNetflix      = getCachedItems('netflix',          20);
+const cachedPrime        = getCachedItems('prime-video',      20);
+const cachedAnime        = getCachedItems('anime',            20);
+const cachedBollywood    = getCachedItems('bollywood',        20);
+const cachedHollywood    = getCachedItems('hollywood',        20);
+const cachedKorean       = getCachedItems('korean-drama',     20);
 
 const homeFaqs = [
   { question: 'What is NetMirror?', answer: 'NetMirror is a movie and show discovery platform that helps you find where to watch movies, TV shows, and anime across streaming services like Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more. We provide availability information — we do not host or stream any content.' },
@@ -80,17 +86,16 @@ const homeFaqs = [
     <StaticRail title="⭐ Top Rated TV"      items={cachedTopRatedTV} viewAllHref="/shows/"     railKey="top-rated-tv" />
     <StaticRail title="🔮 Coming Soon"       items={cachedUpcoming}                             railKey="upcoming" badge="Upcoming" />
 
-    <!-- ── Dynamic (client-side) rails — fresh on every page load ──────────── -->
-    <!-- Platform-specific sections (provider data changes frequently) -->
-    <DynamicRail client:visible title="Netflix" category="netflix" viewAllHref="/platform/netflix/" />
-    <DynamicRail client:visible title="Prime Video" category="prime-video" viewAllHref="/platform/prime-video/" />
+    <!-- ── Platform rails (static where cached, dynamic for the rest) ──────── -->
+    <StaticRail title="Netflix"        items={cachedNetflix}   viewAllHref="/platform/netflix/"   railKey="netflix" />
+    <StaticRail title="Prime Video"    items={cachedPrime}     viewAllHref="/platform/prime-video/" railKey="prime-video" />
     <DynamicRail client:visible title="JioHotstar" category="jiohotstar" viewAllHref="/platform/jiohotstar/" />
     <DynamicRail client:visible title="SonyLIV" category="sonyliv" viewAllHref="/platform/sonyliv/" />
-    <DynamicRail client:visible title="🍥 Anime" category="anime" viewAllHref="/anime/" />
+    <StaticRail title="🍥 Anime"       items={cachedAnime}     viewAllHref="/anime/"              railKey="anime" />
     <DynamicRail client:visible title="Crunchyroll" category="crunchyroll" viewAllHref="/platform/crunchyroll/" />
-    <DynamicRail client:visible title="🇮🇳 Bollywood" category="bollywood" viewAllHref="/language/hindi/" />
-    <DynamicRail client:visible title="🎥 Hollywood" category="hollywood" viewAllHref="/movies/" />
-    <DynamicRail client:visible title="🇰🇷 Korean Drama" category="korean-drama" viewAllHref="/language/korean/" />
+    <StaticRail title="🇮🇳 Bollywood"  items={cachedBollywood} viewAllHref="/language/hindi/"     railKey="bollywood" />
+    <StaticRail title="🎥 Hollywood"   items={cachedHollywood} viewAllHref="/movies/"             railKey="hollywood" />
+    <StaticRail title="🇰🇷 Korean Drama" items={cachedKorean} viewAllHref="/language/korean/"    railKey="korean-drama" />
     <DynamicRail client:visible title="😂 Comedy" category="comedy" viewAllHref="/genre/comedy/" />
     <DynamicRail client:visible title="🔪 Thriller" category="thriller" viewAllHref="/genre/thriller/" />
     <DynamicRail client:visible title="🚀 Sci-Fi" category="sci-fi" viewAllHref="/genre/sci-fi/" />
