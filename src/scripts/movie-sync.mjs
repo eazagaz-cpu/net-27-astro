@@ -133,7 +133,14 @@ function getEndpoints(category) {
       { path: '/discover/movie', params: { with_watch_providers: '9', watch_region: 'US', sort_by: 'popularity.desc' } },
       { path: '/discover/tv', params: { with_watch_providers: '9', watch_region: 'US', sort_by: 'popularity.desc' } },
     ],
-    'top-rated-hindi': [
+    'new-2026': [
+      { path: '/discover/movie', params: { sort_by: 'popularity.desc', 'primary_release_date.gte': '2026-01-01', 'primary_release_date.lte': '', 'vote_count.gte': '5' } },
+      { path: '/discover/tv', params: { sort_by: 'popularity.desc', 'first_air_date.gte': '2026-01-01', 'first_air_date.lte': '', 'vote_count.gte': '5' } },
+    ],
+    'hindi-dubbed': [
+      { path: '/discover/movie', params: { with_original_language: 'en', sort_by: 'popularity.desc', 'vote_count.gte': '500' } },
+    ],
+        'top-rated-hindi': [
       { path: '/discover/movie', params: { with_original_language: 'hi', sort_by: 'vote_average.desc', 'vote_count.gte': '100' } },
     ],
     documentary: [
@@ -204,7 +211,9 @@ const CATEGORIES = [
   { key: 'korean-drama',     pages: 1 },
   { key: 'netflix',          pages: 1 },
   { key: 'prime-video',      pages: 1 },
-  { key: 'documentary',      pages: 1 },
+  { key: 'new-2026',      pages: 2 },
+  { key: 'hindi-dubbed', pages: 2 },
+    { key: 'documentary',      pages: 1 },
 ];
 
 // ── Main ─────────────────────────────────────────────────────────────────────

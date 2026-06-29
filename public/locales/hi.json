@@ -74,7 +74,7 @@
   },
   "rails": {
     "trendingNow": "अभी ट्रेंडिंग",
-    "latestReleases": "नवीनतम रिलीज़",
+    "latestReleases": "नवीनतम रिलीज़ (2025–2026)",
     "popularMovies": "लोकप्रिय फ़िल्में",
     "popularTVShows": "लोकप्रिय टीवी शो",
     "bollywood": "बॉलीवुड",
@@ -89,9 +89,12 @@
     "drama": "ड्रामा",
     "action": "एक्शन",
     "crime": "क्राइम",
-    "comingSoon": "जल्द आ रहा है",
+    "comingSoon": "ट्रेंडिंग ग्लोबली — जल्द आ रहा है",
     "topMovies": "आज {country} में शीर्ष 10 फ़िल्में",
-    "topShows": "आज {country} में शीर्ष 10 टीवी शो"
+    "topShows": "आज {country} में शीर्ष 10 टीवी शो",
+    "new2026": "2026 में नया",
+    "netflix": "Netflix पर लोकप्रिय",
+    "hindiDubbed": "हिंदी डब्ड हिट्स"
   },
   "player": {
     "loadingPlayer": "प्लेयर लोड हो रहा है...",

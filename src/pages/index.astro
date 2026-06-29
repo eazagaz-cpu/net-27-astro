@@ -23,10 +23,12 @@ const featured = trending.slice(0, 5);
 
 // Build-time pre-fetched data (from movie-sync.mjs cache).
 // Returns [] gracefully if sync hasn't been run yet.
-const cachedTrending = getCachedItems('trending',     20);
-const cachedLatest   = getCachedItems('latest-movies', 20);
-const cachedNetflix  = getCachedItems('netflix',       20);
-const cachedUpcoming = getCachedItems('upcoming',      20);
+const cachedTrending     = getCachedItems('trending',      20);
+const cachedLatest       = getCachedItems('latest-movies', 20);
+const cachedNetflix      = getCachedItems('netflix',       20);
+const cached2026         = getCachedItems('new-2026',      20);
+const cachedHindiDubbed  = getCachedItems('hindi-dubbed',  20);
+const cachedUpcoming     = getCachedItems('upcoming',      20);
 
 const homeFaqs = [
   { question: 'What is NetMirror?', answer: 'NetMirror is a movie and show discovery platform that helps you find where to watch movies, TV shows, and anime across streaming services like Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more. We provide availability information — we do not host or stream any content.' },
@@ -62,7 +64,9 @@ const homeFaqs = [
     <!-- Core sections — same structure as competitor -->
     <StaticRail title="Trending Now"            items={cachedTrending}   viewAllHref="/trending/"  railKey="trending" />
     <StaticRail title="Latest Releases (2025–2026)" items={cachedLatest} viewAllHref="/latest/"    railKey="latest-movies" />
-    <StaticRail title="Popular on Netflix"           items={cachedNetflix}  viewAllHref="/platform/netflix/" railKey="netflix" />
+    <StaticRail title="Popular on Netflix"           items={cachedNetflix}       viewAllHref="/platform/netflix/" railKey="netflix" />
+    <StaticRail title="New in 2026"                  items={cached2026}          viewAllHref="/latest/"           railKey="new-2026" />
+    <StaticRail title="Hindi Dubbed Hits"            items={cachedHindiDubbed}  viewAllHref="/genre/action/"     railKey="hindi-dubbed" />
     <DynamicRail client:visible title="Action Movies"      category="action"   viewAllHref="/genre/action/" />
     <DynamicRail client:visible title="Drama Series"       category="drama"    viewAllHref="/genre/drama/" />
     <DynamicRail client:visible title="Comedy"             category="comedy"   viewAllHref="/genre/comedy/" />

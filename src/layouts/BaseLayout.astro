@@ -53,6 +53,11 @@ const dir = getDir(lang);
       return typeof v==='string'?v:null;
     }
 
+    // Expose translation function for React components
+    window.__nmT=function(key){return get(t,key);};
+    window.__nmLocale=t;
+    document.dispatchEvent(new CustomEvent('nm:locale:ready',{detail:t}));
+
     function translatePage(t){
       // Update browser tab title based on current page
       var p=location.pathname;
@@ -139,6 +144,21 @@ const dir = getDir(lang);
 
       // Section titles with text matching
       tByText('Frequently Asked Questions',get(t,'blog.faqs'));
+
+      // Rail titles
+      tByText('Trending Now',get(t,'rails.trendingNow'));
+      tByText('Latest Releases (2025–2026)',get(t,'rails.latestReleases'));
+      tByText('New in 2026',get(t,'rails.new2026'));
+      tByText('Popular on Netflix',get(t,'rails.netflix'));
+      tByText('Action Movies',get(t,'rails.action'));
+      tByText('Drama Series',get(t,'rails.drama'));
+      tByText('Comedy',get(t,'rails.comedy'));
+      tByText('Thrillers',get(t,'rails.thriller'));
+      tByText('Romance',get(t,'rails.romance'));
+      tByText('Horror',get(t,'rails.horror'));
+      tByText('Animation & Family',get(t,'rails.animationFamily'));
+      tByText('Trending Globally — Coming Soon',get(t,'rails.comingSoon'));
+      tByText('Hindi Dubbed Hits',get(t,'rails.hindiDubbed'));
     }
 
     function tByText(original,translated){
