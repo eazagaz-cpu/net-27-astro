@@ -81,7 +81,7 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
             <a href={viewAllHref} style={{ fontSize: 12, color: 'var(--color-primary)', fontWeight: 500 }}>View All →</a>
           )}
         </div>
-        <div style={{ position: 'relative' }} className="group/dynrail">
+        <div style={{ position: 'relative' }} className="group/dynrail rail-wrap">
           {/* Left Arrow */}
           <button
             onClick={scrollLeft}
@@ -135,13 +135,10 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
                     </span>
                   </div>
 
-                  {/* Bottom gradient overlay */}
-                  <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, height: 60, background: 'linear-gradient(to top,rgba(0,0,0,0.8),transparent)', pointerEvents: 'none' }} />
-
                   {/* SERIES badge — top left */}
                   {item.type === 'tv' && (
                     <span style={{
-                      position: 'absolute', top: 6, left: 6,
+                      position: 'absolute', top: 6, left: 6, zIndex: 4,
                       fontSize: 9, padding: '2px 6px', borderRadius: 3,
                       fontWeight: 700, background: '#e50914', color: '#fff',
                       textTransform: 'uppercase', letterSpacing: '0.04em',
@@ -151,7 +148,7 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
                   {/* Rating badge — top right */}
                   {item.rating > 0 && (
                     <span style={{
-                      position: 'absolute', top: 6, right: 6,
+                      position: 'absolute', top: 6, right: 6, zIndex: 4,
                       display: 'flex', alignItems: 'center', gap: 2,
                       padding: '2px 6px', borderRadius: 4,
                       background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(4px)',
@@ -160,6 +157,15 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
                       ★ {item.rating}
                     </span>
                   )}
+
+                  {/* Hover overlay — Netflix style */}
+                  <div className="card-overlay">
+                    <div className="card-overlay-play">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    </div>
+                    <p className="card-overlay-title">{item.title}</p>
+                    <p className="card-overlay-meta">{item.year}{item.rating > 0 ? ` · ★ ${item.rating}` : ''}</p>
+                  </div>
                 </div>
                 <div style={{ padding: '6px 4px' }}>
                   <p style={{ fontSize: 13, fontWeight: 600, color: '#fff', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>

@@ -54,8 +54,8 @@ const FALLBACK_GRADIENTS = [
       )}
     </div>
 
-    <!-- Rail with scroll arrows -->
-    <div class="static-rail-wrap" data-rail={scrollId}>
+    <!-- Rail with scroll arrows and fade edge -->
+    <div class="static-rail-wrap rail-wrap" data-rail={scrollId}>
 
       <!-- Left arrow -->
       <button
@@ -105,22 +105,28 @@ const FALLBACK_GRADIENTS = [
                   </span>
                 </div>
 
-                {/* Bottom gradient overlay */}
-                <div style="position:absolute;bottom:0;left:0;right:0;height:60px;background:linear-gradient(to top,rgba(0,0,0,0.8),transparent);pointer-events:none"></div>
-
                 {/* SERIES badge — top left */}
                 {item.type === 'tv' && (
-                  <span style="position:absolute;top:6px;left:6px;font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700;background:#e50914;color:#fff;text-transform:uppercase;letter-spacing:0.04em">
+                  <span style="position:absolute;top:6px;left:6px;font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700;background:#e50914;color:#fff;text-transform:uppercase;letter-spacing:0.04em;z-index:4">
                     SERIES
                   </span>
                 )}
 
                 {/* Rating badge — top right */}
                 {item.rating > 0 && (
-                  <span style="position:absolute;top:6px;right:6px;display:flex;align-items:center;gap:2px;padding:2px 6px;border-radius:4px;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);font-size:11px;font-weight:600;color:#f5c518">
+                  <span style="position:absolute;top:6px;right:6px;display:flex;align-items:center;gap:2px;padding:2px 6px;border-radius:4px;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);font-size:11px;font-weight:600;color:#f5c518;z-index:4">
                     ★ {item.rating}
                   </span>
                 )}
+
+                {/* Hover overlay — Netflix style */}
+                <div class="card-overlay">
+                  <div class="card-overlay-play">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                  </div>
+                  <p class="card-overlay-title">{item.title}</p>
+                  <p class="card-overlay-meta">{item.year}{item.rating > 0 ? ` · ★ ${item.rating}` : ''}</p>
+                </div>
               </div>
 
               <div style="padding:6px 4px">
@@ -187,8 +193,9 @@ const FALLBACK_GRADIENTS = [
 
 <script>
   // Single delegated handler — runs once even when multiple StaticRail instances are on the page.
-  if (!window.__srScrollInit) {
-    window.__srScrollInit = true;
+  const w = window as Window & { __srScrollInit?: boolean };
+  if (!w.__srScrollInit) {
+    w.__srScrollInit = true;
     document.addEventListener('click', (e) => {
       const btn = (e.target as Element).closest('[data-target][data-dir]') as HTMLElement | null;
       if (!btn) return;
