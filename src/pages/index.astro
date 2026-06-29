@@ -23,21 +23,15 @@ const featured = trending.slice(0, 5);
 
 // Build-time pre-fetched data (from movie-sync.mjs cache).
 // Returns [] gracefully if sync hasn't been run yet.
-const cachedTrending     = getCachedItems('trending',         20);
-const cachedLatest       = getCachedItems('latest-movies',    20);
-const cachedPopular      = getCachedItems('popular-movies',   20);
-const cachedNowPlaying   = getCachedItems('now-playing',      20);
-const cachedUpcoming     = getCachedItems('upcoming',         20);
-const cachedTopRated     = getCachedItems('top-rated-movies', 20);
-const cachedPopularTV    = getCachedItems('popular-tv',       20);
-const cachedLatestTV     = getCachedItems('latest-tv',        20);
-const cachedTopRatedTV   = getCachedItems('top-rated-tv',     20);
-const cachedNetflix      = getCachedItems('netflix',          20);
-const cachedPrime        = getCachedItems('prime-video',      20);
-const cachedAnime        = getCachedItems('anime',            20);
-const cachedBollywood    = getCachedItems('bollywood',        20);
-const cachedHollywood    = getCachedItems('hollywood',        20);
-const cachedKorean       = getCachedItems('korean-drama',     20);
+const cachedTrending  = getCachedItems('trending',     20);
+const cachedLatest    = getCachedItems('latest-movies', 20);
+const cachedUpcoming  = getCachedItems('upcoming',      20);
+const cachedNetflix   = getCachedItems('netflix',       20);
+const cachedPrime     = getCachedItems('prime-video',   20);
+const cachedAnime     = getCachedItems('anime',         20);
+const cachedBollywood = getCachedItems('bollywood',     20);
+const cachedHollywood = getCachedItems('hollywood',     20);
+const cachedKorean    = getCachedItems('korean-drama',  20);
 
 const homeFaqs = [
   { question: 'What is NetMirror?', answer: 'NetMirror is a movie and show discovery platform that helps you find where to watch movies, TV shows, and anime across streaming services like Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more. We provide availability information — we do not host or stream any content.' },
@@ -62,49 +56,47 @@ const homeFaqs = [
   <Header />
 
   <main>
-    <!-- Dynamic Hero from TMDB Trending -->
+    <!-- Hero -->
     <DynamicHero client:idle />
-    <!-- Static fallback hero (hidden when dynamic loads) -->
     <noscript><HeroSlider titles={featured.length > 0 ? featured : trending.slice(0, 5)} /></noscript>
 
-    <!-- App Download CTA -->
-    <AppCTA />
-
-    <!-- Top 10 Rankings -->
+    <!-- Top 10 — directly after hero, no CTA interruption -->
     <Top10Rail client:visible mediaType="movie" />
     <Top10Rail client:visible mediaType="tv" />
 
-    <!-- ── Static (build-time) rails — visible immediately, SEO-friendly ────── -->
-    <!-- Falls back gracefully to nothing if sync hasn't been run yet -->
-    <StaticRail title="Trending Now"      items={cachedTrending}   viewAllHref="/trending/"  railKey="trending" />
-    <StaticRail title="Latest Releases"   items={cachedLatest}     viewAllHref="/latest/"    railKey="latest-movies" />
-    <StaticRail title="Popular Movies"    items={cachedPopular}    viewAllHref="/movies/"    railKey="popular-movies" />
-    <StaticRail title="Now Playing"       items={cachedNowPlaying}                           railKey="now-playing" badge="In Theaters" />
-    <StaticRail title="Popular TV Shows"  items={cachedPopularTV}  viewAllHref="/shows/"     railKey="popular-tv" />
-    <StaticRail title="Latest TV Shows"   items={cachedLatestTV}   viewAllHref="/shows/"     railKey="latest-tv" />
-    <StaticRail title="Top Rated Movies"  items={cachedTopRated}   viewAllHref="/movies/"    railKey="top-rated" />
-    <StaticRail title="Top Rated TV"      items={cachedTopRatedTV} viewAllHref="/shows/"     railKey="top-rated-tv" />
-    <StaticRail title="Coming Soon"       items={cachedUpcoming}                             railKey="upcoming" badge="Upcoming" />
+    <!-- Core discovery rails (build-time, SEO-friendly) -->
+    <StaticRail title="Trending Now"            items={cachedTrending}   viewAllHref="/trending/"  railKey="trending" />
+    <StaticRail title="Latest Releases"         items={cachedLatest}     viewAllHref="/latest/"    railKey="latest-movies" />
 
-    <!-- ── Platform rails (static where cached, dynamic for the rest) ──────── -->
-    <StaticRail title="Netflix"        items={cachedNetflix}   viewAllHref="/platform/netflix/"   railKey="netflix" />
-    <StaticRail title="Prime Video"    items={cachedPrime}     viewAllHref="/platform/prime-video/" railKey="prime-video" />
-    <DynamicRail client:visible title="JioHotstar" category="jiohotstar" viewAllHref="/platform/jiohotstar/" />
-    <DynamicRail client:visible title="SonyLIV" category="sonyliv" viewAllHref="/platform/sonyliv/" />
-    <StaticRail title="Anime"          items={cachedAnime}     viewAllHref="/anime/"              railKey="anime" />
+    <!-- Genre sections — matching competitor order -->
+    <DynamicRail client:visible title="Action Movies"      category="action"   viewAllHref="/genre/action/" />
+    <DynamicRail client:visible title="Drama Series"       category="drama"    viewAllHref="/genre/drama/" />
+    <DynamicRail client:visible title="Comedy"             category="comedy"   viewAllHref="/genre/comedy/" />
+    <DynamicRail client:visible title="Thrillers"          category="thriller" viewAllHref="/genre/thriller/" />
+    <DynamicRail client:visible title="Romance"            category="romance"  viewAllHref="/genre/romance/" />
+    <DynamicRail client:visible title="Horror"             category="horror"   viewAllHref="/genre/horror/" />
+    <DynamicRail client:visible title="Animation & Family" category="kids"     viewAllHref="/genre/kids/" />
+
+    <!-- Coming Soon -->
+    <StaticRail title="Coming Soon"             items={cachedUpcoming}   railKey="upcoming" badge="Upcoming" />
+
+    <!-- Platform sections -->
+    <StaticRail title="Netflix"     items={cachedNetflix}   viewAllHref="/platform/netflix/"     railKey="netflix" />
+    <StaticRail title="Prime Video" items={cachedPrime}     viewAllHref="/platform/prime-video/" railKey="prime-video" />
+    <DynamicRail client:visible title="JioHotstar"  category="jiohotstar"  viewAllHref="/platform/jiohotstar/" />
+    <DynamicRail client:visible title="SonyLIV"     category="sonyliv"     viewAllHref="/platform/sonyliv/" />
     <DynamicRail client:visible title="Crunchyroll" category="crunchyroll" viewAllHref="/platform/crunchyroll/" />
-    <StaticRail title="Bollywood"      items={cachedBollywood} viewAllHref="/language/hindi/"     railKey="bollywood" />
-    <StaticRail title="Hollywood"      items={cachedHollywood} viewAllHref="/movies/"             railKey="hollywood" />
-    <StaticRail title="Korean Drama"   items={cachedKorean}    viewAllHref="/language/korean/"    railKey="korean-drama" />
-    <DynamicRail client:visible title="Action Movies" category="action" viewAllHref="/genre/action/" />
-    <DynamicRail client:visible title="Drama Series" category="drama" viewAllHref="/genre/drama/" />
-    <DynamicRail client:visible title="Comedy" category="comedy" viewAllHref="/genre/comedy/" />
-    <DynamicRail client:visible title="Thrillers" category="thriller" viewAllHref="/genre/thriller/" />
-    <DynamicRail client:visible title="Romance" category="romance" viewAllHref="/genre/romance/" />
-    <DynamicRail client:visible title="Horror" category="horror" viewAllHref="/genre/horror/" />
-    <DynamicRail client:visible title="Animation & Family" category="kids" viewAllHref="/genre/kids/" />
+
+    <!-- Regional & more -->
+    <StaticRail title="Anime"        items={cachedAnime}     viewAllHref="/anime/"           railKey="anime" />
+    <StaticRail title="Bollywood"    items={cachedBollywood} viewAllHref="/language/hindi/"  railKey="bollywood" />
+    <StaticRail title="Korean Drama" items={cachedKorean}    viewAllHref="/language/korean/" railKey="korean-drama" />
+    <StaticRail title="Hollywood"    items={cachedHollywood} viewAllHref="/movies/"          railKey="hollywood" />
     <DynamicRail client:visible title="Sci-Fi" category="sci-fi" viewAllHref="/genre/sci-fi/" />
-    <DynamicRail client:visible title="Crime" category="crime" viewAllHref="/genre/crime/" />
+    <DynamicRail client:visible title="Crime"  category="crime"  viewAllHref="/genre/crime/" />
+
+    <!-- App Download CTA — moved below content -->
+    <AppCTA />
 
     <!-- Search Block -->
     <SearchBlock />
