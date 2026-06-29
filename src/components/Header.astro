@@ -67,13 +67,13 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
       </nav>
 
       <div class="flex items-center gap-3">
-        <a href="/search/" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-[var(--color-muted)] hover:border-white/20 transition-colors w-56 lg:w-72" role="search" aria-label="Search movies, shows, and anime">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-          Search movies, shows, anime...
-        </a>
-        <a href="/search/" class="md:hidden p-2 text-[var(--color-muted)] hover:text-white transition-colors" aria-label="Search">
+        <button id="header-search-btn" class="hidden md:flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-sm text-[var(--color-muted)] hover:border-white/20 hover:text-white transition-colors w-56 lg:w-72 cursor-pointer" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <span>Search movies, shows, anime...</span>
+        </button>
+        <button id="header-search-btn-mobile" class="md:hidden p-2 text-[var(--color-muted)] hover:text-white transition-colors" aria-label="Search">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        </a>
+        </button>
         <!-- Language Picker -->
         <div class="lang-picker-wrap" id="lang-picker-wrap">
           <button id="lang-picker-btn" class="lang-picker-btn" aria-label="Select language" title="Change language">
@@ -275,6 +275,24 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
     if (!code || code === saved) { dd.classList.remove('open'); return; }
     localStorage.setItem(KEY, code);
     window.location.reload();
+  });
+})();
+</script>
+
+<script is:inline>
+(function(){
+  function openSearch(){
+    document.dispatchEvent(new CustomEvent('nm:search:open'));
+  }
+  var btn = document.getElementById('header-search-btn');
+  var btnM = document.getElementById('header-search-btn-mobile');
+  if(btn) btn.addEventListener('click', openSearch);
+  if(btnM) btnM.addEventListener('click', openSearch);
+  // Keyboard shortcut: press / to open search
+  document.addEventListener('keydown', function(e){
+    if(e.key==='/' && e.target.tagName!=='INPUT' && e.target.tagName!=='TEXTAREA'){
+      e.preventDefault(); openSearch();
+    }
   });
 })();
 </script>

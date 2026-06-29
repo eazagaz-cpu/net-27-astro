@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { getLangFromUrl, getDir } from '../i18n/utils';
+import SearchOverlay from '../components/SearchOverlay.tsx';
 
 const lang = getLangFromUrl(Astro.url);
 const dir = getDir(lang);
@@ -33,6 +34,7 @@ const dir = getDir(lang);
   </script>
 </head>
 <body class="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
+  <SearchOverlay client:load />
   <slot />
   <!-- i18n Client Translation Engine -->
   <script is:inline>
