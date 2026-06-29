@@ -25,6 +25,7 @@ const featured = trending.slice(0, 5);
 // Returns [] gracefully if sync hasn't been run yet.
 const cachedTrending = getCachedItems('trending',     20);
 const cachedLatest   = getCachedItems('latest-movies', 20);
+const cachedNetflix  = getCachedItems('netflix',       20);
 const cachedUpcoming = getCachedItems('upcoming',      20);
 
 const homeFaqs = [
@@ -61,6 +62,7 @@ const homeFaqs = [
     <!-- Core sections — same structure as competitor -->
     <StaticRail title="Trending Now"            items={cachedTrending}   viewAllHref="/trending/"  railKey="trending" />
     <StaticRail title="Latest Releases (2025–2026)" items={cachedLatest} viewAllHref="/latest/"    railKey="latest-movies" />
+    <StaticRail title="Popular on Netflix"           items={cachedNetflix}  viewAllHref="/platform/netflix/" railKey="netflix" />
     <DynamicRail client:visible title="Action Movies"      category="action"   viewAllHref="/genre/action/" />
     <DynamicRail client:visible title="Drama Series"       category="drama"    viewAllHref="/genre/drama/" />
     <DynamicRail client:visible title="Comedy"             category="comedy"   viewAllHref="/genre/comedy/" />
