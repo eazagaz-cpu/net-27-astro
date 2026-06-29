@@ -89,7 +89,7 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
             <section class="glass-card rounded-xl p-5 text-xs text-zinc-500">NetMirror does not host or stream content. Discovery and availability information only.</section>
           </div>`;
 
-        // Fetch enrichment data (OMDb ratings, Watchmode availability, YouTube trailer)
+        // Fetch enrichment data (OMDb ratings, Watchmode availability, YouTube trailer, TVmaze episodes)
         fetch(`/api/media/enrich?title=${encodeURIComponent(data.title)}&year=${data.year}&type=${type}`)
           .then(r => r.json())
           .then(enrich => {
@@ -123,7 +123,63 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
               html += `<section><h2 class="section-title mb-4">Official Trailer</h2><div class="aspect-video rounded-xl overflow-hidden max-w-3xl"><iframe src="${enrich.trailer.embedUrl}" class="w-full h-full" allowfullscreen allow="autoplay; encrypted-media" loading="lazy"></iframe></div></section>`;
             }
 
-            if (html) section.innerHTML = html;
+            // TVmaze episode guide
+            let epGuide = null;
+            if (enrich.episodeGuide && enrich.episodeGuide.totalSeasons > 0) {
+              html += `<style>.ep-season-btn{padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);color:#a1a1aa;cursor:pointer;transition:all .15s}.ep-season-btn:hover{background:rgba(255,255,255,0.1);color:#fff}.ep-season-active{background:var(--color-primary)!important;border-color:var(--color-primary)!important;color:#fff!important}</style>`;
+              epGuide = enrich.episodeGuide;
+              const seasonNums = Object.keys(epGuide.seasons).map(Number).sort((a, b) => a - b);
+              const latest = seasonNums[seasonNums.length - 1];
+              const latestEps = epGuide.seasons[latest] || [];
+
+              function epRow(ep) {
+                return `<div class="glass-card rounded-xl px-4 py-3 flex items-start gap-3">
+                  <div class="text-xs text-zinc-500 font-mono shrink-0 pt-0.5 w-12">S${String(ep.s).padStart(2,'0')}E${String(ep.e).padStart(2,'0')}</div>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-white truncate">${ep.name}</p>
+                    ${ep.summary ? `<p class="text-xs text-zinc-500 mt-0.5 line-clamp-2">${ep.summary}</p>` : ''}
+                  </div>
+                  <div class="text-xs text-zinc-600 shrink-0 pt-0.5">${ep.airdate}</div>
+                </div>`;
+              }
+
+              html += `<section>
+                <h2 class="section-title mb-4">Episode Guide <span class="text-sm text-zinc-500 font-normal">${epGuide.totalSeasons} seasons · ${epGuide.totalEpisodes} episodes</span></h2>
+                <div class="flex items-center gap-2 mb-4 flex-wrap" id="ep-season-tabs">
+                  ${seasonNums.map(s => `<button class="ep-season-btn${s === latest ? ' ep-season-active' : ''}" data-season="${s}">S${s}</button>`).join('')}
+                </div>
+                <div id="ep-list" class="grid gap-1.5">${latestEps.map(epRow).join('')}</div>
+              </section>`;
+            }
+
+            if (html) {
+              section.innerHTML = html;
+
+              // Attach season tab listeners after DOM is set
+              if (epGuide) {
+                const guide = epGuide;
+                function epRow2(ep) {
+                  return `<div class="glass-card rounded-xl px-4 py-3 flex items-start gap-3">
+                    <div class="text-xs text-zinc-500 font-mono shrink-0 pt-0.5 w-12">S${String(ep.s).padStart(2,'0')}E${String(ep.e).padStart(2,'0')}</div>
+                    <div class="flex-1 min-w-0">
+                      <p class="text-sm font-medium text-white truncate">${ep.name}</p>
+                      ${ep.summary ? `<p class="text-xs text-zinc-500 mt-0.5 line-clamp-2">${ep.summary}</p>` : ''}
+                    </div>
+                    <div class="text-xs text-zinc-600 shrink-0 pt-0.5">${ep.airdate}</div>
+                  </div>`;
+                }
+                document.querySelectorAll('.ep-season-btn').forEach(btn => {
+                  btn.addEventListener('click', () => {
+                    document.querySelectorAll('.ep-season-btn').forEach(b => b.classList.remove('ep-season-active'));
+                    btn.classList.add('ep-season-active');
+                    const s = parseInt(btn.dataset.season || '1');
+                    const eps = guide.seasons[s] || [];
+                    const list = document.getElementById('ep-list');
+                    if (list) list.innerHTML = eps.map(epRow2).join('');
+                  });
+                });
+              }
+            }
           })
           .catch(() => {});
       })

@@ -194,6 +194,43 @@ function writeCache(category, items) {
   writeFileSync(join(CACHE_DIR, `${category}.json`), JSON.stringify(payload), 'utf8');
 }
 
+// ── Trakt trending fetch (uses TRAKT_CLIENT_ID env var) ─────────────────────
+async function fetchTrakt() {
+  const traktKey = process.env.TRAKT_CLIENT_ID;
+  if (!traktKey) {
+    console.warn('    ⚠ TRAKT_CLIENT_ID not set — skipping trakt-trending');
+    return [];
+  }
+
+  const res = await fetch('https://api.trakt.tv/movies/trending?limit=24', {
+    headers: {
+      'trakt-api-key': traktKey,
+      'trakt-api-version': '2',
+      'Accept': 'application/json',
+      'User-Agent': 'Mozilla/5.0 (compatible; NetMirror/1.0)',
+    },
+    signal: AbortSignal.timeout(12000),
+  });
+  if (!res.ok) throw new Error(`Trakt HTTP ${res.status}`);
+  const data = await res.json();
+
+  // Cross-reference TMDB for full item data (poster, rating, etc.)
+  const items = [];
+  const seen = new Set();
+  for (const entry of data) {
+    const tmdbId = entry.movie?.ids?.tmdb;
+    if (!tmdbId || seen.has(tmdbId)) continue;
+    seen.add(tmdbId);
+    try {
+      const d = await tmdbFetch(`/movie/${tmdbId}`, {});
+      if (!d.poster_path && !d.backdrop_path) continue;
+      items.push(normalize(d));
+    } catch {}
+    await delay(260);
+  }
+  return items;
+}
+
 // ── Category manifest ────────────────────────────────────────────────────────
 const CATEGORIES = [
   { key: 'trending',         pages: 1 },
@@ -213,7 +250,7 @@ const CATEGORIES = [
   { key: 'prime-video',      pages: 1 },
   { key: 'new-2026',      pages: 2 },
   { key: 'hindi-dubbed', pages: 2 },
-    { key: 'documentary',      pages: 1 },
+  { key: 'documentary',  pages: 1 },
 ];
 
 // ── Main ─────────────────────────────────────────────────────────────────────
@@ -234,6 +271,22 @@ async function main() {
       console.log(`✗ ${err.message}`);
       fail++;
     }
+  }
+
+  // Trakt trending (separate fetch, not in CATEGORIES map)
+  try {
+    process.stdout.write(`  Fetching ${'trakt-trending'.padEnd(20)}`);
+    const traktItems = await fetchTrakt();
+    if (traktItems.length > 0) {
+      writeCache('trakt-trending', traktItems);
+      console.log(`✓ ${traktItems.length} items`);
+      ok++;
+    } else {
+      console.log(`- skipped (no key or no results)`);
+    }
+  } catch (err) {
+    console.log(`✗ ${err.message}`);
+    fail++;
   }
 
   const elapsed = ((Date.now() - t0) / 1000).toFixed(1);

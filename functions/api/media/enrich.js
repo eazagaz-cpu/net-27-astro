@@ -88,6 +88,42 @@ export async function onRequestGet(context) {
     })());
   }
 
+  // TVmaze episode guide (TV shows only — free tier, no key needed)
+  if (type === 'tv') {
+    tasks.push((async () => {
+      try {
+        const res = await fetch(`https://api.tvmaze.com/search/shows?q=${encodeURIComponent(title)}`);
+        if (!res.ok) return;
+        const searchResults = await res.json();
+        const show = searchResults[0]?.show;
+        if (!show) return;
+
+        const epRes = await fetch(`https://api.tvmaze.com/shows/${show.id}/episodes`);
+        if (!epRes.ok) return;
+        const allEps = await epRes.json();
+
+        const seasonMap = {};
+        for (const ep of allEps) {
+          const s = ep.season;
+          if (!seasonMap[s]) seasonMap[s] = [];
+          seasonMap[s].push({
+            s: ep.season,
+            e: ep.number,
+            name: ep.name || '',
+            airdate: ep.airdate || '',
+            summary: ep.summary ? ep.summary.replace(/<[^>]+>/g, '').slice(0, 150) : '',
+          });
+        }
+
+        result.episodeGuide = {
+          totalSeasons: Object.keys(seasonMap).length,
+          totalEpisodes: allEps.length,
+          seasons: seasonMap,
+        };
+      } catch {}
+    })());
+  }
+
   await Promise.allSettled(tasks);
 
   return new Response(JSON.stringify(result), {

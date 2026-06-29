@@ -19,6 +19,7 @@ jobs:
       - name: Sync TMDB cache
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          TRAKT_CLIENT_ID: ${{ secrets.TRAKT_CLIENT_ID }}
         run: node src/scripts/movie-sync.mjs
 
       - name: Commit updated cache

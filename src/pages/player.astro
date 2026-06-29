@@ -42,6 +42,17 @@ import { SITE_URL } from '../lib/seo';
             </div>
           </div>
 
+          <!-- Subtitles (CC) -->
+          <div class="relative" id="cc-wrapper">
+            <button id="cc-btn" class="topbar-btn" aria-label="Subtitles" title="Subtitles / CC">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5 text-zinc-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"/></svg>
+              <span class="hidden sm:inline text-xs">CC</span>
+            </button>
+            <div id="cc-dropdown" class="lang-dropdown hidden" style="min-width:200px">
+              <div id="cc-content" style="padding:12px 14px;font-size:12px;color:#71717a">Loading subtitles...</div>
+            </div>
+          </div>
+
           <!-- Report -->
           <button id="report-btn" class="topbar-icon-btn" aria-label="Report issue" title="Report problem">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"/></svg>
@@ -415,6 +426,85 @@ import { SITE_URL } from '../lib/seo';
       langDropdown?.classList.add('hidden');
     }
   });
+
+  // ── Subtitles (CC) ────────────────────────────────────────────────────────
+  let subtitlesFetched = false;
+  let subtitlesData: Array<{language:string;langName:string;fileId:number;fileName:string;format:string}> = [];
+
+  const ccBtn = document.getElementById('cc-btn');
+  const ccDropdown = document.getElementById('cc-dropdown');
+  const ccContent = document.getElementById('cc-content');
+
+  ccBtn?.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const hidden = ccDropdown?.classList.contains('hidden');
+    ccDropdown?.classList.toggle('hidden', !hidden);
+    if (hidden && !subtitlesFetched) loadSubtitles();
+  });
+
+  document.addEventListener('click', (e) => {
+    if (!document.getElementById('cc-wrapper')?.contains(e.target as Node)) {
+      ccDropdown?.classList.add('hidden');
+    }
+  });
+
+  async function loadSubtitles() {
+    if (!ccContent) return;
+    ccContent.textContent = 'Loading subtitles...';
+    try {
+      const titleEl = document.getElementById('player-title');
+      const title = titleEl?.textContent && titleEl.textContent !== 'Loading...' ? titleEl.textContent : '';
+      if (!title) { ccContent.textContent = 'Load a title first'; return; }
+
+      const res = await fetch(`/api/subtitles?title=${encodeURIComponent(title)}&type=${type}`);
+      const data = await res.json();
+      subtitlesFetched = true;
+      subtitlesData = data.subtitles || [];
+
+      if (!subtitlesData.length) {
+        ccContent.textContent = 'No subtitles found';
+        return;
+      }
+
+      // Render subtitle language list
+      ccContent.innerHTML = subtitlesData.map((s, i) =>
+        `<button class="lang-opt" data-idx="${i}" style="border-top:${i>0?'1px solid rgba(255,255,255,0.05)':'none'};border-radius:${i===0?'11px 11px':i===subtitlesData.length-1?'0 0 11px 11px':'0'} 0 0">
+          <span>${s.langName}</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+        </button>`
+      ).join('');
+
+      ccContent.querySelectorAll('.lang-opt').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const idx = parseInt((btn as HTMLElement).dataset.idx || '0');
+          const sub = subtitlesData[idx];
+          if (!sub) return;
+          btn.textContent = 'Downloading...';
+          try {
+            const res = await fetch('/api/subtitles', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ file_id: sub.fileId }),
+            });
+            const dl = await res.json();
+            if (dl.link) {
+              const a = document.createElement('a');
+              a.href = dl.link;
+              a.download = dl.fileName || `subtitle.${sub.format}`;
+              a.click();
+              btn.textContent = `${sub.langName} ✓`;
+            } else {
+              btn.textContent = 'Failed — try again';
+            }
+          } catch {
+            btn.textContent = 'Error';
+          }
+        });
+      });
+    } catch {
+      if (ccContent) ccContent.textContent = 'Could not load subtitles';
+    }
+  }
 
   // ── postMessage from embed providers ─────────────────────────────────────
   window.addEventListener('message', (ev) => {
