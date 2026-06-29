@@ -90,13 +90,13 @@ import { SITE_URL } from '../lib/seo';
         </div>
       </div>
 
-      <!-- Iframe — referrerpolicy=no-referrer hides our domain from embed servers -->
+      <!-- Iframe -->
       <iframe
         id="player-iframe"
         class="player-frame hidden"
         allowfullscreen
         allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-        referrerpolicy="no-referrer"
+        referrerpolicy="no-referrer-when-downgrade"
       ></iframe>
 
       <!-- Error: server not responding -->
@@ -351,8 +351,9 @@ import { SITE_URL } from '../lib/seo';
 
     setState('loading');
     saveSelectedServer(type, id, idx);
+    const servers2 = getServers({ type, id, season, episode });
     const loadingText = document.getElementById('loading-text');
-    if (loadingText) loadingText.textContent = retryCount > 0 ? `Trying server ${idx + 1}...` : 'Loading player...';
+    if (loadingText) loadingText.textContent = retryCount > 0 ? `Trying server ${idx + 1} / ${servers2.length}...` : 'Loading player...';
 
     const sel = document.getElementById('server-select') as HTMLSelectElement;
     if (sel) sel.value = String(idx);

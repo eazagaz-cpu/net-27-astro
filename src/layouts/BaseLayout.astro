@@ -46,6 +46,10 @@ const dir = getDir(lang);
       document.documentElement.setAttribute('lang',lang);
       if(lang==='ar'||lang==='ur')document.documentElement.setAttribute('dir','rtl');
       translatePage(data);
+      // Expose translation helpers for React components (must be inside .then — data is only defined here)
+      window.__nmT=function(key){return get(data,key);};
+      window.__nmLocale=data;
+      document.dispatchEvent(new CustomEvent('nm:locale:ready',{detail:data}));
     }).catch(function(){});
 
     function get(obj,path){
@@ -54,11 +58,6 @@ const dir = getDir(lang);
       for(var i=0;i<keys.length;i++){v=v&&v[keys[i]];}
       return typeof v==='string'?v:null;
     }
-
-    // Expose translation function for React components
-    window.__nmT=function(key){return get(t,key);};
-    window.__nmLocale=t;
-    document.dispatchEvent(new CustomEvent('nm:locale:ready',{detail:t}));
 
     function translatePage(t){
       // Update browser tab title based on current page
