@@ -14,7 +14,7 @@ import { SITE_URL } from '../lib/seo';
       <div class="flex items-center justify-between px-3 sm:px-4 h-12">
 
         <!-- Back -->
-        <button onclick="history.back()" class="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer shrink-0" aria-label="Go back">
+        <button data-back-btn class="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer shrink-0" aria-label="Go back">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
           <span class="hidden sm:inline text-xs">Back</span>
         </button>
@@ -112,7 +112,7 @@ import { SITE_URL } from '../lib/seo';
           <div class="flex items-center justify-center gap-3 flex-wrap">
             <button id="fallback-retry" class="btn-primary text-sm px-6 py-2.5 rounded-xl cursor-pointer">Retry</button>
             <button id="fallback-switch" class="btn-glass text-sm px-6 py-2.5 rounded-xl cursor-pointer">Switch Server</button>
-            <button onclick="history.back()" class="btn-glass text-sm px-5 py-2.5 rounded-xl cursor-pointer">Back</button>
+            <button data-back-btn class="btn-glass text-sm px-5 py-2.5 rounded-xl cursor-pointer">Back</button>
           </div>
           <p id="trailer-link" class="hidden mt-5"></p>
         </div>
@@ -130,7 +130,7 @@ import { SITE_URL } from '../lib/seo';
           <p class="text-sm text-zinc-400 mb-6">This server couldn't load. Try switching to another server.</p>
           <div class="flex items-center justify-center gap-3">
             <button id="blocked-switch" class="btn-primary text-sm px-6 py-2.5 rounded-xl cursor-pointer">Switch Server</button>
-            <button onclick="history.back()" class="btn-glass text-sm px-5 py-2.5 rounded-xl cursor-pointer">Back</button>
+            <button data-back-btn class="btn-glass text-sm px-5 py-2.5 rounded-xl cursor-pointer">Back</button>
           </div>
         </div>
       </div>
@@ -146,7 +146,7 @@ import { SITE_URL } from '../lib/seo';
           <h2 class="text-base font-bold mb-2">Title Not Found</h2>
           <p class="text-sm text-zinc-400 mb-6">We couldn't find this title. Please go back and try another.</p>
           <div class="flex items-center justify-center gap-3">
-            <button onclick="history.back()" class="btn-primary text-sm px-6 py-2.5 rounded-xl cursor-pointer">Go Back</button>
+            <button data-back-btn class="btn-primary text-sm px-6 py-2.5 rounded-xl cursor-pointer">Go Back</button>
             <a href="/search/" class="btn-glass text-sm px-5 py-2.5 rounded-xl">Search</a>
           </div>
         </div>
@@ -284,7 +284,12 @@ import { SITE_URL } from '../lib/seo';
   let playerConfirmed  = false;
   let loadTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
   let retryCount       = 0;
-  const LOAD_TIMEOUT   = 18000; // 18s before showing error
+  const LOAD_TIMEOUT   = 10000; // 10s — auto-switch to next server on timeout
+
+  // Remember where the user came from for the back button
+  const backUrl = (document.referrer && !document.referrer.includes('/player/'))
+    ? document.referrer
+    : '/';
 
   // ── Block external popups ─────────────────────────────────────────────────
   const _origOpen = window.open;
@@ -359,11 +364,14 @@ import { SITE_URL } from '../lib/seo';
       loadTimeoutTimer = setTimeout(() => {
         loadTimeoutTimer = null;
         if (playerConfirmed) return;
-        if (retryCount === 0) {
-          // Auto-retry once silently before showing error
-          retryCount = 1;
-          loadPlayer(idx, true);
+        // Auto-switch to next server instead of retrying the same one
+        const servers = getServers({ type, id, season, episode });
+        const nextIdx = (idx + 1) % servers.length;
+        if (retryCount < servers.length - 1) {
+          retryCount++;
+          loadPlayer(nextIdx);
         } else {
+          retryCount = 0;
           setState('fallback');
         }
       }, LOAD_TIMEOUT);
@@ -589,6 +597,11 @@ import { SITE_URL } from '../lib/seo';
       loadPlayer(parseInt(serverSelect.value));
     });
   }
+
+  // ── Back button — skip iframe history entries ─────────────────────────────
+  document.querySelectorAll('[data-back-btn]').forEach(btn => {
+    btn.addEventListener('click', () => { window.location.href = backUrl; });
+  });
 
   // ── Error overlay buttons ─────────────────────────────────────────────────
   document.getElementById('fallback-retry') ?.addEventListener('click', () => loadPlayer(currentServerIdx));
