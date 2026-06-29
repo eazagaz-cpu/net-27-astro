@@ -81,14 +81,9 @@ import { SITE_URL } from '../lib/seo';
     <!-- Player area -->
     <div id="player-container" class="player-frame-wrap pt-12">
 
-      <!-- Loading state -->
-      <div id="player-loading" class="state-center">
-        <div class="text-center">
-          <div class="w-10 h-10 border-2 border-white/10 border-t-white/70 rounded-full animate-spin mx-auto mb-5"></div>
-          <p class="text-sm font-medium text-white/90 mb-1.5" id="loading-text">Loading player...</p>
-          <p class="text-xs text-zinc-500 mb-3" id="loading-movie-title"></p>
-          <a id="loading-direct-link" href="#" target="_blank" rel="noopener noreferrer" class="hidden text-xs text-zinc-500 hover:text-zinc-300 underline underline-offset-2 transition-colors">Not loading? Open in new tab ↗</a>
-        </div>
+      <!-- Loading state (only shown briefly on first paint before JS runs) -->
+      <div id="player-loading" class="state-center hidden">
+        <div class="w-8 h-8 border-2 border-white/10 border-t-white/60 rounded-full animate-spin"></div>
       </div>
 
       <!-- Iframe -->
@@ -283,9 +278,8 @@ import { SITE_URL } from '../lib/seo';
   let currentLang      = 'default';
   let playerConfirmed  = false;
   let loadTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
-  let countdownTimer: ReturnType<typeof setInterval> | null = null;
   let retryCount       = 0;
-  const LOAD_TIMEOUT   = 10000; // 10s — auto-switch to next server on timeout
+  const LOAD_TIMEOUT   = 12000; // 12s silent background switch if no play event received
 
   // Remember where the user came from for the back button
   const backUrl = (document.referrer && !document.referrer.includes('/player/'))
@@ -323,7 +317,6 @@ import { SITE_URL } from '../lib/seo';
 
   function clearTimer() {
     if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
-    if (countdownTimer)   { clearInterval(countdownTimer);  countdownTimer = null; }
   }
 
   // ── Servers ───────────────────────────────────────────────────────────────
@@ -348,55 +341,31 @@ import { SITE_URL } from '../lib/seo';
 
     const srv = servers[idx];
     clearTimer();
-
-    const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
-    if (iframe) iframe.removeAttribute('src');
-
-    setState('loading');
     saveSelectedServer(type, id, idx);
-    const servers2 = getServers({ type, id, season, episode });
-    const loadingText = document.getElementById('loading-text');
-    const baseMsg = retryCount > 0 ? `Trying server ${idx + 1} / ${servers2.length}` : 'Loading player';
-    if (loadingText) loadingText.textContent = baseMsg + '...';
-
-    // Countdown so user sees progress
-    let remaining = LOAD_TIMEOUT / 1000;
-    countdownTimer = setInterval(() => {
-      remaining--;
-      if (remaining > 0 && loadingText) loadingText.textContent = `${baseMsg}... ${remaining}s`;
-    }, 1000);
-
-    // "Not loading? Open directly" link
-    const directLink = document.getElementById('loading-direct-link') as HTMLAnchorElement | null;
-    if (directLink) { directLink.href = srv.url; directLink.classList.remove('hidden'); }
 
     const sel = document.getElementById('server-select') as HTMLSelectElement;
     if (sel) sel.value = String(idx);
 
+    const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
     applySandbox(iframe, srv.sandboxMode);
 
-    requestAnimationFrame(() => {
-      iframe.src = buildUrlWithLang(srv.url, currentLang);
+    // Set src and show immediately — embed server handles its own loading UI
+    iframe.src = buildUrlWithLang(srv.url, currentLang);
+    setState('ready');
 
-      loadTimeoutTimer = setTimeout(() => {
-        loadTimeoutTimer = null;
-        if (playerConfirmed) return;
-        const servers = getServers({ type, id, season, episode });
-        if (retryCount < servers.length - 1) {
-          retryCount++;
-          const nextIdx = (currentServerIdx + 1) % servers.length;
-          loadPlayer(nextIdx, true); // isRetry=true keeps retryCount from resetting
-        } else {
-          retryCount = 0;
-          setState('fallback');
-        }
-      }, LOAD_TIMEOUT);
-
-      iframe.onload = () => {
-        clearTimer();
-        if (!playerConfirmed) setState('ready');
-      };
-    });
+    // Silent background: if no play event in 12s, switch to next server
+    loadTimeoutTimer = setTimeout(() => {
+      loadTimeoutTimer = null;
+      if (playerConfirmed) return;
+      const srvs = getServers({ type, id, season, episode });
+      if (retryCount < srvs.length - 1) {
+        retryCount++;
+        loadPlayer((currentServerIdx + 1) % srvs.length, true);
+      } else {
+        retryCount = 0;
+        setState('fallback');
+      }
+    }, LOAD_TIMEOUT);
   }
 
   function switchServer() {
@@ -678,9 +647,6 @@ import { SITE_URL } from '../lib/seo';
         const titleEl = document.getElementById('player-title');
         if (titleEl) titleEl.textContent = data.title;
         document.title = `Watch ${data.title} | NetMirror`;
-        const loadingSubEl = document.getElementById('loading-movie-title');
-        if (loadingSubEl) loadingSubEl.textContent = data.title;
-
         // Trailer link on error screen
         if (data.trailerKey) {
           const link = document.getElementById('trailer-link');
