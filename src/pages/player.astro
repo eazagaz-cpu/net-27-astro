@@ -81,9 +81,13 @@ import { SITE_URL } from '../lib/seo';
     <!-- Player area -->
     <div id="player-container" class="player-frame-wrap pt-12">
 
-      <!-- Loading state (only shown briefly on first paint before JS runs) -->
-      <div id="player-loading" class="state-center hidden">
-        <div class="w-8 h-8 border-2 border-white/10 border-t-white/60 rounded-full animate-spin"></div>
+      <!-- Loading state -->
+      <div id="player-loading" class="state-center">
+        <div class="text-center">
+          <div class="w-10 h-10 border-2 border-white/10 border-t-white/70 rounded-full animate-spin mx-auto mb-5"></div>
+          <p class="text-sm font-medium text-white/90 mb-1.5" id="loading-text">Loading player...</p>
+          <p class="text-xs text-zinc-500" id="loading-movie-title"></p>
+        </div>
       </div>
 
       <!-- Iframe -->
@@ -279,7 +283,7 @@ import { SITE_URL } from '../lib/seo';
   let playerConfirmed  = false;
   let loadTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
   let retryCount       = 0;
-  const LOAD_TIMEOUT   = 12000; // 12s silent background switch if no play event received
+  const LOAD_TIMEOUT   = 18000;
 
   // Remember where the user came from for the back button
   const backUrl = (document.referrer && !document.referrer.includes('/player/'))
@@ -341,31 +345,37 @@ import { SITE_URL } from '../lib/seo';
 
     const srv = servers[idx];
     clearTimer();
+
+    const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
+    if (iframe) iframe.removeAttribute('src');
+
+    setState('loading');
     saveSelectedServer(type, id, idx);
 
     const sel = document.getElementById('server-select') as HTMLSelectElement;
     if (sel) sel.value = String(idx);
 
-    const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
     applySandbox(iframe, srv.sandboxMode);
 
-    // Set src and show immediately — embed server handles its own loading UI
-    iframe.src = buildUrlWithLang(srv.url, currentLang);
-    setState('ready');
+    requestAnimationFrame(() => {
+      iframe.src = buildUrlWithLang(srv.url, currentLang);
 
-    // Silent background: if no play event in 12s, switch to next server
-    loadTimeoutTimer = setTimeout(() => {
-      loadTimeoutTimer = null;
-      if (playerConfirmed) return;
-      const srvs = getServers({ type, id, season, episode });
-      if (retryCount < srvs.length - 1) {
-        retryCount++;
-        loadPlayer((currentServerIdx + 1) % srvs.length, true);
-      } else {
-        retryCount = 0;
-        setState('fallback');
-      }
-    }, LOAD_TIMEOUT);
+      loadTimeoutTimer = setTimeout(() => {
+        loadTimeoutTimer = null;
+        if (playerConfirmed) return;
+        if (retryCount === 0) {
+          retryCount = 1;
+          loadPlayer(idx, true);
+        } else {
+          setState('fallback');
+        }
+      }, LOAD_TIMEOUT);
+
+      iframe.onload = () => {
+        clearTimer();
+        if (!playerConfirmed) setState('ready');
+      };
+    });
   }
 
   function switchServer() {
@@ -647,6 +657,8 @@ import { SITE_URL } from '../lib/seo';
         const titleEl = document.getElementById('player-title');
         if (titleEl) titleEl.textContent = data.title;
         document.title = `Watch ${data.title} | NetMirror`;
+        const loadingSubEl = document.getElementById('loading-movie-title');
+        if (loadingSubEl) loadingSubEl.textContent = data.title;
         // Trailer link on error screen
         if (data.trailerKey) {
           const link = document.getElementById('trailer-link');
