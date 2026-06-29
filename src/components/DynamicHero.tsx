@@ -11,12 +11,14 @@ interface HeroItem {
   overview: string;
 }
 
-export default function DynamicHero() {
-  const [slides, setSlides] = useState<HeroItem[]>([]);
+export default function DynamicHero({ initialItems = [] }: { initialItems?: HeroItem[] }) {
+  const validInitial = (initialItems as HeroItem[]).filter(i => i.backdropUrl).slice(0, 5);
+
+  const [slides, setSlides] = useState<HeroItem[]>(validInitial);
   const [current, setCurrent] = useState(0);
-  const [loaded, setLoaded] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
+  // Fetch fresh slides from API — updates after initial paint
   useEffect(() => {
     const lang = typeof window !== 'undefined' ? localStorage.getItem('netmirror_lang') || 'en' : 'en';
     const langParam = lang !== 'en' ? `&lang=${lang}` : '';
@@ -24,39 +26,34 @@ export default function DynamicHero() {
       .then(r => r.json())
       .then(data => {
         const items = (data.items || []).filter((i: HeroItem) => i.backdropUrl).slice(0, 5);
-        if (items.length > 0) { setSlides(items); setLoaded(true); }
+        if (items.length > 0) setSlides(items);
       })
       .catch(() => {});
   }, []);
 
+  // Auto-advance every 6 s, pause when tab is hidden
   useEffect(() => {
     if (slides.length < 2) return;
-
-    function startInterval() {
+    function start() {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      intervalRef.current = setInterval(() => setCurrent(prev => (prev + 1) % slides.length), 6000);
+      intervalRef.current = setInterval(() => setCurrent(p => (p + 1) % slides.length), 6000);
     }
-
-    function handleVisibility() {
-      if (document.hidden) {
-        if (intervalRef.current) clearInterval(intervalRef.current);
-      } else {
-        startInterval();
-      }
-    }
-
-    startInterval();
-    document.addEventListener('visibilitychange', handleVisibility);
-
+    function onVisibility() { document.hidden ? clearInterval(intervalRef.current!) : start(); }
+    start();
+    document.addEventListener('visibilitychange', onVisibility);
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
-      document.removeEventListener('visibilitychange', handleVisibility);
+      document.removeEventListener('visibilitychange', onVisibility);
     };
   }, [slides.length]);
 
-  const goTo = useCallback((idx: number) => setCurrent(idx), []);
+  const goTo = useCallback((idx: number) => {
+    setCurrent(idx);
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    intervalRef.current = setInterval(() => setCurrent(p => (p + 1) % slides.length), 6000);
+  }, [slides.length]);
 
-  if (!loaded || slides.length === 0) return null;
+  if (slides.length === 0) return null;
 
   return (
     <section className="hero-section" aria-label="Featured titles">
@@ -76,21 +73,26 @@ export default function DynamicHero() {
           <div className="hero-overlay-tb" />
 
           <div className="hero-content-wrap">
-            <div className="hero-content">
-              <div style={{ marginBottom: 10 }}>
+            <div className="hero-outer">
+              <div className="hero-content">
                 <span className="hero-label">Trending Now</span>
-              </div>
-              <h2 className="hero-title">{slide.title}</h2>
-              <div className="hero-meta">
-                <span className="hero-rating">{slide.rating}</span>
-                <span className="hero-meta-text">{slide.year}</span>
-                <span className="hero-meta-text">&middot;</span>
-                <span className="hero-meta-text" style={{ textTransform: 'uppercase', fontSize: 12 }}>{slide.type === 'tv' ? 'Series' : 'Movie'}</span>
-              </div>
-              <p className="hero-description">{slide.overview}</p>
-              <div className="hero-actions">
-                <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-primary hero-btn">Watch Now</a>
-                <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-glass hero-btn">More Info</a>
+                <h2 className="hero-title">{slide.title}</h2>
+                <div className="hero-meta">
+                  <span className="hero-rating">★ {slide.rating}</span>
+                  <span className="hero-meta-text">{slide.year}</span>
+                  <span className="hero-meta-text">·</span>
+                  <span className="hero-meta-text" style={{ textTransform: 'uppercase', fontSize: 12, letterSpacing: '0.05em' }}>
+                    {slide.type === 'tv' ? 'Series' : 'Movie'}
+                  </span>
+                </div>
+                <p className="hero-description">{slide.overview}</p>
+                <div className="hero-actions">
+                  <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-primary hero-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    Watch Now
+                  </a>
+                  <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-glass hero-btn">More Info</a>
+                </div>
               </div>
             </div>
           </div>

@@ -56,8 +56,8 @@ const homeFaqs = [
   <Header />
 
   <main>
-    <!-- Hero -->
-    <DynamicHero client:idle />
+    <!-- Hero: server-rendered with cached data — visible immediately, no blank flash -->
+    <DynamicHero client:load initialItems={cachedTrending} />
     <noscript><HeroSlider titles={featured.length > 0 ? featured : trending.slice(0, 5)} /></noscript>
 
     <!-- Top 10 — directly after hero, no CTA interruption -->
