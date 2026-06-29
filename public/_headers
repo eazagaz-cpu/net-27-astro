@@ -46,5 +46,5 @@
   Referrer-Policy: no-referrer-when-downgrade
 
 /player/*
-  Referrer-Policy: no-referrer-when-downgrade
+  Referrer-Policy: no-referrer
   Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()
