@@ -16,6 +16,8 @@ jobs:
   sync-build-deploy:
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: write   # needed for git push in "Commit updated cache" step
 
     steps:
       # ── 1. Checkout repo ──────────────────────────────────────────────────
