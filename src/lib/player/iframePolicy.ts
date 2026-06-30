@@ -1,8 +1,10 @@
-export type SandboxMode = 'balanced' | 'compat' | 'none';
+export type SandboxMode = 'strict' | 'balanced' | 'compat' | 'none';
 
 export const SANDBOX: Record<Exclude<SandboxMode, 'none'>, string> = {
-  balanced: 'allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock allow-popups',
-  compat:   'allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock allow-popups allow-popups-to-escape-sandbox',
+  // strict: blocks popups, new tabs, top-level redirects — safest for embed players
+  strict:   'allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock allow-fullscreen',
+  balanced: 'allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock allow-popups allow-fullscreen',
+  compat:   'allow-scripts allow-same-origin allow-forms allow-presentation allow-pointer-lock allow-popups allow-popups-to-escape-sandbox allow-fullscreen',
 };
 
 export const IFRAME_ALLOW = 'autoplay; fullscreen; picture-in-picture; encrypted-media';

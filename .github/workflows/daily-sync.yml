@@ -1,31 +1,60 @@
-name: Daily Content Sync
+name: Auto Sync & Deploy
+
+# Runs 4× per day — fetches fresh TMDB/Trakt data, builds the static site,
+# and deploys to Cloudflare Pages automatically.
+# No manual intervention needed.
 
 on:
   schedule:
-    # Runs every day at 2:00 AM UTC (7:30 AM IST)
-    - cron: '0 2 * * *'
-  workflow_dispatch: # allow manual trigger from GitHub UI
+    - cron: '0 1 * * *'   # 01:00 UTC  — 6:30 AM IST
+    - cron: '0 7 * * *'   # 07:00 UTC  — 12:30 PM IST
+    - cron: '0 13 * * *'  # 13:00 UTC  — 6:30 PM IST
+    - cron: '0 19 * * *'  # 19:00 UTC  — 12:30 AM IST
+  workflow_dispatch:       # manual trigger from GitHub → Actions tab
 
 jobs:
-  sync:
+  sync-build-deploy:
     runs-on: ubuntu-latest
+    timeout-minutes: 20
+
     steps:
+      # ── 1. Checkout repo ──────────────────────────────────────────────────
       - uses: actions/checkout@v4
 
+      # ── 2. Setup Node with npm cache ──────────────────────────────────────
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
+          cache: 'npm'
 
-      - name: Sync TMDB cache
+      # ── 3. Install dependencies ───────────────────────────────────────────
+      - name: Install dependencies
+        run: npm ci
+
+      # ── 4. Fetch fresh TMDB + Trakt data → src/data/cache/*.json ─────────
+      - name: Sync TMDB & Trakt content
+        run: node src/scripts/movie-sync.mjs
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           TRAKT_CLIENT_ID: ${{ secrets.TRAKT_CLIENT_ID }}
-        run: node src/scripts/movie-sync.mjs
 
+      # ── 5. Build static site (call astro directly — prebuild already ran) ─
+      - name: Build site
+        run: npx astro build
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+
+      # ── 6. Deploy dist/ to Cloudflare Pages ──────────────────────────────
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler pages deploy dist --project-name net-27-astro --branch main --commit-dirty=true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # ── 7. Commit updated cache back to repo (for local dev use) ─────────
       - name: Commit updated cache
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add src/data/cache/
-          git diff --staged --quiet || git commit -m "chore: daily TMDB cache refresh [skip ci]"
-          git push
+          git diff --staged --quiet || (git commit -m "chore: TMDB cache refresh [skip ci]" && git push)
