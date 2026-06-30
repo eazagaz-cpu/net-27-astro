@@ -6,6 +6,19 @@ import { SITE_URL } from '../lib/seo';
 
 <BaseLayout>
   <SEOHead slot="head" title="Watch Now — NetMirror Player" description="Watch movies and TV shows on NetMirror. Multiple servers for smooth playback." canonical={`${SITE_URL}/player/`} noindex={true} />
+  <!-- DNS prefetch + preconnect for all embed servers — reduces first-frame latency -->
+  <link rel="preconnect" href="https://vidsrc.to" slot="head" />
+  <link rel="dns-prefetch" href="https://vidsrc.to" slot="head" />
+  <link rel="preconnect" href="https://2embed.cc" slot="head" />
+  <link rel="dns-prefetch" href="https://2embed.cc" slot="head" />
+  <link rel="preconnect" href="https://vidlink.pro" slot="head" />
+  <link rel="dns-prefetch" href="https://vidlink.pro" slot="head" />
+  <link rel="preconnect" href="https://multiembed.mov" slot="head" />
+  <link rel="dns-prefetch" href="https://multiembed.mov" slot="head" />
+  <link rel="preconnect" href="https://autoembed.co" slot="head" />
+  <link rel="dns-prefetch" href="https://autoembed.co" slot="head" />
+  <link rel="preconnect" href="https://www.2embed.skin" slot="head" />
+  <link rel="dns-prefetch" href="https://www.2embed.skin" slot="head" />
 
   <main class="player-shell">
 
@@ -91,11 +104,13 @@ import { SITE_URL } from '../lib/seo';
       </div>
 
       <!-- Iframe -->
+      <!-- referrerpolicy intentionally "no-referrer": these embed providers
+           silently fail to serve content when our domain's Referer is present -->
       <iframe
         id="player-iframe"
         class="player-frame hidden"
         allowfullscreen
-        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
+        allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
         referrerpolicy="no-referrer"
       ></iframe>
 
@@ -108,7 +123,7 @@ import { SITE_URL } from '../lib/seo';
             </svg>
           </div>
           <h2 class="text-base font-bold mb-2">Playback Unavailable</h2>
-          <p class="text-sm text-zinc-400 mb-6">This server is not responding right now. Try another server for smooth playback.</p>
+          <p class="text-sm text-zinc-400 mb-6">This server is unavailable. Please try another server.</p>
           <div class="flex items-center justify-center gap-3 flex-wrap">
             <button id="fallback-retry" class="btn-primary text-sm px-6 py-2.5 rounded-xl cursor-pointer">Retry</button>
             <button id="fallback-switch" class="btn-glass text-sm px-6 py-2.5 rounded-xl cursor-pointer">Switch Server</button>
@@ -191,6 +206,9 @@ import { SITE_URL } from '../lib/seo';
   .player-frame-wrap { width: 100%; height: 100svh; background: #000; }
   .player-frame { width: 100%; height: calc(100svh - 48px); margin-top: 0; border: 0; background: #000; display: block; }
   .state-center { display: flex; align-items: center; justify-content: center; height: calc(100svh - 48px); }
+  /* Astro scoped CSS has higher specificity than Tailwind .hidden — must explicitly override */
+  .player-frame.hidden { display: none !important; }
+  .state-center.hidden { display: none !important; }
 
   /* Topbar controls */
   .topbar-select {
@@ -266,7 +284,7 @@ import { SITE_URL } from '../lib/seo';
   import { getServers } from '../lib/player/servers';
   import { applySandbox } from '../lib/player/iframePolicy';
   import { loadSavedServer, saveSelectedServer } from '../lib/player/serverMemory';
-  import { LANGUAGES, loadLang, saveLang, buildUrlWithLang } from '../lib/player/languages';
+  import { LANGUAGES, loadLang, saveLang } from '../lib/player/languages';
   import { reportIssue } from '../lib/serverQuality';
   import type { ReportType } from '../lib/serverQuality';
 
@@ -277,13 +295,35 @@ import { SITE_URL } from '../lib/seo';
   let season  = parseInt(params.get('s') || '1');
   let episode = parseInt(params.get('e') || '1');
 
-  // ── State ─────────────────────────────────────────────────────────────────
+  // ── Constants & state ─────────────────────────────────────────────────────
+  const DEV          = import.meta.env.DEV;
+  const LOAD_TIMEOUT = 15000;
+
   let currentServerIdx = 0;
   let currentLang      = 'default';
   let playerConfirmed  = false;
   let loadTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
-  let retryCount       = 0;
-  const LOAD_TIMEOUT   = 18000;
+  let failedThisCycle  = new Set<number>();
+
+  // ── Dev-only logging (domain only — no full URLs in production) ───────────
+  function logDev(...args: unknown[]) { if (DEV) console.log('[player]', ...args); }
+  function domainOf(url: string) { try { return new URL(url).hostname; } catch { return 'unknown'; } }
+
+  // ── URL validation & deduplication ───────────────────────────────────────
+  function isValidUrl(url: string): boolean {
+    if (!url) return false;
+    try { return new URL(url).protocol === 'https:'; } catch { return false; }
+  }
+
+  function getValidServers() {
+    const raw  = getServers({ type, id, season, episode });
+    const seen = new Set<string>();
+    return raw.filter(s => {
+      if (!isValidUrl(s.url) || seen.has(s.url)) return false;
+      seen.add(s.url);
+      return true;
+    });
+  }
 
   // Remember where the user came from for the back button
   const backUrl = (document.referrer && !document.referrer.includes('/player/'))
@@ -327,17 +367,44 @@ import { SITE_URL } from '../lib/seo';
   function populateServers() {
     const sel = document.getElementById('server-select') as HTMLSelectElement;
     if (!sel) return;
-    const servers = getServers({ type, id, season, episode });
+    const servers = getValidServers();
     sel.innerHTML = servers.map((s, i) => `<option value="${i}">${s.name}</option>`).join('');
     sel.value = String(currentServerIdx);
   }
 
   // ── Core player ───────────────────────────────────────────────────────────
-  function loadPlayer(idx: number, isRetry = false) {
-    const servers = getServers({ type, id, season, episode });
+
+  // Mark a server as failed and auto-advance to the next untried one.
+  // Called by timeout, onerror, and provider postMessage errors.
+  function handleServerFailure(idx: number, serverName?: string) {
+    const servers = getValidServers();
+    failedThisCycle.add(idx);
+    logDev('server failed', servers[idx]?.id);
+
+    if (failedThisCycle.size >= servers.length) {
+      logDev('all servers failed');
+      setState('fallback');
+      return;
+    }
+
+    let next = (idx + 1) % servers.length;
+    while (failedThisCycle.has(next)) next = (next + 1) % servers.length;
+    logDev('next server selected', servers[next]?.id);
+
+    loadPlayer(next, { autoAdvance: true, failedName: serverName });
+  }
+
+  interface LoadOpts { autoAdvance?: boolean; failedName?: string; }
+
+  function loadPlayer(idx: number, opts: LoadOpts = {}) {
+    const servers = getValidServers();
+
+    if (!servers.length) { setState('fallback'); return; }
     if (idx < 0 || idx >= servers.length) idx = 0;
 
-    if (!isRetry) retryCount = 0;
+    // Manual user action resets the failed-server tracking for a fresh cycle
+    if (!opts.autoAdvance) failedThisCycle = new Set();
+
     currentServerIdx = idx;
     playerConfirmed  = false;
 
@@ -347,39 +414,57 @@ import { SITE_URL } from '../lib/seo';
     clearTimer();
 
     const iframe = document.getElementById('player-iframe') as HTMLIFrameElement;
-    if (iframe) iframe.removeAttribute('src');
-
-    setState('loading');
     saveSelectedServer(type, id, idx);
 
     const sel = document.getElementById('server-select') as HTMLSelectElement;
     if (sel) sel.value = String(idx);
 
     applySandbox(iframe, srv.sandboxMode);
+    logDev('selected server', srv.id, 'type', type, 'domain', domainOf(srv.url));
+
+    // Auto-advance (server failed): swap iframe src directly — no loading flash
+    // Manual switch: show loading state briefly for UX feedback
+    const iframeVisible = iframe && !iframe.classList.contains('hidden');
+    if (!iframeVisible) {
+      setState('loading');
+      const loadingText = document.getElementById('loading-text');
+      if (loadingText) loadingText.textContent = 'Loading player...';
+    }
 
     requestAnimationFrame(() => {
-      iframe.src = buildUrlWithLang(srv.url, currentLang);
+      // Do NOT append lang param — embed servers don't support it and reject modified URLs
+      iframe.src = srv.url;
+      logDev('iframe load started');
 
+      // Reveal iframe — embed provider shows its own loading UI inside the iframe
+      setState('ready');
+
+      // Background watchdog: if no play event in LOAD_TIMEOUT ms, try next server silently.
       loadTimeoutTimer = setTimeout(() => {
         loadTimeoutTimer = null;
         if (playerConfirmed) return;
-        if (retryCount === 0) {
-          retryCount = 1;
-          loadPlayer(idx, true);
-        } else {
-          setState('fallback');
-        }
+        logDev('timeout reached for', srv.id);
+        handleServerFailure(idx, srv.name);
       }, LOAD_TIMEOUT);
 
+      // onload = iframe document finished loading = server is alive and serving content.
+      // Set playerConfirmed so the watchdog timer does NOT fire and cycle to next server.
       iframe.onload = () => {
+        playerConfirmed = true;
         clearTimer();
-        if (!playerConfirmed) setState('ready');
+        logDev('iframe loaded, confirmed');
+      };
+
+      iframe.onerror = () => {
+        clearTimer();
+        logDev('iframe error for', srv.id);
+        handleServerFailure(idx, srv.name);
       };
     });
   }
 
   function switchServer() {
-    const servers = getServers({ type, id, season, episode });
+    const servers = getValidServers();
     loadPlayer((currentServerIdx + 1) % servers.length);
   }
 
@@ -411,7 +496,9 @@ import { SITE_URL } from '../lib/seo';
     saveLang(code);
     updateLangLabel();
     document.getElementById('lang-dropdown')?.classList.add('hidden');
-    loadPlayer(currentServerIdx);
+    // Refresh subtitles for new language preference — don't reload the video
+    subtitlesFetched = false;
+    subtitlesData = [];
   }
 
   const langBtn = document.getElementById('lang-btn');
@@ -453,26 +540,30 @@ import { SITE_URL } from '../lib/seo';
 
   async function loadSubtitles() {
     if (!ccContent) return;
-    ccContent.textContent = 'Loading subtitles...';
+    ccContent.innerHTML = '<p style="padding:10px 14px;font-size:12px;color:#71717a">Loading subtitles...</p>';
     try {
       const titleEl = document.getElementById('player-title');
       const title = titleEl?.textContent && titleEl.textContent !== 'Loading...' ? titleEl.textContent : '';
-      if (!title) { ccContent.textContent = 'Load a title first'; return; }
+      if (!title) {
+        ccContent.innerHTML = '<p style="padding:10px 14px;font-size:12px;color:#71717a">Wait for title to load...</p>';
+        return;
+      }
 
-      const res = await fetch(`/api/subtitles?title=${encodeURIComponent(title)}&type=${type}`);
+      const langParam = currentLang && currentLang !== 'default' ? `&lang=${currentLang}` : '';
+      const res = await fetch(`/api/subtitles?title=${encodeURIComponent(title)}&type=${type}${langParam}`);
+      if (!res.ok) throw new Error('fetch failed');
       const data = await res.json();
       subtitlesFetched = true;
       subtitlesData = data.subtitles || [];
 
       if (!subtitlesData.length) {
-        ccContent.textContent = 'No subtitles found';
+        ccContent.innerHTML = '<p style="padding:10px 14px;font-size:12px;color:#71717a">No subtitles found</p>';
         return;
       }
 
-      // Render subtitle language list
       ccContent.innerHTML = subtitlesData.map((s, i) =>
-        `<button class="lang-opt" data-idx="${i}" style="border-top:${i>0?'1px solid rgba(255,255,255,0.05)':'none'};border-radius:${i===0?'11px 11px':i===subtitlesData.length-1?'0 0 11px 11px':'0'} 0 0">
-          <span>${s.langName}</span>
+        `<button class="lang-opt" data-idx="${i}">
+          <span>${s.langName || s.language}</span>
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
         </button>`
       ).join('');
@@ -482,7 +573,7 @@ import { SITE_URL } from '../lib/seo';
           const idx = parseInt((btn as HTMLElement).dataset.idx || '0');
           const sub = subtitlesData[idx];
           if (!sub) return;
-          btn.textContent = 'Downloading...';
+          (btn as HTMLElement).innerHTML = '<span>Downloading...</span>';
           try {
             const res = await fetch('/api/subtitles', {
               method: 'POST',
@@ -494,32 +585,30 @@ import { SITE_URL } from '../lib/seo';
               const a = document.createElement('a');
               a.href = dl.link;
               a.download = dl.fileName || `subtitle.${sub.format}`;
+              document.body.appendChild(a);
               a.click();
-              btn.textContent = `${sub.langName} ✓`;
+              document.body.removeChild(a);
+              (btn as HTMLElement).innerHTML = `<span>${sub.langName || sub.language} ✓</span>`;
             } else {
-              btn.textContent = 'Failed — try again';
+              (btn as HTMLElement).innerHTML = '<span>Failed — try again</span>';
             }
           } catch {
-            btn.textContent = 'Error';
+            (btn as HTMLElement).innerHTML = '<span>Error — retry</span>';
           }
         });
       });
     } catch {
-      if (ccContent) ccContent.textContent = 'Could not load subtitles';
+      if (ccContent) ccContent.innerHTML = '<p style="padding:10px 14px;font-size:12px;color:#71717a">Could not load subtitles</p>';
     }
   }
 
   // ── postMessage from embed providers ─────────────────────────────────────
+  // Only listen for explicit play confirmation — do NOT auto-cycle on error messages.
+  // Ad/analytics scripts from embed providers send false-positive error postMessages
+  // (type:'error', code:404, error:true) that would incorrectly trigger server cycling.
   window.addEventListener('message', (ev) => {
     const d = ev.data;
     if (!d || typeof d !== 'object') return;
-
-    const isError =
-      d.type === 'error' || d.event === 'error' ||
-      d.status === 404 || d.code === 404 ||
-      d.type === 'player:error' || d.type === 'content_not_found' ||
-      d.reason === 'not_found' || d.error === true ||
-      d.type === 'unavailable' || d.available === false;
 
     const isPlaying =
       d.event === 'play' || d.event === 'playing' || d.event === 'timeupdate' ||
@@ -529,10 +618,7 @@ import { SITE_URL } from '../lib/seo';
       d.action === 'play' ||
       (d.currentTime !== undefined && Number(d.currentTime) > 0);
 
-    if (isError && !playerConfirmed) {
-      clearTimer();
-      setState('fallback');
-    } else if (isPlaying) {
+    if (isPlaying) {
       playerConfirmed = true;
       clearTimer();
       const iframe = document.getElementById('player-iframe');
@@ -554,7 +640,7 @@ import { SITE_URL } from '../lib/seo';
     }
     // [ or , = previous server
     if (e.key === '[' || e.key === ',') {
-      const servers = getServers({ type, id, season, episode });
+      const servers = getValidServers();
       loadPlayer((currentServerIdx - 1 + servers.length) % servers.length);
       return;
     }
@@ -571,6 +657,7 @@ import { SITE_URL } from '../lib/seo';
       season = parseInt(seasonSelect.value);
       episode = 1;
       episodeSelect.value = '1';
+      subtitlesFetched = false; subtitlesData = [];
       populateServers();
       loadPlayer(currentServerIdx);
     });
@@ -578,8 +665,8 @@ import { SITE_URL } from '../lib/seo';
   if (episodeSelect) {
     episodeSelect.addEventListener('change', () => {
       episode = parseInt(episodeSelect.value);
-      // Save last episode for this show
       try { localStorage.setItem(`netmirror:lastep:${id}`, String(episode)); } catch {}
+      subtitlesFetched = false; subtitlesData = [];
       populateServers();
       loadPlayer(currentServerIdx);
     });
@@ -621,7 +708,7 @@ import { SITE_URL } from '../lib/seo';
   document.querySelectorAll('.report-option').forEach(btn => {
     btn.addEventListener('click', () => {
       const issue = ((btn as HTMLElement).dataset.issue || 'not_playing') as ReportType;
-      const srv = getServers({ type, id, season, episode })[currentServerIdx];
+      const srv = getValidServers()[currentServerIdx];
       if (srv) reportIssue(srv.id, issue);
       reportToast?.classList.remove('hidden');
       document.getElementById('report-options')?.classList.add('hidden');
