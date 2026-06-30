@@ -80,7 +80,13 @@ export async function onRequestGet(context) {
         if (!srcRes.ok) return;
         const sources = await srcRes.json();
         if (Array.isArray(sources)) {
-          result.availability = sources.slice(0, 10).map(s => ({
+          const seen = new Set();
+          result.availability = sources.filter(s => {
+            const key = `${s.name}:${s.type}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+          }).slice(0, 10).map(s => ({
             name: s.name || '', type: s.type || '', webUrl: s.web_url || '',
           }));
         }

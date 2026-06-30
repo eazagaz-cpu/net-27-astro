@@ -37,7 +37,7 @@ export async function onRequestGet(context) {
     });
 
     if (!res.ok) {
-      return new Response(JSON.stringify({ error: 'Subtitles service error', subtitles: [] }), { headers });
+      return new Response(JSON.stringify({ error: 'Subtitles unavailable', subtitles: [] }), { headers });
     }
 
     const data = await res.json();
