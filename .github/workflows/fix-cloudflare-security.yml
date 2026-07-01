@@ -1,0 +1,138 @@
+name: Fix Cloudflare Security for Googlebot
+
+# Run manually from GitHub Actions tab
+on:
+  workflow_dispatch:
+
+env:
+  CF_ZONE_ID: 5349a54b58591b5faf9bfeebf51b3201
+  CF_SITEMAP_URL: https://net-27.cc/sitemap-index.xml
+
+jobs:
+  fix-security:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      # ── 1. Set Security Level to Medium ──────────────────────────────────
+      - name: Set Security Level to Medium
+        continue-on-error: true
+        run: |
+          echo "Setting security level to medium..."
+          curl -s -X PATCH \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/settings/security_level" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"value":"medium"}' | python3 -m json.tool
+
+      # ── 2. Disable Browser Integrity Check ───────────────────────────────
+      - name: Disable Browser Integrity Check
+        continue-on-error: true
+        run: |
+          echo "Disabling browser integrity check..."
+          curl -s -X PATCH \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/settings/browser_check" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{"value":"off"}' | python3 -m json.tool
+
+      # ── 3. Read current zone settings to confirm ─────────────────────────
+      - name: Check Current Security Settings
+        continue-on-error: true
+        run: |
+          echo "Reading current settings..."
+          result=$(curl -s \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/settings" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}")
+          echo "$result" | python3 -c "
+          import sys, json
+          data = json.load(sys.stdin)
+          for s in data.get('result', []):
+            if s['id'] in ['security_level','browser_check','bot_fight_mode','challenge_ttl']:
+              print(f\"  {s['id']}: {s['value']}\")
+          "
+
+      # ── 4. Create Page Rule to bypass security for sitemap ───────────────
+      - name: Create Sitemap Security Bypass Page Rule
+        continue-on-error: true
+        run: |
+          echo "Creating page rule to bypass security for sitemap..."
+          curl -s -X POST \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/pagerules" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{
+              "targets": [
+                {"target":"url","constraint":{"operator":"matches","value":"*net-27.cc/sitemap*.xml*"}}
+              ],
+              "actions": [
+                {"id":"security_level","value":"essentially_off"},
+                {"id":"browser_check","value":"off"},
+                {"id":"cache_level","value":"bypass"}
+              ],
+              "priority": 1,
+              "status": "active"
+            }' | python3 -m json.tool
+
+      # ── 5. Create WAF skip rule for search engine crawlers ───────────────
+      - name: Create WAF Bypass Rule for Search Crawlers
+        continue-on-error: true
+        run: |
+          echo "Creating WAF skip rule for Googlebot..."
+          curl -s -X POST \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/firewall/rules" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '[{
+              "action": "allow",
+              "filter": {
+                "expression": "(http.user_agent contains \"Googlebot\") or (http.user_agent contains \"Googlebot-Image\") or (http.user_agent contains \"AdsBot-Google\") or (http.user_agent contains \"bingbot\")",
+                "paused": false,
+                "description": "Allow Google and Bing crawlers - sitemap indexing fix"
+              },
+              "description": "Allow verified search engine crawlers",
+              "paused": false,
+              "priority": 1
+            }]' | python3 -m json.tool
+
+      # ── 6. Purge sitemap cache from Cloudflare edge ──────────────────────
+      - name: Purge Sitemap Cache
+        continue-on-error: true
+        run: |
+          echo "Purging sitemap files from Cloudflare cache..."
+          curl -s -X POST \
+            "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/purge_cache" \
+            -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
+            -H "Content-Type: application/json" \
+            --data '{
+              "files": [
+                "https://net-27.cc/sitemap-index.xml",
+                "https://net-27.cc/sitemap-0.xml",
+                "https://www.net-27.cc/sitemap-index.xml"
+              ]
+            }' | python3 -m json.tool
+
+      # ── 7. Ping Google & Bing to re-crawl sitemap ────────────────────────
+      - name: Notify Search Engines
+        run: |
+          echo "Pinging Google sitemap discovery..."
+          curl -sv "https://www.google.com/ping?sitemap=$CF_SITEMAP_URL" 2>&1 | tail -5
+          echo ""
+          echo "Pinging Bing sitemap discovery..."
+          curl -sv "https://www.bing.com/ping?sitemap=$CF_SITEMAP_URL" 2>&1 | tail -5
+
+      # ── 8. Verify sitemap is accessible as Googlebot ─────────────────────
+      - name: Verify Sitemap Accessible to Googlebot
+        run: |
+          echo "Verifying sitemap fetch with Googlebot user-agent..."
+          status=$(curl -s -o /tmp/sitemap.xml -w "%{http_code}" \
+            -A "Googlebot/2.1 (+http://www.google.com/bot.html)" \
+            "$CF_SITEMAP_URL")
+          echo "HTTP status: $status"
+          cat /tmp/sitemap.xml
+          if [ "$status" = "200" ]; then
+            echo "✅ SUCCESS: Sitemap is accessible to Googlebot"
+          else
+            echo "❌ FAIL: Got HTTP $status — Googlebot may still be blocked"
+            exit 1
+          fi
