@@ -9,6 +9,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
 import DynamicGrid from '../../components/DynamicGrid.tsx';
 import { platforms, genres, getTitlesByPlatform } from '../../data/sampleTitles';
+import { getAllBlogPosts } from '../../data/blogPosts';
 import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
@@ -30,6 +31,9 @@ const breadcrumbs = [
   { label: platform.name, href: `/platform/${platform.slug}/` },
 ];
 const otherPlatforms = platforms.filter(p => p.slug !== platform.slug);
+const relatedPosts = getAllBlogPosts()
+  .filter(p => p.tags?.some(t => t.toLowerCase().includes(platform.name.toLowerCase()) || t.toLowerCase().includes(platform.slug)))
+  .slice(0, 3);
 
 const platformDescriptions: Record<string, string> = {
   'Netflix': 'Netflix is the world\'s leading streaming entertainment service with over 230 million paid memberships across 190 countries. Known for its vast library of original content and licensed titles, Netflix offers a diverse range of movies, TV shows, documentaries, and anime. From award-winning originals to beloved classics, Netflix continues to shape how audiences discover and enjoy entertainment globally.',
@@ -145,6 +149,26 @@ const faqs = [
           ))}
         </div>
       </section>
+
+      {relatedPosts.length > 0 && (
+        <section>
+          <h2 class="section-title mb-6">From the Blog</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relatedPosts.map(post => (
+              <a href={`/blog/${post.slug}/`} class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)]/40 transition-all group">
+                <span class="text-xs font-medium text-[var(--color-primary)] uppercase tracking-wider">{post.category}</span>
+                <h3 class="mt-2 text-base font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">{post.title}</h3>
+                <p class="mt-2 text-sm text-[var(--color-text-muted)] line-clamp-2">{post.excerpt}</p>
+                <div class="mt-3 flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
+                  <span>{post.readTime}</span>
+                  <span>&middot;</span>
+                  <time>{post.date}</time>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
       <FAQSection faqs={faqs} />
 

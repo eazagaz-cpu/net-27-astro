@@ -9,6 +9,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
 import DynamicGrid from '../../components/DynamicGrid.tsx';
 import { genres, languages, platforms, getTitlesByGenre } from '../../data/sampleTitles';
+import { getAllBlogPosts } from '../../data/blogPosts';
 import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
@@ -30,6 +31,9 @@ const breadcrumbs = [
   { label: genre.name, href: `/genre/${genre.slug}/` },
 ];
 const relatedGenres = genres.filter(g => g.slug !== genre.slug);
+const relatedPosts = getAllBlogPosts()
+  .filter(p => p.tags?.some(t => t.toLowerCase().includes(genre.name.toLowerCase()) || t.toLowerCase().includes(genre.slug)))
+  .slice(0, 3);
 const genreDescriptions: Record<string, string> = {
   'Action': 'Action titles deliver adrenaline-pumping sequences, intense stunts, and high-stakes conflict. From explosive blockbusters to martial arts epics, this genre keeps viewers on the edge of their seats with relentless pacing and visceral thrills. Whether it\'s a lone hero fighting against impossible odds or a team assembling for a critical mission, action stories celebrate courage, determination, and spectacular set pieces.',
   'Comedy': 'Comedy titles bring laughter and levity through witty dialogue, absurd situations, and memorable characters. Ranging from sharp satirical commentary to feel-good romcoms, comedies provide essential entertainment that helps us see the humor in everyday life. The best comedies balance laughs with genuine heart, creating stories that entertain while also delivering surprising emotional depth.',
@@ -140,6 +144,26 @@ const faqs = [
           ))}
         </div>
       </section>
+
+      {relatedPosts.length > 0 && (
+        <section>
+          <h2 class="section-title mb-6">From the Blog</h2>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {relatedPosts.map(post => (
+              <a href={`/blog/${post.slug}/`} class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)]/40 transition-all group">
+                <span class="text-xs font-medium text-[var(--color-primary)] uppercase tracking-wider">{post.category}</span>
+                <h3 class="mt-2 text-base font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">{post.title}</h3>
+                <p class="mt-2 text-sm text-[var(--color-text-muted)] line-clamp-2">{post.excerpt}</p>
+                <div class="mt-3 flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
+                  <span>{post.readTime}</span>
+                  <span>&middot;</span>
+                  <time>{post.date}</time>
+                </div>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
 
       <FAQSection faqs={faqs} />
 

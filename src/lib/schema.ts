@@ -23,11 +23,25 @@ export function organizationSchema(): object {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE_NAME,
+    alternateName: 'Net27',
     url: SITE_URL,
+    foundingDate: '2024',
+    description: 'NetMirror is a free movie and TV show discovery platform that helps users find where to watch movies, TV shows, and anime legally across Netflix, Prime Video, Disney+, JioHotstar, Crunchyroll, and 30+ streaming platforms worldwide.',
     logo: {
       '@type': 'ImageObject',
       url: `${SITE_URL}/images/logo.png`,
     },
+    contactPoint: {
+      '@type': 'ContactPoint',
+      email: CONTACT_EMAIL,
+      contactType: 'customer support',
+    },
+    knowsAbout: ['Movies', 'TV Shows', 'Anime', 'Streaming Platforms', 'Hindi Dubbed Movies', 'Korean Dramas', 'Content Discovery'],
+    areaServed: 'Worldwide',
+    sameAs: [
+      'https://x.com/netmirror_app',
+      'https://t.me/netmirrorapp',
+    ],
   };
 }
 
