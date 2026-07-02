@@ -33,13 +33,11 @@
 
 /sitemap-index.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: public, max-age=0, must-revalidate
-  X-Robots-Tag: noindex
+  Cache-Control: no-cache
 
 /sitemap-0.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: public, max-age=0, must-revalidate
-  X-Robots-Tag: noindex
+  Cache-Control: no-cache
 
 /llms.txt
   Cache-Control: public, max-age=86400
