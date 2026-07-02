@@ -15,15 +15,15 @@ jobs:
 
     steps:
       # ── 1. Set Security Level to Medium ──────────────────────────────────
-      - name: Set Security Level to Medium
+      - name: Set Security Level to Low
         continue-on-error: true
         run: |
-          echo "Setting security level to medium..."
+          echo "Setting security level to low (allows search crawlers)..."
           curl -s -X PATCH \
             "https://api.cloudflare.com/client/v4/zones/$CF_ZONE_ID/settings/security_level" \
             -H "Authorization: Bearer ${{ secrets.CLOUDFLARE_API_TOKEN }}" \
             -H "Content-Type: application/json" \
-            --data '{"value":"medium"}' | python3 -m json.tool
+            --data '{"value":"low"}' | python3 -m json.tool
 
       # ── 2. Disable Browser Integrity Check ───────────────────────────────
       - name: Disable Browser Integrity Check
