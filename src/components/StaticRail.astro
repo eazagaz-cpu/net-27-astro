@@ -127,6 +127,20 @@ const FALLBACK_GRADIENTS = [
                   <p class="card-overlay-title">{item.title}</p>
                   <p class="card-overlay-meta">{item.year}{item.rating > 0 ? ` · ★ ${item.rating}` : ''}</p>
                 </div>
+
+                {/* Watchlist heart button */}
+                <button
+                  class="wl-btn"
+                  data-id={String(item.id)}
+                  data-type={item.type}
+                  data-title={item.title}
+                  data-poster={item.posterUrl}
+                  data-year={String(item.year)}
+                  aria-label="Add to watchlist"
+                  onclick="event.preventDefault();event.stopPropagation();window.__wlToggle(this)"
+                >
+                  <svg class="wl-heart" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+                </button>
               </div>
 
               <div style="padding:6px 4px">
@@ -189,11 +203,25 @@ const FALLBACK_GRADIENTS = [
   }
   .sr-arrow-left  { left:  0; }
   .sr-arrow-right { right: 0; }
+
+  /* Watchlist button */
+  .wl-btn {
+    position: absolute; bottom: 6px; right: 6px; z-index: 5;
+    width: 30px; height: 30px; border-radius: 50%;
+    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
+    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    color: #fff; opacity: 0; transition: opacity 0.2s, transform 0.15s;
+    padding: 0;
+  }
+  .title-card:hover .wl-btn { opacity: 1; }
+  .wl-btn:hover { transform: scale(1.15); }
+  .wl-btn.wl-active .wl-heart { fill: #e50914; stroke: #e50914; }
+  .wl-btn.wl-active { opacity: 1; }
 </style>
 
 <script>
-  // Single delegated handler — runs once even when multiple StaticRail instances are on the page.
-  const w = window as Window & { __srScrollInit?: boolean };
+  // Scroll arrows
+  const w = window as Window & { __srScrollInit?: boolean; __wlToggle?: (btn: HTMLElement) => void };
   if (!w.__srScrollInit) {
     w.__srScrollInit = true;
     document.addEventListener('click', (e) => {
@@ -202,6 +230,30 @@ const FALLBACK_GRADIENTS = [
       const rail = document.getElementById(btn.dataset.target!);
       if (!rail) return;
       rail.scrollBy({ left: btn.dataset.dir === 'left' ? -600 : 600, behavior: 'smooth' });
+    });
+  }
+
+  // Watchlist (localStorage) — initialise once across all rail instances
+  const WL_KEY = 'netmirror:watchlist';
+  function getWL(): any[] { try { return JSON.parse(localStorage.getItem(WL_KEY) || '[]'); } catch { return []; } }
+  function saveWL(list: any[]) { try { localStorage.setItem(WL_KEY, JSON.stringify(list)); } catch {} }
+
+  if (!w.__wlToggle) {
+    w.__wlToggle = function(btn: HTMLElement) {
+      const { id, type, title, poster, year } = btn.dataset as Record<string,string>;
+      let list = getWL();
+      const idx = list.findIndex((i: any) => String(i.id) === id);
+      if (idx > -1) { list.splice(idx, 1); btn.classList.remove('wl-active'); }
+      else { list.push({ id, type, title, poster, year, addedAt: Date.now() }); btn.classList.add('wl-active'); }
+      saveWL(list);
+    };
+
+    // Mark already-saved items on page load
+    document.addEventListener('DOMContentLoaded', () => {
+      const saved = new Set(getWL().map((i: any) => String(i.id)));
+      document.querySelectorAll<HTMLElement>('.wl-btn').forEach(btn => {
+        if (saved.has(btn.dataset.id || '')) btn.classList.add('wl-active');
+      });
     });
   }
 </script>

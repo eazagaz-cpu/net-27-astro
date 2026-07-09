@@ -10,7 +10,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
 import { sampleTitles, getRelatedTitles, genres } from '../../data/sampleTitles';
 import { actors, directors } from '../../data/entities';
-import { breadcrumbSchema, movieSchema, faqSchema } from '../../lib/schema';
+import { breadcrumbSchema, movieSchema, faqSchema, watchActionSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 import { getPosterUrl, getBackdropUrl } from '../../lib/media';
 import { APK_UNIVERSAL_URL } from '../../lib/constants';
@@ -78,6 +78,7 @@ const posterGradients = [
 ];
 const posterGradient = posterGradients[title.title.length % posterGradients.length];
 
+const watchUrl = `${SITE_URL}/watch/${title.slug}/`;
 const schemaData = [
   movieSchema({
     title: title.title,
@@ -89,6 +90,7 @@ const schemaData = [
     vote_average: title.rating,
     vote_count: 1000,
   }),
+  watchActionSchema(watchUrl, title.title, 'Movie'),
   breadcrumbSchema(breadcrumbs),
   faqSchema(faqs),
 ];
@@ -97,8 +99,8 @@ const schemaData = [
 <BaseLayout>
   <SEOHead
     slot="head"
-    title={`Watch ${title.title} (${title.year}) - Stream Online`}
-    description={`${title.title} (${title.year}) - ${title.overview.slice(0, 150)}... Find where to watch ${title.title} online on ${title.platforms.join(', ')}.`}
+    title={`Watch ${title.title} (${title.year}) Online Free in HD`}
+    description={`Watch ${title.title} (${title.year}) online free in HD. ${title.overview.slice(0, 130)}... Stream on NetMirror — no sign-up required.`}
     canonical={`${SITE_URL}/movies/${title.slug}/`}
     ogType="video.movie"
   />

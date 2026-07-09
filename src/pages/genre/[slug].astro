@@ -10,7 +10,7 @@ import FAQSection from '../../components/FAQSection.astro';
 import DynamicGrid from '../../components/DynamicGrid.tsx';
 import { genres, languages, platforms, getTitlesByGenre } from '../../data/sampleTitles';
 import { getAllBlogPosts } from '../../data/blogPosts';
-import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { breadcrumbSchema, faqSchema, itemListSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 export const getStaticPaths = (() => {
@@ -59,16 +59,20 @@ const faqs = [
   { question: `How many ${genre.name} titles does Net27 have?`, answer: `We currently have ${titles.length} ${genre.name.toLowerCase()} titles in our database, including ${movies.length} movies, ${shows.length} TV shows, and ${anime.length} anime series. Our collection is continuously growing.` },
   { question: `Are there ${genre.name.toLowerCase()} anime series available?`, answer: anime.length > 0 ? `Yes! We have ${anime.length} ${genre.name.toLowerCase()} anime titles including ${anime.map(t => t.title).join(', ')}. Anime offers unique perspectives on the ${genre.name.toLowerCase()} genre with distinctive animation styles and storytelling approaches.` : `While our current ${genre.name.toLowerCase()} collection primarily features movies and TV shows, we are continuously adding anime titles. Check back regularly for new additions.` },
 ];
+const genreListItems = titles.slice(0, 30).map(t => ({
+  name: t.title,
+  url: `${SITE_URL}/${t.type === 'movie' ? 'movies' : 'shows'}/${t.slug}/`,
+}));
 ---
 
 <BaseLayout>
   <SEOHead
     slot="head"
-    title={`Best ${genre.name} Movies & Shows (${new Date().getFullYear()}) - Stream Online`}
-    description={`Discover ${titles.length} ${genre.name.toLowerCase()} movies, TV shows, and anime. Find the best ${genre.name.toLowerCase()} titles to watch on Netflix, Prime Video, Disney+ and more streaming platforms.`}
+    title={`Best ${genre.name} Movies & Shows to Watch Free Online (${new Date().getFullYear()})`}
+    description={`Discover ${titles.length} ${genre.name.toLowerCase()} movies, TV shows, and anime. Watch the best ${genre.name.toLowerCase()} titles free online on NetMirror — no sign-up required.`}
     canonical={`${SITE_URL}/genre/${genre.slug}/`}
   />
-  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs), itemListSchema(`Best ${genre.name} Movies & Shows`, `${SITE_URL}/genre/${genre.slug}/`, genreListItems)]} />
 
   <Header />
 

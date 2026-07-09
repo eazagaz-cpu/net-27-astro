@@ -10,7 +10,7 @@ import FAQSection from '../../components/FAQSection.astro';
 import DynamicGrid from '../../components/DynamicGrid.tsx';
 import { platforms, genres, getTitlesByPlatform } from '../../data/sampleTitles';
 import { getAllBlogPosts } from '../../data/blogPosts';
-import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { breadcrumbSchema, faqSchema, itemListSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 export const getStaticPaths = (() => {
@@ -75,7 +75,7 @@ const faqs = [
     description={`Browse ${titles.length} movies, TV shows, and anime on ${platform.name}. Discover what to watch and explore the full ${platform.name} catalog.`}
     canonical={`${SITE_URL}/platform/${platform.slug}/`}
   />
-  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs), itemListSchema(`Best ${platform.name} Movies & Shows`, `${SITE_URL}/platform/${platform.slug}/`, titles.slice(0, 30).map(t => ({ name: t.title, url: `${SITE_URL}/${t.type === 'movie' ? 'movies' : 'shows'}/${t.slug}/` })))]} />
 
   <Header />
 

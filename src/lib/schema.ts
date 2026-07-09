@@ -231,3 +231,71 @@ export function faqSchema(
     })),
   };
 }
+
+export function watchActionSchema(url: string, name: string, type: 'Movie' | 'TVSeries' = 'Movie'): object {
+  return {
+    '@context': 'https://schema.org',
+    '@type': type,
+    name,
+    url,
+    potentialAction: {
+      '@type': 'WatchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: url,
+        actionPlatform: [
+          'http://schema.org/DesktopWebPlatform',
+          'http://schema.org/MobileWebPlatform',
+        ],
+      },
+      'expectsAcceptanceOf': {
+        '@type': 'Offer',
+        price: '0',
+        priceCurrency: 'USD',
+        eligibleRegion: { '@type': 'Place', name: 'Worldwide' },
+        availability: 'http://schema.org/InStock',
+      },
+    },
+  };
+}
+
+export function itemListSchema(
+  listName: string,
+  listUrl: string,
+  items: { name: string; url: string }[]
+): object {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: listName,
+    url: listUrl,
+    numberOfItems: items.length,
+    itemListElement: items.map((item, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: item.name,
+      url: item.url,
+    })),
+  };
+}
+
+export function videoObjectSchema(p: {
+  name: string;
+  description: string;
+  thumbnailUrl: string;
+  uploadDate: string;
+  contentUrl?: string;
+  embedUrl?: string;
+}): object {
+  const schema: Record<string, any> = {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: p.name,
+    description: p.description,
+    thumbnailUrl: p.thumbnailUrl,
+    uploadDate: p.uploadDate,
+  };
+  if (p.contentUrl) schema.contentUrl = p.contentUrl;
+  if (p.embedUrl) schema.embedUrl = p.embedUrl;
+  return schema;
+}
