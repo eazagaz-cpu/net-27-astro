@@ -305,5 +305,6 @@ async function main() {
 
 main().catch(err => {
   console.error('[movie-sync] Fatal:', err.message);
-  process.exit(1);
+  console.warn('[movie-sync] Continuing build with existing cache files.');
+  process.exit(0);
 });
