@@ -1,0 +1,109 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEOHead from '../components/SEOHead.astro';
+import { SITE_URL } from '../lib/seo';
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="My Watchlist"
+    description="Your saved movies and TV shows on NetMirror."
+    canonical={`${SITE_URL}/watchlist/`}
+    noindex={true}
+  />
+
+  <Header />
+
+  <main style="min-height:80vh;padding:2rem 0">
+    <div style="max-width:1400px;margin:0 auto;padding:0 1rem">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
+        <h1 style="font-size:1.5rem;font-weight:700;color:#fff">My Watchlist</h1>
+        <button id="wl-clear" style="font-size:12px;color:#71717a;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px" onmouseenter="this.style.color='#ef4444'" onmouseleave="this.style.color='#71717a'">Clear All</button>
+      </div>
+
+      <!-- Empty state -->
+      <div id="wl-empty" style="display:none;text-align:center;padding:5rem 1rem">
+        <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" viewBox="0 0 24 24" stroke="#3f3f46" stroke-width="1.5" style="margin:0 auto 1.5rem"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+        <p style="color:#a1a1aa;font-size:1rem;margin-bottom:0.5rem">Your watchlist is empty</p>
+        <p style="color:#52525b;font-size:0.85rem;margin-bottom:1.5rem">Click the ♥ on any movie or show to save it here</p>
+        <a href="/" style="display:inline-block;padding:0.6rem 1.5rem;background:var(--color-primary);color:#fff;border-radius:8px;text-decoration:none;font-size:0.875rem;font-weight:600">Browse Content</a>
+      </div>
+
+      <!-- Grid -->
+      <div id="wl-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:1rem"></div>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<style>
+  .wl-card { text-decoration:none;color:inherit;display:block;border-radius:10px;overflow:hidden;background:var(--color-surface);transition:transform 0.2s; }
+  .wl-card:hover { transform:translateY(-4px); }
+  .wl-card img { width:100%;aspect-ratio:2/3;object-fit:cover;display:block; }
+  .wl-card-fb { width:100%;aspect-ratio:2/3;background:linear-gradient(135deg,#1a1a2e,#16213e);display:flex;align-items:center;justify-content:center;padding:8px; }
+  .wl-card-info { padding:8px; }
+  .wl-card-title { font-size:13px;font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0 }
+  .wl-card-meta { font-size:11px;color:#71717a;margin-top:3px }
+  .wl-remove { position:absolute;top:6px;right:6px;width:26px;height:26px;border-radius:50%;background:rgba(0,0,0,0.75);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;color:#ef4444;opacity:0;transition:opacity 0.2s; }
+  .wl-card-wrap:hover .wl-remove { opacity:1; }
+  .wl-card-wrap { position:relative; }
+</style>
+
+<script>
+  const WL_KEY = 'netmirror:watchlist';
+  function getWL(): any[] { try { return JSON.parse(localStorage.getItem(WL_KEY) || '[]'); } catch { return []; } }
+  function saveWL(list: any[]) { try { localStorage.setItem(WL_KEY, JSON.stringify(list)); } catch {} }
+
+  function render() {
+    const list = getWL();
+    const grid = document.getElementById('wl-grid')!;
+    const empty = document.getElementById('wl-empty')!;
+
+    if (list.length === 0) {
+      empty.style.display = 'block';
+      grid.style.display = 'none';
+      return;
+    }
+    empty.style.display = 'none';
+    grid.style.display = 'grid';
+
+    grid.innerHTML = list.map((item: any) => {
+      const href = `/detail/?type=${item.type}&id=${item.id}`;
+      const typeLabel = item.type === 'tv' ? 'TV' : item.type === 'movie' ? '' : item.type.toUpperCase();
+      return `
+        <div class="wl-card-wrap">
+          <a href="${href}" class="wl-card">
+            ${item.poster
+              ? `<img src="${item.poster}" alt="${item.title}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+              : ''}
+            <div class="wl-card-fb" style="${item.poster ? 'display:none' : ''}">
+              <span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);text-align:center">${item.title}</span>
+            </div>
+            <div class="wl-card-info">
+              <p class="wl-card-title">${item.title}</p>
+              <p class="wl-card-meta">${item.year || ''}${typeLabel ? ' · ' + typeLabel : ''}</p>
+            </div>
+          </a>
+          <button class="wl-remove" data-id="${item.id}" aria-label="Remove from watchlist" onclick="window.__wlRemove('${item.id}')">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>`;
+    }).join('');
+  }
+
+  (window as any).__wlRemove = function(id: string) {
+    const list = getWL().filter((i: any) => String(i.id) !== String(id));
+    saveWL(list);
+    render();
+  };
+
+  document.getElementById('wl-clear')?.addEventListener('click', () => {
+    if (confirm('Clear your entire watchlist?')) { saveWL([]); render(); }
+  });
+
+  render();
+</script>

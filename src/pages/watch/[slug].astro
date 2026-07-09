@@ -2,9 +2,11 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
 import { sampleTitles } from '../../data/sampleTitles';
 import { SITE_URL } from '../../lib/seo';
 import { APK_UNIVERSAL_URL } from '../../lib/constants';
+import { watchActionSchema } from '../../lib/schema';
 
 export const getStaticPaths = (() => {
   return sampleTitles.map(title => ({
@@ -16,16 +18,19 @@ export const getStaticPaths = (() => {
 const { title } = Astro.props;
 const detailHref = title.type === 'movie' ? `/movies/${title.slug}/` : `/shows/${title.slug}/`;
 const mediaType = title.type === 'movie' ? 'movie' : 'tv';
+const watchUrl = `${SITE_URL}/watch/${title.slug}/`;
+const schemaType = title.type === 'movie' ? 'Movie' : 'TVSeries';
 ---
 
 <BaseLayout>
   <SEOHead
     slot="head"
-    title={`Watch ${title.title} (${title.year})`}
-    description={`Watch ${title.title} on NetMirror.`}
-    canonical={`${SITE_URL}/watch/${title.slug}/`}
-    noindex={true}
+    title={`Watch ${title.title} (${title.year}) Online Free in HD`}
+    description={`Watch ${title.title} (${title.year}) online free in HD on NetMirror. ${title.overview ? title.overview.slice(0, 120) + '...' : 'Stream now — no sign-up required. Multiple servers available.'}`}
+    canonical={watchUrl}
+    ogType={title.type === 'movie' ? 'video.movie' : 'video.tv_show'}
   />
+  <Schema slot="head" schema={[watchActionSchema(watchUrl, title.title, schemaType)]} />
 
   <main class="min-h-screen bg-black text-white">
     <!-- Top bar -->
@@ -82,8 +87,8 @@ const mediaType = title.type === 'movie' ? 'movie' : 'tv';
         class="player-frame hidden"
         style={`height:calc(100vh - ${(title.type === 'show' || title.type === 'anime') ? '88px' : '48px'});`}
         allowfullscreen
-        allow="autoplay; fullscreen; picture-in-picture; encrypted-media"
-        referrerpolicy="no-referrer-when-downgrade"
+        allow="autoplay *; fullscreen *; picture-in-picture *; encrypted-media *"
+        referrerpolicy="no-referrer"
       ></iframe>
       <!-- Fallback -->
       <div id="player-fallback" class="hidden flex items-center justify-center h-full">
@@ -100,7 +105,7 @@ const mediaType = title.type === 'movie' ? 'movie' : 'tv';
   </main>
 </BaseLayout>
 
-<script define:vars={{ titleName: title.title, mediaType, titleYear: title.year }}>
+<script define:vars={{ titleName: title.title, mediaType, titleYear: title.year, titleSlug: title.slug, titlePoster: title.poster || '' }}>
   let tmdbId = null;
   let season = 1;
   let episode = 1;
@@ -217,9 +222,22 @@ const mediaType = title.type === 'movie' ? 'movie' : 'tv';
     return null;
   }
 
+  // Save to continue-watching history
+  function saveHistory(id) {
+    const CW_KEY = 'netmirror:history';
+    try {
+      let list = JSON.parse(localStorage.getItem(CW_KEY) || '[]');
+      list = list.filter(i => String(i.id) !== String(id));
+      list.unshift({ id, type: mediaType, title: titleName, year: titleYear, slug: titleSlug, poster: titlePoster, addedAt: Date.now() });
+      if (list.length > 30) list = list.slice(0, 30);
+      localStorage.setItem(CW_KEY, JSON.stringify(list));
+    } catch {}
+  }
+
   findTmdbId().then(id => {
     if (id) {
       tmdbId = id;
+      saveHistory(id);
       loadPlayer(0);
     } else {
       const loading = document.getElementById('player-loading');

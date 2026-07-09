@@ -147,6 +147,14 @@ function getEndpoints(category) {
       { path: '/discover/movie', params: { with_genres: '99', sort_by: 'popularity.desc' } },
       { path: '/discover/tv', params: { with_genres: '99', sort_by: 'popularity.desc' } },
     ],
+    'pakistani-drama': [
+      { path: '/discover/tv', params: { with_origin_country: 'PK', sort_by: 'popularity.desc' } },
+      { path: '/discover/tv', params: { with_original_language: 'ur', sort_by: 'popularity.desc' } },
+    ],
+    'turkish-drama': [
+      { path: '/discover/tv', params: { with_original_language: 'tr', with_genres: '18', sort_by: 'popularity.desc' } },
+      { path: '/discover/tv', params: { with_origin_country: 'TR', sort_by: 'popularity.desc' } },
+    ],
   };
   return map[category] || [{ path: '/movie/popular', params: {} }];
 }
@@ -249,8 +257,10 @@ const CATEGORIES = [
   { key: 'netflix',          pages: 1 },
   { key: 'prime-video',      pages: 1 },
   { key: 'new-2026',      pages: 2 },
-  { key: 'hindi-dubbed', pages: 2 },
-  { key: 'documentary',  pages: 1 },
+  { key: 'hindi-dubbed',     pages: 2 },
+  { key: 'documentary',      pages: 1 },
+  { key: 'pakistani-drama',  pages: 2 },
+  { key: 'turkish-drama',    pages: 2 },
 ];
 
 // ── Main ─────────────────────────────────────────────────────────────────────
