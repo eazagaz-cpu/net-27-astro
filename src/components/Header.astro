@@ -44,9 +44,9 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
 <header class="fixed top-0 left-0 right-0 z-50">
   <div class="bg-gradient-to-b from-black/90 via-black/70 to-transparent backdrop-blur-sm">
     <div class="max-w-[1400px] mx-auto px-4 h-16 flex items-center justify-between gap-4">
-      <a href="/" class="flex items-center gap-1 shrink-0 group" style="text-decoration:none">
-        <span class="text-xl font-extrabold tracking-tight" style="letter-spacing:-0.03em">
-          <span style="color:var(--color-primary);text-shadow:0 0 20px rgba(255,31,61,0.5)">Net</span><span class="text-white">Mirror</span>
+      <a href="/" class="flex items-center gap-1 shrink-0">
+        <span class="text-xl font-extrabold tracking-tight">
+          <span class="text-[var(--color-primary)]">Net</span><span class="text-white">Mirror</span>
         </span>
       </a>
 
@@ -126,6 +126,16 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
       </div>
     </div>
 
+    <!-- Announcement ticker -->
+    <div class="announcement-bar">
+      <div class="announcement-track" id="announcement-track">
+        <p class="announcement-item">If a movie isn't playing on one server, switch to another server instantly from the player controls</p>
+        <p class="announcement-item">NetMirror supports 4 streaming servers — if one is slow or shows ads, try the next for a cleaner experience</p>
+        <p class="announcement-item">Download the NetMirror APK for Android — faster browsing, smoother playback, and offline access</p>
+        <p class="announcement-item">Use the Report button on the player to flag bad servers — we'll prioritize better ones for you</p>
+        <p class="announcement-item">500,000+ movies and TV shows across Netflix, Prime Video, JioHotstar, Crunchyroll and 30+ platforms</p>
+      </div>
+    </div>
   </div>
 
   <div id="mobile-menu" class="fixed inset-0 bg-black/95 backdrop-blur-xl z-50 hidden lg:hidden" aria-hidden="true">

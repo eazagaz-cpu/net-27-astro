@@ -74,43 +74,25 @@ export default function DynamicHero({ initialItems = [] }: { initialItems?: Hero
 
           <div className="hero-content-wrap">
             <div className="hero-outer">
-              <div className="hero-layout">
-                <div className="hero-content">
-                  <span className="hero-label">Trending Now</span>
-                  <h2 className="hero-title">{slide.title}</h2>
-                  <div className="hero-meta">
-                    <span className="hero-rating">★ {slide.rating}</span>
-                    <span className="hero-meta-text">{slide.year}</span>
-                    <span className="hero-meta-text">·</span>
-                    <span className="hero-meta-text" style={{ textTransform: 'uppercase', fontSize: 12, letterSpacing: '0.05em' }}>
-                      {slide.type === 'tv' ? 'Series' : 'Movie'}
-                    </span>
-                  </div>
-                  <p className="hero-description">{slide.overview}</p>
-                  <div className="hero-actions">
-                    <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-primary hero-btn">
-                      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                      Watch Now
-                    </a>
-                    <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-glass hero-btn">More Info</a>
-                  </div>
+              <div className="hero-content">
+                <span className="hero-label">Trending Now</span>
+                <h2 className="hero-title">{slide.title}</h2>
+                <div className="hero-meta">
+                  <span className="hero-rating">★ {slide.rating}</span>
+                  <span className="hero-meta-text">{slide.year}</span>
+                  <span className="hero-meta-text">·</span>
+                  <span className="hero-meta-text" style={{ textTransform: 'uppercase', fontSize: 12, letterSpacing: '0.05em' }}>
+                    {slide.type === 'tv' ? 'Series' : 'Movie'}
+                  </span>
                 </div>
-                {slide.posterUrl && (
-                  <div className="hero-poster-wrap">
-                    <div className="hero-poster-frame">
-                      <img
-                        src={slide.posterUrl}
-                        alt={`${slide.title} poster`}
-                        className="hero-poster-img"
-                        width={240}
-                        height={360}
-                        loading={i === 0 ? 'eager' : 'lazy'}
-                        decoding={i === 0 ? 'sync' : 'async'}
-                      />
-                      <div className="hero-poster-shine" />
-                    </div>
-                  </div>
-                )}
+                <p className="hero-description">{slide.overview}</p>
+                <div className="hero-actions">
+                  <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-primary hero-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+                    Watch Now
+                  </a>
+                  <a href={`/detail/?type=${slide.type}&id=${slide.id}`} className="btn-glass hero-btn">More Info</a>
+                </div>
               </div>
             </div>
           </div>
