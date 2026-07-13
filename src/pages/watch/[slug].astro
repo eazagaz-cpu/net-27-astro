@@ -43,10 +43,10 @@ const schemaType = title.type === 'movie' ? 'Movie' : 'TVSeries';
         <h1 class="text-sm font-medium truncate max-w-[40%]">{title.title}</h1>
         <div class="flex items-center gap-2">
           <select id="server-select" class="bg-black text-xs text-white border border-white/10 rounded px-2 py-1 cursor-pointer">
-            <option value="0">Server 1</option>
-            <option value="1">Server 2</option>
-            <option value="2">Server 3</option>
-            <option value="3">Server 4</option>
+            <option value="0">VidSrc (S1)</option>
+            <option value="1">VidSrc CC (S2)</option>
+            <option value="2">VidLink (S3)</option>
+            <option value="3">MultiEmbed (S4)</option>
           </select>
           <a href="/" class="p-1 text-zinc-400 hover:text-white" aria-label="Close">
             <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -113,15 +113,15 @@ const schemaType = title.type === 'movie' ? 'Movie' : 'TVSeries';
   function getEmbedUrl(serverIdx) {
     if (!tmdbId) return '';
     const servers = mediaType === 'movie' ? [
-      `https://autoembed.co/movie/tmdb/${tmdbId}`,
-      `https://www.2embed.cc/embed/${tmdbId}`,
-      `https://player.videasy.net/movie/${tmdbId}`,
-      `https://embed.smashystream.com/playere.php?tmdb=${tmdbId}`,
+      `https://vidsrc.to/embed/movie/${tmdbId}`,
+      `https://vidsrc.cc/v2/embed/movie/${tmdbId}`,
+      `https://vidlink.pro/movie/${tmdbId}`,
+      `https://multiembed.mov/directstream.php?video_id=${tmdbId}&tmdb=1`,
     ] : [
-      `https://autoembed.co/tv/tmdb/${tmdbId}-${season}-${episode}`,
-      `https://www.2embed.cc/embedtv/${tmdbId}&s=${season}&e=${episode}`,
-      `https://player.videasy.net/tv/${tmdbId}/${season}/${episode}`,
-      `https://embed.smashystream.com/playere.php?tmdb=${tmdbId}&season=${season}&episode=${episode}`,
+      `https://vidsrc.to/embed/tv/${tmdbId}/${season}/${episode}`,
+      `https://vidsrc.cc/v2/embed/tv/${tmdbId}/${season}/${episode}`,
+      `https://vidlink.pro/tv/${tmdbId}/${season}/${episode}`,
+      `https://multiembed.mov/directstream.php?video_id=${tmdbId}&tmdb=1&s=${season}&e=${episode}`,
     ];
     return servers[serverIdx] || servers[0];
   }
@@ -169,11 +169,11 @@ const schemaType = title.type === 'movie' ? 'Movie' : 'TVSeries';
     if (serverIdx < 3) {
       retryTimer = setTimeout(() => {
         const nextServer = serverIdx + 1;
-        if (status) status.textContent = `Trying Server ${nextServer + 1}...`;
+        if (status) status.textContent = `Server ${serverIdx + 1} slow — trying Server ${nextServer + 1}...`;
         const serverSelect = document.getElementById('server-select');
         if (serverSelect) serverSelect.value = String(nextServer);
         loadPlayer(nextServer);
-      }, 10000);
+      }, 7000);
     }
   }
 
