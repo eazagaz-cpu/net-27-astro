@@ -566,19 +566,19 @@
     transform: translateY(-1px);
   }
 
-  /* Scroll reveal animations */
-  .rail-section {
+  /* Scroll reveal — only StaticRail sections have [data-reveal], React rails are excluded */
+  .rail-section[data-reveal] {
     opacity: 0;
     transform: translateY(18px);
     transition: opacity 0.5s ease, transform 0.5s ease;
   }
-  .rail-section.rail-visible {
+  .rail-section[data-reveal].rail-visible {
     opacity: 1;
     transform: none;
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .rail-section { opacity: 1; transform: none; transition: none; }
+    .rail-section[data-reveal] { opacity: 1; transform: none; transition: none; }
   }
 
   .top10-poster {

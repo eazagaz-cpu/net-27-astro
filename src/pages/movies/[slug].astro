@@ -306,6 +306,27 @@ const schemaData = [
         </p>
       </section>
 
+      <!-- Available Now (live official-platform data) -->
+      <section>
+        <h2 class="section-title mb-6">Available Now</h2>
+        <div id="streaming-availability" data-title={title.title} data-year={title.year} data-type="movie">
+          <div data-state="loading" class="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
+            <div class="w-4 h-4 border-2 border-white/10 border-t-[var(--color-primary)] rounded-full animate-spin"></div>
+            Checking official streaming platforms...
+          </div>
+          <div data-state="list" class="hidden flex flex-wrap gap-3"></div>
+          <p data-state="empty" class="hidden text-sm text-[var(--color-text-muted)]">
+            Not currently listed on a tracked streaming platform for your region.
+          </p>
+          <p data-state="error" class="hidden text-sm text-[var(--color-text-muted)]">
+            Couldn't load official streaming info right now.
+          </p>
+        </div>
+        <p class="mt-4 text-xs text-[var(--color-text-muted)]">
+          Official, licensed streaming platforms — availability may vary by region.
+        </p>
+      </section>
+
       <!-- Trailer Section -->
       <section>
         <h2 class="section-title mb-6">Trailer</h2>
@@ -358,6 +379,9 @@ const schemaData = [
 </BaseLayout>
 
 <script>
+  import { mountStreamingAvailability } from '../../lib/apis/streamingAvailability';
+  mountStreamingAvailability('streaming-availability');
+
   document.querySelectorAll('[data-person-name]').forEach(el => {
     const name = el.getAttribute('data-person-name');
     if (!name) return;
