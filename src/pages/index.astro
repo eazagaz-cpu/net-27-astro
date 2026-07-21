@@ -75,6 +75,9 @@ const homeFaqs = [
     <DynamicHero client:load initialItems={cachedTrending} />
     <noscript><HeroSlider titles={featured} /></noscript>
 
+    <!-- App Download CTA -->
+    <AppCTA />
+
     <!-- Genre browsing pills -->
     <div style="max-width:1400px;margin:0 auto;padding:1.25rem 1rem 0">
       <div class="genre-pills-row">
@@ -119,9 +122,6 @@ const homeFaqs = [
         });
       })();
     </script>
-
-    <!-- App Download CTA -->
-    <AppCTA />
 
     <!-- Continue Watching — client-side localStorage rail -->
     <ContinueWatching />
