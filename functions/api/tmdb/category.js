@@ -14,6 +14,16 @@ const GENRE_IDS = {
   kids: '16,10751',
 };
 
+const LANGUAGE_CODES = {
+  english: 'en', hindi: 'hi', spanish: 'es', korean: 'ko',
+  japanese: 'ja', french: 'fr', german: 'de', turkish: 'tr',
+};
+
+const COUNTRY_CODES = {
+  'united-states': 'US', 'united-kingdom': 'GB', japan: 'JP', 'south-korea': 'KR',
+  france: 'FR', india: 'IN', germany: 'DE', turkey: 'TR', spain: 'ES', canada: 'CA',
+};
+
 const CACHE_TTLS = {
   trending: 1800, latest: 7200, popular: 3600, upcoming: 7200,
   'tv-popular': 3600, anime: 3600, kids: 3600, bollywood: 3600,
@@ -48,12 +58,30 @@ function getEndpoints(type) {
     default: {
       const pid = PROVIDER_IDS[type];
       const gid = GENRE_IDS[type];
+      const langMatch = /^lang-(.+)$/.exec(type);
+      const langCode = langMatch ? LANGUAGE_CODES[langMatch[1]] : null;
+      const countryMatch = /^country-(.+)$/.exec(type);
+      const countryCode = countryMatch ? COUNTRY_CODES[countryMatch[1]] : null;
+      const yearMatch = /^(19|20)\d{2}$/.test(type) ? type : null;
+
       if (pid) return [
         { path: '/discover/movie', params: { with_watch_providers: pid, watch_region: 'IN', sort_by: 'popularity.desc' } },
         { path: '/discover/tv', params: { with_watch_providers: pid, watch_region: 'IN', sort_by: 'popularity.desc' } },
       ];
       if (gid) return [
         { path: '/discover/movie', params: { with_genres: String(gid), sort_by: 'popularity.desc' } },
+      ];
+      if (langCode) return [
+        { path: '/discover/movie', params: { with_original_language: langCode, sort_by: 'popularity.desc' } },
+        { path: '/discover/tv', params: { with_original_language: langCode, sort_by: 'popularity.desc' } },
+      ];
+      if (countryCode) return [
+        { path: '/discover/movie', params: { with_origin_country: countryCode, sort_by: 'popularity.desc' } },
+        { path: '/discover/tv', params: { with_origin_country: countryCode, sort_by: 'popularity.desc' } },
+      ];
+      if (yearMatch) return [
+        { path: '/discover/movie', params: { primary_release_year: yearMatch, sort_by: 'popularity.desc' } },
+        { path: '/discover/tv', params: { first_air_date_year: yearMatch, sort_by: 'popularity.desc' } },
       ];
       return [{ path: '/movie/popular', params: {} }];
     }

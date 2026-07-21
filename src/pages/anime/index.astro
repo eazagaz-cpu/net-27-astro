@@ -7,11 +7,12 @@ import Schema from '../../components/Schema.astro';
 import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
-import { getTitlesByType, genres, platforms } from '../../data/sampleTitles';
+import { genres, platforms } from '../../data/sampleTitles';
+import { getAllRealTitles } from '../../lib/realTitles';
 import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
-const anime = getTitlesByType('anime');
+const anime = getAllRealTitles().filter(t => t.languages.includes('Japanese') && t.genres.includes('Animation'));
 const topRated = [...anime].sort((a, b) => b.rating - a.rating);
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -33,7 +34,7 @@ const faqs = [
   <SEOHead
     slot="head"
     title="Anime — Stream Popular Anime Series Online"
-    description="Watch anime online. Attack on Titan, Demon Slayer, One Piece, Jujutsu Kaisen on Crunchyroll, Netflix. Browse 1000+ anime series."
+    description="Discover popular anime series and movies. Browse our curated anime collection and find where to stream on Crunchyroll, Netflix, and more."
     canonical={`${SITE_URL}/anime/`}
   />
   <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />

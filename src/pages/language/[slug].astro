@@ -5,10 +5,10 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import SEOHead from '../../components/SEOHead.astro';
 import Schema from '../../components/Schema.astro';
-import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
-import { languages, genres, getTitlesByLanguage } from '../../data/sampleTitles';
+import DynamicGrid from '../../components/DynamicGrid.tsx';
+import { languages, genres } from '../../data/sampleTitles';
 import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
@@ -20,10 +20,6 @@ export const getStaticPaths = (() => {
 }) satisfies GetStaticPaths;
 
 const { language } = Astro.props;
-const titles = getTitlesByLanguage(language.name);
-const movies = titles.filter(t => t.type === 'movie');
-const shows = titles.filter(t => t.type === 'show');
-const anime = titles.filter(t => t.type === 'anime');
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Languages', href: '/' },
@@ -44,9 +40,7 @@ const languageDescriptions: Record<string, string> = {
 const description = languageDescriptions[language.name] || `Discover the best movies, TV shows, and anime available in ${language.name}. Our curated collection features top-rated titles spanning all genres, available on major streaming platforms worldwide.`;
 
 const faqs = [
-  { question: `What are the best ${language.name} movies and shows?`, answer: `Our top-rated ${language.name} titles include ${titles.slice(0, 3).map(t => t.title).join(', ')}. Browse the full collection to find critically acclaimed and popular titles in ${language.name}.` },
-  { question: `Where can I stream ${language.name} content?`, answer: `${language.name} movies and shows are available on platforms including ${[...new Set(titles.flatMap(t => t.platforms))].slice(0, 4).join(', ')}. Check each title page for specific availability in your region.` },
-  { question: `How many ${language.name} titles are in your database?`, answer: `We currently have ${titles.length} titles available in ${language.name}, including ${movies.length} movies, ${shows.length} TV shows, and ${anime.length} anime series.` },
+  { question: `Where can I stream ${language.name} content?`, answer: `${language.name} movies and shows are available on major streaming platforms including Netflix, Prime Video, Disney+, and more. Check each title page for specific availability in your region.` },
   { question: `Do you have ${language.name} subtitled content?`, answer: `Many titles in our ${language.name} collection are available with subtitles on their respective streaming platforms. Check the specific streaming service for subtitle and dubbing options.` },
   { question: `Is ${language.name} content available globally?`, answer: `Availability varies by region and streaming platform. Some ${language.name} titles may be region-locked on certain platforms. We recommend checking your local streaming service for current availability.` },
 ];
@@ -56,7 +50,7 @@ const faqs = [
   <SEOHead
     slot="head"
     title={`Best ${language.name} Movies & Shows (${new Date().getFullYear()}) - Stream Online`}
-    description={`Discover ${titles.length} ${language.name} movies, TV shows, and anime. Find the best ${language.name} content to stream on Netflix, Prime Video, and more.`}
+    description={`Discover ${language.name} movies, TV shows, and anime. Find the best ${language.name} content to stream on Netflix, Prime Video, and more.`}
     canonical={`${SITE_URL}/language/${language.slug}/`}
   />
   <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
@@ -73,15 +67,8 @@ const faqs = [
           <span class="gradient-text">{language.name}</span> Movies & Shows
         </h1>
         <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">
-          Explore {titles.length} titles available in {language.name}. Find movies, TV shows, and anime on your favorite streaming platforms.
+          Explore movies, TV shows, and anime available in {language.name}. Find where to watch them on your favorite streaming platforms.
         </p>
-        <div class="mt-4 flex flex-wrap gap-3 text-sm text-[var(--color-text-muted)]">
-          <span>{movies.length} Movies</span>
-          <span>&middot;</span>
-          <span>{shows.length} TV Shows</span>
-          <span>&middot;</span>
-          <span>{anime.length} Anime</span>
-        </div>
       </div>
     </section>
 
@@ -90,24 +77,16 @@ const faqs = [
         <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl">{description}</p>
       </section>
 
-      {titles.length > 0 ? (
-        <section>
-          <h2 class="section-title mb-6">All {language.name} Titles</h2>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {titles.map(title => <TitleCard title={title} />)}
-          </div>
-        </section>
-      ) : (
-        <section class="glass-card rounded-xl p-12 text-center">
-          <p class="text-[var(--color-text-muted)] text-lg">No titles found in this language.</p>
-        </section>
-      )}
+      <section>
+        <h2 class="section-title mb-6">All {language.name} Titles</h2>
+        <DynamicGrid client:idle category={`lang-${language.slug}`} title={language.name} />
+      </section>
 
       <section>
         <h2 class="section-title mb-6">Browse Other Languages</h2>
         <div class="flex flex-wrap gap-3">
           {otherLanguages.map(l => (
-            <a href={`/language/${l.slug}/`} class="chip">{l.name} <span class="ml-1 text-[var(--color-text-muted)]">({l.count})</span></a>
+            <a href={`/language/${l.slug}/`} class="chip">{l.name}</a>
           ))}
         </div>
       </section>

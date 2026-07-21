@@ -1,15 +1,29 @@
 ---
-import type { Title } from '../lib/types';
 import { getPosterUrl } from '../lib/media';
 
+// Structural shape shared by both the legacy `Title` (lib/types.ts, poster as
+// a TMDB relative path) and the real `RealTitle` (lib/realTitles.ts, posterUrl
+// as a full URL) — either satisfies this without an explicit union import.
+interface CardTitle {
+  slug: string;
+  title: string;
+  type: string;
+  year: number;
+  rating: number;
+  genres: string[];
+  poster?: string;
+  posterUrl?: string;
+  quality?: string;
+}
+
 interface Props {
-  title: Title;
+  title: CardTitle;
 }
 
 const { title } = Astro.props;
 
 const href = title.type === 'movie' ? `/movies/${title.slug}/` : `/shows/${title.slug}/`;
-const posterUrl = getPosterUrl(title.poster);
+const posterUrl = title.posterUrl || getPosterUrl(title.poster || '');
 
 const displayGenres = title.genres.slice(0, 2);
 

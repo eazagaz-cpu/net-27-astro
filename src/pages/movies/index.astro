@@ -7,11 +7,12 @@ import Schema from '../../components/Schema.astro';
 import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
-import { getTitlesByType, genres, languages, platforms } from '../../data/sampleTitles';
+import { genres, languages, platforms } from '../../data/sampleTitles';
+import { getRealTitlesByType } from '../../lib/realTitles';
 import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
-const movies = getTitlesByType('movie');
+const movies = getRealTitlesByType('movie');
 const topRated = [...movies].sort((a, b) => b.rating - a.rating);
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -95,7 +96,7 @@ const faqs = [
         <h2 class="section-title mb-6">Browse by Language</h2>
         <div class="flex flex-wrap gap-3">
           {languages.map(l => (
-            <a href={`/language/${l.slug}/`} class="chip">{l.name} <span class="ml-1 text-[var(--color-text-muted)]">({l.count})</span></a>
+            <a href={`/language/${l.slug}/`} class="chip">{l.name}</a>
           ))}
         </div>
       </section>

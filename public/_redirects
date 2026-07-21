@@ -9,3 +9,40 @@ https://www.net-27.cc/* https://net-27.cc/:splat 301
 /movie/* /movies/:splat
 /tv/* /shows/:splat
 /series/* /shows/:splat
+
+# Retired routes (no real-data replacement — actor/director/studio pages had
+# no TMDB-backed source; watch/[slug] replaced by /player/?type=&id=)
+/actor/* /movies/ 301
+/director/* /movies/ 301
+/studio/* /movies/ 301
+/watch/* /player/ 301
+
+# Retired fictional placeholder titles (pre-real-data-migration) — redirect
+# to the relevant listing instead of 404 to preserve any residual traffic.
+/movies/steel-horizon/ /movies/ 301
+/movies/the-last-letter/ /movies/ 301
+/movies/neon-cascade/ /movies/ 301
+/movies/midnight-protocol/ /movies/ 301
+/movies/laugh-track/ /movies/ 301
+/movies/the-hollow-ones/ /movies/ 301
+/movies/starfall-serenade/ /movies/ 301
+/movies/the-painted-forest/ /movies/ 301
+/shows/cold-case-chronicles/ /shows/ 301
+/shows/crown-of-embers/ /shows/ 301
+/shows/orbital-drift/ /shows/ 301
+/shows/precinct-nine/ /shows/ 301
+/shows/the-veil/ /shows/ 301
+/shows/unseen-worlds/ /shows/ 301
+/shows/house-of-shadows/ /shows/ 301
+/shows/wild-frontiers/ /shows/ 301
+/shows/attack-on-titan/ /anime/ 301
+/shows/demon-slayer/ /anime/ 301
+/shows/one-piece/ /anime/ 301
+/shows/jujutsu-kaisen/ /anime/ 301
+/shows/spy-x-family/ /anime/ 301
+/shows/death-note/ /anime/ 301
+/shows/naruto/ /anime/ 301
+/shows/hunter-x-hunter/ /anime/ 301
+
+# Old country/language/year archive URLs are unchanged (same slugs, now real
+# DynamicGrid data) — no redirect needed there.

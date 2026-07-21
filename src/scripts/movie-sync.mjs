@@ -191,6 +191,58 @@ function delay(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
+// ── Slug helper ───────────────────────────────────────────────────────────
+function slugify(text) {
+  return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+}
+
+// ── Full per-title detail fetch — builds the real replacement for the old
+// fictional sampleTitles.ts dataset that movies/[slug].astro and
+// shows/[slug].astro render from. ─────────────────────────────────────────
+async function fetchTitleDetail(type, id) {
+  const path = type === 'tv' ? `/tv/${id}` : `/movie/${id}`;
+  const d = await tmdbFetch(path, { append_to_response: 'credits,videos,similar' });
+  if (!d.poster_path && !d.backdrop_path) return null;
+
+  const title = (d.title || d.name || '').trim();
+  if (!title) return null;
+
+  const releaseDate = d.release_date || d.first_air_date || '';
+  const year = parseInt(releaseDate.slice(0, 4)) || 0;
+  const trailer = (d.videos?.results || []).find(v => v.type === 'Trailer' && v.site === 'YouTube');
+  const director = type === 'tv'
+    ? (d.created_by || [])[0]?.name || ''
+    : (d.credits?.crew || []).find(c => c.job === 'Director')?.name || '';
+
+  const runtime = type === 'tv'
+    ? (d.episode_run_time?.[0] ? `${d.episode_run_time[0]}m per ep` : '')
+    : (d.runtime ? `${Math.floor(d.runtime / 60)}h ${d.runtime % 60}m` : '');
+
+  return {
+    id: `${type}-${id}`,
+    tmdbId: id,
+    slug: `${slugify(title)}-${id}`,
+    type: type === 'tv' ? 'show' : 'movie',
+    title,
+    year,
+    rating: Math.round((d.vote_average || 0) * 10) / 10,
+    runtime,
+    posterUrl: d.poster_path ? `${IMG_BASE}/w780${d.poster_path}` : '',
+    backdropUrl: d.backdrop_path ? `${IMG_BASE}/original${d.backdrop_path}` : '',
+    overview: d.overview || '',
+    genres: (d.genres || []).map(g => g.name),
+    languages: (d.spoken_languages || []).map(l => l.english_name).filter(Boolean),
+    cast: (d.credits?.cast || []).slice(0, 10).map(c => ({ name: c.name, role: c.character || '' })),
+    director,
+    trailerUrl: trailer ? `https://www.youtube.com/embed/${trailer.key}` : '',
+    releaseDate,
+    status: d.status || '',
+    seasons: type === 'tv' ? (d.number_of_seasons || 0) : undefined,
+    episodes: type === 'tv' ? (d.number_of_episodes || 0) : undefined,
+    relatedIds: (d.similar?.results || []).slice(0, 12).map(r => `${type}-${r.id}`),
+  };
+}
+
 // ── Write a cache JSON file ──────────────────────────────────────────────────
 function writeCache(category, items) {
   const payload = {
@@ -264,17 +316,24 @@ const CATEGORIES = [
 ];
 
 // ── Main ─────────────────────────────────────────────────────────────────────
+const MAX_DETAIL_TITLES = 350;
+
 async function main() {
   console.log('\n[movie-sync] Starting TMDB data pipeline...\n');
   const t0 = Date.now();
   let ok = 0;
   let fail = 0;
+  const candidates = new Map(); // "type-id" -> { type, id } — union across all categories, most-popular-first
 
   for (const { key, pages } of CATEGORIES) {
     try {
       process.stdout.write(`  Fetching ${key.padEnd(20)}`);
       const items = await fetchCategory(key, pages);
       writeCache(key, items);
+      for (const item of items) {
+        const k = `${item.type}-${item.id}`;
+        if (!candidates.has(k)) candidates.set(k, { type: item.type, id: item.id });
+      }
       console.log(`✓ ${items.length} items`);
       ok++;
     } catch (err) {
@@ -298,6 +357,30 @@ async function main() {
     console.log(`✗ ${err.message}`);
     fail++;
   }
+
+  // ── Full-detail pass — real replacement for the old fictional sampleTitles.ts.
+  // Powers movies/[slug].astro and shows/[slug].astro with real cast, director,
+  // runtime, trailer, and a stable slug. Capped to keep build time and TMDB
+  // rate-limit usage bounded.
+  const toDetail = [...candidates.values()].slice(0, MAX_DETAIL_TITLES);
+  console.log(`\n[movie-sync] Fetching full detail for ${toDetail.length} titles...`);
+  const titles = [];
+  let detailFail = 0;
+  for (const { type, id } of toDetail) {
+    try {
+      const detail = await fetchTitleDetail(type, id);
+      if (detail) titles.push(detail);
+    } catch {
+      detailFail++;
+    }
+    await delay(260);
+  }
+  writeFileSync(
+    join(CACHE_DIR, 'titles.json'),
+    JSON.stringify({ fetchedAt: new Date().toISOString(), count: titles.length, items: titles }),
+    'utf8'
+  );
+  console.log(`[movie-sync] Wrote titles.json — ${titles.length} titles (${detailFail} failed).`);
 
   const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
   console.log(`\n[movie-sync] Done in ${elapsed}s — ${ok} succeeded, ${fail} failed.\n`);

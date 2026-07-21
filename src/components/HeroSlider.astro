@@ -3,11 +3,12 @@ import { getBackdropUrl } from '../lib/media';
 
 interface HeroTitle {
   slug: string;
+  tmdbId: number;
   type: 'movie' | 'show' | 'anime';
   title: string;
   year: number;
   rating: number;
-  quality: string;
+  quality?: string;
   ageRating?: string;
   overview: string;
   backdrop: string;
@@ -76,7 +77,7 @@ const slides = titles.slice(0, 5);
               </p>
 
               <div class="flex items-center gap-3">
-                <a href={`/watch/${slide.slug}/`} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
+                <a href={`/player/?type=${slide.type === 'movie' ? 'movie' : 'tv'}&id=${slide.tmdbId}`} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                   Watch Now
                 </a>

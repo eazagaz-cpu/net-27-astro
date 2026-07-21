@@ -30,15 +30,16 @@ export function getDefaultLang(): Lang {
 }
 
 export function isRTL(lang: Lang): boolean {
-  return LANGUAGES[lang]?.dir === 'rtl';
+  return LANGUAGES[lang].dir === 'rtl';
 }
 
 export function getDir(lang: Lang): 'ltr' | 'rtl' {
-  return LANGUAGES[lang]?.dir || 'ltr';
+  return LANGUAGES[lang].dir;
 }
 
 export function getLanguageName(lang: Lang): string {
-  return LANGUAGES[lang]?.nativeName || LANGUAGES[lang]?.name || lang;
+  const entry: { name: string; nativeName: string; dir: 'ltr' | 'rtl' } = LANGUAGES[lang];
+  return entry.nativeName || entry.name || lang;
 }
 
 export function getAlternateLinks(path: string): { lang: string; href: string }[] {

@@ -8,51 +8,37 @@ import Schema from '../../components/Schema.astro';
 import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
-import { sampleTitles, getRelatedTitles, genres } from '../../data/sampleTitles';
-import { actors, directors } from '../../data/entities';
+import { getRealTitlesByType, getRelatedRealTitles } from '../../lib/realTitles';
+import { genres } from '../../data/sampleTitles';
 import { breadcrumbSchema, tvSeriesSchema, faqSchema, watchActionSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
-import { getPosterUrl } from '../../lib/media';
 import { APK_UNIVERSAL_URL } from '../../lib/constants';
 
-function slugify(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-}
-
 export const getStaticPaths = (() => {
-  return sampleTitles
-    .filter(t => t.type === 'show' || t.type === 'anime')
-    .map(title => ({
-      params: { slug: title.slug },
-      props: { title },
-    }));
+  return getRealTitlesByType('show').map(title => ({
+    params: { slug: title.slug },
+    props: { title },
+  }));
 }) satisfies GetStaticPaths;
 
 const { title } = Astro.props;
-const related = getRelatedTitles(title);
-const isAnime = title.type === 'anime';
+const isAnime = title.languages.includes('Japanese') && title.genres.includes('Animation');
+const related = getRelatedRealTitles(title);
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: isAnime ? 'Anime' : 'TV Shows', href: isAnime ? '/anime/' : '/shows/' },
   { label: title.title, href: `/shows/${title.slug}/` },
 ];
 
-const directorEntry = directors.find(d => d.name === title.director);
-const castActors = title.cast.map(c => ({
-  ...c,
-  actor: actors.find(a => a.name === c.name),
-}));
 const titleGenres = genres.filter(g => title.genres.includes(g.name));
 
 const faqs = [
-  { question: `Where can I watch ${title.title}?`, answer: `${title.title} is available for streaming on ${title.platforms.join(', ')}. Availability may vary by region.` },
+  { question: `Where can I watch ${title.title}?`, answer: `Check the "Available Now" section on this page for official streaming platforms carrying ${title.title} in your region.` },
   { question: `What is ${title.title} about?`, answer: title.overview },
-  { question: `Who stars in ${title.title}?`, answer: `The cast includes ${title.cast.map(c => `${c.name} as ${c.role}`).join(', ')}.` },
+  ...(title.cast.length > 0 ? [{ question: `Who stars in ${title.title}?`, answer: `The cast includes ${title.cast.slice(0, 5).map(c => c.role ? `${c.name} as ${c.role}` : c.name).join(', ')}.` }] : []),
   { question: `How many seasons does ${title.title} have?`, answer: title.seasons ? `${title.title} has ${title.seasons} season${title.seasons > 1 ? 's' : ''} with ${title.episodes || 'multiple'} episodes.` : `Season information for ${title.title} is being updated. Check your streaming platform for the latest episode count.` },
-  { question: `Who directed ${title.title}?`, answer: `${title.title} was directed by ${title.director}.${directorEntry ? ` ${directorEntry.bio}` : ''}` },
-  { question: `What genre is ${title.title}?`, answer: `${title.title} is a ${title.genres.join(', ')} ${isAnime ? 'anime' : 'series'}. It first aired in ${title.year} and is available in ${title.languages.join(', ')}.` },
-  { question: `Is ${title.title} available in ${title.quality}?`, answer: `Yes, ${title.title} is available in ${title.quality} quality on supported streaming platforms.` },
-  { question: `Is ${title.title} ${isAnime ? 'an anime' : 'a TV show'}?`, answer: `${title.title} is classified as ${isAnime ? 'an anime series' : 'a TV show'} in the ${title.genres.join(', ')} genre${title.genres.length > 1 ? 's' : ''}. It is produced in ${title.languages.join(' and ')}.` },
+  ...(title.director ? [{ question: `Who created ${title.title}?`, answer: `${title.title} was created by ${title.director}.` }] : []),
+  { question: `What genre is ${title.title}?`, answer: `${title.title} is a ${title.genres.join(', ') || ''} ${isAnime ? 'anime' : 'series'}. It first aired in ${title.year}.` },
 ];
 
 const placeholderGradients = [
@@ -79,12 +65,13 @@ const posterGradients = [
 ];
 const posterGradient = posterGradients[title.title.length % posterGradients.length];
 
-const watchUrl = `${SITE_URL}/watch/${title.slug}/`;
+const playerUrl = `/player/?type=tv&id=${title.tmdbId}`;
+const watchUrl = `${SITE_URL}${playerUrl}`;
 const schemaData = [
   tvSeriesSchema({
     title: title.title,
     overview: title.overview,
-    poster_path: title.poster,
+    poster_path: title.posterUrl,
     first_air_date: title.releaseDate,
     genre: title.genres,
     number_of_seasons: title.seasons,
@@ -111,10 +98,10 @@ const schemaData = [
     <!-- Backdrop Hero Area -->
     <section class="relative w-full min-h-[60vh] md:min-h-[70vh] overflow-hidden">
       <!-- Backdrop Image -->
-      {getPosterUrl(title.backdrop, 'lg') && (
-        <img src={getPosterUrl(title.backdrop, 'lg')} alt="" class="absolute inset-0 w-full h-full object-cover" loading="eager" />
+      {title.backdropUrl && (
+        <img src={title.backdropUrl} alt="" class="absolute inset-0 w-full h-full object-cover" loading="eager" />
       )}
-      <div class={`absolute inset-0 bg-gradient-to-br ${gradient} ${getPosterUrl(title.backdrop) ? 'opacity-40' : ''}`}></div>
+      <div class={`absolute inset-0 bg-gradient-to-br ${gradient} ${title.backdropUrl ? 'opacity-40' : ''}`}></div>
 
       <!-- Dark Overlay Gradients -->
       <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg)] via-[var(--color-bg)]/60 to-transparent"></div>
@@ -128,10 +115,10 @@ const schemaData = [
           <!-- Poster -->
           <div class="flex-shrink-0 w-48 md:w-64">
             <div class={`aspect-[2/3] rounded-xl overflow-hidden shadow-2xl bg-gradient-to-br ${posterGradient} relative`}>
-              {getPosterUrl(title.poster) ? (
-                <img src={getPosterUrl(title.poster)} alt={`${title.title} poster`} class="w-full h-full object-cover" loading="eager" width="256" height="384" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              {title.posterUrl ? (
+                <img src={title.posterUrl} alt={`${title.title} poster`} class="w-full h-full object-cover" loading="eager" width="256" height="384" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
               ) : null}
-              <div class="w-full h-full flex items-center justify-center absolute inset-0" style={getPosterUrl(title.poster) ? 'display:none' : ''}>
+              <div class="w-full h-full flex items-center justify-center absolute inset-0" style={title.posterUrl ? 'display:none' : ''}>
                 <span class="text-lg font-bold text-white/50 text-center px-3 leading-tight">{title.title}</span>
               </div>
             </div>
@@ -159,43 +146,44 @@ const schemaData = [
             <!-- Meta Row -->
             <div class="flex flex-wrap items-center gap-3 mb-4">
               <span class="text-[var(--color-text-secondary)] font-medium">{title.year}</span>
-              <span class="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
-              <span class="text-[var(--color-text-secondary)]">{title.runtime} / ep</span>
-              <span class="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
-              <span class="flex items-center gap-1 text-yellow-400 font-semibold">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-                {title.rating.toFixed(1)}
-              </span>
-              {title.quality && (
-                <span class="px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider bg-[var(--color-primary)] text-white">
-                  {title.quality}
+              {title.runtime && (<>
+                <span class="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
+                <span class="text-[var(--color-text-secondary)]">{title.runtime}</span>
+              </>)}
+              {title.rating > 0 && (<>
+                <span class="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
+                <span class="flex items-center gap-1 text-yellow-400 font-semibold">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                  {title.rating.toFixed(1)}
+                </span>
+              </>)}
+              {title.status && (
+                <span class="px-2.5 py-1 rounded text-xs font-medium bg-white/10 text-[var(--color-text-secondary)]">
+                  {title.status}
                 </span>
               )}
-              <span class="px-2.5 py-1 rounded text-xs font-medium bg-white/10 text-[var(--color-text-secondary)]">
-                {title.status}
-              </span>
             </div>
 
             <!-- Seasons & Episodes -->
             <div class="flex flex-wrap items-center gap-4 mb-5">
-              {title.seasons && (
+              {title.seasons ? (
                 <div class="flex items-center gap-2 glass-card rounded-lg px-4 py-2">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                   </svg>
                   <span class="text-white font-medium text-sm">{title.seasons} {title.seasons === 1 ? 'Season' : 'Seasons'}</span>
                 </div>
-              )}
-              {title.episodes && (
+              ) : null}
+              {title.episodes ? (
                 <div class="flex items-center gap-2 glass-card rounded-lg px-4 py-2">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--color-accent-alt)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
                   </svg>
                   <span class="text-white font-medium text-sm">{title.episodes} Episodes</span>
                 </div>
-              )}
+              ) : null}
             </div>
 
             <!-- Genre Chips -->
@@ -207,11 +195,13 @@ const schemaData = [
               ))}
             </div>
 
-            <!-- Director / Creator -->
-            <p class="text-[var(--color-text-secondary)] mb-4">
-              <span class="text-[var(--color-text-muted)]">{isAnime ? 'Director' : 'Created by'}</span>
-              <span class="text-white font-medium ml-1">{title.director}</span>
-            </p>
+            <!-- Creator -->
+            {title.director && (
+              <p class="text-[var(--color-text-secondary)] mb-4">
+                <span class="text-[var(--color-text-muted)]">{isAnime ? 'Director' : 'Created by'}</span>
+                <span class="text-white font-medium ml-1">{title.director}</span>
+              </p>
+            )}
 
             <!-- Overview -->
             <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-3xl text-base md:text-lg mb-6">
@@ -220,7 +210,7 @@ const schemaData = [
 
             <!-- Action Buttons -->
             <div class="flex items-center gap-3 flex-wrap">
-              <a href={`/watch/${title.slug}/`} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
+              <a href={playerUrl} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 Watch Now
               </a>
@@ -238,34 +228,22 @@ const schemaData = [
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-16">
 
       <!-- Cast Section -->
-      <section>
-        <h2 class="section-title mb-6">Cast</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="cast-grid">
-          {castActors.map(member => (
-            <div class="glass-card rounded-xl p-4 text-center" data-person-name={member.name}>
-              <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-[var(--color-primary)]/30 to-[var(--color-accent)]/30 flex items-center justify-center overflow-hidden person-avatar">
-                <span class="text-xl font-bold text-white/60 person-initial">{member.name.charAt(0)}</span>
+      {title.cast.length > 0 && (
+        <section>
+          <h2 class="section-title mb-6">Cast</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="cast-grid">
+            {title.cast.map(member => (
+              <div class="glass-card rounded-xl p-4 text-center" data-person-name={member.name}>
+                <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-[var(--color-primary)]/30 to-[var(--color-accent)]/30 flex items-center justify-center overflow-hidden person-avatar">
+                  <span class="text-xl font-bold text-white/60 person-initial">{member.name.charAt(0)}</span>
+                </div>
+                <p class="text-sm font-semibold text-white truncate">{member.name}</p>
+                <p class="text-xs text-[var(--color-text-muted)] truncate mt-1">{member.role}</p>
               </div>
-              <p class="text-sm font-semibold text-white truncate">{member.name}</p>
-              <p class="text-xs text-[var(--color-text-muted)] truncate mt-1">{member.role}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <!-- Director Section -->
-      <section>
-        <h2 class="section-title mb-4">{isAnime ? 'Director' : 'Creator'}</h2>
-        <div class="glass-card rounded-xl p-5 inline-flex items-center gap-4" data-person-name={title.director}>
-          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--color-accent)]/30 to-[var(--color-primary)]/30 flex items-center justify-center shrink-0 overflow-hidden person-avatar">
-            <span class="text-xl font-bold text-white/60 person-initial">{title.director.charAt(0)}</span>
+            ))}
           </div>
-          <div>
-            <p class="font-semibold text-white">{title.director}</p>
-            <p class="text-xs text-[var(--color-text-muted)]">{isAnime ? 'Director' : 'Creator'}</p>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <!-- Show Details Table -->
       <section>
@@ -275,24 +253,26 @@ const schemaData = [
             <tbody>
               <tr class="border-b border-[var(--color-border)]">
                 <td class="px-5 py-3 text-[var(--color-text-muted)] w-40">First Aired</td>
-                <td class="px-5 py-3">{title.releaseDate} &middot; <a href={`/year/${title.year}/`} class="text-[var(--color-primary)] hover:underline">{title.year}</a></td>
+                <td class="px-5 py-3">{title.releaseDate || title.year} &middot; <a href={`/year/${title.year}/`} class="text-[var(--color-primary)] hover:underline">{title.year}</a></td>
               </tr>
-              {title.seasons && (
+              {title.seasons ? (
                 <tr class="border-b border-[var(--color-border)]">
                   <td class="px-5 py-3 text-[var(--color-text-muted)]">Seasons</td>
                   <td class="px-5 py-3">{title.seasons}</td>
                 </tr>
-              )}
-              {title.episodes && (
+              ) : null}
+              {title.episodes ? (
                 <tr class="border-b border-[var(--color-border)]">
                   <td class="px-5 py-3 text-[var(--color-text-muted)]">Episodes</td>
                   <td class="px-5 py-3">{title.episodes}</td>
                 </tr>
+              ) : null}
+              {title.runtime && (
+                <tr class="border-b border-[var(--color-border)]">
+                  <td class="px-5 py-3 text-[var(--color-text-muted)]">Runtime</td>
+                  <td class="px-5 py-3">{title.runtime}</td>
+                </tr>
               )}
-              <tr class="border-b border-[var(--color-border)]">
-                <td class="px-5 py-3 text-[var(--color-text-muted)]">Runtime</td>
-                <td class="px-5 py-3">{title.runtime}</td>
-              </tr>
               <tr class="border-b border-[var(--color-border)]">
                 <td class="px-5 py-3 text-[var(--color-text-muted)]">Rating</td>
                 <td class="px-5 py-3">{title.rating}/10</td>
@@ -307,47 +287,15 @@ const schemaData = [
                   </div>
                 </td>
               </tr>
-              <tr class="border-b border-[var(--color-border)]">
-                <td class="px-5 py-3 text-[var(--color-text-muted)]">Languages</td>
-                <td class="px-5 py-3">
-                  <div class="flex flex-wrap gap-2">
-                    {title.languages.map(l => (
-                      <a href={`/language/${slugify(l)}/`} class="text-[var(--color-primary)] hover:underline">{l}</a>
-                    ))}
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td class="px-5 py-3 text-[var(--color-text-muted)]">Status</td>
-                <td class="px-5 py-3">{title.status}</td>
-              </tr>
+              {title.languages.length > 0 && (
+                <tr>
+                  <td class="px-5 py-3 text-[var(--color-text-muted)]">Languages</td>
+                  <td class="px-5 py-3">{title.languages.join(', ')}</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
-      </section>
-
-      <!-- Where to Watch -->
-      <section>
-        <h2 class="section-title mb-6">Where to Watch</h2>
-        <div class="flex flex-wrap gap-3">
-          {title.platforms.map(platform => (
-            <a
-              href={`/platform/${platform.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}/`}
-              class="glass-card rounded-xl px-6 py-4 flex items-center gap-3 hover:border-[var(--color-primary)] transition-colors duration-200"
-            >
-              <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-accent)]/40 to-[var(--color-accent-alt)]/40 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <span class="text-white font-medium">{platform}</span>
-            </a>
-          ))}
-        </div>
-        <p class="mt-4 text-xs text-[var(--color-text-muted)]">
-          Availability may vary by region. Check each platform for current streaming options.
-        </p>
       </section>
 
       <!-- Available Now (live official-platform data) -->

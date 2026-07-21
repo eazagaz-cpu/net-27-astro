@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { fetchCached } from '../lib/clientCache';
 
 interface Top10Item {
   id: number;
@@ -20,11 +21,8 @@ const COUNTRY_NAMES: Record<string, string> = {
 
 async function detectCountry(): Promise<string> {
   try {
-    const res = await fetch('/api/geo');
-    if (res.ok) {
-      const data = await res.json();
-      if (data.country && data.country !== 'XX') return data.country;
-    }
+    const data = await fetchCached<{ country?: string }>('nm:geo', '/api/geo', 60 * 60 * 1000);
+    if (data.country && data.country !== 'XX') return data.country;
   } catch {}
   return 'US';
 }
@@ -77,9 +75,10 @@ export default function Top10Rail({ mediaType = 'movie' }: { mediaType?: 'movie'
   useEffect(() => {
     const lang = typeof window !== 'undefined' ? localStorage.getItem('netmirror_lang') || 'en' : 'en';
     const langParam = lang !== 'en' ? `&lang=${lang}` : '';
+    const catType = mediaType === 'tv' ? 'tv-popular' : 'popular';
     Promise.all([
       detectCountry(),
-      fetch(`/api/tmdb/category?type=${mediaType === 'tv' ? 'tv-popular' : 'popular'}${langParam}`).then(r => r.json()),
+      fetchCached<{ items?: Top10Item[] }>(`nm:cat:${catType}:${lang}`, `/api/tmdb/category?type=${catType}${langParam}`),
     ])
       .then(([cc, data]) => {
         setCountry(cc);

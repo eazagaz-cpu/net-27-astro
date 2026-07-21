@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { fetchCached } from '../lib/clientCache';
 
 interface GridItem {
   id: number;
@@ -28,8 +29,11 @@ export default function DynamicGrid({ category, title }: Props) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`/api/tmdb/category?type=${encodeURIComponent(category)}&pages=3`)
-      .then(r => r.json())
+    setLoading(true);
+    fetchCached<{ items?: GridItem[] }>(
+      `nm:cat:${category}:p3`,
+      `/api/tmdb/category?type=${encodeURIComponent(category)}&pages=3`
+    )
       .then(data => {
         setItems(data.items || []);
         setLoading(false);

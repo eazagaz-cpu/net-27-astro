@@ -8,50 +8,36 @@ import Schema from '../../components/Schema.astro';
 import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
-import { sampleTitles, getRelatedTitles, genres } from '../../data/sampleTitles';
-import { actors, directors } from '../../data/entities';
+import { getRealTitlesByType, getRelatedRealTitles } from '../../lib/realTitles';
+import { genres } from '../../data/sampleTitles';
 import { breadcrumbSchema, movieSchema, faqSchema, watchActionSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
-import { getPosterUrl, getBackdropUrl } from '../../lib/media';
 import { APK_UNIVERSAL_URL } from '../../lib/constants';
 
-function slugify(name: string): string {
-  return name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
-}
-
 export const getStaticPaths = (() => {
-  return sampleTitles
-    .filter(t => t.type === 'movie')
-    .map(title => ({
-      params: { slug: title.slug },
-      props: { title },
-    }));
+  return getRealTitlesByType('movie').map(title => ({
+    params: { slug: title.slug },
+    props: { title },
+  }));
 }) satisfies GetStaticPaths;
 
 const { title } = Astro.props;
-const related = getRelatedTitles(title);
+const related = getRelatedRealTitles(title);
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Movies', href: '/movies/' },
   { label: title.title, href: `/movies/${title.slug}/` },
 ];
 
-const directorEntry = directors.find(d => d.name === title.director);
-const castActors = title.cast.map(c => ({
-  ...c,
-  actor: actors.find(a => a.name === c.name),
-}));
 const titleGenres = genres.filter(g => title.genres.includes(g.name));
 
 const faqs = [
-  { question: `Where can I watch ${title.title}?`, answer: `${title.title} is available for streaming on ${title.platforms.join(', ')}. Availability may vary by region, so check your local platform for the most current options.` },
+  { question: `Where can I watch ${title.title}?`, answer: `Check the "Available Now" section on this page for official streaming platforms carrying ${title.title} in your region.` },
   { question: `What is ${title.title} about?`, answer: title.overview },
-  { question: `Who stars in ${title.title}?`, answer: `The cast of ${title.title} includes ${title.cast.map(c => `${c.name} as ${c.role}`).join(', ')}.` },
-  { question: `Who directed ${title.title}?`, answer: `${title.title} was directed by ${title.director}. ${directorEntry ? directorEntry.bio : ''}` },
-  { question: `What is the rating of ${title.title}?`, answer: `${title.title} has a rating of ${title.rating}/10 based on viewer and critic reviews. The film was released on ${title.releaseDate} and runs for ${title.runtime}.` },
-  { question: `What genre is ${title.title}?`, answer: `${title.title} is categorized as ${title.genres.join(', ')}. It was released in ${title.year} and is available in ${title.languages.join(', ')}.` },
-  { question: `Is ${title.title} available in ${title.quality}?`, answer: `Yes, ${title.title} is available in ${title.quality} quality on supported streaming platforms. Check your preferred platform for resolution options.` },
-  { question: `What language is ${title.title} in?`, answer: `${title.title} is available in ${title.languages.join(' and ')}. Subtitle availability varies by streaming platform.` },
+  ...(title.cast.length > 0 ? [{ question: `Who stars in ${title.title}?`, answer: `The cast of ${title.title} includes ${title.cast.slice(0, 5).map(c => c.role ? `${c.name} as ${c.role}` : c.name).join(', ')}.` }] : []),
+  ...(title.director ? [{ question: `Who directed ${title.title}?`, answer: `${title.title} was directed by ${title.director}.` }] : []),
+  { question: `What is the rating of ${title.title}?`, answer: `${title.title} has a rating of ${title.rating}/10 on TMDB, released on ${title.releaseDate || title.year}.` },
+  { question: `What genre is ${title.title}?`, answer: `${title.title} is categorized as ${title.genres.join(', ') || 'a feature film'}, released in ${title.year}.` },
 ];
 
 const placeholderGradients = [
@@ -78,17 +64,17 @@ const posterGradients = [
 ];
 const posterGradient = posterGradients[title.title.length % posterGradients.length];
 
-const watchUrl = `${SITE_URL}/watch/${title.slug}/`;
+const playerUrl = `/player/?type=movie&id=${title.tmdbId}`;
+const watchUrl = `${SITE_URL}${playerUrl}`;
 const schemaData = [
   movieSchema({
     title: title.title,
     overview: title.overview,
-    poster_path: title.poster,
+    poster_path: title.posterUrl,
     release_date: title.releaseDate,
     director: title.director,
     genre: title.genres,
     vote_average: title.rating,
-    vote_count: 1000,
   }),
   watchActionSchema(watchUrl, title.title, 'Movie'),
   breadcrumbSchema(breadcrumbs),
@@ -112,10 +98,10 @@ const schemaData = [
     <!-- Backdrop Hero Area -->
     <section class="relative w-full min-h-[60vh] md:min-h-[70vh] overflow-hidden">
       <!-- Backdrop Image -->
-      {getBackdropUrl(title.backdrop) && (
-        <img src={getBackdropUrl(title.backdrop)} alt="" class="absolute inset-0 w-full h-full object-cover" loading="eager" />
+      {title.backdropUrl && (
+        <img src={title.backdropUrl} alt="" class="absolute inset-0 w-full h-full object-cover" loading="eager" />
       )}
-      <div class={`absolute inset-0 bg-gradient-to-br ${gradient} ${getBackdropUrl(title.backdrop) ? 'opacity-40' : ''}`}></div>
+      <div class={`absolute inset-0 bg-gradient-to-br ${gradient} ${title.backdropUrl ? 'opacity-40' : ''}`}></div>
 
       <!-- Dark Overlay Gradients -->
       <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg)] via-[var(--color-bg)]/60 to-transparent"></div>
@@ -129,10 +115,10 @@ const schemaData = [
           <!-- Poster -->
           <div class="flex-shrink-0 w-48 md:w-64">
             <div class={`aspect-[2/3] rounded-xl overflow-hidden shadow-2xl bg-gradient-to-br ${posterGradient} relative`}>
-              {getPosterUrl(title.poster) ? (
-                <img src={getPosterUrl(title.poster)} alt={`${title.title} poster`} class="w-full h-full object-cover" loading="eager" width="256" height="384" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              {title.posterUrl ? (
+                <img src={title.posterUrl} alt={`${title.title} poster`} class="w-full h-full object-cover" loading="eager" width="256" height="384" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
               ) : null}
-              <div class="w-full h-full flex items-center justify-center absolute inset-0" style={getPosterUrl(title.poster) ? 'display:none' : ''}>
+              <div class="w-full h-full flex items-center justify-center absolute inset-0" style={title.posterUrl ? 'display:none' : ''}>
                 <span class="text-lg font-bold text-white/50 text-center px-3 leading-tight">{title.title}</span>
               </div>
             </div>
@@ -147,23 +133,24 @@ const schemaData = [
             <!-- Meta Row -->
             <div class="flex flex-wrap items-center gap-3 mb-4">
               <span class="text-[var(--color-text-secondary)] font-medium">{title.year}</span>
-              <span class="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
-              <span class="text-[var(--color-text-secondary)]">{title.runtime}</span>
-              <span class="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
-              <span class="flex items-center gap-1 text-yellow-400 font-semibold">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-                {title.rating.toFixed(1)}
-              </span>
-              {title.quality && (
-                <span class="px-2.5 py-1 rounded text-xs font-bold uppercase tracking-wider bg-[var(--color-primary)] text-white">
-                  {title.quality}
+              {title.runtime && (<>
+                <span class="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
+                <span class="text-[var(--color-text-secondary)]">{title.runtime}</span>
+              </>)}
+              {title.rating > 0 && (<>
+                <span class="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
+                <span class="flex items-center gap-1 text-yellow-400 font-semibold">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                  {title.rating.toFixed(1)}
+                </span>
+              </>)}
+              {title.status && (
+                <span class="px-2.5 py-1 rounded text-xs font-medium bg-white/10 text-[var(--color-text-secondary)]">
+                  {title.status}
                 </span>
               )}
-              <span class="px-2.5 py-1 rounded text-xs font-medium bg-white/10 text-[var(--color-text-secondary)]">
-                {title.status}
-              </span>
             </div>
 
             <!-- Genre Chips -->
@@ -176,10 +163,12 @@ const schemaData = [
             </div>
 
             <!-- Director -->
-            <p class="text-[var(--color-text-secondary)] mb-4">
-              <span class="text-[var(--color-text-muted)]">Directed by</span>
-              <span class="text-white font-medium ml-1">{title.director}</span>
-            </p>
+            {title.director && (
+              <p class="text-[var(--color-text-secondary)] mb-4">
+                <span class="text-[var(--color-text-muted)]">Directed by</span>
+                <span class="text-white font-medium ml-1">{title.director}</span>
+              </p>
+            )}
 
             <!-- Overview -->
             <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-3xl text-base md:text-lg mb-6">
@@ -188,7 +177,7 @@ const schemaData = [
 
             <!-- Action Buttons -->
             <div class="flex items-center gap-3 flex-wrap">
-              <a href={`/watch/${title.slug}/`} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
+              <a href={playerUrl} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
                 Watch Now
               </a>
@@ -206,34 +195,22 @@ const schemaData = [
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-16">
 
       <!-- Cast Section -->
-      <section>
-        <h2 class="section-title mb-6">Cast</h2>
-        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="cast-grid">
-          {castActors.map(member => (
-            <div class="glass-card rounded-xl p-4 text-center" data-person-name={member.name}>
-              <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-[var(--color-primary)]/30 to-[var(--color-accent)]/30 flex items-center justify-center overflow-hidden person-avatar">
-                <span class="text-xl font-bold text-white/60 person-initial">{member.name.charAt(0)}</span>
+      {title.cast.length > 0 && (
+        <section>
+          <h2 class="section-title mb-6">Cast</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="cast-grid">
+            {title.cast.map(member => (
+              <div class="glass-card rounded-xl p-4 text-center" data-person-name={member.name}>
+                <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-[var(--color-primary)]/30 to-[var(--color-accent)]/30 flex items-center justify-center overflow-hidden person-avatar">
+                  <span class="text-xl font-bold text-white/60 person-initial">{member.name.charAt(0)}</span>
+                </div>
+                <p class="text-sm font-semibold text-white truncate">{member.name}</p>
+                <p class="text-xs text-[var(--color-text-muted)] truncate mt-1">{member.role}</p>
               </div>
-              <p class="text-sm font-semibold text-white truncate">{member.name}</p>
-              <p class="text-xs text-[var(--color-text-muted)] truncate mt-1">{member.role}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <!-- Director Section -->
-      <section>
-        <h2 class="section-title mb-4">Director</h2>
-        <div class="glass-card rounded-xl p-5 inline-flex items-center gap-4" data-person-name={title.director}>
-          <div class="w-14 h-14 rounded-full bg-gradient-to-br from-[var(--color-accent)]/30 to-[var(--color-primary)]/30 flex items-center justify-center shrink-0 overflow-hidden person-avatar">
-            <span class="text-xl font-bold text-white/60 person-initial">{title.director.charAt(0)}</span>
+            ))}
           </div>
-          <div>
-            <p class="font-semibold text-white">{title.director}</p>
-            <p class="text-xs text-[var(--color-text-muted)]">Director</p>
-          </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <!-- Movie Details -->
       <section>
@@ -243,12 +220,14 @@ const schemaData = [
             <tbody>
               <tr class="border-b border-[var(--color-border)]">
                 <td class="px-5 py-3 text-[var(--color-text-muted)] w-40">Release Date</td>
-                <td class="px-5 py-3">{title.releaseDate} &middot; <a href={`/year/${title.year}/`} class="text-[var(--color-primary)] hover:underline">{title.year}</a></td>
+                <td class="px-5 py-3">{title.releaseDate || title.year} &middot; <a href={`/year/${title.year}/`} class="text-[var(--color-primary)] hover:underline">{title.year}</a></td>
               </tr>
-              <tr class="border-b border-[var(--color-border)]">
-                <td class="px-5 py-3 text-[var(--color-text-muted)]">Runtime</td>
-                <td class="px-5 py-3">{title.runtime}</td>
-              </tr>
+              {title.runtime && (
+                <tr class="border-b border-[var(--color-border)]">
+                  <td class="px-5 py-3 text-[var(--color-text-muted)]">Runtime</td>
+                  <td class="px-5 py-3">{title.runtime}</td>
+                </tr>
+              )}
               <tr class="border-b border-[var(--color-border)]">
                 <td class="px-5 py-3 text-[var(--color-text-muted)]">Rating</td>
                 <td class="px-5 py-3">{title.rating}/10</td>
@@ -263,47 +242,15 @@ const schemaData = [
                   </div>
                 </td>
               </tr>
-              <tr class="border-b border-[var(--color-border)]">
-                <td class="px-5 py-3 text-[var(--color-text-muted)]">Languages</td>
-                <td class="px-5 py-3">
-                  <div class="flex flex-wrap gap-2">
-                    {title.languages.map(l => (
-                      <a href={`/language/${slugify(l)}/`} class="text-[var(--color-primary)] hover:underline">{l}</a>
-                    ))}
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td class="px-5 py-3 text-[var(--color-text-muted)]">Quality</td>
-                <td class="px-5 py-3">{title.quality}</td>
-              </tr>
+              {title.languages.length > 0 && (
+                <tr>
+                  <td class="px-5 py-3 text-[var(--color-text-muted)]">Languages</td>
+                  <td class="px-5 py-3">{title.languages.join(', ')}</td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>
-      </section>
-
-      <!-- Where to Watch -->
-      <section>
-        <h2 class="section-title mb-6">Where to Watch</h2>
-        <div class="flex flex-wrap gap-3">
-          {title.platforms.map(platform => (
-            <a
-              href={`/platform/${platform.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}/`}
-              class="glass-card rounded-xl px-6 py-4 flex items-center gap-3 hover:border-[var(--color-primary)] transition-colors duration-200"
-            >
-              <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-[var(--color-accent)]/40 to-[var(--color-accent-alt)]/40 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-                  <path stroke-linecap="round" stroke-linejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <span class="text-white font-medium">{platform}</span>
-            </a>
-          ))}
-        </div>
-        <p class="mt-4 text-xs text-[var(--color-text-muted)]">
-          Availability may vary by region. Check each platform for current streaming options.
-        </p>
       </section>
 
       <!-- Available Now (live official-platform data) -->

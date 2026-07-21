@@ -57,19 +57,16 @@ export interface BlogPost {
 export interface Genre {
   slug: string;
   name: string;
-  count: number;
 }
 
 export interface Language {
   slug: string;
   name: string;
-  count: number;
 }
 
 export interface Platform {
   slug: string;
   name: string;
-  count: number;
 }
 
 export interface SEOProps {
@@ -91,44 +88,13 @@ export interface FAQ {
   answer: string;
 }
 
-export interface Actor {
-  slug: string;
-  name: string;
-  bio: string;
-  birthYear: number;
-  nationality: string;
-  knownFor: string[];
-  titleIds: string[];
-}
-
-export interface Director {
-  slug: string;
-  name: string;
-  bio: string;
-  birthYear: number;
-  nationality: string;
-  style: string;
-  titleIds: string[];
-}
-
 export interface Country {
   slug: string;
   name: string;
   description: string;
-  count: number;
 }
 
 export interface Year {
   year: number;
   slug: string;
-  count: number;
-}
-
-export interface Studio {
-  slug: string;
-  name: string;
-  description: string;
-  founded: number;
-  headquarters: string;
-  titleIds: string[];
 }

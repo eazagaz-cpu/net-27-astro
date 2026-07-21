@@ -8,9 +8,9 @@ import Schema from '../../components/Schema.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
 import DynamicGrid from '../../components/DynamicGrid.tsx';
-import { genres, languages, platforms, getTitlesByGenre } from '../../data/sampleTitles';
+import { genres, languages, platforms } from '../../data/sampleTitles';
 import { getAllBlogPosts } from '../../data/blogPosts';
-import { breadcrumbSchema, faqSchema, itemListSchema } from '../../lib/schema';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 export const getStaticPaths = (() => {
@@ -21,10 +21,6 @@ export const getStaticPaths = (() => {
 }) satisfies GetStaticPaths;
 
 const { genre } = Astro.props;
-const titles = getTitlesByGenre(genre.name);
-const movies = titles.filter(t => t.type === 'movie');
-const shows = titles.filter(t => t.type === 'show');
-const anime = titles.filter(t => t.type === 'anime');
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Genres', href: '/' },
@@ -53,26 +49,21 @@ const genreDescriptions: Record<string, string> = {
 const description = genreDescriptions[genre.name] || `Explore the best ${genre.name.toLowerCase()} movies, TV shows, and anime available for streaming. Discover critically acclaimed titles and hidden gems in this genre across all major platforms.`;
 
 const faqs = [
-  { question: `What are the best ${genre.name} movies to watch right now?`, answer: `Some of the highest-rated ${genre.name.toLowerCase()} movies in our collection include ${movies.slice(0, 3).map(t => t.title).join(', ') || 'various critically acclaimed titles'}. We regularly update our database with new releases and trending titles.` },
   { question: `Where can I stream ${genre.name} movies and shows?`, answer: `${genre.name} titles are available across multiple streaming platforms including Netflix, Prime Video, Disney+, Hulu, Apple TV+, and more. Each title page shows specific platform availability so you can find where to watch legally.` },
   { question: `What makes a great ${genre.name.toLowerCase()} movie?`, answer: `Great ${genre.name.toLowerCase()} titles combine strong storytelling, compelling characters, and expert craftsmanship. The best entries in this genre push boundaries while honoring the conventions that fans love, creating experiences that resonate long after the credits roll.` },
-  { question: `How many ${genre.name} titles does Net27 have?`, answer: `We currently have ${titles.length} ${genre.name.toLowerCase()} titles in our database, including ${movies.length} movies, ${shows.length} TV shows, and ${anime.length} anime series. Our collection is continuously growing.` },
-  { question: `Are there ${genre.name.toLowerCase()} anime series available?`, answer: anime.length > 0 ? `Yes! We have ${anime.length} ${genre.name.toLowerCase()} anime titles including ${anime.map(t => t.title).join(', ')}. Anime offers unique perspectives on the ${genre.name.toLowerCase()} genre with distinctive animation styles and storytelling approaches.` : `While our current ${genre.name.toLowerCase()} collection primarily features movies and TV shows, we are continuously adding anime titles. Check back regularly for new additions.` },
+  { question: `Is the ${genre.name.toLowerCase()} collection updated regularly?`, answer: `Yes, our ${genre.name.toLowerCase()} catalog is refreshed regularly with new releases and trending titles across movies, TV shows, and anime.` },
+  { question: `Are there ${genre.name.toLowerCase()} anime series available?`, answer: `Yes — anime offers unique perspectives on the ${genre.name.toLowerCase()} genre with distinctive animation styles and storytelling approaches. Browse the collection above to see current ${genre.name.toLowerCase()} anime titles.` },
 ];
-const genreListItems = titles.slice(0, 30).map(t => ({
-  name: t.title,
-  url: `${SITE_URL}/${t.type === 'movie' ? 'movies' : 'shows'}/${t.slug}/`,
-}));
 ---
 
 <BaseLayout>
   <SEOHead
     slot="head"
     title={`Best ${genre.name} Movies & Shows to Watch Free Online (${new Date().getFullYear()})`}
-    description={`Discover ${titles.length} ${genre.name.toLowerCase()} movies, TV shows, and anime. Watch the best ${genre.name.toLowerCase()} titles free online on NetMirror — no sign-up required.`}
+    description={`Discover ${genre.name.toLowerCase()} movies, TV shows, and anime. Watch the best ${genre.name.toLowerCase()} titles free online on NetMirror — no sign-up required.`}
     canonical={`${SITE_URL}/genre/${genre.slug}/`}
   />
-  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs), itemListSchema(`Best ${genre.name} Movies & Shows`, `${SITE_URL}/genre/${genre.slug}/`, genreListItems)]} />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
 
   <Header />
 
@@ -86,15 +77,8 @@ const genreListItems = titles.slice(0, 30).map(t => ({
           <span class="gradient-text">{genre.name}</span> Movies & Shows
         </h1>
         <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">
-          Explore {titles.length} {genre.name.toLowerCase()} titles across movies, TV shows, and anime. Find where to watch them on your favorite streaming platforms.
+          Explore {genre.name.toLowerCase()} titles across movies, TV shows, and anime. Find where to watch them on your favorite streaming platforms.
         </p>
-        <div class="mt-4 flex flex-wrap gap-3 text-sm text-[var(--color-text-muted)]">
-          <span>{movies.length} Movies</span>
-          <span>&middot;</span>
-          <span>{shows.length} TV Shows</span>
-          <span>&middot;</span>
-          <span>{anime.length} Anime</span>
-        </div>
       </div>
     </section>
 
@@ -109,20 +93,11 @@ const genreListItems = titles.slice(0, 30).map(t => ({
         <DynamicGrid client:idle category={genre.slug} title={genre.name} />
       </section>
 
-      {titles.length === 0 && (
-        <section class="glass-card rounded-xl p-12 text-center hidden">
-          <p class="text-[var(--color-text-muted)] text-lg">Loading titles...</p>
-        </section>
-      )}
-
       <section>
         <h2 class="section-title mb-6">Explore Other Genres</h2>
         <div class="flex flex-wrap gap-3">
           {relatedGenres.map(g => (
-            <a href={`/genre/${g.slug}/`} class="chip">
-              {g.name}
-              <span class="ml-1 text-[var(--color-text-muted)]">({g.count})</span>
-            </a>
+            <a href={`/genre/${g.slug}/`} class="chip">{g.name}</a>
           ))}
         </div>
       </section>

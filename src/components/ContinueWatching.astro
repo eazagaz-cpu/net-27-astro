@@ -40,7 +40,7 @@
     section.style.display = 'block';
 
     rail.innerHTML = list.map((item: any, i: number) => {
-      const href = `/watch/${item.slug || ''}?type=${item.type}&id=${item.id}`;
+      const href = `/player/?type=${item.type}&id=${item.id}`;
       const grad = FALLBACK_GRADIENTS[i % FALLBACK_GRADIENTS.length];
       const progress = item.progress || 0;
       const pct = Math.min(Math.max(progress, 0), 100);

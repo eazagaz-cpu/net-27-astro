@@ -8,9 +8,9 @@ import Schema from '../../components/Schema.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
 import DynamicGrid from '../../components/DynamicGrid.tsx';
-import { platforms, genres, getTitlesByPlatform } from '../../data/sampleTitles';
+import { platforms, genres } from '../../data/sampleTitles';
 import { getAllBlogPosts } from '../../data/blogPosts';
-import { breadcrumbSchema, faqSchema, itemListSchema } from '../../lib/schema';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 export const getStaticPaths = (() => {
@@ -21,10 +21,6 @@ export const getStaticPaths = (() => {
 }) satisfies GetStaticPaths;
 
 const { platform } = Astro.props;
-const titles = getTitlesByPlatform(platform.name);
-const movies = titles.filter(t => t.type === 'movie');
-const shows = titles.filter(t => t.type === 'show');
-const anime = titles.filter(t => t.type === 'anime');
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Platforms', href: '/' },
@@ -60,7 +56,7 @@ const platformColors: Record<string, string> = {
 const heroGradient = platformColors[platform.name] || 'from-[var(--color-primary)]/10 to-[var(--color-accent)]/10';
 
 const faqs = [
-  { question: `What movies and shows are on ${platform.name}?`, answer: `${platform.name} currently offers ${titles.length} titles in our database, including ${movies.length} movies, ${shows.length} TV shows, and ${anime.length} anime. Browse the full catalog above to find specific titles.` },
+  { question: `What movies and shows are on ${platform.name}?`, answer: `${platform.name} offers a diverse catalog of movies, TV shows, and anime. Browse the full catalog above to find specific titles.` },
   { question: `Is ${platform.name} worth subscribing to?`, answer: `${platform.name} offers a diverse library of content. Whether it's worth it depends on your viewing preferences. Check the titles listed above to see if the available content matches your interests before subscribing.` },
   { question: `How much does ${platform.name} cost?`, answer: `Pricing varies by region and plan tier. Visit the official ${platform.name} website for the most current subscription pricing and plan options in your area.` },
   { question: `Can I watch ${platform.name} on my TV?`, answer: `${platform.name} is available on most smart TVs, streaming devices (Roku, Fire TV, Apple TV, Chromecast), gaming consoles, mobile devices, and web browsers. Check the official app store for your device.` },
@@ -72,10 +68,10 @@ const faqs = [
   <SEOHead
     slot="head"
     title={`${platform.name} - Best Movies & Shows to Stream (${new Date().getFullYear()})`}
-    description={`Browse ${titles.length} movies, TV shows, and anime on ${platform.name}. Discover what to watch and explore the full ${platform.name} catalog.`}
+    description={`Browse movies, TV shows, and anime on ${platform.name}. Discover what to watch and explore the full ${platform.name} catalog.`}
     canonical={`${SITE_URL}/platform/${platform.slug}/`}
   />
-  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs), itemListSchema(`Best ${platform.name} Movies & Shows`, `${SITE_URL}/platform/${platform.slug}/`, titles.slice(0, 30).map(t => ({ name: t.title, url: `${SITE_URL}/${t.type === 'movie' ? 'movies' : 'shows'}/${t.slug}/` })))]} />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
 
   <Header />
 
@@ -97,15 +93,8 @@ const faqs = [
               <span class="gradient-text">{platform.name}</span>
             </h1>
             <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">
-              Explore {titles.length} movies, TV shows, and anime available on {platform.name}.
+              Explore movies, TV shows, and anime available on {platform.name}.
             </p>
-            <div class="mt-3 flex flex-wrap gap-3 text-sm text-[var(--color-text-muted)]">
-              <span>{movies.length} Movies</span>
-              <span>&middot;</span>
-              <span>{shows.length} TV Shows</span>
-              <span>&middot;</span>
-              <span>{anime.length} Anime</span>
-            </div>
           </div>
         </div>
       </div>
@@ -134,7 +123,6 @@ const faqs = [
               </div>
               <div>
                 <span class="text-white font-medium text-sm">{p.name}</span>
-                <span class="block text-xs text-[var(--color-text-muted)]">{p.count} titles</span>
               </div>
             </a>
           ))}

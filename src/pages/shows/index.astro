@@ -7,11 +7,12 @@ import Schema from '../../components/Schema.astro';
 import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import FAQSection from '../../components/FAQSection.astro';
-import { getTitlesByType, genres, languages, platforms } from '../../data/sampleTitles';
+import { genres, languages, platforms } from '../../data/sampleTitles';
+import { getRealTitlesByType } from '../../lib/realTitles';
 import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
-const shows = getTitlesByType('show');
+const shows = getRealTitlesByType('show');
 const topRated = [...shows].sort((a, b) => b.rating - a.rating);
 const breadcrumbs = [
   { label: 'Home', href: '/' },

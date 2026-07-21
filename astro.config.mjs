@@ -15,10 +15,6 @@ export default defineConfig({
     sitemap({
       entryLimit: 50000,
       filter: (page) =>
-        !page.includes('/actor/') &&
-        !page.includes('/director/') &&
-        !page.includes('/studio/') &&
-        !page.includes('/watch/') &&
         !page.includes('/player/') &&
         !page.includes('/login/') &&
         !page.includes('/help/'),

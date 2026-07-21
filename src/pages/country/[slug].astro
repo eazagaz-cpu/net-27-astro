@@ -5,9 +5,9 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import SEOHead from '../../components/SEOHead.astro';
 import Schema from '../../components/Schema.astro';
-import TitleCard from '../../components/TitleCard.astro';
 import Breadcrumbs from '../../components/Breadcrumbs.astro';
-import { countries, getTitlesByCountry } from '../../data/entities';
+import DynamicGrid from '../../components/DynamicGrid.tsx';
+import { countries } from '../../data/entities';
 import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
@@ -19,25 +19,16 @@ export const getStaticPaths = (() => {
 }) satisfies GetStaticPaths;
 
 const { country } = Astro.props;
-const titles = getTitlesByCountry(country);
-
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Countries', href: '/' },
   { label: country.name, href: `/country/${country.slug}/` },
 ];
-
 const otherCountries = countries.filter(c => c.slug !== country.slug);
 
-// Collect unique languages from the country's titles
-const countryLanguages = [...new Set(titles.flatMap(t => t.languages))];
-
 const faqs = [
-  { question: `What are the best movies and shows from ${country.name}?`, answer: `Our collection includes ${titles.length} titles connected to ${country.name}, including ${titles.slice(0, 3).map(t => t.title).join(', ')}. Explore the full list below to find your next favorite.` },
-  { question: `How many titles from ${country.name} are available?`, answer: `We currently have ${titles.length} titles from ${country.name} in our database, spanning movies, TV shows, and anime across multiple genres and streaming platforms.` },
-  { question: `What is ${country.name} known for in cinema?`, answer: `${country.description} Browse our collection to discover the best of ${country.name}'s film and television output.` },
+  { question: `What is ${country.name} known for in cinema?`, answer: `${country.description}` },
   { question: `Where can I watch movies from ${country.name}?`, answer: `Titles from ${country.name} are available across streaming platforms including Netflix, Prime Video, Disney+, Crunchyroll, and more. Check each title page for specific availability.` },
-  { question: `What languages are ${country.name}'s titles available in?`, answer: `Titles from ${country.name} in our database are available in ${countryLanguages.join(', ')}. Many titles include subtitles and dubbing options on their respective streaming platforms.` },
 ];
 ---
 
@@ -45,7 +36,7 @@ const faqs = [
   <SEOHead
     slot="head"
     title={`Movies & Shows from ${country.name} - Stream Online`}
-    description={`Discover the best movies, TV shows, and anime from ${country.name}. Browse ${titles.length} titles and find where to watch them legally on streaming platforms.`}
+    description={`Discover the best movies, TV shows, and anime from ${country.name}. Browse titles and find where to watch them legally on streaming platforms.`}
     canonical={`${SITE_URL}/country/${country.slug}/`}
   />
   <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
@@ -66,7 +57,7 @@ const faqs = [
             Movies & Shows from <span class="gradient-text">{country.name}</span>
           </h1>
           <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-2xl">
-            {country.description} Explore {titles.length} titles connected to {country.name}'s vibrant entertainment industry.
+            {country.description}
           </p>
         </div>
       </div>
@@ -74,27 +65,10 @@ const faqs = [
 
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12 space-y-16">
 
-      <!-- Results Count -->
-      <div class="flex items-center justify-between">
-        <p class="text-[var(--color-text-secondary)]">
-          <span class="text-white font-semibold">{titles.length}</span> titles from {country.name}
-        </p>
-      </div>
-
       <!-- Titles Grid -->
-      {titles.length > 0 ? (
-        <section>
-          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
-            {titles.map(title => (
-              <TitleCard title={title} />
-            ))}
-          </div>
-        </section>
-      ) : (
-        <section class="glass-card rounded-xl p-12 text-center">
-          <p class="text-[var(--color-text-muted)] text-lg">No titles found for this country.</p>
-        </section>
-      )}
+      <section>
+        <DynamicGrid client:idle category={`country-${country.slug}`} title={country.name} />
+      </section>
 
       <!-- FAQs -->
       <section>
@@ -114,29 +88,12 @@ const faqs = [
         </div>
       </section>
 
-      <!-- Related Languages -->
-      {countryLanguages.length > 0 && (
-        <section>
-          <h2 class="section-title mb-6">Browse by Language</h2>
-          <div class="flex flex-wrap gap-3">
-            {countryLanguages.map(l => (
-              <a href={`/language/${l.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}/`} class="chip">
-                {l}
-              </a>
-            ))}
-          </div>
-        </section>
-      )}
-
       <!-- Other Countries -->
       <section>
         <h2 class="section-title mb-6">Explore Other Countries</h2>
         <div class="flex flex-wrap gap-3">
           {otherCountries.map(c => (
-            <a href={`/country/${c.slug}/`} class="chip">
-              {c.name}
-              <span class="ml-1 text-[var(--color-text-muted)]">({c.count})</span>
-            </a>
+            <a href={`/country/${c.slug}/`} class="chip">{c.name}</a>
           ))}
         </div>
       </section>

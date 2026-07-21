@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { fetchCached } from '../lib/clientCache';
 
 interface RailItem {
   id: number;
@@ -46,10 +47,13 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
   const scrollRight = useCallback(() => railRef.current?.scrollBy({ left: 600, behavior: 'smooth' }), []);
 
   useEffect(() => {
+    setLoading(true);
     const lang = typeof window !== 'undefined' ? localStorage.getItem('netmirror_lang') || 'en' : 'en';
     const langParam = lang !== 'en' ? `&lang=${lang}` : '';
-    fetch(`/api/tmdb/category?type=${encodeURIComponent(category)}${langParam}`)
-      .then(r => r.json())
+    fetchCached<{ items?: RailItem[] }>(
+      `nm:cat:${category}:${lang}`,
+      `/api/tmdb/category?type=${encodeURIComponent(category)}${langParam}`
+    )
       .then(data => {
         setItems(data.items || []);
         setLoading(false);
