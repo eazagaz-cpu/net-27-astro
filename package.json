@@ -19,6 +19,7 @@
     "validate:performance": "node scripts/validate-performance.mjs",
     "validate:i18n": "node scripts/validate-i18n.mjs",
     "validate:sitemap": "node scripts/validate-sitemap.mjs",
+    "validate:indexing": "node scripts/validate-sitemap.mjs",
     "validate:html-sitemap": "node scripts/validate-html-sitemap.mjs",
     "validate:og": "node scripts/validate-og.mjs"
   },

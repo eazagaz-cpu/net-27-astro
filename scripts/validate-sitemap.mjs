@@ -1,7 +1,30 @@
 import { readFile, access } from 'fs/promises';
+import { existsSync } from 'fs';
+import path from 'path';
 
 const DIST = 'dist';
 let errors = 0;
+let sitemapUrls = [];
+
+const decodeXml = (value) => value
+  .replaceAll('&amp;', '&')
+  .replaceAll('&lt;', '<')
+  .replaceAll('&gt;', '>')
+  .replaceAll('&quot;', '"')
+  .replaceAll('&apos;', "'");
+
+function outputFileForUrl(url) {
+  const pathname = new URL(url).pathname;
+  const relative = decodeURIComponent(pathname).replace(/^\/+/, '');
+  const candidates = pathname === '/'
+    ? [path.join(DIST, 'index.html')]
+    : [
+        path.join(DIST, relative, 'index.html'),
+        path.join(DIST, relative),
+        path.join(DIST, `${relative}.html`),
+      ];
+  return candidates.find((candidate) => existsSync(candidate));
+}
 
 console.log('=== Sitemap Validation ===\n');
 
@@ -64,7 +87,9 @@ try {
 // Validate sitemap-0.xml content
 try {
   const childXml = await readFile(childPath, 'utf-8');
-  const urlCount = (childXml.match(/<loc>/g) || []).length;
+  sitemapUrls = [...childXml.matchAll(/<loc>([^<]+)<\/loc>/g)]
+    .map((match) => decodeXml(match[1].trim()));
+  const urlCount = sitemapUrls.length;
   console.log(`  OK: sitemap-0.xml contains ${urlCount} URLs`);
 
   if (urlCount === 0) {
@@ -77,17 +102,23 @@ try {
     errors++;
   }
 
-  const wrongDomains = [
-    { pattern: 'net27.cc/', label: 'net27.cc (no hyphen)' },
-    { pattern: 'pages.dev', label: 'pages.dev' },
-    { pattern: 'www.net-27.cc', label: 'www.net-27.cc' },
-  ];
-
-  for (const { pattern, label } of wrongDomains) {
-    if (childXml.includes(pattern) && !childXml.includes('net-27.cc')) {
-      console.error(`  ERROR: sitemap-0.xml contains ${label}`);
-      errors++;
+  const invalidHosts = sitemapUrls.filter((url) => {
+    try {
+      const parsed = new URL(url);
+      return parsed.origin !== 'https://net-27.cc' || parsed.search || parsed.hash;
+    } catch {
+      return true;
     }
+  });
+  if (invalidHosts.length > 0) {
+    console.error('  ERROR: sitemap contains non-canonical or invalid URLs:', invalidHosts.slice(0, 5));
+    errors += invalidHosts.length;
+  }
+
+  const duplicateCount = sitemapUrls.length - new Set(sitemapUrls).size;
+  if (duplicateCount > 0) {
+    console.error(`  ERROR: sitemap contains ${duplicateCount} duplicate URLs`);
+    errors += duplicateCount;
   }
 
   if (childXml.includes('/api/')) {
@@ -131,9 +162,81 @@ try {
     console.error('  ERROR: robots.txt contains pages.dev');
     errors++;
   }
+
+  const disallowed = robots
+    .split(/\r?\n/)
+    .map((line) => line.match(/^Disallow:\s*(\S+)/i)?.[1])
+    .filter(Boolean);
+  const blockedSitemapUrls = sitemapUrls.filter((url) => {
+    const pathname = new URL(url).pathname;
+    return disallowed.some((rule) => rule !== '/' && pathname.startsWith(rule));
+  });
+  if (blockedSitemapUrls.length > 0) {
+    console.error('  ERROR: robots.txt blocks sitemap URLs:', blockedSitemapUrls.slice(0, 5));
+    errors += blockedSitemapUrls.length;
+  }
+
+  if (disallowed.some((rule) => rule.startsWith('/player'))) {
+    console.error('  ERROR: /player/ is blocked; crawlers must see its noindex directive');
+    errors++;
+  }
 } catch (e) {
   console.error('  ERROR: Could not read robots.txt:', e.message);
   errors++;
+}
+
+// Every sitemap URL must be a generated, indexable, self-canonical HTML page.
+for (const url of sitemapUrls) {
+  const outputFile = outputFileForUrl(url);
+  if (!outputFile) {
+    console.error(`  ERROR: sitemap URL has no generated output: ${url}`);
+    errors++;
+    continue;
+  }
+
+  const html = await readFile(outputFile, 'utf-8');
+  if (/<meta\b[^>]*name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(html) ||
+      /<meta\b[^>]*content=["'][^"']*noindex[^"']*["'][^>]*name=["']robots["']/i.test(html)) {
+    console.error(`  ERROR: noindex page is present in sitemap: ${url}`);
+    errors++;
+  }
+
+  const canonical = html.match(/<link\b[^>]*rel=["']canonical["'][^>]*href=["']([^"']+)["']/i)?.[1]
+    ?? html.match(/<link\b[^>]*href=["']([^"']+)["'][^>]*rel=["']canonical["']/i)?.[1];
+  if (!canonical) {
+    console.error(`  ERROR: sitemap page has no canonical link: ${url}`);
+    errors++;
+  } else {
+    const normalizedCanonical = new URL(canonical, 'https://net-27.cc').href;
+    const normalizedUrl = new URL(url).href;
+    if (normalizedCanonical !== normalizedUrl) {
+      console.error(`  ERROR: canonical mismatch: ${url} -> ${canonical}`);
+      errors++;
+    }
+  }
+
+  for (const match of html.matchAll(/<script\b[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) {
+    try {
+      const structuredData = JSON.parse(match[1]);
+      const queue = [structuredData];
+      while (queue.length > 0) {
+        const value = queue.pop();
+        if (!value || typeof value !== 'object') continue;
+        if (value['@type'] === 'AggregateRating' && Number(value.ratingCount) <= 0) {
+          console.error(`  ERROR: non-positive AggregateRating.ratingCount on ${url}`);
+          errors++;
+        }
+        queue.push(...Object.values(value));
+      }
+    } catch {
+      console.error(`  ERROR: invalid JSON-LD on ${url}`);
+      errors++;
+    }
+  }
+}
+
+if (sitemapUrls.length > 0) {
+  console.log(`  OK: validated ${sitemapUrls.length} generated indexable, self-canonical pages`);
 }
 
 console.log(`\nErrors: ${errors}`);

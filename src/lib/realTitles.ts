@@ -17,6 +17,7 @@ export interface RealTitle {
   title: string;
   year: number;
   rating: number;
+  voteCount?: number;
   runtime: string;
   posterUrl: string;
   backdropUrl: string;

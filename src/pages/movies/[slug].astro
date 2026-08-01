@@ -75,6 +75,7 @@ const schemaData = [
     director: title.director,
     genre: title.genres,
     vote_average: title.rating,
+    vote_count: title.voteCount,
   }),
   watchActionSchema(watchUrl, title.title, 'Movie'),
   breadcrumbSchema(breadcrumbs),

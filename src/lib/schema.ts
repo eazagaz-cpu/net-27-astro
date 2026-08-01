@@ -87,12 +87,21 @@ export function movieSchema(movie: any): object {
     schema.genre = Array.isArray(movie.genre) ? movie.genre : [movie.genre];
   }
 
-  if (movie.aggregateRating ?? movie.vote_average) {
+  const ratingValue = Number(
+    movie.aggregateRating?.ratingValue ?? movie.vote_average
+  );
+  const ratingCount = Number(
+    movie.aggregateRating?.ratingCount ?? movie.vote_count
+  );
+
+  // Google requires ratingCount to be positive. Omit AggregateRating when the
+  // source has no real vote count instead of publishing fabricated/invalid data.
+  if (ratingValue > 0 && ratingCount > 0) {
     schema.aggregateRating = {
       '@type': 'AggregateRating',
-      ratingValue: movie.aggregateRating?.ratingValue ?? movie.vote_average,
+      ratingValue,
       bestRating: movie.aggregateRating?.bestRating ?? 10,
-      ratingCount: movie.aggregateRating?.ratingCount ?? movie.vote_count ?? 0,
+      ratingCount,
     };
   }
 

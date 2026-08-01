@@ -41,6 +41,14 @@
   Content-Type: application/xml; charset=utf-8
   Cache-Control: no-cache
 
+# These URLs stay crawlable so search engines can see noindex and remove old
+# query variants from their indexes.
+/player/*
+  X-Robots-Tag: noindex, nofollow
+
+/watchlist/*
+  X-Robots-Tag: noindex, nofollow
+
 /llms.txt
   Cache-Control: public, max-age=86400
 

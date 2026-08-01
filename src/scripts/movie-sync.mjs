@@ -55,6 +55,7 @@ function normalize(item) {
     title,
     year,
     rating: Math.round((item.vote_average || 0) * 10) / 10,
+    voteCount: Math.max(0, Number(item.vote_count) || 0),
     posterPath,
     backdropPath,
     posterUrl: posterPath
@@ -226,6 +227,7 @@ async function fetchTitleDetail(type, id) {
     title,
     year,
     rating: Math.round((d.vote_average || 0) * 10) / 10,
+    voteCount: Math.max(0, Number(d.vote_count) || 0),
     runtime,
     posterUrl: d.poster_path ? `${IMG_BASE}/w780${d.poster_path}` : '',
     backdropUrl: d.backdrop_path ? `${IMG_BASE}/original${d.backdrop_path}` : '',

@@ -46,6 +46,9 @@ jobs:
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
 
+      - name: Validate indexing output
+        run: npm run validate:indexing
+
       # ── 6. Deploy dist/ to Cloudflare Pages ──────────────────────────────
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy dist --project-name net-27-astro --branch main --commit-dirty=true

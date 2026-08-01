@@ -28,7 +28,8 @@ export default defineConfig({
       filter: (page) =>
         !page.includes('/player/') &&
         !page.includes('/login/') &&
-        !page.includes('/help/'),
+        !page.includes('/help/') &&
+        !page.includes('/watchlist/'),
     }),
   ],
   image: {
