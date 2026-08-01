@@ -27,6 +27,7 @@ export default defineConfig({
       entryLimit: 50000,
       filter: (page) =>
         !page.includes('/player/') &&
+        !page.includes('/detail/') &&
         !page.includes('/login/') &&
         !page.includes('/help/') &&
         !page.includes('/watchlist/'),

@@ -63,6 +63,14 @@
   X-Robots-Tag: noindex, nofollow
   Cache-Control: private, no-store, max-age=0
 
+/detail/
+  X-Robots-Tag: noindex, follow
+  Cache-Control: private, no-store, max-age=0
+
+/detail/*
+  X-Robots-Tag: noindex, follow
+  Cache-Control: private, no-store, max-age=0
+
 /llms.txt
   Cache-Control: public, max-age=86400
 

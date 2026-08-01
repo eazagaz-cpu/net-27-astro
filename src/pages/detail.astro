@@ -5,10 +5,18 @@ import Footer from '../components/Footer.astro';
 import SEOHead from '../components/SEOHead.astro';
 import { SITE_URL } from '../lib/seo';
 import { APK_UNIVERSAL_URL } from '../lib/constants';
+import { getAllRealTitles } from '../lib/realTitles';
+
+const canonicalTitleUrls = Object.fromEntries(
+  getAllRealTitles().map((title) => [
+    `${title.type === 'show' ? 'tv' : 'movie'}-${title.tmdbId}`,
+    `/${title.type === 'show' ? 'shows' : 'movies'}/${title.slug}/`,
+  ]),
+);
 ---
 
 <BaseLayout>
-  <SEOHead slot="head" title="Title Details" description="Discover movie and show details on NetMirror." canonical={`${SITE_URL}/detail/`} />
+  <SEOHead slot="head" title="Title Details" description="Discover movie and show details on NetMirror." canonical={`${SITE_URL}/detail/`} noindex={true} />
   <Header />
   <main class="min-h-screen pt-16" id="detail-root">
     <div class="flex items-center justify-center min-h-[60vh]">
@@ -21,13 +29,16 @@ import { APK_UNIVERSAL_URL } from '../lib/constants';
   <Footer />
 </BaseLayout>
 
-<script define:vars={{ APK_UNIVERSAL_URL }}>
+<script define:vars={{ APK_UNIVERSAL_URL, canonicalTitleUrls }}>
   const params = new URLSearchParams(window.location.search);
   const type = params.get('type') || 'movie';
   const id = params.get('id') || '';
   const root = document.getElementById('detail-root');
+  const canonicalTitleUrl = canonicalTitleUrls[`${type === 'tv' ? 'tv' : 'movie'}-${id}`];
 
-  if (!id || !root) {
+  if (canonicalTitleUrl) {
+    window.location.replace(canonicalTitleUrl);
+  } else if (!id || !root) {
     if (root) root.innerHTML = '<div class="flex items-center justify-center min-h-[60vh] text-center"><div><h2 class="text-2xl font-bold mb-2">No Title Selected</h2><a href="/" class="btn-primary mt-4 inline-flex">Go Home</a></div></div>';
   } else {
     fetch(`/api/tmdb/details?type=${type}&id=${id}`)
