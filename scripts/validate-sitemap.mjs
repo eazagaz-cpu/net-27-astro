@@ -32,6 +32,7 @@ console.log('=== Sitemap Validation ===\n');
 const indexPath = `${DIST}/sitemap-index.xml`;
 const childPath = `${DIST}/sitemap-0.xml`;
 const robotsPath = `${DIST}/robots.txt`;
+const headersPath = `${DIST}/_headers`;
 
 try {
   await access(indexPath);
@@ -126,12 +127,49 @@ try {
     errors++;
   }
 
+  for (const excludedPath of ['/player/', '/detail/', '/watchlist/']) {
+    if (childXml.includes(excludedPath)) {
+      console.error(`  ERROR: sitemap-0.xml contains non-indexable ${excludedPath} URLs`);
+      errors++;
+    }
+  }
+
   if (childXml.includes('<html') || childXml.includes('<!DOCTYPE')) {
     console.error('  ERROR: sitemap-0.xml contains HTML');
     errors++;
   }
 } catch (e) {
   console.error('  ERROR: Could not read sitemap-0.xml:', e.message);
+  errors++;
+}
+
+// Legacy query routes must remain crawlable but explicitly noindex. This lets
+// Google retire old URLs instead of reporting them as robots-blocked or soft
+// 404 pages.
+try {
+  const headers = await readFile(headersPath, 'utf-8');
+  for (const route of ['/player/', '/detail/', '/watchlist/']) {
+    const routeBlock = headers.match(new RegExp(
+      `^${route.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\r?\\n([\\s\\S]*?)(?=^\\S|\\Z)`,
+      'm',
+    ))?.[1] ?? '';
+    if (!/X-Robots-Tag:\s*noindex/i.test(routeBlock)) {
+      console.error(`  ERROR: ${route} is missing an X-Robots-Tag noindex header`);
+      errors++;
+    }
+  }
+
+  const detailHtml = await readFile(path.join(DIST, 'detail', 'index.html'), 'utf-8');
+  if (!/<meta\b[^>]*name=["']robots["'][^>]*noindex/i.test(detailHtml)) {
+    console.error('  ERROR: /detail/ is missing its HTML noindex directive');
+    errors++;
+  }
+  if (!detailHtml.includes('canonicalTitleUrls')) {
+    console.error('  ERROR: /detail/ is missing its canonical-title redirect map');
+    errors++;
+  }
+} catch (e) {
+  console.error('  ERROR: Could not validate legacy-route indexing guards:', e.message);
   errors++;
 }
 
