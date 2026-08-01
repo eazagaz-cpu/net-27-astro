@@ -43,17 +43,31 @@
 
 # These URLs stay crawlable so search engines can see noindex and remove old
 # query variants from their indexes.
+/player/
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: private, no-store, max-age=0
+
 /player/*
   X-Robots-Tag: noindex, nofollow
+  Cache-Control: private, no-store, max-age=0
+
+/watchlist/
+  X-Robots-Tag: noindex, nofollow
+  Cache-Control: private, no-store, max-age=0
 
 /watchlist/*
   X-Robots-Tag: noindex, nofollow
+  Cache-Control: private, no-store, max-age=0
 
 /llms.txt
   Cache-Control: public, max-age=86400
 
 /watch/*
   Referrer-Policy: no-referrer-when-downgrade
+
+/player/
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), unload=()
 
 /player/*
   Referrer-Policy: no-referrer
