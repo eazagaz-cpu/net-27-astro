@@ -46,10 +46,14 @@
 /player/
   X-Robots-Tag: noindex, nofollow
   Cache-Control: private, no-store, max-age=0
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), unload=()
 
 /player/*
   X-Robots-Tag: noindex, nofollow
   Cache-Control: private, no-store, max-age=0
+  Referrer-Policy: no-referrer
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), unload=()
 
 /watchlist/
   X-Robots-Tag: noindex, nofollow
@@ -64,11 +68,3 @@
 
 /watch/*
   Referrer-Policy: no-referrer-when-downgrade
-
-/player/
-  Referrer-Policy: no-referrer
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), unload=()
-
-/player/*
-  Referrer-Policy: no-referrer
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), unload=()
