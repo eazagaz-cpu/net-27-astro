@@ -490,16 +490,19 @@
   }
 
   .hero-dot span {
-    width: 8px;
+    width: 24px;
     height: 8px;
     border-radius: 999px;
-    background: rgba(255,255,255,0.5);
-    transition: width 0.3s ease, background-color 0.3s ease;
+    background: #fff;
+    opacity: 0.5;
+    transform: scaleX(0.3333);
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    will-change: transform, opacity;
   }
 
   .hero-dot.active span {
-    width: 24px;
-    background: #fff;
+    opacity: 1;
+    transform: scaleX(1);
   }
 
   /* Mobile hero adjustments */
