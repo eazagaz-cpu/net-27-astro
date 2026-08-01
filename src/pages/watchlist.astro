@@ -78,7 +78,7 @@ import { SITE_URL } from '../lib/seo';
         <div class="wl-card-wrap">
           <a href="${href}" class="wl-card">
             ${item.poster
-              ? `<img src="${item.poster}" alt="${item.title}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+              ? `<img src="${item.poster}" alt="${item.title}" width="185" height="278" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
               : ''}
             <div class="wl-card-fb" style="${item.poster ? 'display:none' : ''}">
               <span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);text-align:center">${item.title}</span>

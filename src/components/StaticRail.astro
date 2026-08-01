@@ -6,6 +6,7 @@
  * A small inline <script> handles scroll arrow clicks.
  */
 import type { CachedItem } from '../lib/movie-cache';
+import { titleDetailUrl } from '../lib/title-url';
 
 interface Props {
   title: string;
@@ -17,7 +18,9 @@ interface Props {
   badge?: string;
 }
 
-const { title, items, viewAllHref, badge } = Astro.props;
+const { title, viewAllHref, badge } = Astro.props;
+const items = Astro.props.items.slice(0, 8);
+const smallPoster = (url: string) => url.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w185/');
 
 // Nothing to render if cache is empty (sync hasn't been run yet)
 if (items.length === 0) return;
@@ -72,7 +75,7 @@ const FALLBACK_GRADIENTS = [
       <!-- Scrollable items -->
       <div id={scrollId} class="scroll-rail">
         {items.map(item => {
-          const href = `/detail/?type=${item.type}&id=${item.id}`;
+          const href = titleDetailUrl(item);
           const grad = FALLBACK_GRADIENTS[item.id % FALLBACK_GRADIENTS.length];
           const hasPoster = !!item.posterUrl;
           return (
@@ -87,10 +90,11 @@ const FALLBACK_GRADIENTS = [
                 {/* Poster image with client-side fallback */}
                 {hasPoster && (
                   <img
-                    src={item.posterUrl}
+                    src={smallPoster(item.posterUrl)}
                     alt={`${item.title} poster`}
                     loading="lazy"
                     decoding="async"
+                    fetchpriority="low"
                     width="185"
                     height="278"
                     style="width:100%;height:100%;object-fit:cover;display:block"
@@ -119,28 +123,6 @@ const FALLBACK_GRADIENTS = [
                   </span>
                 )}
 
-                {/* Hover overlay — Netflix style */}
-                <div class="card-overlay">
-                  <div class="card-overlay-play">
-                    <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-                  </div>
-                  <p class="card-overlay-title">{item.title}</p>
-                  <p class="card-overlay-meta">{item.year}{item.rating > 0 ? ` · ★ ${item.rating}` : ''}</p>
-                </div>
-
-                {/* Watchlist heart button */}
-                <button
-                  class="wl-btn"
-                  data-id={String(item.id)}
-                  data-type={item.type}
-                  data-title={item.title}
-                  data-poster={item.posterUrl}
-                  data-year={String(item.year)}
-                  aria-label="Add to watchlist"
-                  onclick="event.preventDefault();event.stopPropagation();window.__wlToggle(this)"
-                >
-                  <svg class="wl-heart" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                </button>
               </div>
 
               <div style="padding:6px 4px">
@@ -204,19 +186,6 @@ const FALLBACK_GRADIENTS = [
   .sr-arrow-left  { left:  0; }
   .sr-arrow-right { right: 0; }
 
-  /* Watchlist button */
-  .wl-btn {
-    position: absolute; bottom: 6px; right: 6px; z-index: 5;
-    width: 30px; height: 30px; border-radius: 50%;
-    background: rgba(0,0,0,0.7); backdrop-filter: blur(4px);
-    border: none; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    color: #fff; opacity: 0; transition: opacity 0.2s, transform 0.15s;
-    padding: 0;
-  }
-  .title-card:hover .wl-btn { opacity: 1; }
-  .wl-btn:hover { transform: scale(1.15); }
-  .wl-btn.wl-active .wl-heart { fill: #e50914; stroke: #e50914; }
-  .wl-btn.wl-active { opacity: 1; }
 </style>
 
 <script>
@@ -238,7 +207,7 @@ const FALLBACK_GRADIENTS = [
   }
 
   // Scroll arrows
-  const w = window as Window & { __srScrollInit?: boolean; __wlToggle?: (btn: HTMLElement) => void };
+  const w = window as Window & { __srScrollInit?: boolean };
   if (!w.__srScrollInit) {
     w.__srScrollInit = true;
     document.addEventListener('click', (e) => {
@@ -250,27 +219,4 @@ const FALLBACK_GRADIENTS = [
     });
   }
 
-  // Watchlist (localStorage) — initialise once across all rail instances
-  const WL_KEY = 'netmirror:watchlist';
-  function getWL(): any[] { try { return JSON.parse(localStorage.getItem(WL_KEY) || '[]'); } catch { return []; } }
-  function saveWL(list: any[]) { try { localStorage.setItem(WL_KEY, JSON.stringify(list)); } catch {} }
-
-  if (!w.__wlToggle) {
-    w.__wlToggle = function(btn: HTMLElement) {
-      const { id, type, title, poster, year } = btn.dataset as Record<string,string>;
-      let list = getWL();
-      const idx = list.findIndex((i: any) => String(i.id) === id);
-      if (idx > -1) { list.splice(idx, 1); btn.classList.remove('wl-active'); }
-      else { list.push({ id, type, title, poster, year, addedAt: Date.now() }); btn.classList.add('wl-active'); }
-      saveWL(list);
-    };
-
-    // Mark already-saved items on page load
-    document.addEventListener('DOMContentLoaded', () => {
-      const saved = new Set(getWL().map((i: any) => String(i.id)));
-      document.querySelectorAll<HTMLElement>('.wl-btn').forEach(btn => {
-        if (saved.has(btn.dataset.id || '')) btn.classList.add('wl-active');
-      });
-    });
-  }
 </script>

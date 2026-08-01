@@ -13,6 +13,7 @@ import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 const movies = getRealTitlesByType('movie');
+const visibleMovies = movies.slice(0, 60);
 const topRated = [...movies].sort((a, b) => b.rating - a.rating);
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -77,9 +78,12 @@ const faqs = [
       </section>
 
       <section>
-        <h2 class="section-title mb-6">All Movies</h2>
+        <div class="flex items-center justify-between gap-4 mb-6">
+          <h2 class="section-title">Featured Movies</h2>
+          <a href="/sitemap/" class="text-sm text-[var(--color-primary)] hover:underline">Browse all {movies.length}</a>
+        </div>
         <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-          {movies.map(title => <TitleCard title={title} />)}
+          {visibleMovies.map(title => <TitleCard title={title} />)}
         </div>
       </section>
 

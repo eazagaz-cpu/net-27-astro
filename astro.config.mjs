@@ -7,8 +7,19 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://net-27.cc',
   output: 'static',
+  devToolbar: {
+    enabled: false,
+  },
+  build: {
+    inlineStylesheets: 'always',
+  },
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      minify: 'esbuild',
+      target: 'es2022',
+      sourcemap: false,
+    },
   },
   integrations: [
     react(),

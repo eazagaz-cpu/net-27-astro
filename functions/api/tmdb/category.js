@@ -17,6 +17,7 @@ const GENRE_IDS = {
 const LANGUAGE_CODES = {
   english: 'en', hindi: 'hi', spanish: 'es', korean: 'ko',
   japanese: 'ja', french: 'fr', german: 'de', turkish: 'tr',
+  urdu: 'ur',
 };
 
 const COUNTRY_CODES = {

@@ -99,7 +99,7 @@ const schemaData = [
     <section class="relative w-full min-h-[60vh] md:min-h-[70vh] overflow-hidden">
       <!-- Backdrop Image -->
       {title.backdropUrl && (
-        <img src={title.backdropUrl} alt="" class="absolute inset-0 w-full h-full object-cover" loading="eager" />
+        <img src={title.backdropUrl.replace('/t/p/original/', '/t/p/w1280/')} alt={`${title.title} backdrop`} class="absolute inset-0 w-full h-full object-cover" loading="eager" decoding="async" width="1280" height="720" />
       )}
       <div class={`absolute inset-0 bg-gradient-to-br ${gradient} ${title.backdropUrl ? 'opacity-40' : ''}`}></div>
 
@@ -188,11 +188,12 @@ const schemaData = [
 
             <!-- Genre Chips -->
             <div class="flex flex-wrap gap-2 mb-5">
-              {title.genres.map(genre => (
-                <a href={`/genre/${genre.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}/`} class="chip text-sm">
-                  {genre}
-                </a>
-              ))}
+              {title.genres.map(genre => {
+                const archive = genres.find(item => item.name === genre);
+                return archive
+                  ? <a href={`/genre/${archive.slug}/`} class="chip text-sm">{genre}</a>
+                  : <span class="chip text-sm">{genre}</span>;
+              })}
             </div>
 
             <!-- Creator -->
@@ -253,7 +254,7 @@ const schemaData = [
             <tbody>
               <tr class="border-b border-[var(--color-border)]">
                 <td class="px-5 py-3 text-[var(--color-text-muted)] w-40">First Aired</td>
-                <td class="px-5 py-3">{title.releaseDate || title.year} &middot; <a href={`/year/${title.year}/`} class="text-[var(--color-primary)] hover:underline">{title.year}</a></td>
+                <td class="px-5 py-3">{title.releaseDate || title.year} &middot; {title.year >= 2010 ? <a href={`/year/${title.year}/`} class="text-[var(--color-primary)] hover:underline">{title.year}</a> : <span>{title.year || 'Unknown'}</span>}</td>
               </tr>
               {title.seasons ? (
                 <tr class="border-b border-[var(--color-border)]">

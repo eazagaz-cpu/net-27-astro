@@ -55,7 +55,7 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
       `/api/tmdb/category?type=${encodeURIComponent(category)}${langParam}`
     )
       .then(data => {
-        setItems(data.items || []);
+        setItems((data.items || []).slice(0, 12));
         setLoading(false);
       })
       .catch(() => setLoading(false));
@@ -110,10 +110,11 @@ export default function DynamicRail({ title, category, viewAllHref }: Props) {
                 <div style={{ position: 'relative', aspectRatio: '2/3', overflow: 'hidden', borderRadius: 10 }}>
                   {item.posterUrl ? (
                     <img
-                      src={item.posterUrl}
+                      src={item.posterUrl.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w185/')}
                       alt={`${item.title} poster`}
                       loading="lazy"
                       decoding="async"
+                      fetchPriority="low"
                       width={180}
                       height={270}
                       style={{ width: '100%', height: '100%', objectFit: 'cover' }}

@@ -14,30 +14,38 @@ const dir = getDir(lang);
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#050509" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="preconnect" href="https://image.tmdb.org" />
   <link rel="dns-prefetch" href="https://www.2embed.cc" />
   <link rel="dns-prefetch" href="https://autoembed.co" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-  <noscript><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" /></noscript>
   <!-- No hreflang tags: the site serves a single crawlable (English) HTML
        version per URL — other languages are a client-side text-swap layer
        only, not separate indexable pages, so hreflang alternates would be
        inaccurate. -->
   <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
   <slot name="head" />
-  <!-- Google Analytics -->
-  <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-BEV78WNW13"></script>
+  <!-- Analytics is loaded after real user intent, keeping third-party code out of the critical path. -->
   <script is:inline>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-    gtag('config', 'G-BEV78WNW13');
+    (function(){
+      var loaded=false;
+      function loadAnalytics(){
+        if(loaded)return;
+        loaded=true;
+        window.dataLayer=window.dataLayer||[];
+        window.gtag=function(){window.dataLayer.push(arguments);};
+        window.gtag('js',new Date());
+        window.gtag('config','G-BEV78WNW13',{transport_type:'beacon'});
+        var s=document.createElement('script');
+        s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-BEV78WNW13';
+        document.head.appendChild(s);
+      }
+      ['pointerdown','keydown','touchstart'].forEach(function(event){
+        window.addEventListener(event,loadAnalytics,{once:true,passive:true});
+      });
+    })();
   </script>
 </head>
 <body class="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
-  <SearchOverlay client:load />
+  <SearchOverlay client:media="(min-width: 768px)" />
   <slot />
   <!-- i18n Client Translation Engine -->
   <script is:inline>

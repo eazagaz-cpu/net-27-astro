@@ -1,0 +1,164 @@
+---
+import { titleDetailUrl } from '../lib/title-url';
+
+interface HeroItem {
+  id: number;
+  type: string;
+  title: string;
+  year: number;
+  rating: number;
+  posterUrl: string;
+  backdropUrl: string;
+  overview: string;
+}
+
+interface Props {
+  initialItems?: HeroItem[];
+}
+
+const slides = (Astro.props.initialItems ?? []).filter((item) => item.backdropUrl).slice(0, 5);
+if (slides.length === 0) return;
+
+const first = slides[0];
+const firstHref = titleDetailUrl(first);
+const tmdbSize = (url: string, size: 'w185' | 'w780' | 'w1280') =>
+  url.replace(/\/t\/p\/(?:w\d+|original)\//, `/t/p/${size}/`);
+const heroData = slides.map((slide) => ({
+  ...slide,
+  detailHref: titleDetailUrl(slide),
+  backdropSmall: tmdbSize(slide.backdropUrl, 'w780'),
+  backdropLarge: tmdbSize(slide.backdropUrl, 'w1280'),
+  posterSmall: tmdbSize(slide.posterUrl, 'w185'),
+}));
+---
+
+<section class="hero-section" aria-label="Featured titles" data-hero-root>
+  <div class="hero-slide is-active">
+    <picture>
+      <source media="(max-width: 768px)" srcset={heroData[0].backdropSmall} data-hero-source />
+      <img
+      src={heroData[0].backdropLarge}
+      alt={`${first.title} backdrop`}
+      class="hero-bg"
+      loading="eager"
+      decoding="async"
+      fetchpriority="high"
+      width="1280"
+      height="720"
+      data-hero-bg
+      />
+    </picture>
+    <div class="hero-overlay-lr"></div>
+    <div class="hero-overlay-tb"></div>
+
+    <div class="hero-content-wrap">
+      <div class="hero-outer">
+        <div class="hero-layout">
+          <div class="hero-content">
+            <span class="hero-label">Trending Now</span>
+            <h2 class="hero-title" data-hero-title>{first.title}</h2>
+            <div class="hero-meta">
+              <span class="hero-rating" data-hero-rating>★ {first.rating}</span>
+              <span class="hero-meta-text" data-hero-year>{first.year}</span>
+              <span class="hero-meta-text">·</span>
+              <span class="hero-meta-text hero-type" data-hero-type>{first.type === 'tv' ? 'Series' : 'Movie'}</span>
+            </div>
+            <p class="hero-description" data-hero-description>{first.overview}</p>
+            <div class="hero-actions">
+              <a href={firstHref} class="btn-primary hero-btn" data-hero-watch aria-label={`Watch Now: ${first.title}`}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                Watch Now
+              </a>
+              <a href={firstHref} class="btn-glass hero-btn" data-hero-info aria-label={`More Info about ${first.title}`}>
+                More Info<span class="sr-only" data-hero-info-title> about {first.title}</span>
+              </a>
+            </div>
+          </div>
+
+          {first.posterUrl && (
+            <div class="hero-poster-wrap">
+              <div class="hero-poster-frame">
+                <img src={heroData[0].posterSmall} alt={`${first.title} poster`} class="hero-poster-img" width="185" height="278" loading="lazy" decoding="async" fetchpriority="low" data-hero-poster />
+                <div class="hero-poster-shine"></div>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-dots" role="group" aria-label="Featured title slides">
+    {slides.map((slide, index) => (
+      <button
+        type="button"
+        class:list={['hero-dot', index === 0 && 'active']}
+        data-hero-dot={index}
+        aria-label={`Show ${slide.title}`}
+        aria-current={index === 0 ? 'true' : undefined}
+      ><span></span></button>
+    ))}
+  </div>
+  <script type="application/json" data-hero-data set:html={JSON.stringify(heroData).replace(/</g, '\\u003c')} />
+</section>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-hero-root]');
+  if (root) {
+    const dataNode = root.querySelector<HTMLScriptElement>('[data-hero-data]');
+    const slides = JSON.parse(dataNode?.textContent || '[]');
+    const bg = root.querySelector<HTMLImageElement>('[data-hero-bg]');
+    const source = root.querySelector<HTMLSourceElement>('[data-hero-source]');
+    const poster = root.querySelector<HTMLImageElement>('[data-hero-poster]');
+    const title = root.querySelector<HTMLElement>('[data-hero-title]');
+    const rating = root.querySelector<HTMLElement>('[data-hero-rating]');
+    const year = root.querySelector<HTMLElement>('[data-hero-year]');
+    const type = root.querySelector<HTMLElement>('[data-hero-type]');
+    const description = root.querySelector<HTMLElement>('[data-hero-description]');
+    const watch = root.querySelector<HTMLAnchorElement>('[data-hero-watch]');
+    const info = root.querySelector<HTMLAnchorElement>('[data-hero-info]');
+    const infoTitle = root.querySelector<HTMLElement>('[data-hero-info-title]');
+    const dots = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-hero-dot]'));
+    let current = 0;
+    let timer = 0;
+
+    const show = (index: number) => {
+      const slide = slides[index];
+      if (!slide || !bg || !title || !rating || !year || !type || !description || !watch || !info) return;
+      current = index;
+      if (source) source.srcset = slide.backdropSmall;
+      bg.src = slide.backdropLarge;
+      bg.alt = `${slide.title} backdrop`;
+      title.textContent = slide.title;
+      rating.textContent = `★ ${slide.rating}`;
+      year.textContent = String(slide.year);
+      type.textContent = slide.type === 'tv' ? 'Series' : 'Movie';
+      description.textContent = slide.overview;
+      const href = slide.detailHref;
+      watch.href = href;
+      watch.setAttribute('aria-label', `Watch Now: ${slide.title}`);
+      info.href = href;
+      info.setAttribute('aria-label', `More Info about ${slide.title}`);
+      if (infoTitle) infoTitle.textContent = ` about ${slide.title}`;
+      if (poster) {
+        poster.src = slide.posterSmall;
+        poster.alt = `${slide.title} poster`;
+      }
+      dots.forEach((dot, i) => {
+        dot.classList.toggle('active', i === index);
+        if (i === index) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      });
+    };
+
+    const restart = () => {
+      window.clearInterval(timer);
+      if (slides.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        timer = window.setInterval(() => show((current + 1) % slides.length), 6000);
+      }
+    };
+    dots.forEach((dot, index) => dot.addEventListener('click', () => { show(index); restart(); }));
+    document.addEventListener('visibilitychange', () => document.hidden ? window.clearInterval(timer) : restart());
+    restart();
+  }
+</script>

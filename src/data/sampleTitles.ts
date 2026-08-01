@@ -36,6 +36,7 @@ export const languages: Language[] = [
   'French',
   'German',
   'Turkish',
+  'Urdu',
 ].map((name) => ({ slug: slugify(name), name }));
 
 export const platforms: Platform[] = [
@@ -50,4 +51,10 @@ export const platforms: Platform[] = [
   'JioHotstar',
   'SonyLIV',
   'MX Player',
-].map((name) => ({ slug: slugify(name), name }));
+].map((name) => ({
+  slug: name === 'Disney+' ? 'disney-plus'
+    : name === 'Apple TV+' ? 'apple-tv-plus'
+    : name === 'Paramount+' ? 'paramount-plus'
+    : slugify(name),
+  name,
+}));

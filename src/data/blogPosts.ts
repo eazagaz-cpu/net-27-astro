@@ -883,7 +883,7 @@ export const blogPosts: BlogPost[] = [
 </ul>
 
 <h2 id="find-free-content">Free Content on Paid Platforms</h2>
-<p><a href="/platform/netflix/">Netflix</a>, <a href="/platform/prime-video/">Prime Video</a>, and <a href="/platform/disney/">Disney+</a> offer free trials and free tiers. JioHotstar has a free ad-supported tier covering a large portion of its library. SonyLIV has free access to older content.</p>
+<p><a href="/platform/netflix/">Netflix</a>, <a href="/platform/prime-video/">Prime Video</a>, and <a href="/platform/disney-plus/">Disney+</a> offer free trials and free tiers. JioHotstar has a free ad-supported tier covering a large portion of its library. SonyLIV has free access to older content.</p>
 
 <h2 id="discovery-tool">Use NetMirror to Find Free Streaming</h2>
 <p>The biggest frustration is not knowing which platform has your title free. <a href="/">NetMirror</a> searches across 50+ platforms simultaneously and shows exactly where a movie or show is available — and whether it is free or paid — in your region.</p>
@@ -1448,7 +1448,7 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Finding movies the whole family can watch together — genuinely entertaining for adults while appropriate for children — requires knowing where to look. This guide covers the best <a href="/genre/family/">family movies</a> across OTT platforms in 2026.</p>
 
 <h2 id="disney-family">Best Family Movies on Disney+ / JioHotstar</h2>
-<p><a href="/platform/disney/">Disney+</a> (available in India via JioHotstar) has the deepest family movie library of any streaming service:</p>
+<p><a href="/platform/disney-plus/">Disney+</a> (available in India via JioHotstar) has the deepest family movie library of any streaming service:</p>
 <ul>
   <li><strong>Encanto</strong> — Colombian family drama with extraordinary songs by Lin-Manuel Miranda. The "We Don't Talk About Bruno" number became a global phenomenon.</li>
   <li><strong>Moana</strong> — A young Polynesian chief's daughter sets sail to restore the heart of the ocean. Stunning visuals and strong central character.</li>

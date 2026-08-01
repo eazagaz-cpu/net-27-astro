@@ -6,6 +6,17 @@ let errors = 0;
 let warnings = 0;
 let checked = 0;
 
+function decodeHtml(value) {
+  return value
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;|&apos;/g, "'")
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&#(\d+);/g, (_, code) => String.fromCodePoint(Number(code)))
+    .replace(/&#x([\da-f]+);/gi, (_, code) => String.fromCodePoint(Number.parseInt(code, 16)));
+}
+
 async function walkHtml(dir) {
   const entries = await readdir(dir, { withFileTypes: true });
   for (const entry of entries) {
@@ -27,6 +38,18 @@ async function checkSeo(filePath) {
 
   if (!/<meta name="description"/.test(html)) {
     console.error(`  ERROR: Missing meta description in ${route}`);
+    errors++;
+  }
+
+  const title = decodeHtml(html.match(/<title>(.*?)<\/title>/s)?.[1]?.replace(/<[^>]+>/g, '').trim() ?? '');
+  if (title.length > 60) {
+    console.error(`  ERROR: Title exceeds 60 characters (${title.length}) in ${route}`);
+    errors++;
+  }
+
+  const description = decodeHtml(html.match(/<meta name="description" content="([^"]*)"/)?.[1]?.trim() ?? '');
+  if (description.length > 155) {
+    console.error(`  ERROR: Meta description exceeds 155 characters (${description.length}) in ${route}`);
     errors++;
   }
 

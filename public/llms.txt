@@ -5,14 +5,14 @@
 NetMirror is a movie and show discovery platform. We help users find where to watch content across Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and other streaming services.
 
 ## Key Pages
-- Homepage: https://net-27.cc/
-- Movies: https://net-27.cc/movies/
-- TV Shows: https://net-27.cc/shows/
-- Anime: https://net-27.cc/anime/
-- Trending: https://net-27.cc/trending/
-- Blog: https://net-27.cc/blog/
-- App Download: https://net-27.cc/app/download/
-- Contact: https://net-27.cc/contact/
+- [Homepage](https://net-27.cc/)
+- [Movies](https://net-27.cc/movies/)
+- [TV Shows](https://net-27.cc/shows/)
+- [Anime](https://net-27.cc/anime/)
+- [Trending](https://net-27.cc/trending/)
+- [Blog](https://net-27.cc/blog/)
+- [App Download](https://net-27.cc/app/download/)
+- [Contact](https://net-27.cc/contact/)
 
 ## Contact
 Email: net27.cc@gmail.com

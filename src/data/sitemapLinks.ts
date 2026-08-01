@@ -47,12 +47,12 @@ export function getSitemapSections(): SitemapSection[] {
         { title: 'JioHotstar', href: '/platform/jiohotstar/' },
         { title: 'SonyLIV', href: '/platform/sonyliv/' },
         { title: 'Crunchyroll', href: '/platform/crunchyroll/' },
-        { title: 'Disney+', href: '/platform/disney/' },
+        { title: 'Disney+', href: '/platform/disney-plus/' },
         { title: 'MX Player', href: '/platform/mx-player/' },
-        { title: 'Apple TV+', href: '/platform/apple-tv/' },
+        { title: 'Apple TV+', href: '/platform/apple-tv-plus/' },
         { title: 'HBO Max', href: '/platform/hbo-max/' },
         { title: 'Hulu', href: '/platform/hulu/' },
-        { title: 'Paramount+', href: '/platform/paramount/' },
+        { title: 'Paramount+', href: '/platform/paramount-plus/' },
       ],
     },
     {
@@ -87,6 +87,7 @@ export function getSitemapSections(): SitemapSection[] {
         { title: 'French', href: '/language/french/' },
         { title: 'German', href: '/language/german/' },
         { title: 'Turkish', href: '/language/turkish/' },
+        { title: 'Urdu', href: '/language/urdu/' },
       ],
     },
     {

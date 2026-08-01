@@ -9,6 +9,9 @@ https://www.net-27.cc/* https://net-27.cc/:splat 301
 /movie/* /movies/:splat
 /tv/* /shows/:splat
 /series/* /shows/:splat
+/platform/disney/ /platform/disney-plus/ 301
+/platform/apple-tv/ /platform/apple-tv-plus/ 301
+/platform/paramount/ /platform/paramount-plus/ 301
 
 # Retired routes (no real-data replacement — actor/director/studio pages had
 # no TMDB-backed source; watch/[slug] replaced by /player/?type=&id=)

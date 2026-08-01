@@ -1,0 +1,50 @@
+---
+import type { CachedItem } from '../lib/movie-cache';
+import { titleDetailUrl } from '../lib/title-url';
+
+interface Props {
+  mediaType?: 'movie' | 'tv';
+  items: CachedItem[];
+}
+
+const { mediaType = 'movie' } = Astro.props;
+const items = Astro.props.items.filter((item) => item.posterUrl).slice(0, 10);
+if (items.length === 0) return;
+const label = mediaType === 'tv' ? 'TV Shows' : 'Movies';
+const railId = `top10-${mediaType}`;
+const smallPoster = (url: string) => url.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w185/');
+---
+
+<section class="rail-section top10-section">
+  <div class="top10-inner">
+    <h2 class="section-title top10-heading">Top 10 {label} Today</h2>
+    <div class="rail-wrap static-rail-wrap">
+      <button class="sr-arrow sr-arrow-left" data-target={railId} data-dir="left" aria-label={`Scroll top 10 ${label} left`}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+      </button>
+      <div id={railId} class="scroll-rail top10-rail">
+        {items.map((item, index) => (
+          <a href={titleDetailUrl(item)} class="top10-card" aria-label={`Number ${index + 1}: ${item.title}`}>
+            <span class="top10-rank" aria-hidden="true">{index + 1}</span>
+            <img src={smallPoster(item.posterUrl)} alt={`${item.title} poster`} width="120" height="180" loading="lazy" decoding="async" fetchpriority="low" />
+          </a>
+        ))}
+      </div>
+      <button class="sr-arrow sr-arrow-right" data-target={railId} data-dir="right" aria-label={`Scroll top 10 ${label} right`}>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style>
+  .top10-section { padding: 1rem 0 .5rem; }
+  .top10-inner { max-width: 1400px; margin: 0 auto; padding: 0 1rem; }
+  .top10-heading { margin-bottom: 14px; font-size: 1.15rem; }
+  .top10-rail { gap: 0; padding-bottom: 8px; }
+  .top10-card { position: relative; width: 190px; height: 200px; display: flex; align-items: flex-end; flex-shrink: 0; text-decoration: none; overflow: hidden; }
+  .top10-rank { position: absolute; left: 0; bottom: 9px; width: 94px; color: #050509; -webkit-text-stroke: 3px rgba(255,255,255,.34); font: 900 190px/.75 system-ui,sans-serif; letter-spacing: -8px; user-select: none; }
+  .top10-card img { position: relative; z-index: 1; width: 120px; height: 180px; margin-left: auto; border-radius: 8px; object-fit: cover; box-shadow: -4px 2px 16px rgba(0,0,0,.7); transition: transform .25s ease; }
+  .top10-card:hover img { transform: scale(1.04); }
+  @media (prefers-reduced-motion: reduce) { .top10-card img { transition: none; } }
+</style>

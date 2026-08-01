@@ -6,8 +6,8 @@
   --color-surface-soft: #15151b;
   --color-text: #ffffff;
   --color-muted: #a1a1aa;
-  --color-primary: #ff1f3d;
-  --color-primary-hover: #e6162f;
+  --color-primary: #d90429;
+  --color-primary-hover: #b90021;
   --color-accent: #2f80ff;
   --color-border: rgba(255, 255, 255, 0.10);
   --color-glass: rgba(15, 15, 20, 0.62);
@@ -19,8 +19,8 @@
   --color-primary-glow: rgba(255, 31, 61, 0.3);
   --color-text-primary: #ffffff;
   --color-text-secondary: #a1a1aa;
-  --color-text-muted: #52525b;
-  --font-sans: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --color-text-muted: #a1a1aa;
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
 }
 
 @layer base {
@@ -85,7 +85,7 @@
     padding: 0.625rem 1.5rem;
     border-radius: 0.5rem;
     font-weight: 600;
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -104,7 +104,7 @@
     border-radius: 0.5rem;
     font-weight: 600;
     border: 1px solid rgba(255,255,255,0.15);
-    transition: all 0.2s ease;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -123,7 +123,7 @@
     border-radius: 0.5rem;
     font-weight: 600;
     border: 1px solid rgba(255,255,255,0.15);
-    transition: all 0.2s ease;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
@@ -143,7 +143,7 @@
     border: 1px solid rgba(255,255,255,0.1);
     background: rgba(255,255,255,0.05);
     color: var(--color-muted);
-    transition: all 0.2s ease;
+    transition: color 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
     white-space: nowrap;
     cursor: pointer;
   }
@@ -273,8 +273,8 @@
     border-radius: 0.5rem;
   }
   @keyframes shimmer {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
+    from { transform: translateZ(0); opacity: 0.72; }
+    to { transform: translateZ(0); opacity: 1; }
   }
 
   /* ===== HERO SLIDER ===== */
@@ -478,16 +478,26 @@
   }
 
   .hero-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 4px;
-    background: rgba(255,255,255,0.35);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: transparent;
     border: none;
     cursor: pointer;
-    transition: all 0.3s ease;
+    display: grid;
+    place-items: center;
+    padding: 0;
   }
 
-  .hero-dot.active {
+  .hero-dot span {
+    width: 8px;
+    height: 8px;
+    border-radius: 999px;
+    background: rgba(255,255,255,0.5);
+    transition: width 0.3s ease, background-color 0.3s ease;
+  }
+
+  .hero-dot.active span {
     width: 24px;
     background: #fff;
   }
@@ -564,6 +574,11 @@
     color: #fff;
     background: rgba(255,31,61,0.12);
     transform: translateY(-1px);
+  }
+
+  .rail-section {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 360px;
   }
 
   /* Scroll reveal — only StaticRail sections have [data-reveal], React rails are excluded */

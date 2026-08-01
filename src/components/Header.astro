@@ -71,16 +71,18 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           <span>Search movies, shows, anime...</span>
         </button>
-        <button id="header-search-btn-mobile" class="md:hidden p-2 text-[var(--color-muted)] hover:text-white transition-colors" aria-label="Search">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        </button>
+        <a href="/search/" class="md:hidden min-w-11 min-h-11 flex items-center justify-center text-[var(--color-muted)] hover:text-white transition-colors" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          <span class="sr-only">Search</span>
+        </a>
         <!-- Watchlist -->
         <a href="/watchlist/" aria-label="My Watchlist" title="My Watchlist" class="hidden md:flex items-center justify-center w-9 h-9 rounded-full bg-white/5 border border-white/10 text-[var(--color-muted)] hover:border-white/20 hover:text-white transition-colors" id="header-wl-btn">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
+          <span class="sr-only">My Watchlist</span>
         </a>
         <!-- Language Picker -->
         <div class="lang-picker-wrap" id="lang-picker-wrap">
-          <button id="lang-picker-btn" class="lang-picker-btn" aria-label="Select language" title="Change language">
+          <button id="lang-picker-btn" class="lang-picker-btn" aria-label="Select language: EN" title="Change language">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
             <span id="lang-current-label">EN</span>
           </button>
@@ -100,8 +102,8 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
             <button class="lang-option" data-lang="id" role="option">Indonesia</button>
           </div>
         </div>
-        <UserMenu client:idle />
-        <button id="mobile-menu-toggle" class="lg:hidden p-2 text-[var(--color-muted)] hover:text-white transition-colors" aria-label="Toggle menu" aria-expanded="false">
+        <UserMenu client:media="(min-width: 640px)" />
+        <button id="mobile-menu-toggle" class="lg:hidden min-w-11 min-h-11 flex items-center justify-center text-[var(--color-muted)] hover:text-white transition-colors" aria-label="Toggle menu" aria-expanded="false">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
       </div>
@@ -255,6 +257,7 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
   var dd = document.getElementById('lang-dropdown');
   var wrap = document.getElementById('lang-picker-wrap');
   if (!btn || !dd || !wrap) return;
+  btn.setAttribute('aria-label', 'Select language: ' + saved.toUpperCase());
 
   btn.addEventListener('click', function(e) {
     e.stopPropagation();
@@ -283,9 +286,7 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
     document.dispatchEvent(new CustomEvent('nm:search:open'));
   }
   var btn = document.getElementById('header-search-btn');
-  var btnM = document.getElementById('header-search-btn-mobile');
   if(btn) btn.addEventListener('click', openSearch);
-  if(btnM) btnM.addEventListener('click', openSearch);
   // Keyboard shortcut: press / to open search
   document.addEventListener('keydown', function(e){
     if(e.key==='/' && e.target.tagName!=='INPUT' && e.target.tagName!=='TEXTAREA'){

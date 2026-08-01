@@ -11,9 +11,13 @@ import { breadcrumbSchema } from '../lib/schema';
 import { SITE_URL } from '../lib/seo';
 import { SITE_NAME } from '../lib/constants';
 import { LANGUAGES, LANG_CODES } from '../i18n/config';
+import { getAllRealTitles } from '../lib/realTitles';
 
 const sections = getSitemapSections();
 const blogPosts = getAllBlogPosts();
+const allTitles = getAllRealTitles();
+const movieTitles = allTitles.filter(title => title.type === 'movie');
+const showTitles = allTitles.filter(title => title.type === 'show');
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Sitemap', href: '/sitemap/' },
@@ -93,6 +97,30 @@ const sitemapSchema = {
             </a>
           ))}
         </div>
+      </div>
+
+      <!-- Every generated title page remains reachable through crawlable HTML,
+           not only through the XML sitemap. This prevents orphaned detail URLs. -->
+      <div class="mb-12 grid grid-cols-1 md:grid-cols-2 gap-4">
+        {[
+          { heading: `Movie Pages (${movieTitles.length})`, items: movieTitles, prefix: 'movies' },
+          { heading: `TV Show Pages (${showTitles.length})`, items: showTitles, prefix: 'shows' },
+        ].map(group => (
+          <details class="glass-card rounded-xl p-5">
+            <summary class="font-bold cursor-pointer text-[var(--color-text-primary)] min-h-11 flex items-center">
+              {group.heading}
+            </summary>
+            <ul class="mt-4 columns-1 sm:columns-2 space-y-2">
+              {group.items.map(title => (
+                <li class="break-inside-avoid">
+                  <a href={`/${group.prefix}/${title.slug}/`} class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
+                    {title.title} ({title.year})
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        ))}
       </div>
 
       <!-- Language Versions -->

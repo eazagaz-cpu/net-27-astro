@@ -4,49 +4,34 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SEOHead from '../components/SEOHead.astro';
 import Schema from '../components/Schema.astro';
-import HeroSlider from '../components/HeroSlider.astro';
-import DynamicHero from '../components/DynamicHero.tsx';
+import DynamicHero from '../components/DynamicHero.astro';
 import AppCTA from '../components/AppCTA.astro';
-import DynamicRail from '../components/DynamicRail.tsx';
 import StaticRail from '../components/StaticRail.astro';
 import ContinueWatching from '../components/ContinueWatching.astro';
-import Top10Rail from '../components/Top10Rail.tsx';
+import Top10Rail from '../components/Top10Rail.astro';
 import SearchBlock from '../components/SearchBlock.astro';
 import FAQSection from '../components/FAQSection.astro';
 import { websiteSchema, organizationSchema, softwareAppSchema } from '../lib/schema';
 import { SITE_URL } from '../lib/seo';
 import { SITE_NAME } from '../lib/constants';
-import { getAllRealTitles } from '../lib/realTitles';
 import { getCachedItems } from '../lib/movie-cache';
 import { getAllBlogPosts } from '../data/blogPosts';
 
-const featured = [...getAllRealTitles()]
-  .sort((a, b) => b.rating - a.rating)
-  .slice(0, 5)
-  .map(t => ({
-    slug: t.slug,
-    tmdbId: t.tmdbId,
-    type: t.type,
-    title: t.title,
-    year: t.year,
-    rating: t.rating,
-    overview: t.overview,
-    backdrop: t.backdropUrl,
-    genres: t.genres,
-  }));
-
 // Build-time pre-fetched data (from movie-sync.mjs cache).
 // Returns [] gracefully if sync hasn't been run yet.
-const cachedTrending      = getCachedItems('trending',         20);
-const cachedLatest        = getCachedItems('latest-movies',    20);
-const cachedNetflix       = getCachedItems('netflix',          20);
-const cached2026          = getCachedItems('new-2026',         20);
-const cachedHindiDubbed   = getCachedItems('hindi-dubbed',     20);
-const cachedUpcoming      = getCachedItems('upcoming',         20);
-const cachedTrakt         = getCachedItems('trakt-trending',   20);
-const cachedPakistani     = getCachedItems('pakistani-drama',  20);
-const cachedTurkish       = getCachedItems('turkish-drama',    20);
+const cachedTrending      = getCachedItems('trending',         12);
+const cachedLatest        = getCachedItems('latest-movies',    12);
+const cachedNetflix       = getCachedItems('netflix',          12);
+const cachedHindiDubbed   = getCachedItems('hindi-dubbed',     12);
+const cachedUpcoming      = getCachedItems('upcoming',         12);
+const cachedPopularMovies = getCachedItems('popular-movies',   10);
+const cachedPopularTv     = getCachedItems('popular-tv',       10);
+const cachedPakistani     = getCachedItems('pakistani-drama',  12);
+const cachedTurkish       = getCachedItems('turkish-drama',    12);
 const latestPosts         = getAllBlogPosts().slice(0, 3);
+const firstHeroBackdrop = cachedTrending.find((item) => item.backdropUrl)?.backdropUrl || '';
+const heroSmall = firstHeroBackdrop.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w780/');
+const heroLarge = firstHeroBackdrop.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w1280/');
 
 const homeFaqs = [
   { question: 'What is NetMirror?', answer: 'NetMirror is a movie and show discovery platform that helps you find where to watch movies, TV shows, and anime across streaming services like Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more. We provide availability information — we do not host or stream any content.' },
@@ -67,13 +52,14 @@ const homeFaqs = [
     canonical={`${SITE_URL}/`}
   />
   <Schema slot="head" schema={[websiteSchema(), organizationSchema(), softwareAppSchema()]} />
+  {heroSmall && <link slot="head" rel="preload" as="image" href={heroSmall} fetchpriority="high" media="(max-width: 768px)" />}
+  {heroLarge && <link slot="head" rel="preload" as="image" href={heroLarge} fetchpriority="high" media="(min-width: 769px)" />}
 
   <Header />
 
   <main>
     <!-- Hero: server-rendered with cached data — visible immediately, no blank flash -->
-    <DynamicHero client:load initialItems={cachedTrending} />
-    <noscript><HeroSlider titles={featured} /></noscript>
+    <DynamicHero initialItems={cachedTrending} />
 
     <!-- App Download CTA -->
     <AppCTA />
@@ -127,25 +113,16 @@ const homeFaqs = [
     <ContinueWatching />
 
     <!-- Top 10 — directly after hero, no CTA interruption -->
-    <Top10Rail client:visible mediaType="movie" />
-    <Top10Rail client:visible mediaType="tv" />
+    <Top10Rail mediaType="movie" items={cachedPopularMovies} />
+    <Top10Rail mediaType="tv" items={cachedPopularTv} />
 
     <!-- Core sections — same structure as competitor -->
     <StaticRail title="Trending Now"            items={cachedTrending}   viewAllHref="/trending/"  railKey="trending" />
     <StaticRail title="Latest Releases (2025–2026)" items={cachedLatest} viewAllHref="/latest/"    railKey="latest-movies" />
     <StaticRail title="Popular on Netflix"           items={cachedNetflix}       viewAllHref="/platform/netflix/" railKey="netflix" />
-    <StaticRail title="New in 2026"                  items={cached2026}          viewAllHref="/latest/"           railKey="new-2026" />
     <StaticRail title="Hindi Dubbed Hits"            items={cachedHindiDubbed}  viewAllHref="/genre/action/"     railKey="hindi-dubbed" />
-    {cachedPakistani.length > 0 && <StaticRail title="Pakistani Dramas"  items={cachedPakistani} railKey="pakistani-drama" badge="PK" />}
-    {cachedTurkish.length  > 0 && <StaticRail title="Turkish Dramas (Urdu Dubbed)" items={cachedTurkish}  railKey="turkish-drama"   badge="TR" />}
-    {cachedTrakt.length > 0 && <StaticRail title="Trending on Trakt" items={cachedTrakt} railKey="trakt-trending" />}
-    <DynamicRail client:visible title="Action Movies"      category="action"   viewAllHref="/genre/action/" />
-    <DynamicRail client:visible title="Drama Series"       category="drama"    viewAllHref="/genre/drama/" />
-    <DynamicRail client:visible title="Comedy"             category="comedy"   viewAllHref="/genre/comedy/" />
-    <DynamicRail client:visible title="Thrillers"          category="thriller" viewAllHref="/genre/thriller/" />
-    <DynamicRail client:visible title="Romance"            category="romance"  viewAllHref="/genre/romance/" />
-    <DynamicRail client:visible title="Horror"             category="horror"   viewAllHref="/genre/horror/" />
-    <DynamicRail client:visible title="Animation & Family" category="kids"     viewAllHref="/genre/kids/" />
+    {cachedPakistani.length > 0 && <StaticRail title="Pakistani Dramas" items={cachedPakistani} viewAllHref="/language/urdu/" railKey="pakistani-drama" badge="PK" />}
+    {cachedTurkish.length  > 0 && <StaticRail title="Turkish Dramas (Urdu Dubbed)" items={cachedTurkish} viewAllHref="/language/turkish/" railKey="turkish-drama" badge="TR" />}
     <StaticRail title="Trending Globally — Coming Soon" items={cachedUpcoming} railKey="upcoming" badge="Upcoming" />
 
     <!-- Search Block -->
@@ -177,12 +154,12 @@ const homeFaqs = [
         <div class="max-w-[1400px] mx-auto px-4">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold">Latest from the Blog</h2>
-            <a href="/blog/" class="text-sm text-[var(--color-primary)] hover:underline">View all articles →</a>
+            <a href="/blog/" class="text-sm text-[#ff6479] hover:underline">View all articles →</a>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {latestPosts.map(post => (
               <a href={`/blog/${post.slug}/`} class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)]/40 transition-all group">
-                <span class="text-xs font-medium text-[var(--color-primary)] uppercase tracking-wider">{post.category}</span>
+                <span class="text-xs font-medium text-[#ff6479] uppercase tracking-wider">{post.category}</span>
                 <h3 class="mt-2 text-base font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">{post.title}</h3>
                 <p class="mt-2 text-sm text-[var(--color-text-muted)] line-clamp-2">{post.excerpt}</p>
                 <div class="mt-3 flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
