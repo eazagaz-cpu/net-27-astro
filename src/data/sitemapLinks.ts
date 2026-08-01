@@ -105,7 +105,7 @@ export function getSitemapSections(): SitemapSection[] {
     {
       heading: 'Technical',
       links: [
-        { title: 'XML Sitemap', href: '/sitemap-index.xml' },
+        { title: 'XML Sitemap', href: '/sitemap.xml' },
         { title: 'Robots.txt', href: '/robots.txt' },
       ],
     },

@@ -2,7 +2,7 @@
 https://www.net-27.cc/* https://net-27.cc/:splat 301
 
 # Sitemap aliases
-/sitemap.xml /sitemap-index.xml 301
+/sitemap_index.xml /sitemap.xml 301
 
 # Legacy redirects
 /home /

@@ -31,6 +31,7 @@ console.log('=== Sitemap Validation ===\n');
 // Check sitemap files exist
 const indexPath = `${DIST}/sitemap-index.xml`;
 const childPath = `${DIST}/sitemap-0.xml`;
+const directPath = `${DIST}/sitemap.xml`;
 const robotsPath = `${DIST}/robots.txt`;
 const headersPath = `${DIST}/_headers`;
 
@@ -47,6 +48,14 @@ try {
   console.log('  OK: sitemap-0.xml exists');
 } catch {
   console.error('  ERROR: sitemap-0.xml missing');
+  errors++;
+}
+
+try {
+  await access(directPath);
+  console.log('  OK: sitemap.xml exists');
+} catch {
+  console.error('  ERROR: sitemap.xml missing');
   errors++;
 }
 
@@ -88,6 +97,15 @@ try {
 // Validate sitemap-0.xml content
 try {
   const childXml = await readFile(childPath, 'utf-8');
+  const directXml = await readFile(directPath, 'utf-8');
+
+  if (directXml !== childXml) {
+    console.error('  ERROR: sitemap.xml is not the generated direct URL set');
+    errors++;
+  } else {
+    console.log('  OK: sitemap.xml is a direct generated URL set');
+  }
+
   sitemapUrls = [...childXml.matchAll(/<loc>([^<]+)<\/loc>/g)]
     .map((match) => decodeXml(match[1].trim()));
   const urlCount = sitemapUrls.length;
@@ -177,12 +195,10 @@ try {
 try {
   const robots = await readFile(robotsPath, 'utf-8');
 
-  if (robots.includes('sitemap-index.xml')) {
-    console.log('  OK: robots.txt references sitemap-index.xml');
-  } else if (robots.includes('sitemap.xml')) {
+  if (robots.includes('https://net-27.cc/sitemap.xml')) {
     console.log('  OK: robots.txt references sitemap.xml');
   } else {
-    console.error('  ERROR: robots.txt does not reference any sitemap');
+    console.error('  ERROR: robots.txt does not reference the canonical sitemap.xml');
     errors++;
   }
 
