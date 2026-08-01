@@ -333,6 +333,16 @@ import { SITE_URL } from '../lib/seo';
   let currentServerIdx = 0;
   let currentLang      = 'default';
   let playerConfirmed  = false;
+
+  // In-player captions: only vidlink (Server 4) has confirmed support for
+  // fetching an external VTT track (sub_file/sub_label URL params) and
+  // rendering it synced during playback — other embed providers have no
+  // documented equivalent. Selecting a caption on any other server switches
+  // to vidlink so captions can actually render, instead of just downloading
+  // a file (cross-origin iframes give us no way to inject a <track> directly).
+  const CAPTIONS_SERVER_ID = 'vidlink';
+  let activeCaptionUrl: string | null = null;
+  let activeCaptionLabel: string | null = null;
   let loadTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
   let failedThisCycle  = new Set<number>();
 
@@ -517,8 +527,15 @@ import { SITE_URL } from '../lib/seo';
     }
 
     requestAnimationFrame(() => {
-      // Do NOT append lang param — embed servers don't support it and reject modified URLs
-      iframe.src = srv.url;
+      // Do NOT append lang param — embed servers don't support it and reject modified URLs.
+      // sub_file/sub_label ARE supported by vidlink specifically for external
+      // captions (confirmed via their docs) — safe to append only there.
+      let src = srv.url;
+      if (srv.id === CAPTIONS_SERVER_ID && activeCaptionUrl) {
+        const sep = src.includes('?') ? '&' : '?';
+        src += `${sep}sub_file=${encodeURIComponent(activeCaptionUrl)}&sub_label=${encodeURIComponent(activeCaptionLabel || 'Subtitle')}`;
+      }
+      iframe.src = src;
       logDev('iframe load started');
 
       // Reveal iframe — embed provider shows its own loading UI inside the iframe
@@ -657,40 +674,42 @@ import { SITE_URL } from '../lib/seo';
         return;
       }
 
-      ccContent.innerHTML = subtitlesData.map((s, i) =>
-        `<button class="lang-opt" data-idx="${i}">
+      const offOption = activeCaptionUrl
+        ? `<button class="lang-opt" data-off="1"><span>Off</span></button>`
+        : '';
+
+      ccContent.innerHTML = offOption + subtitlesData.map((s, i) =>
+        `<button class="lang-opt${activeCaptionLabel === (s.langName || s.language) ? ' active' : ''}" data-idx="${i}">
           <span>${s.langName || s.language}</span>
-          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
         </button>`
       ).join('');
 
-      ccContent.querySelectorAll('.lang-opt').forEach(btn => {
-        btn.addEventListener('click', async () => {
+      ccContent.querySelector('[data-off]')?.addEventListener('click', () => {
+        activeCaptionUrl = null;
+        activeCaptionLabel = null;
+        ccDropdown?.classList.add('hidden');
+        loadPlayer(currentServerIdx);
+      });
+
+      ccContent.querySelectorAll('[data-idx]').forEach(btn => {
+        btn.addEventListener('click', () => {
           const idx = parseInt((btn as HTMLElement).dataset.idx || '0');
           const sub = subtitlesData[idx];
           if (!sub) return;
-          (btn as HTMLElement).innerHTML = '<span>Downloading...</span>';
-          try {
-            const res = await fetch('/api/subtitles', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ file_id: sub.fileId }),
-            });
-            const dl = await res.json();
-            if (dl.link) {
-              const a = document.createElement('a');
-              a.href = dl.link;
-              a.download = dl.fileName || `subtitle.${sub.format}`;
-              document.body.appendChild(a);
-              a.click();
-              document.body.removeChild(a);
-              (btn as HTMLElement).innerHTML = `<span>${sub.langName || sub.language} ✓</span>`;
-            } else {
-              (btn as HTMLElement).innerHTML = '<span>Failed — try again</span>';
-            }
-          } catch {
-            (btn as HTMLElement).innerHTML = '<span>Error — retry</span>';
-          }
+
+          activeCaptionUrl = `/api/subtitles?action=vtt&file_id=${sub.fileId}`;
+          activeCaptionLabel = sub.langName || sub.language;
+          ccDropdown?.classList.add('hidden');
+
+          // Captions render only via vidlink's own player — switch to it if
+          // we're on a different server (playback restarts on that server,
+          // there's no way around that with a cross-origin iframe embed).
+          const servers = getValidServers();
+          const targetIdx = servers[currentServerIdx]?.id === CAPTIONS_SERVER_ID
+            ? currentServerIdx
+            : servers.findIndex(s => s.id === CAPTIONS_SERVER_ID);
+          if (targetIdx === -1) return;
+          loadPlayer(targetIdx);
         });
       });
     } catch {
@@ -757,6 +776,7 @@ import { SITE_URL } from '../lib/seo';
       episode = 1;
       episodeSelect.value = '1';
       subtitlesFetched = false; subtitlesData = [];
+      activeCaptionUrl = null; activeCaptionLabel = null;
       populateServers();
       loadPlayer(currentServerIdx);
     });
@@ -766,6 +786,7 @@ import { SITE_URL } from '../lib/seo';
       episode = parseInt(episodeSelect.value);
       try { localStorage.setItem(`netmirror:lastep:${id}`, String(episode)); } catch {}
       subtitlesFetched = false; subtitlesData = [];
+      activeCaptionUrl = null; activeCaptionLabel = null;
       populateServers();
       loadPlayer(currentServerIdx);
     });
