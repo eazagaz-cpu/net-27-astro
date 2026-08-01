@@ -30,14 +30,3 @@ export function loadLang(): string {
 export function saveLang(code: string): void {
   try { localStorage.setItem(LANG_KEY, code); } catch {}
 }
-
-export function buildUrlWithLang(url: string, langCode: string): string {
-  if (!langCode || langCode === 'default') return url;
-  try {
-    const u = new URL(url);
-    u.searchParams.set('lang', langCode);
-    return u.toString();
-  } catch {
-    return url;
-  }
-}

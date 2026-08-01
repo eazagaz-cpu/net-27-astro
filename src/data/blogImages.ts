@@ -152,6 +152,24 @@ export const blogImages: Record<string, BlogImage> = {
     width: 1280,
     height: 720,
   },
+  'weekend-binge-watch-guide-2026': {
+    url: `${TMDB}/628Dep6AxEtDxjZoGP78TsOxYbK.jpg`,
+    alt: 'High-energy blockbuster scene — weekend binge watch guide for movies shows and anime',
+    width: 1280,
+    height: 720,
+  },
+  'hidden-gems-streaming-2026': {
+    url: `${TMDB}/wCuUKiRaz0wEESsYqmQy005xvTE.jpg`,
+    alt: 'International cinema scene — hidden gems on streaming services discovery guide',
+    width: 1280,
+    height: 720,
+  },
+  'streaming-with-family-friends-guide': {
+    url: `${TMDB}/3G1Q5xF40HkUBJXxt2DQgQzKTp5.jpg`,
+    alt: 'Colorful family movie scene — choosing what to watch with family and friends',
+    width: 1280,
+    height: 720,
+  },
   'new-on-netflix-july-2026': {
     url: `${TMDB}/oMWnpUUCeIqvTdP3IYZ0JnPdrmU.jpg`,
     alt: 'Wednesday Addams Netflix series — new on Netflix India July 2026',
