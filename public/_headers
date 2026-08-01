@@ -31,7 +31,7 @@
 
 /robots.txt
   Content-Type: text/plain
-  Cache-Control: public, max-age=86400
+  Cache-Control: no-cache
 
 /sitemap-index.xml
   Content-Type: application/xml; charset=utf-8
