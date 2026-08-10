@@ -19,15 +19,15 @@ import { getAllBlogPosts } from '../data/blogPosts';
 
 // Build-time pre-fetched data (from movie-sync.mjs cache).
 // Returns [] gracefully if sync hasn't been run yet.
-const cachedTrending      = getCachedItems('trending',         12);
-const cachedLatest        = getCachedItems('latest-movies',    12);
-const cachedNetflix       = getCachedItems('netflix',          12);
-const cachedHindiDubbed   = getCachedItems('hindi-dubbed',     12);
-const cachedUpcoming      = getCachedItems('upcoming',         12);
+const cachedTrending      = getCachedItems('trending',         20);
+const cachedLatest        = getCachedItems('latest-movies',    20);
+const cachedNetflix       = getCachedItems('netflix',          20);
+const cachedHindiDubbed   = getCachedItems('hindi-dubbed',     20);
+const cachedUpcoming      = getCachedItems('upcoming',         20);
 const cachedPopularMovies = getCachedItems('popular-movies',   10);
 const cachedPopularTv     = getCachedItems('popular-tv',       10);
-const cachedPakistani     = getCachedItems('pakistani-drama',  12);
-const cachedTurkish       = getCachedItems('turkish-drama',    12);
+const cachedPakistani     = getCachedItems('pakistani-drama',  20);
+const cachedTurkish       = getCachedItems('turkish-drama',    20);
 const latestPosts         = getAllBlogPosts().slice(0, 3);
 const firstHeroBackdrop = cachedTrending.find((item) => item.backdropUrl)?.backdropUrl || '';
 const heroSmall = firstHeroBackdrop.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w780/');

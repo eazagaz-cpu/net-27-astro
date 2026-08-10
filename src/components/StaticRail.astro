@@ -19,7 +19,7 @@ interface Props {
 }
 
 const { title, viewAllHref, badge } = Astro.props;
-const items = Astro.props.items.slice(0, 8);
+const items = Astro.props.items.slice(0, 20);
 const smallPoster = (url: string) => url.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w185/');
 
 // Nothing to render if cache is empty (sync hasn't been run yet)
