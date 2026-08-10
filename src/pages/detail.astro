@@ -71,7 +71,7 @@ const canonicalTitleUrls = Object.fromEntries(
             ${data.backdropUrl ? `<img src="${data.backdropUrl}" alt="${data.title} backdrop" class="absolute inset-0 w-full h-full object-cover" width="1280" height="720" decoding="async"/>` : ''}
             <div class="absolute inset-0 bg-gradient-to-r from-black/90 via-black/60 to-transparent"></div>
             <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg)] via-transparent to-black/40"></div>
-            <div class="relative z-10 max-w-[1400px] mx-auto px-4 flex items-end pb-12 pt-24 gap-8 min-h-[50vh] md:min-h-[60vh]">
+            <div class="relative z-10 max-w-[1920px] mx-auto px-4 flex items-end pb-12 pt-24 gap-8 min-h-[50vh] md:min-h-[60vh]">
               ${data.posterUrl ? `<div class="hidden md:block w-56 shrink-0"><img src="${data.posterUrl}" alt="${data.title} poster" class="w-full rounded-xl shadow-2xl" width="342" height="513" decoding="async"/></div>` : ''}
               <div class="flex-1 max-w-2xl">
                 ${data.tagline ? `<p class="text-[var(--color-primary)] text-xs font-bold uppercase tracking-wider mb-2">${data.tagline}</p>` : ''}
@@ -93,7 +93,7 @@ const canonicalTitleUrls = Object.fromEntries(
               </div>
             </div>
           </div>
-          <div class="max-w-[1400px] mx-auto px-4 py-10 space-y-10">
+          <div class="max-w-[1920px] mx-auto px-4 py-10 space-y-10">
             <div id="enrichment-section"></div>
             ${castHtml ? `<section><h2 class="section-title mb-4">Cast</h2><div class="scroll-rail gap-4">${castHtml}</div></section>` : ''}
             ${recsHtml ? `<section><h2 class="section-title mb-4">More Like This</h2><div class="scroll-rail gap-3">${recsHtml}</div></section>` : ''}
