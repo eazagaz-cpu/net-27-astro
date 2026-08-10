@@ -45,7 +45,7 @@ const features = [
 
   <main class="min-h-screen pt-36">
     <section class="relative py-16 md:py-24 bg-gradient-to-br from-[var(--color-bg-primary)] via-[var(--color-bg-secondary)] to-[var(--color-bg-primary)]">
-      <div class="max-w-full mx-auto px-4">
+      <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
         <Breadcrumbs items={breadcrumbs} />
         <div class="max-w-3xl">
           <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">
@@ -62,7 +62,7 @@ const features = [
     </section>
 
     <section class="py-16">
-      <div class="max-w-full mx-auto px-4">
+      <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
         <div class="max-w-3xl space-y-6 text-[var(--color-text-secondary)] text-lg leading-relaxed">
           <p>
             NetMirror was built out of a simple frustration: with dozens of streaming platforms available today, finding where to watch a specific title shouldn't require checking each service individually. We created a unified discovery platform that aggregates availability information so you can spend less time searching and more time watching.
@@ -78,7 +78,7 @@ const features = [
     </section>
 
     <section class="py-16 bg-[var(--color-bg-secondary)]">
-      <div class="max-w-full mx-auto px-4">
+      <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
         <h2 class="section-title mb-12 text-center justify-center">What We Offer</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           {features.map(feature => (
@@ -97,7 +97,7 @@ const features = [
     </section>
 
     <section class="py-16">
-      <div class="max-w-full mx-auto px-4 text-center">
+      <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] text-center">
         <h2 class="section-title mb-6 justify-center">Have Questions?</h2>
         <p class="text-[var(--color-text-secondary)] mb-8 max-w-xl mx-auto">
           We'd love to hear from you. Whether you have feedback, suggestions, or just want to say hello, feel free to reach out.
@@ -107,7 +107,7 @@ const features = [
     </section>
 
     <section class="py-8 border-t border-[var(--color-border)]">
-      <div class="max-w-full mx-auto px-4">
+      <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
         <p class="text-xs text-[var(--color-text-muted)] text-center">
           NetMirror does not host, store, or stream any copyrighted content. All information is for discovery purposes only. All trademarks and content belong to their respective owners.
         </p>

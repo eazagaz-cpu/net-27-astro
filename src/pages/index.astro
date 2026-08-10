@@ -65,7 +65,7 @@ const homeFaqs = [
     <AppCTA />
 
     <!-- Genre browsing pills -->
-    <div style="max-width:100%;margin:0 auto;padding:1.25rem 1rem 0">
+    <div style="max-width:100%;margin:0 auto;padding:1.25rem clamp(16px,2vw,64px) 0">
       <div class="genre-pills-row">
         <a href="/genre/action/" class="genre-pill">⚡ Action</a>
         <a href="/genre/drama/" class="genre-pill">🎭 Drama</a>
@@ -84,7 +84,7 @@ const homeFaqs = [
     </div>
 
     <!-- Surprise Me button -->
-    <div style="max-width:100%;margin:0 auto;padding:0.5rem 1rem 0;display:flex;justify-content:flex-end">
+    <div style="max-width:100%;margin:0 auto;padding:0.5rem clamp(16px,2vw,64px) 0;display:flex;justify-content:flex-end">
       <button
         id="surprise-me-btn"
         style="display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s"
@@ -130,7 +130,7 @@ const homeFaqs = [
 
     <!-- SEO Content Block -->
     <section class="py-10">
-      <div class="max-w-full mx-auto px-4">
+      <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
         <div class="glass-card rounded-2xl p-6 md:p-8">
           <h2 class="text-lg font-bold mb-3">{SITE_NAME} — Your Movie & Show Discovery Platform</h2>
           <div class="text-sm text-[var(--color-muted)] space-y-3 leading-relaxed">
@@ -151,7 +151,7 @@ const homeFaqs = [
     <!-- Latest from the Blog -->
     {latestPosts.length > 0 && (
       <section class="py-10">
-        <div class="max-w-full mx-auto px-4">
+        <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold">Latest from the Blog</h2>
             <a href="/blog/" class="text-sm text-[#ff6479] hover:underline">View all articles →</a>
@@ -176,14 +176,14 @@ const homeFaqs = [
 
     <!-- FAQ Section -->
     <section class="py-6">
-      <div class="max-w-full mx-auto px-4">
+      <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
         <FAQSection faqs={homeFaqs} title="Frequently Asked Questions" />
       </div>
     </section>
 
     <!-- Disclaimer -->
     <section class="py-6 border-t border-white/5">
-      <div class="max-w-full mx-auto px-4">
+      <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
         <p class="text-[10px] text-[var(--color-text-muted)] text-center leading-relaxed">
           Disclaimer: {SITE_NAME} does not host, store, or distribute any media content. We are a discovery platform that helps users find where to watch movies, TV shows, and anime legally through official streaming services. All content information, images, and trademarks belong to their respective owners. Download only from official {SITE_NAME} links. For support, contact net27.cc@gmail.com.
         </p>

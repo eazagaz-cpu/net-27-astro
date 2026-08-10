@@ -43,7 +43,7 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
 
 <header class="fixed top-0 left-0 right-0 z-50">
   <div class="bg-gradient-to-b from-black/90 via-black/70 to-transparent backdrop-blur-sm">
-    <div class="max-w-full mx-auto px-4 h-16 flex items-center justify-between gap-4">
+    <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] h-16 flex items-center justify-between gap-4">
       <a href="/" class="flex items-center gap-1 shrink-0 group" style="text-decoration:none">
         <span class="text-xl font-extrabold tracking-tight" style="letter-spacing:-0.03em">
           <span style="color:var(--color-primary);text-shadow:0 0 20px rgba(255,31,61,0.5)">Net</span><span class="text-white">Mirror</span>
@@ -109,7 +109,7 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
       </div>
     </div>
 
-    <div class="max-w-full mx-auto px-4 pb-2 hidden md:block">
+    <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] pb-2 hidden md:block">
       <div class="flex items-center gap-2 overflow-x-auto pb-1" style="scrollbar-width:none;">
         {platformChips.map(chip => (
           <a

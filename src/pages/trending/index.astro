@@ -20,7 +20,7 @@ const breadcrumbs = [
   <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
   <Header />
   <main class="min-h-screen pt-36">
-    <div class="max-w-full mx-auto px-4 py-8">
+    <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] py-8">
       <Breadcrumbs items={breadcrumbs} />
       <h1 class="text-3xl md:text-4xl font-bold mb-2">🔥 Trending Now</h1>
       <p class="text-[var(--color-muted)] mb-8">Movies and shows everyone is watching this week across all platforms.</p>

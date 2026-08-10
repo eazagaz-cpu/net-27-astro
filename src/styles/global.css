@@ -331,7 +331,7 @@
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
-    padding: 0 clamp(16px, 3vw, 48px);
+    padding: 0 clamp(16px,2vw,64px);
   }
 
   /* Two-column layout: text left, poster right */
