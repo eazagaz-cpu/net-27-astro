@@ -5,19 +5,38 @@ import Footer from '../components/Footer.astro';
 import SEOHead from '../components/SEOHead.astro';
 import Schema from '../components/Schema.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
-import { getSitemapSections } from '../data/sitemapLinks';
-import { getAllBlogPosts } from '../data/blogPosts';
 import { breadcrumbSchema } from '../lib/schema';
 import { SITE_URL } from '../lib/seo';
 import { SITE_NAME } from '../lib/constants';
-import { LANGUAGES, LANG_CODES } from '../i18n/config';
 import { getAllRealTitles } from '../lib/realTitles';
 
-const sections = getSitemapSections();
-const blogPosts = getAllBlogPosts();
 const allTitles = getAllRealTitles();
 const movieTitles = allTitles.filter(title => title.type === 'movie');
 const showTitles = allTitles.filter(title => title.type === 'show');
+const archivePageSize = 30;
+const archiveLinks = [
+  { label: 'Movie directory', section: 'movies', count: movieTitles.length },
+  { label: 'TV show directory', section: 'shows', count: showTitles.length },
+].flatMap(group => Array.from(
+  { length: Math.ceil(group.count / archivePageSize) },
+  (_, index) => ({
+    label: `${group.label} — page ${index + 1}`,
+    href: `/sitemap/${group.section}/${index + 1}/`,
+  }),
+));
+const hubLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'Movies', href: '/movies/' },
+  { label: 'TV Shows', href: '/shows/' },
+  { label: 'Anime', href: '/anime/' },
+  { label: 'Trending', href: '/trending/' },
+  { label: 'Latest Releases', href: '/latest/' },
+  { label: 'Search', href: '/search/' },
+  { label: 'Blog', href: '/blog/' },
+  { label: 'Download App', href: '/app/download/' },
+  { label: 'About', href: '/about/' },
+  { label: 'Contact', href: '/contact/' },
+];
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Sitemap', href: '/sitemap/' },
@@ -52,93 +71,24 @@ const sitemapSchema = {
         Browse all {SITE_NAME} pages — movies, TV shows, anime, app downloads, help guides, streaming platforms, genres, blog articles, and legal information.
       </p>
 
-      <!-- Main sections grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-        {sections.map(section => (
-          <div class="glass-card rounded-xl p-5">
-            <h2 class="text-sm font-bold uppercase tracking-wider text-[var(--color-text-primary)] mb-4 flex items-center gap-2">
-              <span class="w-1 h-4 bg-[var(--color-primary)] rounded-full"></span>
-              {section.heading}
-            </h2>
-            <ul class="space-y-2">
-              {section.links.map(link => (
-                <li>
-                  <a href={link.href} class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors flex items-start gap-2">
-                    <span class="text-[var(--color-text-muted)] mt-0.5 shrink-0">›</span>
-                    <span>
-                      {link.title}
-                      {link.description && <span class="text-[10px] text-[var(--color-text-muted)] block">{link.description}</span>}
-                    </span>
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-
-      <!-- Blog Articles -->
-      <div class="mb-12">
-        <h2 class="text-lg font-bold mb-5 flex items-center gap-2">
-          <span class="w-1 h-5 bg-[var(--color-primary)] rounded-full"></span>
-          Blog Articles
-        </h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {blogPosts.map(post => (
-            <a href={`/blog/${post.slug}/`} class="glass-card rounded-lg p-4 hover:border-[var(--color-primary)]/30 transition-all group">
-              <h3 class="text-sm font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors mb-1 line-clamp-1">{post.title}</h3>
-              <div class="flex items-center gap-2 text-[10px] text-[var(--color-text-muted)]">
-                <span>{post.category}</span>
-                <span>&middot;</span>
-                <span>{post.readTime}</span>
-                <span>&middot;</span>
-                <time>{post.date}</time>
-              </div>
-            </a>
-          ))}
-        </div>
-      </div>
-
-      <!-- Every generated title page remains reachable through crawlable HTML,
-           not only through the XML sitemap. This prevents orphaned detail URLs. -->
-      <div class="mb-12 grid grid-cols-1 md:grid-cols-2 gap-4">
-        {[
-          { heading: `Movie Pages (${movieTitles.length})`, items: movieTitles, prefix: 'movies' },
-          { heading: `TV Show Pages (${showTitles.length})`, items: showTitles, prefix: 'shows' },
-        ].map(group => (
-          <details class="glass-card rounded-xl p-5">
-            <summary class="font-bold cursor-pointer text-[var(--color-text-primary)] min-h-11 flex items-center">
-              {group.heading}
-            </summary>
-            <ul class="mt-4 columns-1 sm:columns-2 space-y-2">
-              {group.items.map(title => (
-                <li class="break-inside-avoid">
-                  <a href={`/${group.prefix}/${title.slug}/`} class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)] transition-colors">
-                    {title.title} ({title.year})
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </details>
-        ))}
-      </div>
-
-      <!-- Language Versions -->
-      <div class="mb-12">
-        <h2 class="text-lg font-bold mb-5 flex items-center gap-2">
-          <span class="w-1 h-5 bg-[var(--color-primary)] rounded-full"></span>
-          Language Versions
-        </h2>
-        <div class="flex flex-wrap gap-2">
-          {LANG_CODES.map(code => {
-            const lang = LANGUAGES[code];
-            return (
-              <span class="px-3 py-1.5 rounded-full text-xs font-medium bg-white/5 border border-white/10 text-[var(--color-text-secondary)]" title={lang.name}>
-                {lang.nativeName} ({lang.name})
-              </span>
-            );
-          })}
-        </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+        <section class="glass-card rounded-xl p-5">
+          <h2 class="text-lg font-bold mb-4">Main directories</h2>
+          <ul class="space-y-2">
+            {hubLinks.map(link => (
+              <li><a href={link.href} class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{link.label}</a></li>
+            ))}
+          </ul>
+        </section>
+        <section class="glass-card rounded-xl p-5">
+          <h2 class="text-lg font-bold mb-4">Title directories</h2>
+          <p class="text-xs text-[var(--color-text-muted)] mb-4">Every generated movie and TV page is linked in crawlable batches of 30.</p>
+          <ul class="space-y-2">
+            {archiveLinks.map(link => (
+              <li><a href={link.href} class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{link.label}</a></li>
+            ))}
+          </ul>
+        </section>
       </div>
 
       <!-- Disclaimer -->

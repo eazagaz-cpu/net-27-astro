@@ -1,0 +1,84 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import Header from '../../../components/Header.astro';
+import Footer from '../../../components/Footer.astro';
+import SEOHead from '../../../components/SEOHead.astro';
+import Breadcrumbs from '../../../components/Breadcrumbs.astro';
+import { getAllRealTitles, type RealTitle } from '../../../lib/realTitles';
+import { SITE_URL } from '../../../lib/seo';
+
+export const getStaticPaths = (() => {
+  const pageSize = 30;
+  const titles = getAllRealTitles();
+  return [
+    { section: 'movies', type: 'movie' as const, label: 'Movies' },
+    { section: 'shows', type: 'show' as const, label: 'TV Shows' },
+  ].flatMap(group => {
+    const items = titles.filter(title => title.type === group.type);
+    const pageCount = Math.ceil(items.length / pageSize);
+    return Array.from({ length: pageCount }, (_, index) => ({
+      params: { section: group.section, page: String(index + 1) },
+      props: {
+        items: items.slice(index * pageSize, (index + 1) * pageSize),
+        section: group.section,
+        label: group.label,
+        page: index + 1,
+        pageCount,
+      },
+    }));
+  });
+}) satisfies GetStaticPaths;
+
+interface Props {
+  items: RealTitle[];
+  section: 'movies' | 'shows';
+  label: string;
+  page: number;
+  pageCount: number;
+}
+
+const { items, section, label, page, pageCount } = Astro.props;
+const prefix = section === 'movies' ? 'movies' : 'shows';
+const canonical = `${SITE_URL}/sitemap/${section}/${page}/`;
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Sitemap', href: '/sitemap/' },
+  { label: `${label} ${page}`, href: `/sitemap/${section}/${page}/` },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title={`${label} Directory — Page ${page}`}
+    description={`Browse ${label.toLowerCase()} directory page ${page} of ${pageCount}. Every title links to its canonical NetMirror detail page.`}
+    canonical={canonical}
+  />
+  <Header />
+  <main class="min-h-screen pt-36">
+    <div class="max-w-4xl mx-auto px-4 py-8">
+      <Breadcrumbs items={breadcrumbs} />
+      <h1 class="text-3xl md:text-4xl font-bold mt-4 mb-3">{label} Directory</h1>
+      <p class="text-sm text-[var(--color-text-secondary)] mb-8">Page {page} of {pageCount}</p>
+      <ul class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {items.map(title => (
+          <li>
+            <a href={`/${prefix}/${title.slug}/`} class="glass-card rounded-lg p-3 min-h-11 flex items-center text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">
+              {title.title} ({title.year})
+            </a>
+          </li>
+        ))}
+      </ul>
+      <nav class="mt-8 flex items-center justify-between gap-4" aria-label={`${label} directory pagination`}>
+        {page > 1
+          ? <a href={`/sitemap/${section}/${page - 1}/`} rel="prev" class="btn-secondary">Previous</a>
+          : <span></span>}
+        {page < pageCount
+          ? <a href={`/sitemap/${section}/${page + 1}/`} rel="next" class="btn-secondary">Next</a>
+          : <span></span>}
+      </nav>
+    </div>
+  </main>
+  <Footer />
+</BaseLayout>
