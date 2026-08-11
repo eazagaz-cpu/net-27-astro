@@ -25,6 +25,10 @@ const dir = getDir(lang);
   <!-- Bing Webmaster Tools site verification. Must stay even after verifying —
        Bing rechecks it and un-verifies the site if it disappears. -->
   <meta name="msvalidate.01" content="E9FCACCA5615048272A04444381445CF" />
+  <!-- Yandex site verification. Preferred over the HTML-file method here:
+       Cloudflare Pages 308-redirects away the .html extension and injects a
+       script into HTML bodies, so the file never matches exactly. -->
+  <meta name="yandex-verification" content="c9591467b7b65148" />
   <!-- Google AdSense. Loads on every page because AdSense verifies ownership
        and reviews the site by finding this tag, not just on the home page. -->
   <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4341205984811312" crossorigin="anonymous" is:inline></script>
