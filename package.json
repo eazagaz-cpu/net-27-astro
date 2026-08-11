@@ -12,6 +12,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
+    "cf:check": "node scripts/check-cloudflare-auth.mjs",
+    "cf:deploy": "npm run cf:check && astro build && wrangler pages deploy ./dist --project-name net-27-astro",
     "validate:api": "node scripts/validate-api-config.mjs",
     "validate:media": "node scripts/validate-media.mjs",
     "validate:routes": "node scripts/validate-routes.mjs",
