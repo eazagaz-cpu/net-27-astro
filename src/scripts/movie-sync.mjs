@@ -560,7 +560,14 @@ const CATEGORIES = [
 ];
 
 // ── Main ─────────────────────────────────────────────────────────────────────
-const MAX_DETAIL_TITLES = 350;
+// The category caches hold around 910 distinct titles between them. Capping the
+// detail pass at 350 meant roughly 560 of them were fetched, counted, and then
+// dropped — every one a page that could have ranked. Search Console shows the
+// title pages taking almost no traffic, and this cap is a large part of why.
+//
+// The ceiling stays a little above the current pool so a sync that finds more
+// titles is not silently truncated, while still bounding a runaway build.
+const MAX_DETAIL_TITLES = 1000;
 
 async function main() {
   console.log('\n[movie-sync] Starting TMDB data pipeline...\n');
@@ -621,7 +628,9 @@ async function main() {
     } catch {
       detailFail++;
     }
-    await delay(260);
+    // ~7 requests a second. TMDB allows far more; this keeps a wide margin
+    // while stopping the larger detail pass from dominating the build.
+    await delay(140);
   }
 
   await enrichWithOmdb(titles);

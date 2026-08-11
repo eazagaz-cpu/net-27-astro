@@ -37,6 +37,12 @@ const seoInput = {
   watch: title.watch,
   disambiguator: hasDuplicateTitle ? title.tmdbId : undefined,
 };
+// Tier C: a page with no synopsis, no cast and no availability has nothing
+// for a searcher, so it stays reachable but out of the index rather than
+// padding it. Rare — a handful of titles out of nine hundred.
+const isThin = (title.overview || '').trim().length < 80
+  && !title.watch
+  && title.cast.length === 0;
 const seoPageTitle = titleSeoHeading(seoInput);
 const seoDescription = titleSeoDescription(seoInput);
 const isAnime = title.languages.includes('Japanese') && title.genres.includes('Animation');
@@ -105,6 +111,7 @@ const schemaData = [
     title={seoPageTitle}
     description={seoDescription}
     canonical={`${SITE_URL}/shows/${title.slug}/`}
+    noindex={isThin}
     ogType="video.tv_show"
   />
   <Schema slot="head" schema={schemaData} />
