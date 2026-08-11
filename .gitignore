@@ -25,7 +25,10 @@ Thumbs.db
 
 # editors
 .idea/
-.vscode/
+.vscode/*
+# Tracked so the wrangler credential isolation survives a fresh clone. Git
+# cannot re-include a file whose parent directory is excluded, hence the /*.
+!.vscode/settings.json
 *.swp
 *.swo
 

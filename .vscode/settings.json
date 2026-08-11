@@ -1,0 +1,9 @@
+{
+  // Point wrangler at this project's own credential store instead of the
+  // machine-wide one, so `wrangler login` in another repo can never repoint
+  // this project at the wrong Cloudflare account. Applies to terminals opened
+  // inside this workspace; npm run cf:* works anywhere via scripts/wrangler.mjs.
+  "terminal.integrated.env.windows": {
+    "XDG_CONFIG_HOME": "${workspaceFolder}\\.cf-auth"
+  }
+}
