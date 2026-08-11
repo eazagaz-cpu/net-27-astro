@@ -36,6 +36,20 @@ export interface RealSeason {
   overview: string;
 }
 
+/** Ratings from OMDb. Every field is a display string and may be empty. */
+export interface RealRatings {
+  /** IMDb score out of 10, e.g. "7.6". */
+  imdb: string;
+  /** Formatted vote count, e.g. "828,114". */
+  imdbVotes: string;
+  /** Tomatometer, e.g. "85%". */
+  rottenTomatoes: string;
+  /** Metascore out of 100, e.g. "67". */
+  metacritic: string;
+  /** Content certificate, e.g. "PG-13". */
+  rated: string;
+}
+
 export interface RealTitle {
   id: string;
   tmdbId: number;
@@ -63,6 +77,9 @@ export interface RealTitle {
   watch?: RealWatchAvailability | null;
   /** Numbered seasons only; TMDB's season 0 specials bucket is excluded. */
   seasonList?: RealSeason[];
+  imdbId?: string;
+  /** Absent when OMDb has no key configured, no listing, or hit its quota. */
+  ratings?: RealRatings;
 }
 
 interface TitlesFile {

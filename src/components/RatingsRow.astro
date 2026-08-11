@@ -1,0 +1,41 @@
+---
+/**
+ * RatingsRow.astro — IMDb, Rotten Tomatoes and Metacritic scores.
+ *
+ * TMDB's own score is shown elsewhere on the page; these are the three most
+ * people actually compare against before deciding what to watch. Data comes
+ * from OMDb at sync time (see enrichWithOmdb in movie-sync.mjs) and is absent
+ * whenever OMDb has no key, no listing, or has hit its daily quota — so this
+ * renders nothing rather than empty placeholders.
+ */
+import type { RealRatings } from '../lib/realTitles';
+
+interface Props {
+  ratings?: RealRatings;
+}
+
+const { ratings } = Astro.props;
+
+const scores = ratings
+  ? [
+      { label: 'IMDb', value: ratings.imdb ? `${ratings.imdb}/10` : '', note: ratings.imdbVotes ? `${ratings.imdbVotes} votes` : '', color: '#F5C518' },
+      { label: 'Rotten Tomatoes', value: ratings.rottenTomatoes, note: '', color: '#FA320A' },
+      { label: 'Metacritic', value: ratings.metacritic ? `${ratings.metacritic}/100` : '', note: '', color: '#FFCC33' },
+    ].filter(score => score.value)
+  : [];
+---
+
+{scores.length > 0 && (
+  <div class="flex flex-wrap items-stretch gap-3 mt-4">
+    {scores.map(score => (
+      <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-white/5 border border-white/10">
+        <span class="w-1 self-stretch rounded-full shrink-0" style={`background:${score.color}`} aria-hidden="true"></span>
+        <div>
+          <p class="text-[10px] uppercase tracking-wider text-[var(--color-text-muted)] leading-none">{score.label}</p>
+          <p class="text-sm font-bold text-white mt-1 leading-none">{score.value}</p>
+          {score.note && <p class="text-[10px] text-[var(--color-text-muted)] mt-1 leading-none">{score.note}</p>}
+        </div>
+      </div>
+    ))}
+  </div>
+)}

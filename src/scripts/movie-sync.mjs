@@ -245,7 +245,9 @@ async function fetchTitleDetail(type, id) {
   const path = type === 'tv' ? `/tv/${id}` : `/movie/${id}`;
   // watch/providers rides along on the same request — append_to_response costs
   // no extra call, so availability data is effectively free here.
-  const d = await tmdbFetch(path, { append_to_response: 'credits,videos,similar,watch/providers' });
+  // external_ids carries the IMDb id, which TV responses otherwise omit and
+  // which OMDb needs to look a title up. Like the other appends it is free.
+  const d = await tmdbFetch(path, { append_to_response: 'credits,videos,similar,watch/providers,external_ids' });
   if (!d.poster_path && !d.backdrop_path) return null;
 
   const title = (d.title || d.name || '').trim();
@@ -285,6 +287,7 @@ async function fetchTitleDetail(type, id) {
     seasons: type === 'tv' ? (d.number_of_seasons || 0) : undefined,
     episodes: type === 'tv' ? (d.number_of_episodes || 0) : undefined,
     relatedIds: (d.similar?.results || []).slice(0, 12).map(r => `${type}-${r.id}`),
+    imdbId: d.imdb_id || d.external_ids?.imdb_id || '',
     watch: extractWatchProviders(d['watch/providers']),
     // The season list comes back on the base TV response, so a breakdown costs
     // nothing extra. Full episode listings would need one request per season,
@@ -341,6 +344,83 @@ function extractWatchProviders(block) {
 
   const hasAny = watch.stream.length || watch.free.length || watch.rent.length || watch.buy.length;
   return hasAny ? watch : null;
+}
+
+// ── OMDb ratings (IMDb, Rotten Tomatoes, Metacritic) ─────────────────────────
+// TMDB carries only its own score. OMDb adds the three ratings people actually
+// compare against, keyed on the IMDb id collected above.
+//
+// The free OMDb tier allows 1,000 requests a day and this runs on every
+// Cloudflare build, so the pass is capped and aborts the moment OMDb reports
+// the quota is gone — ratings are a bonus, never a reason for a build to fail.
+const OMDB_MAX_TITLES = 200;
+
+function parseRating(ratings, source) {
+  const hit = (ratings || []).find(r => r.Source === source);
+  return hit?.Value || '';
+}
+
+async function fetchOmdb(imdbId, key) {
+  const url = `https://www.omdbapi.com/?i=${encodeURIComponent(imdbId)}&apikey=${encodeURIComponent(key)}`;
+  const res = await fetch(url, { signal: AbortSignal.timeout(10000) });
+  if (!res.ok) throw new Error(`OMDb HTTP ${res.status}`);
+  const d = await res.json();
+
+  // OMDb answers 200 with Response:"False" for both "not found" and a spent
+  // quota, so the message is the only way to tell them apart.
+  if (d.Response !== 'True') {
+    const err = new Error(d.Error || 'OMDb lookup failed');
+    err.quotaExhausted = /limit reached/i.test(d.Error || '');
+    throw err;
+  }
+
+  const imdb = d.imdbRating && d.imdbRating !== 'N/A' ? d.imdbRating : '';
+  const rotten = parseRating(d.Ratings, 'Rotten Tomatoes');
+  const meta = d.Metascore && d.Metascore !== 'N/A' ? d.Metascore : '';
+  if (!imdb && !rotten && !meta) return null;
+
+  return {
+    imdb,
+    imdbVotes: d.imdbVotes && d.imdbVotes !== 'N/A' ? d.imdbVotes : '',
+    rottenTomatoes: rotten,
+    metacritic: meta,
+    rated: d.Rated && d.Rated !== 'N/A' ? d.Rated : '',
+  };
+}
+
+async function enrichWithOmdb(titles) {
+  const key = process.env.OMDB_API_KEY;
+  if (!key) {
+    console.log('[movie-sync] OMDB_API_KEY not set — skipping IMDb/RT/Metacritic ratings');
+    return;
+  }
+
+  // Best-known titles first, so a truncated run still covers what most
+  // visitors actually open.
+  const queue = titles
+    .filter(t => t.imdbId)
+    .sort((a, b) => (b.voteCount || 0) - (a.voteCount || 0))
+    .slice(0, OMDB_MAX_TITLES);
+
+  console.log(`\n[movie-sync] Fetching OMDb ratings for ${queue.length} titles...`);
+  let done = 0;
+  let missing = 0;
+
+  for (const title of queue) {
+    try {
+      const ratings = await fetchOmdb(title.imdbId, key);
+      if (ratings) { title.ratings = ratings; done++; } else { missing++; }
+    } catch (err) {
+      if (err.quotaExhausted) {
+        console.log(`[movie-sync] OMDb daily quota reached — keeping the ${done} ratings fetched so far`);
+        break;
+      }
+      missing++;
+    }
+    await delay(120);
+  }
+
+  console.log(`[movie-sync] OMDb ratings attached to ${done} titles (${missing} without a listing).`);
 }
 
 // ── Write a cache JSON file ──────────────────────────────────────────────────
@@ -501,6 +581,9 @@ async function main() {
     }
     await delay(260);
   }
+
+  await enrichWithOmdb(titles);
+
   writeFileSync(
     join(CACHE_DIR, 'titles.json'),
     JSON.stringify({ fetchedAt: new Date().toISOString(), count: titles.length, items: titles }),
