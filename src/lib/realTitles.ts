@@ -9,6 +9,23 @@ export interface RealCastMember {
   role: string;
 }
 
+export interface RealWatchProvider {
+  name: string;
+  logo: string;
+}
+
+/** Official availability from TMDB, resolved to a single region at sync time. */
+export interface RealWatchAvailability {
+  /** ISO country code the lists below describe — 'IN' unless only US data existed. */
+  region: string;
+  /** TMDB's own watch page for the title; the providers carry no direct deep links. */
+  link: string;
+  stream: RealWatchProvider[];
+  free: RealWatchProvider[];
+  rent: RealWatchProvider[];
+  buy: RealWatchProvider[];
+}
+
 export interface RealTitle {
   id: string;
   tmdbId: number;
@@ -32,6 +49,8 @@ export interface RealTitle {
   seasons?: number;
   episodes?: number;
   relatedIds: string[];
+  /** null when TMDB lists no official availability in any covered region. */
+  watch?: RealWatchAvailability | null;
 }
 
 interface TitlesFile {

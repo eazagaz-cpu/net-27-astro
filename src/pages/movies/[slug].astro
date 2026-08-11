@@ -13,6 +13,7 @@ import { genres } from '../../data/sampleTitles';
 import { breadcrumbSchema, movieSchema, faqSchema, watchActionSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 import { APK_UNIVERSAL_URL } from '../../lib/constants';
+import WhereToWatch from '../../components/WhereToWatch.astro';
 
 export const getStaticPaths = (() => {
   return getRealTitlesByType('movie').map(title => ({
@@ -203,6 +204,10 @@ const schemaData = [
 
     <!-- Content Sections -->
     <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-12 space-y-16">
+
+      <!-- Official availability, above the fold-adjacent content because it is
+           the question most visitors arrive with. -->
+      <WhereToWatch watch={title.watch} titleName={title.title} />
 
       <!-- Cast Section -->
       {title.cast.length > 0 && (

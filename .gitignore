@@ -32,6 +32,10 @@ Thumbs.db
 *.swp
 *.swo
 
+# scratch build artefacts
+tmp/
+tmp-*.log
+
 # wrangler
 .wrangler/
 

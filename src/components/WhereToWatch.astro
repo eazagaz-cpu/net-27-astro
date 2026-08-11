@@ -1,0 +1,85 @@
+---
+/**
+ * WhereToWatch.astro — official streaming availability for a title.
+ *
+ * Data comes from TMDB's watch/providers, resolved to a single region at sync
+ * time (see extractWatchProviders in movie-sync.mjs). TMDB's licensing terms
+ * require sending viewers to its own watch page rather than deep-linking the
+ * providers, which is why every provider sits inside one outbound link.
+ *
+ * Renders nothing when a title has no listed availability, which is normal for
+ * unreleased and older titles.
+ */
+import type { RealWatchAvailability } from '../lib/realTitles';
+
+interface Props {
+  watch?: RealWatchAvailability | null;
+  titleName: string;
+}
+
+const { watch, titleName } = Astro.props;
+
+const REGION_NAMES: Record<string, string> = { IN: 'India', US: 'the US' };
+
+const groups = watch
+  ? [
+      { label: 'Stream with a subscription', items: watch.stream },
+      { label: 'Watch free', items: watch.free },
+      { label: 'Rent', items: watch.rent },
+      { label: 'Buy', items: watch.buy },
+    ].filter(group => group.items.length > 0)
+  : [];
+---
+
+{groups.length > 0 && watch && (
+  <section>
+    <h2 class="section-title mb-2">Where to Watch</h2>
+    <p class="text-sm text-[var(--color-text-muted)] mb-6">
+      Official streaming availability for <strong>{titleName}</strong> in {REGION_NAMES[watch.region] ?? watch.region}.
+      {watch.region !== 'IN' && ' No Indian listing was available for this title.'}
+    </p>
+
+    <div class="glass-card rounded-xl p-6 space-y-6">
+      {groups.map(group => (
+        <div>
+          <h3 class="text-xs font-semibold uppercase tracking-wider text-[var(--color-muted)] mb-3">{group.label}</h3>
+          <div class="flex flex-wrap gap-3">
+            {group.items.map(provider => (
+              <div class="flex items-center gap-2 pl-2 pr-3 py-2 rounded-lg bg-white/5 border border-white/10">
+                {provider.logo && (
+                  <img
+                    src={provider.logo}
+                    alt=""
+                    width="28"
+                    height="28"
+                    loading="lazy"
+                    decoding="async"
+                    class="w-7 h-7 rounded object-cover shrink-0"
+                  />
+                )}
+                <span class="text-sm text-white whitespace-nowrap">{provider.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      ))}
+
+      {watch.link && (
+        <a
+          href={watch.link}
+          target="_blank"
+          rel="noopener noreferrer nofollow"
+          class="inline-flex items-center gap-2 text-sm text-[var(--color-primary)] hover:underline"
+        >
+          Check current availability and prices
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </a>
+      )}
+
+      <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">
+        Availability is provided by JustWatch via TMDB and can change without notice.
+        {' '}{new Date().getFullYear()} listings shown; check the provider for the current offer.
+      </p>
+    </div>
+  </section>
+)}

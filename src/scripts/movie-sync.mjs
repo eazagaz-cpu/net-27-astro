@@ -243,7 +243,9 @@ function slugify(text) {
 // shows/[slug].astro render from. ─────────────────────────────────────────
 async function fetchTitleDetail(type, id) {
   const path = type === 'tv' ? `/tv/${id}` : `/movie/${id}`;
-  const d = await tmdbFetch(path, { append_to_response: 'credits,videos,similar' });
+  // watch/providers rides along on the same request — append_to_response costs
+  // no extra call, so availability data is effectively free here.
+  const d = await tmdbFetch(path, { append_to_response: 'credits,videos,similar,watch/providers' });
   if (!d.poster_path && !d.backdrop_path) return null;
 
   const title = (d.title || d.name || '').trim();
@@ -283,7 +285,41 @@ async function fetchTitleDetail(type, id) {
     seasons: type === 'tv' ? (d.number_of_seasons || 0) : undefined,
     episodes: type === 'tv' ? (d.number_of_episodes || 0) : undefined,
     relatedIds: (d.similar?.results || []).slice(0, 12).map(r => `${type}-${r.id}`),
+    watch: extractWatchProviders(d['watch/providers']),
   };
+}
+
+// ── Official streaming availability ──────────────────────────────────────────
+// India first, since that is where most of the audience is; US is only a
+// fallback so a title still shows something rather than an empty section.
+const WATCH_REGIONS = ['IN', 'US'];
+
+function extractWatchProviders(block) {
+  const results = block?.results;
+  if (!results) return null;
+
+  const region = WATCH_REGIONS.find(code => results[code]);
+  if (!region) return null;
+
+  const entry = results[region];
+  const shape = list => (list || []).map(p => ({
+    name: p.provider_name,
+    logo: p.logo_path ? `${IMG_BASE}/w92${p.logo_path}` : '',
+  }));
+
+  // "ads" and "free" both mean watchable at no cost; MX Player and JioHotstar
+  // land in one or the other depending on the title, so they are merged.
+  const watch = {
+    region,
+    link: entry.link || '',
+    stream: shape(entry.flatrate),
+    free: [...shape(entry.free), ...shape(entry.ads)],
+    rent: shape(entry.rent),
+    buy: shape(entry.buy),
+  };
+
+  const hasAny = watch.stream.length || watch.free.length || watch.rent.length || watch.buy.length;
+  return hasAny ? watch : null;
 }
 
 // ── Write a cache JSON file ──────────────────────────────────────────────────
