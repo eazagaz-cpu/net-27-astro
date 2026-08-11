@@ -11,6 +11,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 
 const posts = getAllBlogPosts();
+const thumbnailUrl = (url: string) => url.replace('/t/p/w1280/', '/t/p/w500/');
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Blog', href: '/blog/' },
@@ -45,14 +46,14 @@ const breadcrumbs = [
           <div class="grid md:grid-cols-2 gap-0">
             <div class="aspect-[16/9] md:aspect-auto overflow-hidden">
               <img
-                src={getBlogImage(posts[0].slug, posts[0].tags).url}
+                src={thumbnailUrl(getBlogImage(posts[0].slug, posts[0].tags).url)}
                 alt={getBlogImage(posts[0].slug, posts[0].tags).alt}
                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                 loading="eager"
                 decoding="async"
                 width="640"
                 height="360"
-                onerror="this.onerror=null;this.src='https://image.tmdb.org/t/p/w1280/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg'"
+                onerror="this.onerror=null;this.src='https://image.tmdb.org/t/p/w500/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg'"
               />
             </div>
             <div class="p-6 md:p-8 flex flex-col justify-center">
@@ -84,14 +85,14 @@ const breadcrumbs = [
             <a href={`/blog/${post.slug}/`} class="glass-card group rounded-xl overflow-hidden hover:border-[var(--color-primary)]/40 transition-all duration-300 flex flex-col">
               <div class="aspect-[16/9] overflow-hidden">
                 <img
-                  src={img.url}
+                  src={thumbnailUrl(img.url)}
                   alt={img.alt}
                   class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   loading={i < 3 ? 'eager' : 'lazy'}
                   decoding="async"
                   width="400"
                   height="225"
-                  onerror="this.onerror=null;this.src='https://image.tmdb.org/t/p/w1280/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg'"
+                  onerror="this.onerror=null;this.src='https://image.tmdb.org/t/p/w500/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg'"
                 />
               </div>
               <div class="p-5 flex flex-col flex-1">

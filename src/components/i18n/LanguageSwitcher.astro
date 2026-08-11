@@ -6,8 +6,8 @@ import { LANGUAGES, LANG_CODES } from '../../i18n/config';
   {LANG_CODES.map(code => {
     const lang = LANGUAGES[code];
     return (
-      <a
-        href="#"
+      <button
+        type="button"
         data-lang={code}
         class="lang-chip"
         lang={code}
@@ -15,7 +15,7 @@ import { LANGUAGES, LANG_CODES } from '../../i18n/config';
         title={lang.name}
       >
         {lang.nativeName}
-      </a>
+      </button>
     );
   })}
 </div>

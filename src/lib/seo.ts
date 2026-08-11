@@ -43,7 +43,9 @@ export function generateSEO(input: SEOInput): SEOOutput {
   const title = hasBrand
     ? truncateSeoText(input.title, 60)
     : `${truncateSeoText(input.title, 60 - brandSuffix.length)}${brandSuffix}`;
-  const description = truncateSeoText(input.description, 155);
+  // A slightly tighter limit avoids pixel-width overflow for wide glyphs while
+  // preserving a useful, complete search snippet on mobile and desktop.
+  const description = truncateSeoText(input.description, 145);
   const canonical = input.canonical ?? SITE_URL;
   const ogImage = input.ogImage ?? `${SITE_URL}/og-image.png`;
   const ogType = input.ogType ?? 'website';

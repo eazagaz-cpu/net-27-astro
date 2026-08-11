@@ -22,6 +22,14 @@ export const getStaticPaths = (() => {
 }) satisfies GetStaticPaths;
 
 const { title } = Astro.props;
+const hasDuplicateTitle = getRealTitlesByType('movie').some(
+  candidate => candidate.tmdbId !== title.tmdbId
+    && candidate.title.toLowerCase() === title.title.toLowerCase()
+    && candidate.year === title.year,
+);
+const seoPageTitle = hasDuplicateTitle
+  ? `Watch ${title.title} (TMDB ${title.tmdbId}) Online`
+  : `Watch ${title.title} (${title.year}) Online Free in HD`;
 const related = getRelatedRealTitles(title);
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -86,7 +94,7 @@ const schemaData = [
 <BaseLayout>
   <SEOHead
     slot="head"
-    title={`Watch ${title.title} (${title.year}) Online Free in HD`}
+    title={seoPageTitle}
     description={`Watch ${title.title} (${title.year}) online free in HD. ${title.overview.slice(0, 130)}... Stream on NetMirror — no sign-up required.`}
     canonical={`${SITE_URL}/movies/${title.slug}/`}
     ogType="video.movie"
