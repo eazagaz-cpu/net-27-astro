@@ -38,4 +38,6 @@ const ogImageAlt = 'NetMirror - Movies, TV Shows, Anime and Hindi Dubbed Discove
 <meta name="twitter:image" content={seo.ogImage} />
 <meta name="twitter:image:alt" content={ogImageAlt} />
 
-{seo.noindex && <meta name="robots" content="noindex, nofollow" />}
+{/* follow, not nofollow: these pages should stay out of the index while still
+    passing crawlers through to the catalogue they link to. */}
+{seo.noindex && <meta name="robots" content="noindex, follow" />}

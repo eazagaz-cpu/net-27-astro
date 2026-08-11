@@ -8,7 +8,11 @@ import { SITE_URL } from '../lib/seo';
 ---
 
 <BaseLayout>
+  <!-- Sign-in is a utility screen with nothing to rank for. It was drawing
+       ~3.8k impressions a month at under 1% CTR against brand queries that
+       belong to the home page, so it is kept out of the index. -->
   <SEOHead
+    noindex={true}
     slot="head"
     title="Sign in / Sign Up"
     description="Sign in to NetMirror. Free account. No credit card. Resume where you left off. Access your watchlist across devices."

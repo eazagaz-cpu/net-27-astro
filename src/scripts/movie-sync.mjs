@@ -405,22 +405,36 @@ async function enrichWithOmdb(titles) {
   console.log(`\n[movie-sync] Fetching OMDb ratings for ${queue.length} titles...`);
   let done = 0;
   let missing = 0;
+  // Reasons are surfaced because a silent "0 attached" gives no way to tell a
+  // rejected key from titles OMDb genuinely has no data for.
+  const reasons = new Map();
 
   for (const title of queue) {
     try {
       const ratings = await fetchOmdb(title.imdbId, key);
-      if (ratings) { title.ratings = ratings; done++; } else { missing++; }
+      if (ratings) { title.ratings = ratings; done++; }
+      else { missing++; reasons.set('no ratings in response', (reasons.get('no ratings in response') || 0) + 1); }
     } catch (err) {
       if (err.quotaExhausted) {
         console.log(`[movie-sync] OMDb daily quota reached — keeping the ${done} ratings fetched so far`);
         break;
       }
       missing++;
+      reasons.set(err.message, (reasons.get(err.message) || 0) + 1);
+      // A key OMDb refuses outright fails identically for every title, so stop
+      // rather than spending 200 requests proving the same point.
+      if (/invalid api key|no api key/i.test(err.message)) {
+        console.log(`[movie-sync] OMDb rejected the key — skipping the rest of the pass`);
+        break;
+      }
     }
     await delay(120);
   }
 
-  console.log(`[movie-sync] OMDb ratings attached to ${done} titles (${missing} without a listing).`);
+  console.log(`[movie-sync] OMDb ratings attached to ${done} titles (${missing} skipped).`);
+  for (const [reason, count] of [...reasons].sort((a, b) => b[1] - a[1]).slice(0, 3)) {
+    console.log(`[movie-sync]   ${count}x ${reason}`);
+  }
 }
 
 // ── Write a cache JSON file ──────────────────────────────────────────────────

@@ -11,7 +11,7 @@ import FAQSection from '../../components/FAQSection.astro';
 import { getRealTitlesByType, getRelatedRealTitles } from '../../lib/realTitles';
 import { genres } from '../../data/sampleTitles';
 import { breadcrumbSchema, movieSchema, faqSchema, watchActionSchema } from '../../lib/schema';
-import { SITE_URL } from '../../lib/seo';
+import { SITE_URL, titleSeoHeading, titleSeoDescription } from '../../lib/seo';
 import { APK_UNIVERSAL_URL } from '../../lib/constants';
 import WhereToWatch from '../../components/WhereToWatch.astro';
 import RatingsRow from '../../components/RatingsRow.astro';
@@ -29,9 +29,15 @@ const hasDuplicateTitle = getRealTitlesByType('movie').some(
     && candidate.title.toLowerCase() === title.title.toLowerCase()
     && candidate.year === title.year,
 );
-const seoPageTitle = hasDuplicateTitle
-  ? `Watch ${title.title} (TMDB ${title.tmdbId}) Online`
-  : `Watch ${title.title} (${title.year}) Online Free in HD`;
+const seoInput = {
+  name: title.title,
+  year: title.year,
+  overview: title.overview,
+  watch: title.watch,
+  disambiguator: hasDuplicateTitle ? title.tmdbId : undefined,
+};
+const seoPageTitle = titleSeoHeading(seoInput);
+const seoDescription = titleSeoDescription(seoInput);
 const related = getRelatedRealTitles(title);
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -97,7 +103,7 @@ const schemaData = [
   <SEOHead
     slot="head"
     title={seoPageTitle}
-    description={`Watch ${title.title} (${title.year}) online free in HD. ${title.overview.slice(0, 130)}... Stream on NetMirror — no sign-up required.`}
+    description={seoDescription}
     canonical={`${SITE_URL}/movies/${title.slug}/`}
     ogType="video.movie"
   />
