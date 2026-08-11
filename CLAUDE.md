@@ -21,19 +21,29 @@ Run this before trusting any wrangler command:
 npm run cf:check
 ```
 
-Auth comes from `CLOUDFLARE_API_TOKEN` in `.env.local`, **not** from
-`wrangler login`. That is deliberate. Wrangler stores its OAuth login once per
-machine and shares it across every project, so running `wrangler login` in some
-other repo silently repoints this one at a different account; the next command
-then fails with `Failed to automatically retrieve account IDs`. A token in
-`.env.local` is loaded automatically and outranks the shared OAuth login, which
-makes this project immune to whatever any other project did.
+Auth must be **project-scoped**, never the bare machine-wide login. Wrangler
+stores its OAuth login once per machine and shares it across every project, so
+running `wrangler login` in some other repo silently repoints this one at a
+different account; the next command then fails with `Failed to automatically
+retrieve account IDs`. This machine has a second Cloudflare account, so that is
+a live hazard, not a hypothetical.
 
-If `cf:check` reports a missing or under-privileged token, mint a new one at
-https://dash.cloudflare.com/profile/api-tokens using the **Cloudflare Pages**
-template plus *Account · Account Settings · Read*, scoped to the net27 account.
-Never run `wrangler login` to "fix" this — it papers over the problem until the
-next time another project logs in.
+Two setups avoid it, and `cf:check` accepts either:
+
+- **Private login** (`npm run cf:login`) — wrangler resolves its config
+  directory through `XDG_CONFIG_HOME`, and [scripts/wrangler.mjs](scripts/wrangler.mjs)
+  points that at `.cf-auth/` inside the repo. Every `cf:*` script goes through
+  that wrapper. **Calling `wrangler` directly bypasses it** and falls back to the
+  shared store — use `npm run cf -- <args>` instead.
+- **API token** in `.env.local` as `CLOUDFLARE_API_TOKEN`, which wrangler loads
+  automatically and which outranks the shared login. Mint it at
+  https://dash.cloudflare.com/profile/api-tokens with the **Cloudflare Pages**
+  template plus *Account · Account Settings · Read*.
+
+Note that a token can report `status: active` while still lacking the
+permissions that matter — the token that broke deploys did exactly that — which
+is why `cf:check` calls the real Pages endpoint instead of trusting a status
+field.
 
 ## Documentation
 
