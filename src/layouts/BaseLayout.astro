@@ -22,6 +22,12 @@ const dir = getDir(lang);
        only, not separate indexable pages, so hreflang alternates would be
        inaccurate. -->
   <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+  <!-- Bing Webmaster Tools site verification. Must stay even after verifying —
+       Bing rechecks it and un-verifies the site if it disappears. -->
+  <meta name="msvalidate.01" content="E9FCACCA5615048272A04444381445CF" />
+  <!-- Google AdSense. Loads on every page because AdSense verifies ownership
+       and reviews the site by finding this tag, not just on the home page. -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4341205984811312" crossorigin="anonymous" is:inline></script>
   <slot name="head" />
   <!-- Analytics is loaded after real user intent, keeping third-party code out of the critical path. -->
   <script is:inline>
