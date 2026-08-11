@@ -1,0 +1,67 @@
+---
+/**
+ * SeasonList.astro — per-season breakdown for a TV show.
+ *
+ * Long-running dramas are a large part of what this audience watches, and a
+ * bare "5 Seasons" figure does not answer how long each one runs or when it
+ * aired. The data rides along on the TV detail request at sync time, so this
+ * costs no extra API calls (see extractSeasons in movie-sync.mjs).
+ *
+ * Season 0 specials are already filtered out upstream.
+ */
+import type { RealSeason } from '../lib/realTitles';
+
+interface Props {
+  seasons?: RealSeason[];
+  titleName: string;
+}
+
+const { seasons, titleName } = Astro.props;
+
+const year = (iso: string) => (iso ? iso.slice(0, 4) : '');
+const totalEpisodes = (seasons ?? []).reduce((sum, s) => sum + s.episodes, 0);
+---
+
+{seasons && seasons.length > 0 && (
+  <section>
+    <h2 class="section-title mb-2">Seasons</h2>
+    <p class="text-sm text-[var(--color-text-muted)] mb-6">
+      {/* Built as one expression: JSX drops the whitespace between adjacent
+          expression containers, which ran the count into the noun. */}
+      {`${titleName} has ${seasons.length} ${seasons.length === 1 ? 'season' : 'seasons'} and ${totalEpisodes} episodes in total.`}
+    </p>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+      {seasons.map(season => (
+        <div class="glass-card rounded-xl p-4 flex gap-4">
+          {season.posterUrl ? (
+            <img
+              src={season.posterUrl}
+              alt=""
+              width="64"
+              height="96"
+              loading="lazy"
+              decoding="async"
+              class="w-16 h-24 rounded-lg object-cover shrink-0 bg-white/5"
+            />
+          ) : (
+            <div class="w-16 h-24 rounded-lg bg-white/5 shrink-0 flex items-center justify-center">
+              <span class="text-lg font-bold text-white/30">{season.number}</span>
+            </div>
+          )}
+
+          <div class="min-w-0">
+            <h3 class="text-sm font-semibold text-white truncate">{season.name}</h3>
+            <p class="text-xs text-[var(--color-text-muted)] mt-1">
+              {`${season.episodes} ${season.episodes === 1 ? 'episode' : 'episodes'}`}
+              {year(season.airDate) && <span>{` · ${year(season.airDate)}`}</span>}
+            </p>
+            {season.overview && (
+              <p class="text-xs text-[var(--color-text-muted)] mt-2 line-clamp-3 leading-relaxed">{season.overview}</p>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+)}

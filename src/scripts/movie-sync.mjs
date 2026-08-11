@@ -286,7 +286,28 @@ async function fetchTitleDetail(type, id) {
     episodes: type === 'tv' ? (d.number_of_episodes || 0) : undefined,
     relatedIds: (d.similar?.results || []).slice(0, 12).map(r => `${type}-${r.id}`),
     watch: extractWatchProviders(d['watch/providers']),
+    // The season list comes back on the base TV response, so a breakdown costs
+    // nothing extra. Full episode listings would need one request per season,
+    // which is why only season-level detail is stored.
+    seasonList: type === 'tv' ? extractSeasons(d.seasons) : undefined,
   };
+}
+
+// ── Season breakdown for TV ──────────────────────────────────────────────────
+function extractSeasons(seasons) {
+  const list = (seasons || [])
+    // Season 0 is TMDB's specials bucket — usually a grab bag of recaps and
+    // behind-the-scenes clips, and confusing next to the numbered seasons.
+    .filter(s => s.season_number > 0 && s.episode_count > 0)
+    .map(s => ({
+      number: s.season_number,
+      name: s.name || `Season ${s.season_number}`,
+      episodes: s.episode_count,
+      airDate: s.air_date || '',
+      posterUrl: s.poster_path ? `${IMG_BASE}/w342${s.poster_path}` : '',
+      overview: (s.overview || '').slice(0, 300),
+    }));
+  return list.length > 0 ? list : undefined;
 }
 
 // ── Official streaming availability ──────────────────────────────────────────

@@ -26,6 +26,16 @@ export interface RealWatchAvailability {
   buy: RealWatchProvider[];
 }
 
+export interface RealSeason {
+  number: number;
+  name: string;
+  episodes: number;
+  /** ISO date, or '' when TMDB has no air date yet. */
+  airDate: string;
+  posterUrl: string;
+  overview: string;
+}
+
 export interface RealTitle {
   id: string;
   tmdbId: number;
@@ -51,6 +61,8 @@ export interface RealTitle {
   relatedIds: string[];
   /** null when TMDB lists no official availability in any covered region. */
   watch?: RealWatchAvailability | null;
+  /** Numbered seasons only; TMDB's season 0 specials bucket is excluded. */
+  seasonList?: RealSeason[];
 }
 
 interface TitlesFile {
