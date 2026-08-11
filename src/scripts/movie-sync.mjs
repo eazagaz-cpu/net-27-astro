@@ -314,6 +314,19 @@ async function fetchTrakt() {
     },
     signal: AbortSignal.timeout(12000),
   });
+  // Trakt sits behind a bot-protection edge that rejects datacenter and most
+  // consumer IPs before the API key is ever read — the bare host answers 412
+  // and the API answers a plain-text 403 whether the key is valid, wrong, or
+  // absent. That is an upstream block, not a broken key or a bug here, so it
+  // is reported as a skip and the previous cache is left untouched.
+  if (res.status === 403 || res.status === 412) {
+    const body = await res.text().catch(() => '');
+    if (!body.trim().startsWith('{')) {
+      const blocked = new Error(`blocked by Trakt's edge (HTTP ${res.status}) — needs an allowlisted IP`);
+      blocked.isEdgeBlock = true;
+      throw blocked;
+    }
+  }
   if (!res.ok) throw new Error(`Trakt HTTP ${res.status}`);
   const data = await res.json();
 
@@ -406,8 +419,12 @@ async function main() {
       console.log(`- skipped (no key or no results)`);
     }
   } catch (err) {
-    console.log(`✗ ${err.message}`);
-    fail++;
+    if (err.isEdgeBlock) {
+      console.log(`- skipped: ${err.message}`);
+    } else {
+      console.log(`✗ ${err.message}`);
+      fail++;
+    }
   }
 
   // ── Full-detail pass — real replacement for the old fictional sampleTitles.ts.
