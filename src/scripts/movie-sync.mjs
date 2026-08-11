@@ -156,6 +156,47 @@ function getEndpoints(category) {
       { path: '/discover/tv', params: { with_original_language: 'tr', with_genres: '18', sort_by: 'popularity.desc' } },
       { path: '/discover/tv', params: { with_origin_country: 'TR', sort_by: 'popularity.desc' } },
     ],
+    // South Indian cinema. Most of the audience is in India, where these four
+    // industries are mainstream rather than regional, so each gets its own
+    // category instead of being folded into a single "South" bucket.
+    telugu: [
+      { path: '/discover/movie', params: { with_original_language: 'te', sort_by: 'popularity.desc' } },
+      { path: '/discover/tv', params: { with_original_language: 'te', sort_by: 'popularity.desc' } },
+    ],
+    tamil: [
+      { path: '/discover/movie', params: { with_original_language: 'ta', sort_by: 'popularity.desc' } },
+      { path: '/discover/tv', params: { with_original_language: 'ta', sort_by: 'popularity.desc' } },
+    ],
+    malayalam: [
+      { path: '/discover/movie', params: { with_original_language: 'ml', sort_by: 'popularity.desc' } },
+    ],
+    kannada: [
+      { path: '/discover/movie', params: { with_original_language: 'kn', sort_by: 'popularity.desc' } },
+    ],
+    // TMDB cannot filter on "has a Hindi dub", but the South films that get one
+    // are reliably the ones with real audience reach — hence the vote floor.
+    'south-hindi-dubbed': [
+      { path: '/discover/movie', params: { with_original_language: 'te|ta|ml|kn', sort_by: 'popularity.desc', 'vote_count.gte': '50' } },
+    ],
+    // Indian TV: origin country rather than language, so Hindi soaps and the
+    // regional channels both land here.
+    'indian-tv': [
+      { path: '/discover/tv', params: { with_origin_country: 'IN', sort_by: 'popularity.desc' } },
+    ],
+    // Indian OTT platforms, keyed on watch_region IN. The existing netflix and
+    // prime-video categories deliberately stay on US catalogues.
+    jiohotstar: [
+      { path: '/discover/movie', params: { with_watch_providers: '2336', watch_region: 'IN', sort_by: 'popularity.desc' } },
+      { path: '/discover/tv', params: { with_watch_providers: '2336', watch_region: 'IN', sort_by: 'popularity.desc' } },
+    ],
+    zee5: [
+      { path: '/discover/movie', params: { with_watch_providers: '232', watch_region: 'IN', sort_by: 'popularity.desc' } },
+      { path: '/discover/tv', params: { with_watch_providers: '232', watch_region: 'IN', sort_by: 'popularity.desc' } },
+    ],
+    sonyliv: [
+      { path: '/discover/movie', params: { with_watch_providers: '237', watch_region: 'IN', sort_by: 'popularity.desc' } },
+      { path: '/discover/tv', params: { with_watch_providers: '237', watch_region: 'IN', sort_by: 'popularity.desc' } },
+    ],
   };
   return map[category] || [{ path: '/movie/popular', params: {} }];
 }
@@ -315,6 +356,15 @@ const CATEGORIES = [
   { key: 'documentary',      pages: 1 },
   { key: 'pakistani-drama',  pages: 2 },
   { key: 'turkish-drama',    pages: 2 },
+  { key: 'telugu',           pages: 2 },
+  { key: 'tamil',            pages: 2 },
+  { key: 'malayalam',        pages: 2 },
+  { key: 'kannada',          pages: 1 },
+  { key: 'south-hindi-dubbed', pages: 2 },
+  { key: 'indian-tv',        pages: 2 },
+  { key: 'jiohotstar',       pages: 2 },
+  { key: 'zee5',             pages: 1 },
+  { key: 'sonyliv',          pages: 1 },
 ];
 
 // ── Main ─────────────────────────────────────────────────────────────────────

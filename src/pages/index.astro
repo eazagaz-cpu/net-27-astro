@@ -28,6 +28,18 @@ const cachedPopularMovies = getCachedItems('popular-movies',   10);
 const cachedPopularTv     = getCachedItems('popular-tv',       10);
 const cachedPakistani     = getCachedItems('pakistani-drama',  20);
 const cachedTurkish       = getCachedItems('turkish-drama',    20);
+// India is where most of the audience is, so South Indian cinema, Indian TV
+// and the Indian OTT catalogues get their own rails rather than being left to
+// the language and platform pages.
+const cachedSouthDubbed   = getCachedItems('south-hindi-dubbed', 20);
+const cachedTelugu        = getCachedItems('telugu',           20);
+const cachedTamil         = getCachedItems('tamil',            20);
+const cachedMalayalam     = getCachedItems('malayalam',        20);
+const cachedKannada       = getCachedItems('kannada',          20);
+const cachedIndianTv      = getCachedItems('indian-tv',        20);
+const cachedJioHotstar    = getCachedItems('jiohotstar',       20);
+const cachedZee5          = getCachedItems('zee5',             20);
+const cachedSonyLiv       = getCachedItems('sonyliv',          20);
 const latestPosts         = getAllBlogPosts().slice(0, 3);
 const firstHeroBackdrop = cachedTrending.find((item) => item.backdropUrl)?.backdropUrl || '';
 const heroSmall = firstHeroBackdrop.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w780/');
@@ -121,6 +133,20 @@ const homeFaqs = [
     <StaticRail title="Latest Releases (2025–2026)" items={cachedLatest} viewAllHref="/latest/"    railKey="latest-movies" />
     <StaticRail title="Popular on Netflix"           items={cachedNetflix}       viewAllHref="/platform/netflix/" railKey="netflix" />
     <StaticRail title="Hindi Dubbed Hits"            items={cachedHindiDubbed}  viewAllHref="/genre/action/"     railKey="hindi-dubbed" />
+
+    <!-- India-focused sections. Most visitors are there, so South Indian
+         cinema, Indian TV and the Indian OTT catalogues sit ahead of the
+         regional drama rails rather than below them. -->
+    {cachedSouthDubbed.length > 0 && <StaticRail title="South Indian Movies (Hindi Dubbed)" items={cachedSouthDubbed} viewAllHref="/genre/hindi-dubbed/" railKey="south-hindi-dubbed" badge="Popular" />}
+    {cachedJioHotstar.length > 0 && <StaticRail title="Popular on JioHotstar" items={cachedJioHotstar} viewAllHref="/platform/jiohotstar/" railKey="jiohotstar" />}
+    {cachedTelugu.length    > 0 && <StaticRail title="Telugu Movies" items={cachedTelugu} viewAllHref="/language/telugu/" railKey="telugu" />}
+    {cachedTamil.length     > 0 && <StaticRail title="Tamil Movies" items={cachedTamil} viewAllHref="/language/tamil/" railKey="tamil" />}
+    {cachedMalayalam.length > 0 && <StaticRail title="Malayalam Movies" items={cachedMalayalam} viewAllHref="/language/malayalam/" railKey="malayalam" />}
+    {cachedKannada.length   > 0 && <StaticRail title="Kannada Movies" items={cachedKannada} viewAllHref="/language/kannada/" railKey="kannada" />}
+    {cachedIndianTv.length  > 0 && <StaticRail title="Indian TV Shows" items={cachedIndianTv} viewAllHref="/country/india/" railKey="indian-tv" badge="IN" />}
+    {cachedZee5.length      > 0 && <StaticRail title="Popular on ZEE5" items={cachedZee5} viewAllHref="/platform/zee5/" railKey="zee5" />}
+    {cachedSonyLiv.length   > 0 && <StaticRail title="Popular on SonyLIV" items={cachedSonyLiv} viewAllHref="/platform/sonyliv/" railKey="sonyliv" />}
+
     {cachedPakistani.length > 0 && <StaticRail title="Pakistani Dramas" items={cachedPakistani} viewAllHref="/language/urdu/" railKey="pakistani-drama" badge="PK" />}
     {cachedTurkish.length  > 0 && <StaticRail title="Turkish Dramas (Urdu Dubbed)" items={cachedTurkish} viewAllHref="/language/turkish/" railKey="turkish-drama" badge="TR" />}
     <StaticRail title="Trending Globally — Coming Soon" items={cachedUpcoming} railKey="upcoming" badge="Upcoming" />

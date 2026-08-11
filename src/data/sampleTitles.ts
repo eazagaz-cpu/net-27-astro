@@ -37,6 +37,12 @@ export const languages: Language[] = [
   'German',
   'Turkish',
   'Urdu',
+  // South Indian languages. Most of the audience is in India, where these are
+  // mainstream industries rather than regional niches.
+  'Telugu',
+  'Tamil',
+  'Malayalam',
+  'Kannada',
 ].map((name) => ({ slug: slugify(name), name }));
 
 export const platforms: Platform[] = [
@@ -50,6 +56,7 @@ export const platforms: Platform[] = [
   'Paramount+',
   'JioHotstar',
   'SonyLIV',
+  'ZEE5',
   'MX Player',
 ].map((name) => ({
   slug: name === 'Disney+' ? 'disney-plus'
