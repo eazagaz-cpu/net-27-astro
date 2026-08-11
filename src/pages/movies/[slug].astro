@@ -221,7 +221,7 @@ const schemaData = [
       <!-- Cast Section -->
       {title.cast.length > 0 && (
         <section>
-          <h2 class="section-title mb-6">Cast</h2>
+          <h2 class="section-title mb-6" data-t="sections.cast">Cast</h2>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="cast-grid">
             {title.cast.map(member => (
               <div class="glass-card rounded-xl p-4 text-center" data-person-name={member.name}>
@@ -238,7 +238,7 @@ const schemaData = [
 
       <!-- Movie Details -->
       <section>
-        <h2 class="section-title mb-4">Details</h2>
+        <h2 class="section-title mb-4" data-t="sections.details">Details</h2>
         <div class="glass-card rounded-xl overflow-hidden">
           <table class="w-full text-sm">
             <tbody>
@@ -279,7 +279,7 @@ const schemaData = [
 
       <!-- Available Now (live official-platform data) -->
       <section>
-        <h2 class="section-title mb-6">Available Now</h2>
+        <h2 class="section-title mb-6" data-t="sections.availableNow">Available Now</h2>
         <div id="streaming-availability" data-title={title.title} data-year={title.year} data-type="movie">
           <div data-state="loading" class="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
             <div class="w-4 h-4 border-2 border-white/10 border-t-[var(--color-primary)] rounded-full animate-spin"></div>
@@ -300,7 +300,7 @@ const schemaData = [
 
       <!-- Trailer Section -->
       <section>
-        <h2 class="section-title mb-6">Trailer</h2>
+        <h2 class="section-title mb-6" data-t="sections.trailer">Trailer</h2>
         {title.trailerUrl ? (
           <div class="aspect-video rounded-xl overflow-hidden glass-card">
             <iframe
@@ -327,7 +327,7 @@ const schemaData = [
       <!-- Related Titles -->
       {related.length > 0 && (
         <section>
-          <h2 class="section-title mb-6">You Might Also Like</h2>
+          <h2 class="section-title mb-6" data-t="sections.youMightAlsoLike">You Might Also Like</h2>
           <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
             {related.map(relatedTitle => (
               <TitleCard title={relatedTitle} />

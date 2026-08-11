@@ -24,7 +24,7 @@ const totalEpisodes = (seasons ?? []).reduce((sum, s) => sum + s.episodes, 0);
 
 {seasons && seasons.length > 0 && (
   <section>
-    <h2 class="section-title mb-2">Seasons</h2>
+    <h2 class="section-title mb-2" data-t="sections.seasons">Seasons</h2>
     <p class="text-sm text-[var(--color-text-muted)] mb-6">
       {/* Built as one expression: JSX drops the whitespace between adjacent
           expression containers, which ran the count into the noun. */}

@@ -205,5 +205,24 @@
     "tip3": "اینڈرائیڈ کے لیے NetMirror APK ڈاؤن لوڈ کریں — تیز براؤزنگ، ہموار پلے بیک، اور آف لائن رسائی",
     "tip4": "خراب سرورز کی نشاندہی کے لیے پلیئر پر رپورٹ بٹن استعمال کریں — ہم آپ کے لیے بہتر سرورز کو ترجیح دیں گے",
     "tip5": "Netflix، Prime Video، JioHotstar، Crunchyroll اور 30 سے زائد پلیٹ فارمز پر 500,000 سے زیادہ فلمیں اور ٹی وی شوز"
+  },
+  "sections": {
+    "cast": "کاسٹ",
+    "details": "تفصیلات",
+    "seasons": "سیزن",
+    "trailer": "ٹریلر",
+    "whereToWatch": "کہاں دیکھیں",
+    "availableNow": "ابھی دستیاب",
+    "youMightAlsoLike": "یہ بھی پسند آ سکتے ہیں",
+    "continueWatching": "دیکھنا جاری رکھیں",
+    "faqs": "اکثر پوچھے جانے والے سوالات",
+    "searchTitle": "فلمیں، ٹی وی شوز اور اینیمے تلاش کریں"
+  },
+  "browse": {
+    "exploreMore": "مزید مواد دیکھیں",
+    "filterByGenre": "صنف کے مطابق",
+    "browseByLanguage": "زبان کے مطابق",
+    "browseByPlatform": "پلیٹ فارم کے مطابق",
+    "highestRated": "سب سے زیادہ ریٹڈ"
   }
 }

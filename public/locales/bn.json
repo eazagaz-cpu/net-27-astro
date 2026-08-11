@@ -205,5 +205,24 @@
     "tip3": "Android-এর জন্য NetMirror APK ডাউনলোড করুন — দ্রুত ব্রাউজিং, মসৃণ প্লেব্যাক এবং অফলাইন অ্যাক্সেস",
     "tip4": "খারাপ সার্ভার চিহ্নিত করতে প্লেয়ারে রিপোর্ট বোতাম ব্যবহার করুন — আমরা আপনার জন্য ভালো সার্ভার অগ্রাধিকার দেব",
     "tip5": "Netflix, Prime Video, JioHotstar, Crunchyroll এবং ৩০+ প্ল্যাটফর্মে ৫,০০,০০০+ মুভি ও টিভি শো"
+  },
+  "sections": {
+    "cast": "অভিনয়ে",
+    "details": "বিস্তারিত",
+    "seasons": "সিজন",
+    "trailer": "ট্রেলার",
+    "whereToWatch": "কোথায় দেখবেন",
+    "availableNow": "এখন উপলব্ধ",
+    "youMightAlsoLike": "এগুলোও ভালো লাগতে পারে",
+    "continueWatching": "দেখা চালিয়ে যান",
+    "faqs": "সাধারণ প্রশ্ন",
+    "searchTitle": "সিনেমা, টিভি শো ও অ্যানিমে খুঁজুন"
+  },
+  "browse": {
+    "exploreMore": "আরও দেখুন",
+    "filterByGenre": "ধরন অনুসারে",
+    "browseByLanguage": "ভাষা অনুসারে",
+    "browseByPlatform": "প্ল্যাটফর্ম অনুসারে",
+    "highestRated": "সর্বোচ্চ রেটেড"
   }
 }

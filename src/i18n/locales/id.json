@@ -205,5 +205,24 @@
     "tip3": "Unduh NetMirror APK untuk Android — penjelajahan lebih cepat, pemutaran lebih lancar, dan akses offline",
     "tip4": "Gunakan tombol Laporkan di pemutar untuk menandai server bermasalah — kami akan mengutamakan yang lebih baik untuk Anda",
     "tip5": "500.000+ film dan acara TV di Netflix, Prime Video, JioHotstar, Crunchyroll, dan 30+ platform"
+  },
+  "sections": {
+    "cast": "Pemeran",
+    "details": "Detail",
+    "seasons": "Musim",
+    "trailer": "Trailer",
+    "whereToWatch": "Tempat menonton",
+    "availableNow": "Tersedia sekarang",
+    "youMightAlsoLike": "Mungkin Anda juga suka",
+    "continueWatching": "Lanjutkan menonton",
+    "faqs": "Pertanyaan umum",
+    "searchTitle": "Cari film, serial TV, dan anime"
+  },
+  "browse": {
+    "exploreMore": "Jelajahi konten lainnya",
+    "filterByGenre": "Saring menurut genre",
+    "browseByLanguage": "Telusuri menurut bahasa",
+    "browseByPlatform": "Telusuri menurut platform",
+    "highestRated": "Rating tertinggi"
   }
 }

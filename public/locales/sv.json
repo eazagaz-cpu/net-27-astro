@@ -205,5 +205,24 @@
     "tip3": "Ladda ner NetMirror APK för Android — snabbare surfning, smidigare uppspelning och åtkomst offline",
     "tip4": "Använd rapporteringsknappen i spelaren för att flagga dåliga servrar — vi prioriterar bättre för dig",
     "tip5": "500 000+ filmer och TV-serier på Netflix, Prime Video, JioHotstar, Crunchyroll och 30+ plattformar"
+  },
+  "sections": {
+    "cast": "Skådespelare",
+    "details": "Detaljer",
+    "seasons": "Säsonger",
+    "trailer": "Trailer",
+    "whereToWatch": "Var kan man se",
+    "availableNow": "Tillgängligt nu",
+    "youMightAlsoLike": "Du kanske också gillar",
+    "continueWatching": "Fortsätt titta",
+    "faqs": "Vanliga frågor",
+    "searchTitle": "Sök filmer, serier och anime"
+  },
+  "browse": {
+    "exploreMore": "Utforska mer",
+    "filterByGenre": "Filtrera efter genre",
+    "browseByLanguage": "Bläddra efter språk",
+    "browseByPlatform": "Bläddra efter plattform",
+    "highestRated": "Högst betyg"
   }
 }

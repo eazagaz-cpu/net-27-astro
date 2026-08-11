@@ -205,5 +205,24 @@
     "tip3": "Muat turun NetMirror APK untuk Android — pelayaran lebih pantas, main balik lebih lancar dan akses luar talian",
     "tip4": "Gunakan butang Lapor pada pemain untuk menandai pelayan yang bermasalah — kami akan mengutamakan yang lebih baik untuk anda",
     "tip5": "500,000+ filem dan rancangan TV di Netflix, Prime Video, JioHotstar, Crunchyroll dan 30+ platform"
+  },
+  "sections": {
+    "cast": "Pelakon",
+    "details": "Butiran",
+    "seasons": "Musim",
+    "trailer": "Treler",
+    "whereToWatch": "Tempat menonton",
+    "availableNow": "Tersedia sekarang",
+    "youMightAlsoLike": "Anda mungkin juga suka",
+    "continueWatching": "Teruskan menonton",
+    "faqs": "Soalan lazim",
+    "searchTitle": "Cari filem, rancangan TV dan anime"
+  },
+  "browse": {
+    "exploreMore": "Terokai lagi kandungan",
+    "filterByGenre": "Tapis mengikut genre",
+    "browseByLanguage": "Layari mengikut bahasa",
+    "browseByPlatform": "Layari mengikut platform",
+    "highestRated": "Penarafan tertinggi"
   }
 }

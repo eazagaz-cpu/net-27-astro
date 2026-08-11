@@ -205,5 +205,24 @@
     "tip3": "حمّل تطبيق NetMirror لأندرويد — تصفح أسرع وتشغيل أكثر سلاسة",
     "tip4": "استخدم زر الإبلاغ في المشغل للإبلاغ عن خوادم سيئة — سنعطي الأولوية للأفضل",
     "tip5": "أكثر من 500,000 فيلم ومسلسل عبر Netflix و Prime Video و JioHotstar و Crunchyroll و30+ منصة"
+  },
+  "sections": {
+    "cast": "طاقم العمل",
+    "details": "التفاصيل",
+    "seasons": "المواسم",
+    "trailer": "الإعلان",
+    "whereToWatch": "أين تشاهد",
+    "availableNow": "متاح الآن",
+    "youMightAlsoLike": "قد يعجبك أيضًا",
+    "continueWatching": "متابعة المشاهدة",
+    "faqs": "الأسئلة الشائعة",
+    "searchTitle": "ابحث عن الأفلام والمسلسلات والأنمي"
+  },
+  "browse": {
+    "exploreMore": "استكشف المزيد",
+    "filterByGenre": "تصفية حسب النوع",
+    "browseByLanguage": "تصفح حسب اللغة",
+    "browseByPlatform": "تصفح حسب المنصة",
+    "highestRated": "الأعلى تقييمًا"
   }
 }

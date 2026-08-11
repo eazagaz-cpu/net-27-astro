@@ -205,5 +205,24 @@
     "tip3": "Android용 NetMirror APK를 다운로드하세요 — 더 빠른 탐색, 부드러운 재생, 오프라인 액세스",
     "tip4": "플레이어의 신고 버튼으로 문제 있는 서버를 보고해 주세요 — 더 나은 서버를 우선 제공하겠습니다",
     "tip5": "Netflix, Prime Video, JioHotstar, Crunchyroll 등 30개 이상의 플랫폼에서 50만 편 이상의 영화 및 TV 프로그램"
+  },
+  "sections": {
+    "cast": "출연진",
+    "details": "상세 정보",
+    "seasons": "시즌",
+    "trailer": "예고편",
+    "whereToWatch": "시청 가능한 곳",
+    "availableNow": "지금 시청 가능",
+    "youMightAlsoLike": "이런 작품도 좋아할 거예요",
+    "continueWatching": "이어 보기",
+    "faqs": "자주 묻는 질문",
+    "searchTitle": "영화, TV 프로그램, 애니메이션 검색"
+  },
+  "browse": {
+    "exploreMore": "더 둘러보기",
+    "filterByGenre": "장르로 필터",
+    "browseByLanguage": "언어별 보기",
+    "browseByPlatform": "플랫폼별 보기",
+    "highestRated": "평점 높은 순"
   }
 }

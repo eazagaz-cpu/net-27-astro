@@ -33,7 +33,7 @@ const groups = watch
 
 {groups.length > 0 && watch && (
   <section>
-    <h2 class="section-title mb-2">Where to Watch</h2>
+    <h2 class="section-title mb-2" data-t="sections.whereToWatch">Where to Watch</h2>
     <p class="text-sm text-[var(--color-text-muted)] mb-6">
       Official streaming availability for <strong>{titleName}</strong> in {REGION_NAMES[watch.region] ?? watch.region}.
       {watch.region !== 'IN' && ' No Indian listing was available for this title.'}

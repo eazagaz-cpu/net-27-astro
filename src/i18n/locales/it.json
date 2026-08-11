@@ -205,5 +205,24 @@
     "tip3": "Scarica il NetMirror APK per Android — navigazione piu veloce, riproduzione piu fluida e accesso offline",
     "tip4": "Usa il pulsante Segnala nel player per segnalare i server scadenti — daremo priorita a quelli migliori per te",
     "tip5": "Oltre 500.000 film e serie su Netflix, Prime Video, JioHotstar, Crunchyroll e piu di 30 piattaforme"
+  },
+  "sections": {
+    "cast": "Cast",
+    "details": "Dettagli",
+    "seasons": "Stagioni",
+    "trailer": "Trailer",
+    "whereToWatch": "Dove guardare",
+    "availableNow": "Disponibile ora",
+    "youMightAlsoLike": "Potrebbe piacerti anche",
+    "continueWatching": "Continua a guardare",
+    "faqs": "Domande frequenti",
+    "searchTitle": "Cerca film, serie TV e anime"
+  },
+  "browse": {
+    "exploreMore": "Esplora altri contenuti",
+    "filterByGenre": "Filtra per genere",
+    "browseByLanguage": "Sfoglia per lingua",
+    "browseByPlatform": "Sfoglia per piattaforma",
+    "highestRated": "Meglio valutati"
   }
 }

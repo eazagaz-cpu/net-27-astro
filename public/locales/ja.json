@@ -205,5 +205,24 @@
     "tip3": "Android用NetMirror APKをダウンロード — より高速なブラウジング、スムーズな再生、オフラインアクセス",
     "tip4": "プレーヤーの報告ボタンで問題のあるサーバーを報告してください — より良いサーバーを優先的にご提供します",
     "tip5": "Netflix、Prime Video、JioHotstar、Crunchyrollなど30以上のプラットフォームで50万以上の映画・ドラマ"
+  },
+  "sections": {
+    "cast": "キャスト",
+    "details": "詳細",
+    "seasons": "シーズン",
+    "trailer": "予告編",
+    "whereToWatch": "視聴できる場所",
+    "availableNow": "配信中",
+    "youMightAlsoLike": "こちらもおすすめ",
+    "continueWatching": "続きを見る",
+    "faqs": "よくある質問",
+    "searchTitle": "映画・ドラマ・アニメを検索"
+  },
+  "browse": {
+    "exploreMore": "もっと見る",
+    "filterByGenre": "ジャンルで絞り込む",
+    "browseByLanguage": "言語から探す",
+    "browseByPlatform": "配信サービスから探す",
+    "highestRated": "高評価"
   }
 }

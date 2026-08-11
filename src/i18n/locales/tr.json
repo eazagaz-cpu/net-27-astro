@@ -205,5 +205,24 @@
     "tip3": "Android için NetMirror APK indirin — daha hızlı gezinme, daha akıcı oynatma ve çevrimdışı erişim",
     "tip4": "Kötü sunucuları işaretlemek için oynatıcıda Bildir düğmesini kullanın — sizin için daha iyilerini önceliklendireceğiz",
     "tip5": "Netflix, Prime Video, JioHotstar, Crunchyroll ve 30'dan fazla platformda 500.000'den fazla film ve dizi"
+  },
+  "sections": {
+    "cast": "Oyuncular",
+    "details": "Ayrıntılar",
+    "seasons": "Sezonlar",
+    "trailer": "Fragman",
+    "whereToWatch": "Nereden izlenir",
+    "availableNow": "Şimdi mevcut",
+    "youMightAlsoLike": "Bunlar da hoşunuza gidebilir",
+    "continueWatching": "İzlemeye devam et",
+    "faqs": "Sıkça sorulan sorular",
+    "searchTitle": "Film, dizi ve anime ara"
+  },
+  "browse": {
+    "exploreMore": "Daha fazla içerik",
+    "filterByGenre": "Türe göre filtrele",
+    "browseByLanguage": "Dile göre gözat",
+    "browseByPlatform": "Platforma göre gözat",
+    "highestRated": "En yüksek puanlı"
   }
 }

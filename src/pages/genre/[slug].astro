@@ -103,7 +103,7 @@ const faqs = [
       </section>
 
       <section>
-        <h2 class="section-title mb-6">Browse by Language</h2>
+        <h2 class="section-title mb-6" data-t="browse.browseByLanguage">Browse by Language</h2>
         <div class="flex flex-wrap gap-3">
           {languages.slice(0, 8).map(l => (
             <a href={`/language/${l.slug}/`} class="chip">
@@ -114,7 +114,7 @@ const faqs = [
       </section>
 
       <section>
-        <h2 class="section-title mb-6">Browse by Platform</h2>
+        <h2 class="section-title mb-6" data-t="browse.browseByPlatform">Browse by Platform</h2>
         <div class="flex flex-wrap gap-3">
           {platforms.map(p => (
             <a href={`/platform/${p.slug}/`} class="chip">
