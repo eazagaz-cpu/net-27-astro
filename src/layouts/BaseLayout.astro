@@ -101,6 +101,17 @@ const dir = getDir(lang);
         if(newTitle)document.title=newTitle;
       }
 
+      // Synopsis: the page ships whatever translations TMDB had for this title,
+      // so swapping is a local lookup rather than another request. Falls through
+      // to the English text when this language is not among them.
+      var ovs=document.querySelectorAll('[data-i18n-overview]');
+      for(var o=0;o<ovs.length;o++){
+        try{
+          var map=JSON.parse(ovs[o].getAttribute('data-i18n-overview'));
+          if(map&&map[lang])ovs[o].textContent=map[lang];
+        }catch(e){}
+      }
+
       // data-t attribute based
       var els=document.querySelectorAll('[data-t]');
       for(var i=0;i<els.length;i++){

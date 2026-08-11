@@ -78,6 +78,8 @@ export interface RealTitle {
   /** Numbered seasons only; TMDB's season 0 specials bucket is excluded. */
   seasonList?: RealSeason[];
   imdbId?: string;
+  /** Synopses TMDB holds in this site's other locales, keyed by language code. */
+  overviews?: Record<string, string>;
   /** Absent when OMDb has no key configured, no listing, or hit its quota. */
   ratings?: RealRatings;
 }

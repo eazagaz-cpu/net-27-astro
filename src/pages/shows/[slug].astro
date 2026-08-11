@@ -222,7 +222,13 @@ const schemaData = [
             )}
 
             <!-- Overview -->
-            <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-3xl text-base md:text-lg mb-6">
+            {/* Translated synopses ride along as JSON so the language switcher
+                can swap the text it already has, instead of leaving the page
+                English while the interface changes around it. */}
+            <p
+              class="text-[var(--color-text-secondary)] leading-relaxed max-w-3xl text-base md:text-lg mb-6"
+              data-i18n-overview={title.overviews ? JSON.stringify(title.overviews) : undefined}
+            >
               {title.overview}
             </p>
 

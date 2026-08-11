@@ -247,7 +247,7 @@ async function fetchTitleDetail(type, id) {
   // no extra call, so availability data is effectively free here.
   // external_ids carries the IMDb id, which TV responses otherwise omit and
   // which OMDb needs to look a title up. Like the other appends it is free.
-  const d = await tmdbFetch(path, { append_to_response: 'credits,videos,similar,watch/providers,external_ids' });
+  const d = await tmdbFetch(path, { append_to_response: 'credits,videos,similar,watch/providers,external_ids,translations' });
   if (!d.poster_path && !d.backdrop_path) return null;
 
   const title = (d.title || d.name || '').trim();
@@ -288,12 +288,39 @@ async function fetchTitleDetail(type, id) {
     episodes: type === 'tv' ? (d.number_of_episodes || 0) : undefined,
     relatedIds: (d.similar?.results || []).slice(0, 12).map(r => `${type}-${r.id}`),
     imdbId: d.imdb_id || d.external_ids?.imdb_id || '',
+    overviews: extractOverviews(d.translations, d.overview),
     watch: extractWatchProviders(d['watch/providers']),
     // The season list comes back on the base TV response, so a breakdown costs
     // nothing extra. Full episode listings would need one request per season,
     // which is why only season-level detail is stored.
     seasonList: type === 'tv' ? extractSeasons(d.seasons) : undefined,
   };
+}
+
+// ── Translated synopses ──────────────────────────────────────────────────────
+// The language switcher could only ever restyle the interface; synopses stayed
+// English because the page had nothing else to show. TMDB returns every
+// translation it holds on the same detail request, so collecting them costs no
+// extra call.
+//
+// Only the site's own locales are kept, and only where TMDB has real text that
+// differs from English — an entry that merely repeats the English would add
+// page weight for nothing.
+const SITE_LOCALES = ['hi', 'ur', 'bn', 'es', 'fr', 'de', 'pt', 'it', 'ru', 'tr', 'ar', 'id', 'ms', 'ja', 'ko', 'pl', 'bg', 'sv'];
+
+function extractOverviews(translations, englishOverview) {
+  const list = translations?.translations;
+  if (!Array.isArray(list)) return undefined;
+
+  const english = (englishOverview || '').trim();
+  const out = {};
+  for (const t of list) {
+    const code = t.iso_639_1;
+    if (!SITE_LOCALES.includes(code) || out[code]) continue;
+    const overview = (t.data?.overview || '').trim();
+    if (overview && overview !== english) out[code] = overview;
+  }
+  return Object.keys(out).length > 0 ? out : undefined;
 }
 
 // ── Season breakdown for TV ──────────────────────────────────────────────────
