@@ -31,3 +31,7 @@ Thumbs.db
 
 # wrangler
 .wrangler/
+
+# this project's private Cloudflare login (see scripts/wrangler.mjs) — holds a
+# refresh token, must never be committed
+.cf-auth/
