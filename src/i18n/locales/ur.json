@@ -224,5 +224,24 @@
     "browseByLanguage": "زبان کے مطابق",
     "browseByPlatform": "پلیٹ فارم کے مطابق",
     "highestRated": "سب سے زیادہ ریٹڈ"
+  },
+  "ui": {
+    "genres": "اصناف",
+    "platforms": "پلیٹ فارم",
+    "languages": "زبانیں",
+    "runtime": "دورانیہ",
+    "rating": "ریٹنگ",
+    "all": "تمام",
+    "myWatchlist": "میری واچ لسٹ",
+    "back": "واپس",
+    "browseByGenre": "صنف کے مطابق دیکھیں",
+    "fromTheBlog": "بلاگ سے",
+    "relatedHelp": "متعلقہ مدد کے مضامین",
+    "trailerSoon": "ٹریلر جلد آ رہا ہے",
+    "trailerSoonSub": "سرکاری ٹریلر کے لیے بعد میں دیکھیں۔",
+    "streamingInfoError": "ابھی سرکاری اسٹریمنگ معلومات نہیں مل سکیں۔",
+    "switchServer": "سرور تبدیل کریں",
+    "contactUs": "رابطہ کریں",
+    "disclaimer": "دستبرداری"
   }
 }

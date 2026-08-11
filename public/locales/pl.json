@@ -224,5 +224,24 @@
     "browseByLanguage": "Przeglądaj według języka",
     "browseByPlatform": "Przeglądaj według platformy",
     "highestRated": "Najwyżej oceniane"
+  },
+  "ui": {
+    "genres": "Gatunki",
+    "platforms": "Platformy",
+    "languages": "Języki",
+    "runtime": "Czas trwania",
+    "rating": "Ocena",
+    "all": "Wszystko",
+    "myWatchlist": "Moja lista",
+    "back": "Wstecz",
+    "browseByGenre": "Przeglądaj według gatunku",
+    "fromTheBlog": "Z bloga",
+    "relatedHelp": "Powiązane artykuły pomocy",
+    "trailerSoon": "Zwiastun wkrótce",
+    "trailerSoonSub": "Wróć później po oficjalny zwiastun.",
+    "streamingInfoError": "Nie udało się wczytać oficjalnych informacji o dostępności.",
+    "switchServer": "Zmień serwer",
+    "contactUs": "Kontakt",
+    "disclaimer": "Zastrzeżenie"
   }
 }

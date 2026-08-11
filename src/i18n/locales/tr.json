@@ -224,5 +224,24 @@
     "browseByLanguage": "Dile göre gözat",
     "browseByPlatform": "Platforma göre gözat",
     "highestRated": "En yüksek puanlı"
+  },
+  "ui": {
+    "genres": "Türler",
+    "platforms": "Platformlar",
+    "languages": "Diller",
+    "runtime": "Süre",
+    "rating": "Puan",
+    "all": "Tümü",
+    "myWatchlist": "Listem",
+    "back": "Geri",
+    "browseByGenre": "Türe göre gözat",
+    "fromTheBlog": "Blogdan",
+    "relatedHelp": "İlgili yardım makaleleri",
+    "trailerSoon": "Fragman yakında",
+    "trailerSoonSub": "Resmi fragman için daha sonra tekrar bakın.",
+    "streamingInfoError": "Resmi yayın bilgisi şu anda yüklenemedi.",
+    "switchServer": "Sunucu değiştir",
+    "contactUs": "Bize ulaşın",
+    "disclaimer": "Sorumluluk reddi"
   }
 }

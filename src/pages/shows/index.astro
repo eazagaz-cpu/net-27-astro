@@ -70,7 +70,7 @@ const faqs = [
       <section>
         <h2 class="section-title mb-4" data-t="browse.filterByGenre">Filter by Genre</h2>
         <div class="flex flex-wrap gap-2">
-          <a href="/shows/" class="chip active">All</a>
+          <a href="/shows/" class="chip active" data-t="ui.all">All</a>
           {genres.map(genre => (
             <a href={`/genre/${genre.slug}/`} class="chip">{genre.name}</a>
           ))}

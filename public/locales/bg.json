@@ -224,5 +224,24 @@
     "browseByLanguage": "Разглеждане по език",
     "browseByPlatform": "Разглеждане по платформа",
     "highestRated": "Най-високо оценени"
+  },
+  "ui": {
+    "genres": "Жанрове",
+    "platforms": "Платформи",
+    "languages": "Езици",
+    "runtime": "Времетраене",
+    "rating": "Оценка",
+    "all": "Всички",
+    "myWatchlist": "Моят списък",
+    "back": "Назад",
+    "browseByGenre": "Разглеждане по жанр",
+    "fromTheBlog": "От блога",
+    "relatedHelp": "Свързани статии за помощ",
+    "trailerSoon": "Трейлърът предстои",
+    "trailerSoonSub": "Проверете по-късно за официалния трейлър.",
+    "streamingInfoError": "Официалната информация за гледане не можа да се зареди.",
+    "switchServer": "Смяна на сървър",
+    "contactUs": "Свържете се с нас",
+    "disclaimer": "Отказ от отговорност"
   }
 }

@@ -224,5 +224,24 @@
     "browseByLanguage": "言語から探す",
     "browseByPlatform": "配信サービスから探す",
     "highestRated": "高評価"
+  },
+  "ui": {
+    "genres": "ジャンル",
+    "platforms": "配信サービス",
+    "languages": "言語",
+    "runtime": "上映時間",
+    "rating": "評価",
+    "all": "すべて",
+    "myWatchlist": "マイリスト",
+    "back": "戻る",
+    "browseByGenre": "ジャンルから探す",
+    "fromTheBlog": "ブログから",
+    "relatedHelp": "関連するヘルプ記事",
+    "trailerSoon": "予告編は近日公開",
+    "trailerSoonSub": "公式予告編は後日ご確認ください。",
+    "streamingInfoError": "公式の配信情報を読み込めませんでした。",
+    "switchServer": "サーバーを切り替え",
+    "contactUs": "お問い合わせ",
+    "disclaimer": "免責事項"
   }
 }

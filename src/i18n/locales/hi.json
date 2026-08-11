@@ -224,5 +224,24 @@
     "browseByLanguage": "भाषा से देखें",
     "browseByPlatform": "प्लेटफ़ॉर्म से देखें",
     "highestRated": "सर्वाधिक रेटेड"
+  },
+  "ui": {
+    "genres": "शैलियाँ",
+    "platforms": "प्लेटफ़ॉर्म",
+    "languages": "भाषाएँ",
+    "runtime": "अवधि",
+    "rating": "रेटिंग",
+    "all": "सभी",
+    "myWatchlist": "मेरी वॉचलिस्ट",
+    "back": "वापस",
+    "browseByGenre": "शैली से देखें",
+    "fromTheBlog": "ब्लॉग से",
+    "relatedHelp": "संबंधित सहायता लेख",
+    "trailerSoon": "ट्रेलर जल्द आ रहा है",
+    "trailerSoonSub": "आधिकारिक ट्रेलर के लिए बाद में देखें।",
+    "streamingInfoError": "अभी आधिकारिक स्ट्रीमिंग जानकारी नहीं मिल सकी।",
+    "switchServer": "सर्वर बदलें",
+    "contactUs": "संपर्क करें",
+    "disclaimer": "अस्वीकरण"
   }
 }

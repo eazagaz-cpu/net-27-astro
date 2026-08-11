@@ -224,5 +224,24 @@
     "browseByLanguage": "Explorar por idioma",
     "browseByPlatform": "Explorar por plataforma",
     "highestRated": "Mejor valorados"
+  },
+  "ui": {
+    "genres": "Géneros",
+    "platforms": "Plataformas",
+    "languages": "Idiomas",
+    "runtime": "Duración",
+    "rating": "Valoración",
+    "all": "Todo",
+    "myWatchlist": "Mi lista",
+    "back": "Atrás",
+    "browseByGenre": "Explorar por género",
+    "fromTheBlog": "Del blog",
+    "relatedHelp": "Artículos de ayuda relacionados",
+    "trailerSoon": "Tráiler próximamente",
+    "trailerSoonSub": "Vuelve más tarde para ver el tráiler oficial.",
+    "streamingInfoError": "No se pudo cargar la información oficial de streaming.",
+    "switchServer": "Cambiar servidor",
+    "contactUs": "Contacto",
+    "disclaimer": "Aviso legal"
   }
 }

@@ -224,5 +224,24 @@
     "browseByLanguage": "Layari mengikut bahasa",
     "browseByPlatform": "Layari mengikut platform",
     "highestRated": "Penarafan tertinggi"
+  },
+  "ui": {
+    "genres": "Genre",
+    "platforms": "Platform",
+    "languages": "Bahasa",
+    "runtime": "Tempoh",
+    "rating": "Penarafan",
+    "all": "Semua",
+    "myWatchlist": "Senarai saya",
+    "back": "Kembali",
+    "browseByGenre": "Layari mengikut genre",
+    "fromTheBlog": "Dari blog",
+    "relatedHelp": "Artikel bantuan berkaitan",
+    "trailerSoon": "Treler akan datang",
+    "trailerSoonSub": "Semak semula nanti untuk treler rasmi.",
+    "streamingInfoError": "Maklumat penstriman rasmi tidak dapat dimuatkan buat masa ini.",
+    "switchServer": "Tukar pelayan",
+    "contactUs": "Hubungi kami",
+    "disclaimer": "Penafian"
   }
 }

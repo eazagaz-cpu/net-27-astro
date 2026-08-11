@@ -224,5 +224,24 @@
     "browseByLanguage": "تصفح حسب اللغة",
     "browseByPlatform": "تصفح حسب المنصة",
     "highestRated": "الأعلى تقييمًا"
+  },
+  "ui": {
+    "genres": "الأنواع",
+    "platforms": "المنصات",
+    "languages": "اللغات",
+    "runtime": "المدة",
+    "rating": "التقييم",
+    "all": "الكل",
+    "myWatchlist": "قائمتي",
+    "back": "رجوع",
+    "browseByGenre": "تصفح حسب النوع",
+    "fromTheBlog": "من المدونة",
+    "relatedHelp": "مقالات مساعدة ذات صلة",
+    "trailerSoon": "الإعلان قريبًا",
+    "trailerSoonSub": "تحقق لاحقًا من الإعلان الرسمي.",
+    "streamingInfoError": "تعذر تحميل معلومات البث الرسمية الآن.",
+    "switchServer": "تغيير الخادم",
+    "contactUs": "اتصل بنا",
+    "disclaimer": "إخلاء مسؤولية"
   }
 }

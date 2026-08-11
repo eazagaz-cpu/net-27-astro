@@ -224,5 +224,24 @@
     "browseByLanguage": "По языку",
     "browseByPlatform": "По платформе",
     "highestRated": "С высшим рейтингом"
+  },
+  "ui": {
+    "genres": "Жанры",
+    "platforms": "Платформы",
+    "languages": "Языки",
+    "runtime": "Продолжительность",
+    "rating": "Рейтинг",
+    "all": "Все",
+    "myWatchlist": "Мой список",
+    "back": "Назад",
+    "browseByGenre": "Просмотр по жанру",
+    "fromTheBlog": "Из блога",
+    "relatedHelp": "Похожие статьи помощи",
+    "trailerSoon": "Трейлер скоро",
+    "trailerSoonSub": "Загляните позже за официальным трейлером.",
+    "streamingInfoError": "Не удалось загрузить официальные данные о доступности.",
+    "switchServer": "Сменить сервер",
+    "contactUs": "Связаться с нами",
+    "disclaimer": "Отказ от ответственности"
   }
 }

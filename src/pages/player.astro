@@ -29,7 +29,7 @@ import { SITE_URL } from '../lib/seo';
         <!-- Back -->
         <button data-back-btn class="flex items-center gap-1.5 text-sm text-zinc-400 hover:text-white transition-colors cursor-pointer shrink-0" aria-label="Go back">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
-          <span class="hidden sm:inline text-xs">Back</span>
+          <span class="hidden sm:inline text-xs" data-t="ui.back">Back</span>
         </button>
 
         <!-- Title -->
@@ -129,8 +129,8 @@ import { SITE_URL } from '../lib/seo';
           <p class="text-sm text-zinc-400 mb-6">This server is unavailable. Please try another server.</p>
           <div class="flex items-center justify-center gap-3 flex-wrap">
             <button id="fallback-retry" class="btn-primary text-sm px-6 py-2.5 rounded-xl cursor-pointer">Retry</button>
-            <button id="fallback-switch" class="btn-glass text-sm px-6 py-2.5 rounded-xl cursor-pointer">Switch Server</button>
-            <button data-back-btn class="btn-glass text-sm px-5 py-2.5 rounded-xl cursor-pointer">Back</button>
+            <button id="fallback-switch" class="btn-glass text-sm px-6 py-2.5 rounded-xl cursor-pointer" data-t="ui.switchServer">Switch Server</button>
+            <button data-back-btn class="btn-glass text-sm px-5 py-2.5 rounded-xl cursor-pointer" data-t="ui.back">Back</button>
           </div>
           <p id="trailer-link" class="hidden mt-5"></p>
         </div>
@@ -147,8 +147,8 @@ import { SITE_URL } from '../lib/seo';
           <h2 class="text-base font-bold mb-2">Player Blocked</h2>
           <p class="text-sm text-zinc-400 mb-6">This server couldn't load. Try switching to another server.</p>
           <div class="flex items-center justify-center gap-3">
-            <button id="blocked-switch" class="btn-primary text-sm px-6 py-2.5 rounded-xl cursor-pointer">Switch Server</button>
-            <button data-back-btn class="btn-glass text-sm px-5 py-2.5 rounded-xl cursor-pointer">Back</button>
+            <button id="blocked-switch" class="btn-primary text-sm px-6 py-2.5 rounded-xl cursor-pointer" data-t="ui.switchServer">Switch Server</button>
+            <button data-back-btn class="btn-glass text-sm px-5 py-2.5 rounded-xl cursor-pointer" data-t="ui.back">Back</button>
           </div>
         </div>
       </div>

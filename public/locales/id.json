@@ -224,5 +224,24 @@
     "browseByLanguage": "Telusuri menurut bahasa",
     "browseByPlatform": "Telusuri menurut platform",
     "highestRated": "Rating tertinggi"
+  },
+  "ui": {
+    "genres": "Genre",
+    "platforms": "Platform",
+    "languages": "Bahasa",
+    "runtime": "Durasi",
+    "rating": "Peringkat",
+    "all": "Semua",
+    "myWatchlist": "Daftar saya",
+    "back": "Kembali",
+    "browseByGenre": "Telusuri menurut genre",
+    "fromTheBlog": "Dari blog",
+    "relatedHelp": "Artikel bantuan terkait",
+    "trailerSoon": "Trailer segera hadir",
+    "trailerSoonSub": "Periksa lagi nanti untuk trailer resmi.",
+    "streamingInfoError": "Info streaming resmi tidak dapat dimuat saat ini.",
+    "switchServer": "Ganti server",
+    "contactUs": "Hubungi kami",
+    "disclaimer": "Penafian"
   }
 }

@@ -224,5 +224,24 @@
     "browseByLanguage": "Browse by Language",
     "browseByPlatform": "Browse by Platform",
     "highestRated": "Highest Rated"
+  },
+  "ui": {
+    "genres": "Genres",
+    "platforms": "Platforms",
+    "languages": "Languages",
+    "runtime": "Runtime",
+    "rating": "Rating",
+    "all": "All",
+    "myWatchlist": "My Watchlist",
+    "back": "Back",
+    "browseByGenre": "Browse by Genre",
+    "fromTheBlog": "From the Blog",
+    "relatedHelp": "Related Help Articles",
+    "trailerSoon": "Trailer coming soon",
+    "trailerSoonSub": "Check back later for the official trailer.",
+    "streamingInfoError": "Couldn't load official streaming info right now.",
+    "switchServer": "Switch Server",
+    "contactUs": "Contact Us",
+    "disclaimer": "Disclaimer"
   }
 }

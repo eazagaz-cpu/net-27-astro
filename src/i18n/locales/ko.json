@@ -224,5 +224,24 @@
     "browseByLanguage": "언어별 보기",
     "browseByPlatform": "플랫폼별 보기",
     "highestRated": "평점 높은 순"
+  },
+  "ui": {
+    "genres": "장르",
+    "platforms": "플랫폼",
+    "languages": "언어",
+    "runtime": "상영 시간",
+    "rating": "평점",
+    "all": "전체",
+    "myWatchlist": "내 목록",
+    "back": "뒤로",
+    "browseByGenre": "장르별 보기",
+    "fromTheBlog": "블로그에서",
+    "relatedHelp": "관련 도움말",
+    "trailerSoon": "예고편 준비 중",
+    "trailerSoonSub": "공식 예고편은 나중에 확인해 주세요.",
+    "streamingInfoError": "공식 스트리밍 정보를 불러오지 못했습니다.",
+    "switchServer": "서버 변경",
+    "contactUs": "문의하기",
+    "disclaimer": "면책 조항"
   }
 }

@@ -224,5 +224,24 @@
     "browseByLanguage": "ভাষা অনুসারে",
     "browseByPlatform": "প্ল্যাটফর্ম অনুসারে",
     "highestRated": "সর্বোচ্চ রেটেড"
+  },
+  "ui": {
+    "genres": "ধরন",
+    "platforms": "প্ল্যাটফর্ম",
+    "languages": "ভাষা",
+    "runtime": "সময়কাল",
+    "rating": "রেটিং",
+    "all": "সব",
+    "myWatchlist": "আমার ওয়াচলিস্ট",
+    "back": "পিছনে",
+    "browseByGenre": "ধরন অনুসারে দেখুন",
+    "fromTheBlog": "ব্লগ থেকে",
+    "relatedHelp": "সম্পর্কিত সহায়তা নিবন্ধ",
+    "trailerSoon": "ট্রেলার শীঘ্রই আসছে",
+    "trailerSoonSub": "অফিসিয়াল ট্রেলারের জন্য পরে দেখুন।",
+    "streamingInfoError": "এখন অফিসিয়াল স্ট্রিমিং তথ্য পাওয়া যায়নি।",
+    "switchServer": "সার্ভার বদলান",
+    "contactUs": "যোগাযোগ করুন",
+    "disclaimer": "দাবিত্যাগ"
   }
 }

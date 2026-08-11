@@ -224,5 +224,24 @@
     "browseByLanguage": "Bläddra efter språk",
     "browseByPlatform": "Bläddra efter plattform",
     "highestRated": "Högst betyg"
+  },
+  "ui": {
+    "genres": "Genrer",
+    "platforms": "Plattformar",
+    "languages": "Språk",
+    "runtime": "Speltid",
+    "rating": "Betyg",
+    "all": "Alla",
+    "myWatchlist": "Min lista",
+    "back": "Tillbaka",
+    "browseByGenre": "Bläddra efter genre",
+    "fromTheBlog": "Från bloggen",
+    "relatedHelp": "Relaterade hjälpartiklar",
+    "trailerSoon": "Trailer kommer snart",
+    "trailerSoonSub": "Kom tillbaka senare för den officiella trailern.",
+    "streamingInfoError": "Kunde inte ladda officiell tillgänglighetsinfo just nu.",
+    "switchServer": "Byt server",
+    "contactUs": "Kontakta oss",
+    "disclaimer": "Friskrivning"
   }
 }
