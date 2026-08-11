@@ -422,8 +422,9 @@ async function enrichWithOmdb(titles) {
       missing++;
       reasons.set(err.message, (reasons.get(err.message) || 0) + 1);
       // A key OMDb refuses outright fails identically for every title, so stop
-      // rather than spending 200 requests proving the same point.
-      if (/invalid api key|no api key/i.test(err.message)) {
+      // rather than spending 200 requests proving the same point. 401 is how a
+      // wrong key arrives; the text variants are how an unactivated one does.
+      if (/HTTP 401|invalid api key|no api key/i.test(err.message)) {
         console.log(`[movie-sync] OMDb rejected the key — skipping the rest of the pass`);
         break;
       }
