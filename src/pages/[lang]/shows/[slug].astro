@@ -7,11 +7,11 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ShowPage from '../../../components/pages/ShowPage.astro';
 import { getRealTitlesByType, type RealTitle } from '../../../lib/realTitles';
-import { LANG_CODES, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+import { ROUTED_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
 
 export const getStaticPaths = (() => {
   const titles = getRealTitlesByType('show');
-  return LANG_CODES
+  return ROUTED_LANGS
     .filter(code => code !== DEFAULT_LANG)
     .flatMap(lang => titles.map(title => ({
       params: { lang, slug: title.slug },

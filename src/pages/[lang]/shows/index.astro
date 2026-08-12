@@ -5,10 +5,10 @@
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import CollectionPage from '../../../components/pages/CollectionPage.astro';
-import { LANG_CODES, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+import { ROUTED_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
 
 export const getStaticPaths = (() => {
-  return LANG_CODES
+  return ROUTED_LANGS
     .filter(code => code !== DEFAULT_LANG)
     .map(lang => ({ params: { lang }, props: { lang } }));
 }) satisfies GetStaticPaths;

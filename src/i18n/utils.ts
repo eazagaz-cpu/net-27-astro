@@ -1,4 +1,4 @@
-import { DEFAULT_LANG, LANGUAGES, LANG_CODES, SITE_DOMAIN, type Lang } from './config';
+import { DEFAULT_LANG, LANGUAGES, LANG_CODES, ROUTED_LANGS, SITE_DOMAIN, type Lang } from './config';
 
 export function getLangFromUrl(url: URL | string): Lang {
   const pathname = typeof url === 'string' ? url : url.pathname;
@@ -47,7 +47,8 @@ export function getAlternateLinks(path: string): { lang: string; href: string }[
   const links: { lang: string; href: string }[] = [
     { lang: 'x-default', href: `${SITE_DOMAIN}${clean}` },
   ];
-  for (const code of LANG_CODES) {
+  // Only routed locales: an hreflang pointing at a 404 invalidates the cluster.
+  for (const code of ROUTED_LANGS) {
     const localPath = code === DEFAULT_LANG ? clean : `/${code}${clean}`;
     links.push({ lang: code, href: `${SITE_DOMAIN}${localPath}` });
   }

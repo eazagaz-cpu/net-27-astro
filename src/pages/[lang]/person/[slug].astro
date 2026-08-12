@@ -9,11 +9,11 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import PersonPage from '../../../components/pages/PersonPage.astro';
 import { getAllPeople } from '../../../lib/people';
-import { LANG_CODES, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+import { ROUTED_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
 
 export const getStaticPaths = (() => {
   const people = getAllPeople();
-  return LANG_CODES
+  return ROUTED_LANGS
     .filter(code => code !== DEFAULT_LANG)
     .flatMap(lang => people.map(person => ({
       params: { lang, slug: person.slug },

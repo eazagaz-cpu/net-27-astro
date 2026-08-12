@@ -8,10 +8,10 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ArchivePage from '../../../components/pages/ArchivePage.astro';
 import { languages } from '../../../data/sampleTitles';
-import { LANG_CODES, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+import { ROUTED_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
 
 export const getStaticPaths = (() => {
-  return LANG_CODES
+  return ROUTED_LANGS
     .filter(code => code !== DEFAULT_LANG)
     .flatMap(lang => languages.map(entry => ({
       params: { lang, slug: entry.slug },

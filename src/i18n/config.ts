@@ -25,6 +25,21 @@ export const LANGUAGES = {
 
 export type Lang = keyof typeof LANGUAGES;
 export const LANG_CODES = Object.keys(LANGUAGES) as Lang[];
+
+/**
+ * Locales that get their own statically generated routes.
+ *
+ * Every locale in LANGUAGES stays selectable — the client-side switcher covers
+ * them all — but only these are built as separate pages. Building all nineteen
+ * produced roughly 25,000 pages and Cloudflare's builder was killed part way
+ * through every time, so the site stopped deploying entirely.
+ *
+ * The choice follows the audience: Search Console puts 70% of clicks in India,
+ * 10% in Pakistan and 2% in Bangladesh. hreflang is generated from this list
+ * rather than from LANGUAGES, so it never points at a URL that does not exist.
+ */
+export const ROUTED_LANGS: Lang[] = ['en', 'hi', 'ur', 'bn'];
+
 export const RTL_LANGS: Lang[] = ['ar', 'ur'];
 
 export const TMDB_LANG_MAP: Record<Lang, string> = {
