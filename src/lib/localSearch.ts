@@ -31,6 +31,23 @@ interface IndexRecord {
   w: string;  // streaming providers, pipe separated
 }
 
+/**
+ * Narrowing applied to the catalogue. Every field is optional, and an unset
+ * field means "no constraint" rather than a default.
+ */
+export interface SearchFilters {
+  type?: 'movie' | 'show';
+  genre?: string;
+  language?: string;
+  provider?: string;
+  minYear?: number;
+  minRating?: number;
+}
+
+export function hasActiveFilters(f: SearchFilters): boolean {
+  return Boolean(f.type || f.genre || f.language || f.provider || f.minYear || f.minRating);
+}
+
 export interface LocalHit {
   slug: string;
   isShow: boolean;
@@ -96,6 +113,53 @@ export function loadIndex(): Promise<IndexRecord[]> {
   return cache;
 }
 
+/** Case-insensitive membership test over a pipe-separated field. */
+function listHas(field: string, value: string): boolean {
+  if (!field) return false;
+  const target = value.toLowerCase();
+  return field.toLowerCase().split('|').includes(target);
+}
+
+function passesFilters(rec: IndexRecord, f: SearchFilters): boolean {
+  if (f.type && (f.type === 'show') !== (rec.y === 1)) return false;
+  if (f.genre && !listHas(rec.g, f.genre)) return false;
+  if (f.language && !listHas(rec.l, f.language)) return false;
+  if (f.provider && !listHas(rec.w, f.provider)) return false;
+  if (f.minYear && rec.r < f.minYear) return false;
+  if (f.minRating && rec.v < f.minRating) return false;
+  return true;
+}
+
+/**
+ * The distinct values actually present in the catalogue, so the UI only offers
+ * filters that can return something.
+ */
+export function facets(records: IndexRecord[]): {
+  genres: string[];
+  languages: string[];
+  providers: string[];
+} {
+  const collect = (pick: (r: IndexRecord) => string) => {
+    const counts = new Map<string, number>();
+    for (const rec of records) {
+      for (const entry of pick(rec).split('|')) {
+        if (entry) counts.set(entry, (counts.get(entry) || 0) + 1);
+      }
+    }
+    return [...counts.entries()]
+      // Anything with a handful of titles behind it is noise in a dropdown.
+      .filter(([, n]) => n >= 5)
+      .sort((a, b) => b[1] - a[1])
+      .map(([name]) => name);
+  };
+
+  return {
+    genres: collect(r => r.g),
+    languages: collect(r => r.l),
+    providers: collect(r => r.w),
+  };
+}
+
 /** Finds which pipe-separated entry matched, so the UI can say why. */
 function matchedEntry(field: string, needle: string): string | undefined {
   if (!field) return undefined;
@@ -112,20 +176,32 @@ function matchedEntry(field: string, needle: string): string | undefined {
  * start of, then a word inside it, then a person or category, then a near
  * miss. Rating only breaks ties.
  */
-export function searchIndex(records: IndexRecord[], query: string, limit = 12): LocalHit[] {
+export function searchIndex(
+  records: IndexRecord[],
+  query: string,
+  limit = 12,
+  filters: SearchFilters = {},
+): LocalHit[] {
   const q = normalize(query);
-  if (q.length < 2) return [];
+  const filtering = hasActiveFilters(filters);
+  // Filters alone are a valid request — "Telugu films on Netflix" needs no
+  // query at all — but an empty request should not return the whole catalogue.
+  if (q.length < 2 && !filtering) return [];
 
   const words = q.split(' ').filter(Boolean);
   const qCompact = compact(q);
   const hits: LocalHit[] = [];
 
   for (const rec of records) {
+    if (!passesFilters(rec, filters)) continue;
     const title = normalize(rec.t);
     let score = 0;
     let matchedOn: string | undefined;
 
-    if (title === q) score = 1000;
+    // With filters and no query, the filter itself is the match; ordering then
+    // falls to rating, which the tie-breaker below supplies.
+    if (q.length < 2) score = 100;
+    else if (title === q) score = 1000;
     else if (title.startsWith(q)) score = 900;
     else if (title.split(' ').some(w => w.startsWith(q))) score = 800;
     else if (title.includes(q)) score = 700;

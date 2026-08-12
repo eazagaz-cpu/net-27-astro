@@ -1,5 +1,5 @@
 ﻿import { useState, useEffect, useRef, useCallback } from "react";
-import { loadIndex, searchIndex, hitUrl, type LocalHit } from "../lib/localSearch";
+import { loadIndex, searchIndex, hitUrl, facets, hasActiveFilters, type LocalHit, type SearchFilters } from "../lib/localSearch";
 
 interface Result {
   id: number;
@@ -34,27 +34,45 @@ export default function SearchBox() {
   const [results, setResults] = useState<Result[]>([]);
   const [loading, setLoading] = useState(false);
   const [searched, setSearched] = useState(false);
+  const [filters, setFilters] = useState<SearchFilters>({});
+  const [options, setOptions] = useState({ genres: [] as string[], languages: [] as string[], providers: [] as string[] });
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // Offer only filters the catalogue can actually satisfy.
+  useEffect(() => {
+    loadIndex().then(records => setOptions(facets(records)));
+  }, []);
 
   useEffect(() => {
     const q = new URLSearchParams(window.location.search).get("q") || "";
-    if (q) { setQuery(q); doSearch(q); }
+    if (q) { setQuery(q); doSearch(q, {}); }
     inputRef.current?.focus();
   }, []);
 
-  const doSearch = useCallback((q: string) => {
+  const doSearch = useCallback((q: string, active: SearchFilters) => {
     clearTimeout(debounceTimer);
-    if (!q.trim()) { setResults([]); setLoading(false); setSearched(false); return; }
+    const filtering = hasActiveFilters(active);
+    if (!q.trim() && !filtering) { setResults([]); setLoading(false); setSearched(false); return; }
 
     // The catalogue is searched locally and shown immediately; the proxy then
     // adds titles this site does not hold.
     let local: Result[] = [];
     loadIndex().then(records => {
-      local = searchIndex(records, q, 24).map(hitToResult);
+      local = searchIndex(records, q, 60, active).map(hitToResult);
       if (local.length > 0) { setResults(local); setLoading(false); setSearched(true); }
     });
 
     setLoading(true);
+    if (filtering) {
+      // The proxy returns none of the fields these filters test, so its results
+      // would quietly ignore them. Catalogue only while a filter is on.
+      loadIndex().then(records => {
+        setResults(searchIndex(records, q, 60, active).map(hitToResult));
+        setLoading(false);
+        setSearched(true);
+      });
+      return;
+    }
     debounceTimer = setTimeout(async () => {
       try {
         const lang = localStorage.getItem("netmirror_lang") || "en";
@@ -78,10 +96,25 @@ export default function SearchBox() {
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const v = e.target.value;
     setQuery(v);
-    doSearch(v);
+    doSearch(v, filters);
     const params = new URLSearchParams(window.location.search);
     if (v) params.set("q", v); else params.delete("q");
     window.history.replaceState(null, "", params.toString() ? `?${params}` : window.location.pathname);
+  }
+
+  function applyFilter(key: keyof SearchFilters, raw: string) {
+    const next: SearchFilters = { ...filters };
+    if (!raw) delete next[key];
+    else if (key === "minRating" || key === "minYear") next[key] = Number(raw);
+    else if (key === "type") next.type = raw as "movie" | "show";
+    else next[key] = raw as never;
+    setFilters(next);
+    doSearch(query, next);
+  }
+
+  function clearFilters() {
+    setFilters({});
+    doSearch(query, {});
   }
 
   return (
@@ -110,6 +143,54 @@ export default function SearchBox() {
           </button>
         )}
       </div>
+
+
+      {/* Filters run against this site's own catalogue, which is the only data
+          that carries language, provider and genre. */}
+      <div className="search-filters">
+        <select value={filters.type ?? ""} onChange={e => applyFilter("type", e.target.value)} aria-label="Type">
+          <option value="">All types</option>
+          <option value="movie">Movies</option>
+          <option value="show">TV shows</option>
+        </select>
+        <select value={filters.language ?? ""} onChange={e => applyFilter("language", e.target.value)} aria-label="Language">
+          <option value="">Any language</option>
+          {options.languages.map(l => <option key={l} value={l}>{l}</option>)}
+        </select>
+        <select value={filters.genre ?? ""} onChange={e => applyFilter("genre", e.target.value)} aria-label="Genre">
+          <option value="">Any genre</option>
+          {options.genres.map(g => <option key={g} value={g}>{g}</option>)}
+        </select>
+        <select value={filters.provider ?? ""} onChange={e => applyFilter("provider", e.target.value)} aria-label="Streaming service">
+          <option value="">Any service</option>
+          {options.providers.map(w => <option key={w} value={w}>{w}</option>)}
+        </select>
+        <select value={filters.minRating ?? ""} onChange={e => applyFilter("minRating", e.target.value)} aria-label="Minimum rating">
+          <option value="">Any rating</option>
+          <option value="9">9+</option>
+          <option value="8">8+</option>
+          <option value="7">7+</option>
+          <option value="6">6+</option>
+        </select>
+        <select value={filters.minYear ?? ""} onChange={e => applyFilter("minYear", e.target.value)} aria-label="Released from">
+          <option value="">Any year</option>
+          <option value="2026">2026</option>
+          <option value="2025">2025 +</option>
+          <option value="2020">2020 +</option>
+          <option value="2010">2010 +</option>
+          <option value="2000">2000 +</option>
+        </select>
+        {hasActiveFilters(filters) && (
+          <button type="button" className="search-filters-clear" onClick={clearFilters}>Clear filters</button>
+        )}
+      </div>
+
+      {hasActiveFilters(filters) && (
+        <p className="search-filters-note">
+          Showing titles from our catalogue only, because filters need details
+          the wider search does not return.
+        </p>
+      )}
 
       {loading && (
         <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))", gap:16 }}>
@@ -181,6 +262,55 @@ export default function SearchBox() {
           <p style={{ fontSize:15 }}>Start typing to search 500,000+ movies and shows</p>
         </div>
       )}
+
+      <style>{`
+        .search-filters {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+          margin-bottom: 1rem;
+        }
+        .search-filters select {
+          appearance: none;
+          padding: 8px 30px 8px 12px;
+          border-radius: 8px;
+          border: 1px solid rgba(255,255,255,0.12);
+          background: rgba(255,255,255,0.05)
+            url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E")
+            no-repeat right 10px center;
+          color: #fff;
+          font-size: 13px;
+          font-family: inherit;
+          cursor: pointer;
+          max-width: 100%;
+        }
+        .search-filters select:focus-visible {
+          outline: 2px solid var(--color-primary);
+          outline-offset: 1px;
+        }
+        .search-filters select option { background: #14141a; color: #fff; }
+        .search-filters-clear {
+          padding: 8px 12px;
+          border-radius: 8px;
+          border: 1px solid rgba(255,255,255,0.12);
+          background: none;
+          color: var(--color-primary);
+          font-size: 13px;
+          font-family: inherit;
+          cursor: pointer;
+        }
+        .search-filters-note {
+          margin: -0.25rem 0 1.25rem;
+          font-size: 12px;
+          line-height: 1.5;
+          color: rgba(255,255,255,0.4);
+        }
+        /* Selects wrap to two per row on narrow screens rather than shrinking
+           until their labels are unreadable. */
+        @media (max-width: 520px) {
+          .search-filters select { flex: 1 1 calc(50% - 4px); }
+        }
+      `}</style>
     </div>
   );
 }
