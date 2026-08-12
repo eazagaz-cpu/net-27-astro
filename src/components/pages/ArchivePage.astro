@@ -1,0 +1,146 @@
+---
+/**
+ * ArchivePage.astro — one listing page for a genre, language, platform, country
+ * or year, in one locale.
+ *
+ * The five archive types differed only in their labels and their sibling list,
+ * so they share this body. Rendered by both the English routes and their
+ * localized twins, which is what keeps them from drifting apart.
+ *
+ * Long-form editorial descriptions are English-authored and are passed in only
+ * by the English routes. Localized pages get their intro and FAQs from the
+ * translation files instead, so a localized page never carries an English
+ * paragraph.
+ */
+import Header from '../Header.astro';
+import Footer from '../Footer.astro';
+import SEOHead from '../SEOHead.astro';
+import Schema from '../Schema.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import FAQSection from '../FAQSection.astro';
+import DynamicGrid from '../DynamicGrid.tsx';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { loadTranslations, t } from '../../i18n';
+import { getLocalizedPath } from '../../i18n/utils';
+import { DEFAULT_LANG, type Lang } from '../../i18n/config';
+
+export type ArchiveKind = 'genre' | 'language' | 'platform' | 'country' | 'year';
+
+interface Props {
+  kind: ArchiveKind;
+  /** Display name of the entity, e.g. "Telugu" or "Netflix". */
+  name: string;
+  slug: string;
+  lang: Lang;
+  /** Sibling entities of the same kind, for onward navigation. */
+  related?: { name: string; slug: string }[];
+  /**
+   * English editorial prose. Supplied by English routes only — a localized page
+   * showing this would be exactly the English leakage we are avoiding.
+   */
+  englishDescription?: string;
+  /** Category key the client grid fetches, when it differs from the slug. */
+  gridCategory?: string;
+}
+
+const { kind, name, slug, lang, related = [], englishDescription, gridCategory } = Astro.props;
+const tr = await loadTranslations(lang);
+const L = (path: string) => getLocalizedPath(path, lang);
+
+const basePath = `/${kind}/${slug}/`;
+const canonical = `${SITE_URL}${L(basePath)}`;
+
+/** The plural label for this kind, reused for the breadcrumb and sibling list. */
+const KIND_LABEL_KEYS: Record<ArchiveKind, string> = {
+  genre: 'ui.genres',
+  language: 'ui.languages',
+  platform: 'ui.platforms',
+  country: 'footer.quickLinks',
+  year: 'ui.all',
+};
+const kindLabel = t(tr, KIND_LABEL_KEYS[kind]);
+
+const breadcrumbs = [
+  { label: t(tr, 'nav.home'), href: L('/') },
+  { label: kindLabel, href: L('/sitemap/') },
+  { label: name, href: L(basePath) },
+];
+
+const heading = t(tr, 'archive.h1', { name });
+const intro = t(tr, 'archive.intro', { name });
+
+const faqs = [
+  { question: t(tr, 'archive.faqWhereQ', { name }), answer: t(tr, 'archive.faqWhereA', { name }) },
+  { question: t(tr, 'archive.faqAvailQ', { name }), answer: t(tr, 'archive.faqAvailA', { name }) },
+  { question: t(tr, 'archive.faqUpdatedQ'), answer: t(tr, 'archive.faqUpdatedA') },
+];
+
+// English pages keep their hand-written description; localized pages rely on
+// the translated intro and FAQs above.
+const description = lang === DEFAULT_LANG ? englishDescription : undefined;
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: heading,
+  description: t(tr, 'archive.metaDescription', { name }),
+  url: canonical,
+  inLanguage: lang,
+};
+---
+
+<SEOHead
+  slot="head"
+  title={heading}
+  description={t(tr, 'archive.metaDescription', { name })}
+  canonical={canonical}
+  localized={true}
+/>
+<Schema slot="head" schema={[collectionSchema, breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+
+<Header />
+
+<main class="min-h-screen">
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+    <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-24 pb-10">
+      <Breadcrumbs items={breadcrumbs} />
+      <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+        <span class="gradient-text">{name}</span>
+      </h1>
+      <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">{intro}</p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-12 space-y-16">
+    {description && (
+      <section>
+        <p class="text-[var(--color-text-secondary)] leading-relaxed max-w-4xl">{description}</p>
+      </section>
+    )}
+
+    <section>
+      <h2 class="section-title mb-6">{t(tr, 'archive.allTitles', { name })}</h2>
+      <DynamicGrid client:idle category={gridCategory ?? slug} title={name} />
+    </section>
+
+    {related.length > 0 && (
+      <section>
+        <h2 class="section-title mb-6">{t(tr, 'archive.exploreOther')}</h2>
+        <div class="flex flex-wrap gap-3">
+          {related.map(entry => (
+            <a href={L(`/${kind}/${entry.slug}/`)} class="chip">{entry.name}</a>
+          ))}
+        </div>
+      </section>
+    )}
+
+    <section>
+      <FAQSection faqs={faqs} />
+    </section>
+  </div>
+</main>
+
+<Footer />

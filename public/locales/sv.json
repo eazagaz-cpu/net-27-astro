@@ -259,5 +259,18 @@
     "titles": "Titlar",
     "as": "som {role}",
     "disclaimer": "Krediterna kommer från TMDB och omfattar bara titlarna i den här katalogen, så det är inte en fullständig filmografi. NetMirror lagrar och strömmar inget innehåll — varje titelsida visar var den finns officiellt tillgänglig."
+  },
+  "archive": {
+    "h1": "{name}: filmer och serier",
+    "intro": "Utforska {name}-titlar bland filmer, serier och anime och se var var och en finns officiellt tillgänglig.",
+    "allTitles": "Alla {name}-titlar",
+    "exploreOther": "Utforska mer",
+    "faqWhereQ": "Var kan jag se {name}-innehåll?",
+    "faqWhereA": "{name}-titlar finns hos olika tjänster beroende på land. Varje titelsida listar de tjänster som erbjuder den officiellt i din region.",
+    "faqAvailQ": "Finns {name}-innehåll i mitt land?",
+    "faqAvailA": "Tillgängligheten varierar mellan länder och tjänster och ändras över tid. Öppna en titel för att se dess aktuella officiella tillgänglighet.",
+    "faqUpdatedQ": "Hur ofta uppdateras den här listan?",
+    "faqUpdatedA": "Katalogen uppdateras dagligen från TMDB, så nya släpp och ändringar visas utan fördröjning.",
+    "metaDescription": "Upptäck {name}-filmer, -serier och -anime med officiell tillgänglighet för varje titel."
   }
 }

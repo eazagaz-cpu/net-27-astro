@@ -259,5 +259,18 @@
     "titles": "Yapımlar",
     "as": "{role} rolünde",
     "disclaimer": "Künye bilgileri TMDB’den gelir ve yalnızca bu katalogdaki yapımları kapsar; bu nedenle tam bir filmografi değildir. NetMirror hiçbir içeriği barındırmaz veya yayınlamaz — her yapım sayfası nerede resmi olarak bulunabileceğini gösterir."
+  },
+  "archive": {
+    "h1": "{name} film ve dizileri",
+    "intro": "Filmler, diziler ve animeler arasında {name} yapımlarını keşfedin ve her birinin resmi olarak nerede bulunduğunu görün.",
+    "allTitles": "Tüm {name} yapımları",
+    "exploreOther": "Daha fazlasını keşfet",
+    "faqWhereQ": "{name} içeriklerini nerede izleyebilirim?",
+    "faqWhereA": "{name} yapımları ülkenize göre farklı servislerde bulunur. Her yapım sayfası, onu bölgenizde resmi olarak sunan servisleri listeler.",
+    "faqAvailQ": "{name} içerikleri ülkemde bulunuyor mu?",
+    "faqAvailA": "Bulunabilirlik ülkeye ve servise göre değişir ve zamanla değişebilir. Güncel resmi durumu görmek için herhangi bir yapımı açın.",
+    "faqUpdatedQ": "Bu liste ne sıklıkla güncellenir?",
+    "faqUpdatedA": "Katalog her gün TMDB’den yenilenir; yeni çıkanlar ve değişiklikler gecikmeden görünür.",
+    "metaDescription": "{name} film, dizi ve animelerini, her yapımın resmi yayın bilgisiyle keşfedin."
   }
 }

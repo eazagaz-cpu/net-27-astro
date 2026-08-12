@@ -259,5 +259,18 @@
     "titles": "Tytuły",
     "as": "jako {role}",
     "disclaimer": "Dane o obsadzie pochodzą z TMDB i obejmują wyłącznie tytuły z tego katalogu, nie jest to więc pełna filmografia. NetMirror nie hostuje ani nie udostępnia treści — każda strona tytułu wskazuje, gdzie jest on oficjalnie dostępny."
+  },
+  "archive": {
+    "h1": "Filmy i seriale {name}",
+    "intro": "Przeglądaj tytuły {name} wśród filmów, seriali i anime i sprawdź, gdzie każdy jest oficjalnie dostępny.",
+    "allTitles": "Wszystkie tytuły {name}",
+    "exploreOther": "Odkryj więcej",
+    "faqWhereQ": "Gdzie mogę obejrzeć treści {name}?",
+    "faqWhereA": "Tytuły {name} są dostępne w różnych serwisach w zależności od kraju. Na stronie każdego tytułu wymieniono serwisy, które oficjalnie go udostępniają w Twoim regionie.",
+    "faqAvailQ": "Czy treści {name} są dostępne w moim kraju?",
+    "faqAvailA": "Dostępność zależy od kraju i serwisu oraz zmienia się z czasem. Otwórz dowolny tytuł, aby zobaczyć jego aktualną oficjalną dostępność.",
+    "faqUpdatedQ": "Jak często ta lista jest aktualizowana?",
+    "faqUpdatedA": "Katalog odświeżany jest codziennie z TMDB, więc premiery i zmiany dostępności pojawiają się bez opóźnień.",
+    "metaDescription": "Odkrywaj filmy, seriale i anime {name} wraz z oficjalną dostępnością każdego tytułu."
   }
 }

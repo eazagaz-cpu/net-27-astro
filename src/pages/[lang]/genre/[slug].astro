@@ -1,0 +1,32 @@
+---
+/**
+ * Localized genre archives, one per non-default locale. The English routes are
+ * untouched and keep their hand-written editorial descriptions; these render
+ * the shared ArchivePage with translated prose.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ArchivePage from '../../../components/pages/ArchivePage.astro';
+import { genres } from '../../../data/sampleTitles';
+import { LANG_CODES, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+
+export const getStaticPaths = (() => {
+  return LANG_CODES
+    .filter(code => code !== DEFAULT_LANG)
+    .flatMap(lang => genres.map(entry => ({
+      params: { lang, slug: entry.slug },
+      // Siblings give each archive a way onward without leaving the locale.
+      props: { lang, entry, related: genres.filter(other => other.slug !== entry.slug).slice(0, 12) },
+    })));
+}) satisfies GetStaticPaths;
+
+const { lang, entry, related } = Astro.props as {
+  lang: Lang;
+  entry: { slug: string; name: string };
+  related: { slug: string; name: string }[];
+};
+---
+
+<BaseLayout>
+  <ArchivePage kind="genre" name={entry.name} slug={entry.slug} lang={lang} related={related} />
+</BaseLayout>

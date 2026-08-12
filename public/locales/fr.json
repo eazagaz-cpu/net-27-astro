@@ -259,5 +259,18 @@
     "titles": "Titres",
     "as": "dans le rôle de {role}",
     "disclaimer": "Les crédits proviennent de TMDB et ne couvrent que les titres de ce catalogue : il ne s’agit donc pas d’une filmographie complète. NetMirror n’héberge ni ne diffuse aucun contenu — chaque page de titre indique où il est officiellement disponible."
+  },
+  "archive": {
+    "h1": "Films et séries {name}",
+    "intro": "Explorez les titres {name} parmi les films, les séries et les animes, et voyez où chacun est officiellement disponible.",
+    "allTitles": "Tous les titres {name}",
+    "exploreOther": "Explorer plus",
+    "faqWhereQ": "Où regarder du contenu {name} ?",
+    "faqWhereA": "Les titres {name} sont proposés par des services différents selon votre pays. Chaque page de titre indique les services qui le diffusent officiellement dans votre région.",
+    "faqAvailQ": "Le contenu {name} est-il disponible dans mon pays ?",
+    "faqAvailA": "La disponibilité varie selon le pays et le service, et évolue avec le temps. Ouvrez n’importe quel titre pour voir sa disponibilité officielle actuelle.",
+    "faqUpdatedQ": "À quelle fréquence cette liste est-elle mise à jour ?",
+    "faqUpdatedA": "Le catalogue est actualisé chaque jour depuis TMDB : les nouveautés et les changements de disponibilité apparaissent sans délai.",
+    "metaDescription": "Découvrez les films, séries et animes {name}, avec la disponibilité officielle de chaque titre."
   }
 }
