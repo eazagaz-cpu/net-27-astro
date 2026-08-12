@@ -293,5 +293,17 @@
     "q6": "Hur kontaktar jag NetMirror?",
     "a6": "Skriv till net27.cc@gmail.com för support, synpunkter, DMCA-anmälningar eller affärsfrågor. Kontaktsidan listar fler alternativ.",
     "disclaimer": "NetMirror lagrar, sparar och distribuerar inget media. Vi är en söktjänst som hjälper dig hitta var du lagligt kan se filmer, serier och anime via officiella tjänster. All information, alla bilder och alla varumärken tillhör sina respektive ägare."
+  },
+  "collection": {
+    "moviesH1": "Filmer",
+    "moviesIntro": "Bläddra bland filmer i alla genrer och språk och se var var och en finns officiellt tillgänglig.",
+    "showsH1": "Serier",
+    "showsIntro": "Bläddra bland serier i alla genrer och språk — med säsonger, antal avsnitt och officiell tillgänglighet.",
+    "animeH1": "Anime",
+    "animeIntro": "Bläddra bland animefilmer och -serier, även dubbade, med officiell tillgänglighet.",
+    "trendingH1": "Trendar nu",
+    "trendingIntro": "De mest sedda titlarna denna vecka, uppdateras dagligen.",
+    "latestH1": "Senaste släppen",
+    "latestIntro": "De nyaste filmerna och serierna, uppdateras dagligen."
   }
 }

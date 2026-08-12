@@ -293,5 +293,17 @@
     "q6": "NetMirror ile nasıl iletişime geçilir?",
     "a6": "Destek, geri bildirim, DMCA bildirimi veya ticari sorular için net27.cc@gmail.com adresine yazın. İletişim sayfasında başka seçenekler de var.",
     "disclaimer": "NetMirror hiçbir medyayı barındırmaz, saklamaz veya dağıtmaz. Resmi yayın servisleri aracılığıyla film, dizi ve animeleri yasal olarak nerede izleyebileceğinizi bulmanıza yardımcı olan bir keşif platformuyuz. Tüm bilgiler, görseller ve markalar sahiplerine aittir."
+  },
+  "collection": {
+    "moviesH1": "Filmler",
+    "moviesIntro": "Her tür ve dilde filmlere göz atın ve her birinin resmi olarak nerede bulunduğunu görün.",
+    "showsH1": "Diziler",
+    "showsIntro": "Her tür ve dilde dizilere göz atın — sezon, bölüm sayısı ve resmi erişim bilgisiyle.",
+    "animeH1": "Anime",
+    "animeIntro": "Anime film ve dizilerine göz atın; dublajlı yapımlar dahil, resmi erişim bilgisiyle.",
+    "trendingH1": "Şimdi trend",
+    "trendingIntro": "Bu hafta en çok izlenen yapımlar, her gün güncellenir.",
+    "latestH1": "Son çıkanlar",
+    "latestIntro": "En yeni film ve diziler, her gün güncellenir."
   }
 }

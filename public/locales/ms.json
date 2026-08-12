@@ -293,5 +293,17 @@
     "q6": "Bagaimana menghubungi NetMirror?",
     "a6": "E-mel ke net27.cc@gmail.com untuk sokongan, maklum balas, notis DMCA atau pertanyaan perniagaan. Halaman hubungi menyenaraikan pilihan lain.",
     "disclaimer": "NetMirror tidak menghos, menyimpan atau mengedar apa-apa media. Kami platform pencarian yang membantu anda mengetahui di mana boleh menonton filem, rancangan TV dan anime secara sah melalui perkhidmatan rasmi. Semua maklumat, imej dan tanda dagangan adalah milik pemiliknya."
+  },
+  "collection": {
+    "moviesH1": "Filem",
+    "moviesIntro": "Layari filem daripada semua genre dan bahasa, dan lihat di mana setiap satu tersedia secara rasmi.",
+    "showsH1": "Rancangan TV",
+    "showsIntro": "Layari siri daripada semua genre dan bahasa, lengkap dengan musim, jumlah episod dan ketersediaan rasmi.",
+    "animeH1": "Anime",
+    "animeIntro": "Layari filem dan siri anime, termasuk judul alih suara, dengan ketersediaan rasmi.",
+    "trendingH1": "Sedang popular",
+    "trendingIntro": "Judul paling banyak ditonton minggu ini, dikemas kini setiap hari.",
+    "latestH1": "Keluaran terbaru",
+    "latestIntro": "Filem dan siri terbaharu, dikemas kini setiap hari."
   }
 }

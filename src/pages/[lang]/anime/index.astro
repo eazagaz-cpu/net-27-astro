@@ -1,0 +1,21 @@
+---
+/**
+ * Localized anime landing page. The English route is untouched.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CollectionPage from '../../../components/pages/CollectionPage.astro';
+import { LANG_CODES, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+
+export const getStaticPaths = (() => {
+  return LANG_CODES
+    .filter(code => code !== DEFAULT_LANG)
+    .map(lang => ({ params: { lang }, props: { lang } }));
+}) satisfies GetStaticPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+---
+
+<BaseLayout>
+  <CollectionPage kind="anime" lang={lang} />
+</BaseLayout>

@@ -293,5 +293,17 @@
     "q6": "Jak skontaktować się z NetMirror?",
     "a6": "Napisz na net27.cc@gmail.com w sprawie pomocy, uwag, zgłoszeń DMCA lub kwestii biznesowych. Strona kontaktu podaje dalsze możliwości.",
     "disclaimer": "NetMirror nie hostuje, nie przechowuje ani nie rozpowszechnia żadnych materiałów. Jesteśmy platformą wyszukiwania, która pomaga ustalić, gdzie legalnie obejrzeć filmy, seriale i anime w oficjalnych serwisach. Wszystkie informacje, obrazy i znaki towarowe należą do ich właścicieli."
+  },
+  "collection": {
+    "moviesH1": "Filmy",
+    "moviesIntro": "Przeglądaj filmy wszystkich gatunków i języków i sprawdź, gdzie każdy jest oficjalnie dostępny.",
+    "showsH1": "Seriale",
+    "showsIntro": "Przeglądaj seriale wszystkich gatunków i języków — z sezonami, liczbą odcinków i oficjalną dostępnością.",
+    "animeH1": "Anime",
+    "animeIntro": "Przeglądaj filmy i seriale anime, także z dubbingiem, wraz z oficjalną dostępnością.",
+    "trendingH1": "Teraz popularne",
+    "trendingIntro": "Najczęściej oglądane tytuły tego tygodnia, aktualizowane codziennie.",
+    "latestH1": "Najnowsze premiery",
+    "latestIntro": "Najnowsze filmy i seriale, aktualizowane codziennie."
   }
 }

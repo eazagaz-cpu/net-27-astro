@@ -293,5 +293,17 @@
     "q6": "Wie erreiche ich NetMirror?",
     "a6": "Schreib an net27.cc@gmail.com für Support, Feedback, DMCA-Hinweise oder geschäftliche Anfragen. Die Kontaktseite nennt weitere Wege.",
     "disclaimer": "NetMirror hostet, speichert und verbreitet keine Medien. Wir sind eine Discovery-Plattform, die zeigt, wo Filme, Serien und Anime über offizielle Streamingdienste legal zu sehen sind. Alle Informationen, Bilder und Marken gehören ihren jeweiligen Inhabern."
+  },
+  "collection": {
+    "moviesH1": "Filme",
+    "moviesIntro": "Stöbere in Filmen aller Genres und Sprachen und sieh, wo jeder offiziell verfügbar ist.",
+    "showsH1": "Serien",
+    "showsIntro": "Stöbere in Serien aller Genres und Sprachen — mit Staffeln, Folgenzahl und offizieller Verfügbarkeit.",
+    "animeH1": "Anime",
+    "animeIntro": "Stöbere in Anime-Filmen und -Serien, auch synchronisiert, samt offizieller Verfügbarkeit.",
+    "trendingH1": "Im Trend",
+    "trendingIntro": "Die meistgesehenen Titel dieser Woche, täglich aktualisiert.",
+    "latestH1": "Neue Veröffentlichungen",
+    "latestIntro": "Die neuesten Filme und Serien, täglich aktualisiert."
   }
 }

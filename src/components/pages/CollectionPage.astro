@@ -1,0 +1,106 @@
+---
+/**
+ * CollectionPage.astro — a localized catalogue landing page.
+ *
+ * Covers the five catalogue entry points (movies, shows, anime, trending,
+ * latest) for non-default locales. The English routes are untouched and keep
+ * their own richer sections; these carry translated prose and the same live
+ * grid data, so a localized visitor never lands on English copy.
+ */
+import Header from '../Header.astro';
+import Footer from '../Footer.astro';
+import SEOHead from '../SEOHead.astro';
+import Schema from '../Schema.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import FAQSection from '../FAQSection.astro';
+import DynamicGrid from '../DynamicGrid.tsx';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { loadTranslations, t } from '../../i18n';
+import { getLocalizedPath } from '../../i18n/utils';
+import type { Lang } from '../../i18n/config';
+
+export type CollectionKind = 'movies' | 'shows' | 'anime' | 'trending' | 'latest';
+
+interface Props {
+  kind: CollectionKind;
+  lang: Lang;
+}
+
+const { kind, lang } = Astro.props;
+const tr = await loadTranslations(lang);
+const L = (path: string) => getLocalizedPath(path, lang);
+
+/** Translation key stems, page path, grid category and SEO title per kind. */
+const CONFIG: Record<CollectionKind, { path: string; category: string; seoKey: string }> = {
+  movies:   { path: '/movies/',   category: 'popular-movies', seoKey: 'seo.moviesTitle' },
+  shows:    { path: '/shows/',    category: 'popular-tv',     seoKey: 'seo.showsTitle' },
+  anime:    { path: '/anime/',    category: 'anime',          seoKey: 'seo.animeTitle' },
+  trending: { path: '/trending/', category: 'trending',       seoKey: 'seo.trendingTitle' },
+  latest:   { path: '/latest/',   category: 'latest-movies',  seoKey: 'seo.latestTitle' },
+};
+
+const config = CONFIG[kind];
+const canonical = `${SITE_URL}${L(config.path)}`;
+const heading = t(tr, `collection.${kind}H1`);
+const intro = t(tr, `collection.${kind}Intro`);
+
+const breadcrumbs = [
+  { label: t(tr, 'nav.home'), href: L('/') },
+  { label: heading, href: L(config.path) },
+];
+
+// Reuses the archive FAQ wording, which asks the same three questions a
+// catalogue landing page raises.
+const faqs = [
+  { question: t(tr, 'archive.faqWhereQ', { name: heading }), answer: t(tr, 'archive.faqWhereA', { name: heading }) },
+  { question: t(tr, 'archive.faqAvailQ', { name: heading }), answer: t(tr, 'archive.faqAvailA', { name: heading }) },
+  { question: t(tr, 'archive.faqUpdatedQ'), answer: t(tr, 'archive.faqUpdatedA') },
+];
+
+const collectionSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'CollectionPage',
+  name: heading,
+  description: intro,
+  url: canonical,
+  inLanguage: lang,
+};
+---
+
+<SEOHead
+  slot="head"
+  title={t(tr, config.seoKey)}
+  description={intro}
+  canonical={canonical}
+  localized={true}
+/>
+<Schema slot="head" schema={[collectionSchema, breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+
+<Header />
+
+<main class="min-h-screen">
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+    <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-24 pb-10">
+      <Breadcrumbs items={breadcrumbs} />
+      <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+        <span class="gradient-text">{heading}</span>
+      </h1>
+      <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">{intro}</p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-12 space-y-16">
+    <section>
+      <DynamicGrid client:idle category={config.category} title={heading} />
+    </section>
+
+    <section>
+      <FAQSection faqs={faqs} title={t(tr, 'home.faqTitle')} />
+    </section>
+  </div>
+</main>
+
+<Footer />

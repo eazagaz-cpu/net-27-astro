@@ -293,5 +293,17 @@
     "q6": "How do I contact NetMirror?",
     "a6": "Write to net27.cc@gmail.com for support, feedback, DMCA notices or business enquiries. The contact page lists further options.",
     "disclaimer": "NetMirror does not host, store or distribute any media. We are a discovery platform that helps you find where to watch movies, TV shows and anime legally through official streaming services. All information, images and trademarks belong to their respective owners."
+  },
+  "collection": {
+    "moviesH1": "Movies",
+    "moviesIntro": "Browse films across every genre and language, and see where each one is officially available.",
+    "showsH1": "TV Shows",
+    "showsIntro": "Browse series across every genre and language, with seasons, episode counts and official availability.",
+    "animeH1": "Anime",
+    "animeIntro": "Browse anime films and series, including titles dubbed for Indian audiences, with official availability.",
+    "trendingH1": "Trending Now",
+    "trendingIntro": "The titles people are watching most this week, refreshed daily.",
+    "latestH1": "Latest Releases",
+    "latestIntro": "The newest films and series to arrive, refreshed daily."
   }
 }
