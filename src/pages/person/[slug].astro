@@ -1,0 +1,125 @@
+---
+/**
+ * Actor and director pages.
+ *
+ * Cast lists were plain text, so nothing connected the titles a person appears
+ * in — not for a visitor following an actor, and not for a crawler. Only people
+ * with at least three credits get a page; see src/lib/people.ts.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import TitleCard from '../../components/TitleCard.astro';
+import { getAllPeople, getPersonBySlug } from '../../lib/people';
+import { breadcrumbSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+
+export const getStaticPaths = (() => {
+  return getAllPeople().map(person => ({
+    params: { slug: person.slug },
+    props: { person },
+  }));
+}) satisfies GetStaticPaths;
+
+const { person } = Astro.props;
+const resolved = getPersonBySlug(person.slug) ?? person;
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'People', href: '/sitemap/' },
+  { label: resolved.name, href: `/person/${resolved.slug}/` },
+];
+
+const directed = resolved.credits.filter(c => c.directed);
+const acted = resolved.credits.filter(c => !c.directed);
+const years = resolved.credits.map(c => c.title.year).filter(Boolean);
+const span = years.length > 1 ? `${Math.min(...years)}–${Math.max(...years)}` : `${years[0] ?? ''}`;
+
+// Written from the credits themselves rather than a template, so the page says
+// something true about this person instead of filler.
+const summaryParts = [
+  `${resolved.name} appears in ${resolved.credits.length} ${resolved.credits.length === 1 ? 'title' : 'titles'} in our catalogue`,
+  span ? ` spanning ${span}` : '',
+  '.',
+  acted.length > 0 ? ` Credited as a cast member on ${acted.length}` : '',
+  acted.length > 0 && directed.length > 0 ? ` and as director on ${directed.length}.` : acted.length > 0 ? '.' : '',
+  acted.length === 0 && directed.length > 0 ? ` Credited as director on ${directed.length}.` : '',
+];
+const summary = summaryParts.join('');
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: resolved.name,
+  url: `${SITE_URL}/person/${resolved.slug}/`,
+  jobTitle: resolved.primaryRole,
+};
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title={`${resolved.name} — Movies & Shows`}
+    description={`${resolved.name}: ${resolved.credits.length} titles in our catalogue${span ? ` (${span})` : ''}. Where to watch them, with cast, ratings and streaming availability.`}
+    canonical={`${SITE_URL}/person/${resolved.slug}/`}
+  />
+  <Schema slot="head" schema={[personSchema, breadcrumbSchema(breadcrumbs)]} />
+
+  <Header />
+
+  <main class="min-h-screen">
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/10 to-[var(--color-accent-alt)]/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+      <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-24 pb-10">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+          <span class="gradient-text">{resolved.name}</span>
+        </h1>
+        <p class="mt-2 text-sm font-medium text-[var(--color-primary)]">{resolved.primaryRole}</p>
+        <p class="mt-4 max-w-3xl text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">{summary}</p>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-12 space-y-16">
+      {acted.length > 0 && (
+        <section>
+          <h2 class="section-title mb-6">{directed.length > 0 ? 'As cast' : 'Titles'}</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {acted.map(credit => (
+              <div>
+                <TitleCard title={credit.title} />
+                {credit.role && (
+                  <p class="mt-1 text-[11px] text-[var(--color-text-muted)] truncate" title={credit.role}>as {credit.role}</p>
+                )}
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {directed.length > 0 && (
+        <section>
+          <h2 class="section-title mb-6">As director</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {directed.map(credit => <TitleCard title={credit.title} />)}
+          </div>
+        </section>
+      )}
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">
+          Credits come from TMDB and cover only the titles in this catalogue, so
+          this is not a complete filmography. NetMirror does not host or stream
+          any content — each title page shows where it is officially available.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
