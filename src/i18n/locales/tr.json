@@ -272,5 +272,26 @@
     "faqUpdatedQ": "Bu liste ne sıklıkla güncellenir?",
     "faqUpdatedA": "Katalog her gün TMDB’den yenilenir; yeni çıkanlar ve değişiklikler gecikmeden görünür.",
     "metaDescription": "{name} film, dizi ve animelerini, her yapımın resmi yayın bilgisiyle keşfedin."
+  },
+  "home": {
+    "aboutHeading": "NetMirror — film ve dizi keşfetme platformunuz",
+    "about1": "NetMirror, büyük yayın servislerindeki film, dizi ve animeleri keşfetmeniz için bir rehberdir. Netflix’te yeni bir yapım, Prime Video’da bir dizi, JioHotstar veya SonyLIV’de bölgesel yapımlar ya da Crunchyroll’da en yeni anime — NetMirror her birinin resmi olarak nerede bulunduğunu gösterir.",
+    "about2": "Her yapım sayfasında oyuncular, yönetmen, puanlar, türler, diller, sezonlar ve ülkeye göre resmi erişim bilgisi ile ilgili öneriler yer alır. Katalog her gün yenilenir ve arayüz on dokuz dilde kullanılabilir.",
+    "about3": "NetMirror fikri mülkiyete saygı gösterir. Hiçbir içeriği barındırmaz, yüklemez, saklamaz veya yayınlamaz. Resmi ve lisanslı yayın sağlayıcılarına yönlendiren bir keşif hizmetiyiz. Tüm markalar ve yapım adları sahiplerine aittir.",
+    "blogHeading": "Blogdan yeni",
+    "faqTitle": "Sıkça sorulan sorular",
+    "q1": "NetMirror nedir?",
+    "a1": "NetMirror, Netflix, Prime Video, JioHotstar, SonyLIV ve Crunchyroll gibi servislerde film, dizi ve animeleri nerede izleyebileceğinizi bulmanıza yardımcı olan bir keşif platformudur. Erişim bilgisi sunarız; içerik barındırmaz veya yayınlamayız.",
+    "q2": "NetMirror’da nasıl arama yapılır?",
+    "a2": "Herhangi bir sayfanın üst kısmındaki arama çubuğunu kullanın veya arama sayfasını açın. Yapım adı, oyuncu, yönetmen, tür, dil veya yayın servisine göre arayabilirsiniz; sonuçlar yazdıkça görünür.",
+    "q3": "NetMirror ücretsiz mi?",
+    "a3": "Evet. NetMirror ücretsizdir ve abonelik gerektirmez. İçeriğin yayın servislerinde yasal olarak nerede bulunduğunu bulmanıza yardımcı olur.",
+    "q4": "NetMirror film yayınlıyor mu?",
+    "a4": "Hayır. NetMirror yalnızca bir keşif platformudur. Bir yapımın lisanslı servislerde resmi olarak nerede bulunduğunu gösterir; hiçbir şeyi barındırmaz, yüklemez veya yayınlamaz.",
+    "q5": "Erişim bilgileri ne kadar güncel?",
+    "a5": "Katalog her gün TMDB’den yenilenir, erişim bilgisi ise TMDB aracılığıyla JustWatch’tan gelir. Servisler kataloglarını sık değiştirdiği için her yapım sayfası güncel durumu doğrulamanız adına bağlantı verir.",
+    "q6": "NetMirror ile nasıl iletişime geçilir?",
+    "a6": "Destek, geri bildirim, DMCA bildirimi veya ticari sorular için net27.cc@gmail.com adresine yazın. İletişim sayfasında başka seçenekler de var.",
+    "disclaimer": "NetMirror hiçbir medyayı barındırmaz, saklamaz veya dağıtmaz. Resmi yayın servisleri aracılığıyla film, dizi ve animeleri yasal olarak nerede izleyebileceğinizi bulmanıza yardımcı olan bir keşif platformuyuz. Tüm bilgiler, görseller ve markalar sahiplerine aittir."
   }
 }

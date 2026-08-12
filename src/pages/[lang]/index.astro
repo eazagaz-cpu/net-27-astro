@@ -1,0 +1,22 @@
+---
+/**
+ * Localized home pages, one per non-default locale. English keeps its existing
+ * unprefixed URL.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HomePage from '../../components/pages/HomePage.astro';
+import { LANG_CODES, DEFAULT_LANG, type Lang } from '../../i18n/config';
+
+export const getStaticPaths = (() => {
+  return LANG_CODES
+    .filter(code => code !== DEFAULT_LANG)
+    .map(lang => ({ params: { lang }, props: { lang } }));
+}) satisfies GetStaticPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+---
+
+<BaseLayout>
+  <HomePage lang={lang} />
+</BaseLayout>

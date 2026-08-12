@@ -1,0 +1,228 @@
+---
+/**
+ * HomePage.astro — the home page body in one locale.
+ *
+ * Rendered by both / and /[lang]/ so the English page and its localized twins
+ * cannot drift apart. Catalogue data is shared; only the prose differs.
+ */
+import { loadTranslations, t } from '../../i18n';
+import { getLocalizedPath } from '../../i18n/utils';
+import { DEFAULT_LANG, type Lang } from '../../i18n/config';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const tr = await loadTranslations(lang);
+/** Keeps internal navigation inside the current locale. */
+const L = (path: string) => getLocalizedPath(path, lang);
+import Header from '../Header.astro';
+import Footer from '../Footer.astro';
+import SEOHead from '../SEOHead.astro';
+import Schema from '../Schema.astro';
+import DynamicHero from '../DynamicHero.astro';
+import AppCTA from '../AppCTA.astro';
+import StaticRail from '../StaticRail.astro';
+import ContinueWatching from '../ContinueWatching.astro';
+import Top10Rail from '../Top10Rail.astro';
+import SearchBlock from '../SearchBlock.astro';
+import FAQSection from '../FAQSection.astro';
+import { websiteSchema, organizationSchema, softwareAppSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { SITE_NAME } from '../../lib/constants';
+import { getCachedItems } from '../../lib/movie-cache';
+import { getAllBlogPosts } from '../../data/blogPosts';
+
+// Build-time pre-fetched data (from movie-sync.mjs cache).
+// Returns [] gracefully if sync hasn't been run yet.
+const cachedTrending      = getCachedItems('trending',         20);
+const cachedLatest        = getCachedItems('latest-movies',    20);
+const cachedNetflix       = getCachedItems('netflix',          20);
+const cachedHindiDubbed   = getCachedItems('hindi-dubbed',     20);
+const cachedUpcoming      = getCachedItems('upcoming',         20);
+const cachedPopularMovies = getCachedItems('popular-movies',   10);
+const cachedPopularTv     = getCachedItems('popular-tv',       10);
+const cachedPakistani     = getCachedItems('pakistani-drama',  20);
+const cachedTurkish       = getCachedItems('turkish-drama',    20);
+// India is where most of the audience is, so South Indian cinema, Indian TV
+// and the Indian OTT catalogues get their own rails rather than being left to
+// the language and platform pages.
+const cachedSouthDubbed   = getCachedItems('south-hindi-dubbed', 20);
+const cachedTelugu        = getCachedItems('telugu',           20);
+const cachedTamil         = getCachedItems('tamil',            20);
+const cachedMalayalam     = getCachedItems('malayalam',        20);
+const cachedKannada       = getCachedItems('kannada',          20);
+const cachedIndianTv      = getCachedItems('indian-tv',        20);
+const cachedJioHotstar    = getCachedItems('jiohotstar',       20);
+const cachedZee5          = getCachedItems('zee5',             20);
+const cachedSonyLiv       = getCachedItems('sonyliv',          20);
+const latestPosts         = getAllBlogPosts().slice(0, 3);
+const firstHeroBackdrop = cachedTrending.find((item) => item.backdropUrl)?.backdropUrl || '';
+const heroSmall = firstHeroBackdrop.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w780/');
+const heroLarge = firstHeroBackdrop.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w1280/');
+
+const homeFaqs = [
+  { question: t(tr, 'home.q1'), answer: t(tr, 'home.a1') },
+  { question: t(tr, 'home.q2'), answer: t(tr, 'home.a2') },
+  { question: t(tr, 'home.q3'), answer: t(tr, 'home.a3') },
+  { question: t(tr, 'home.q4'), answer: t(tr, 'home.a4') },
+  { question: t(tr, 'home.q5'), answer: t(tr, 'home.a5') },
+  { question: t(tr, 'home.q6'), answer: t(tr, 'home.a6') },
+];
+---
+
+<SEOHead
+    slot="head"
+    title={t(tr, 'seo.homeTitle')}
+    description={t(tr, 'seo.homeDescription')}
+    canonical={`${SITE_URL}${L('/')}`}
+    localized={true}
+  />
+  <Schema slot="head" schema={[{ ...websiteSchema(), inLanguage: lang }, organizationSchema(), softwareAppSchema()]} />
+  {heroSmall && <link slot="head" rel="preload" as="image" href={heroSmall} fetchpriority="high" media="(max-width: 768px)" />}
+  {heroLarge && <link slot="head" rel="preload" as="image" href={heroLarge} fetchpriority="high" media="(min-width: 769px)" />}
+
+  <Header />
+
+  <main>
+    <!-- Hero: server-rendered with cached data — visible immediately, no blank flash -->
+    <DynamicHero initialItems={cachedTrending} />
+
+    <!-- App Download CTA -->
+    <AppCTA />
+
+    <!-- Genre browsing pills -->
+    <div style="max-width:100%;margin:0 auto;padding:1.25rem clamp(16px,2vw,64px) 0">
+      <div class="genre-pills-row">
+        <a href="/genre/action/" class="genre-pill">⚡ Action</a>
+        <a href="/genre/drama/" class="genre-pill">🎭 Drama</a>
+        <a href="/genre/comedy/" class="genre-pill">😄 Comedy</a>
+        <a href="/genre/thriller/" class="genre-pill">🔪 Thriller</a>
+        <a href="/genre/romance/" class="genre-pill">💕 Romance</a>
+        <a href="/genre/horror/" class="genre-pill">👻 Horror</a>
+        <a href="/anime/" class="genre-pill">⛩️ Anime</a>
+        <a href="/genre/sci-fi/" class="genre-pill">🚀 Sci-Fi</a>
+        <a href="/genre/documentary/" class="genre-pill">🎬 Docs</a>
+        <a href="/genre/kids/" class="genre-pill">🧒 Kids</a>
+        <a href="/language/hindi/" class="genre-pill">🇮🇳 Hindi</a>
+        <a href="/language/korean/" class="genre-pill">🇰🇷 Korean</a>
+        <a href="/language/turkish/" class="genre-pill">🇹🇷 Turkish</a>
+      </div>
+    </div>
+
+    <!-- Surprise Me button -->
+    <div style="max-width:100%;margin:0 auto;padding:0.5rem clamp(16px,2vw,64px) 0;display:flex;justify-content:flex-end">
+      <button
+        id="surprise-me-btn"
+        style="display:flex;align-items:center;gap:8px;padding:8px 18px;border-radius:999px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);color:#fff;font-size:13px;font-weight:600;cursor:pointer;transition:all 0.2s"
+        onmouseenter="this.style.background='rgba(229,9,20,0.2)';this.style.borderColor='#e50914'"
+        onmouseleave="this.style.background='rgba(255,255,255,0.08)';this.style.borderColor='rgba(255,255,255,0.15)'"
+      >
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.929 4.929a10 10 0 1114.142 0M12 8v4l3 3"/></svg>
+        Surprise Me
+      </button>
+    </div>
+    <script>
+      (function() {
+        var btn = document.getElementById('surprise-me-btn');
+        if (!btn) return;
+        btn.addEventListener('click', function() {
+          var rails = document.querySelectorAll('.title-card[href]');
+          var all = Array.from(rails).filter(function(el) { return (el as HTMLAnchorElement).href; });
+          if (all.length === 0) return;
+          var pick = all[Math.floor(Math.random() * all.length)] as HTMLAnchorElement;
+          window.location.href = pick.href;
+        });
+      })();
+    </script>
+
+    <!-- Continue Watching — client-side localStorage rail -->
+    <ContinueWatching />
+
+    <!-- Top 10 — directly after hero, no CTA interruption -->
+    <Top10Rail mediaType="movie" items={cachedPopularMovies} />
+    <Top10Rail mediaType="tv" items={cachedPopularTv} />
+
+    <!-- Core sections — same structure as competitor -->
+    <StaticRail title="Trending Now"            items={cachedTrending}   viewAllHref="/trending/"  railKey="trending" />
+    <StaticRail title="Latest Releases (2025–2026)" items={cachedLatest} viewAllHref="/latest/"    railKey="latest-movies" />
+    <StaticRail title="Popular on Netflix"           items={cachedNetflix}       viewAllHref="/platform/netflix/" railKey="netflix" />
+    <StaticRail title="Hindi Dubbed Hits"            items={cachedHindiDubbed}  viewAllHref="/genre/hindi-dubbed/" railKey="hindi-dubbed" />
+
+    <!-- India-focused sections. Most visitors are there, so South Indian
+         cinema, Indian TV and the Indian OTT catalogues sit ahead of the
+         regional drama rails rather than below them. -->
+    {cachedSouthDubbed.length > 0 && <StaticRail title="South Indian Movies (Hindi Dubbed)" items={cachedSouthDubbed} viewAllHref="/genre/hindi-dubbed/" railKey="south-hindi-dubbed" badge="Popular" />}
+    {cachedJioHotstar.length > 0 && <StaticRail title="Popular on JioHotstar" items={cachedJioHotstar} viewAllHref="/platform/jiohotstar/" railKey="jiohotstar" />}
+    {cachedTelugu.length    > 0 && <StaticRail title="Telugu Movies" items={cachedTelugu} viewAllHref="/language/telugu/" railKey="telugu" />}
+    {cachedTamil.length     > 0 && <StaticRail title="Tamil Movies" items={cachedTamil} viewAllHref="/language/tamil/" railKey="tamil" />}
+    {cachedMalayalam.length > 0 && <StaticRail title="Malayalam Movies" items={cachedMalayalam} viewAllHref="/language/malayalam/" railKey="malayalam" />}
+    {cachedKannada.length   > 0 && <StaticRail title="Kannada Movies" items={cachedKannada} viewAllHref="/language/kannada/" railKey="kannada" />}
+    {cachedIndianTv.length  > 0 && <StaticRail title="Indian TV Shows" items={cachedIndianTv} viewAllHref="/country/india/" railKey="indian-tv" badge="IN" />}
+    {cachedZee5.length      > 0 && <StaticRail title="Popular on ZEE5" items={cachedZee5} viewAllHref="/platform/zee5/" railKey="zee5" />}
+    {cachedSonyLiv.length   > 0 && <StaticRail title="Popular on SonyLIV" items={cachedSonyLiv} viewAllHref="/platform/sonyliv/" railKey="sonyliv" />}
+
+    {cachedPakistani.length > 0 && <StaticRail title="Pakistani Dramas" items={cachedPakistani} viewAllHref="/language/urdu/" railKey="pakistani-drama" badge="PK" />}
+    {cachedTurkish.length  > 0 && <StaticRail title="Turkish Dramas (Urdu Dubbed)" items={cachedTurkish} viewAllHref="/language/turkish/" railKey="turkish-drama" badge="TR" />}
+    <StaticRail title="Trending Globally — Coming Soon" items={cachedUpcoming} railKey="upcoming" badge="Upcoming" />
+
+    <!-- Search Block -->
+    <SearchBlock />
+
+    <!-- SEO Content Block -->
+    <section class="py-10">
+      <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
+        <div class="glass-card rounded-2xl p-6 md:p-8">
+          <h2 class="text-lg font-bold mb-3" data-t="home.aboutHeading">{t(tr, 'home.aboutHeading')}</h2>
+          <div class="text-sm text-[var(--color-muted)] space-y-3 leading-relaxed">
+            <p data-t="home.about1">{t(tr, 'home.about1')}</p>
+            <p data-t="home.about2">{t(tr, 'home.about2')}</p>
+            <p data-t="home.about3">{t(tr, 'home.about3')}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Latest from the Blog -->
+    {latestPosts.length > 0 && (
+      <section class="py-10">
+        <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
+          <div class="flex items-center justify-between mb-6">
+            <h2 class="text-xl font-bold" data-t="home.blogHeading">{t(tr, 'home.blogHeading')}</h2>
+            <a href={L("/blog/")} class="text-sm text-[#ff6479] hover:underline">View all articles →</a>
+          </div>
+          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {latestPosts.map(post => (
+              <a href={L(`/blog/${post.slug}/`)} class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)]/40 transition-all group">
+                <span class="text-xs font-medium text-[#ff6479] uppercase tracking-wider">{post.category}</span>
+                <h3 class="mt-2 text-base font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">{post.title}</h3>
+                <p class="mt-2 text-sm text-[var(--color-text-muted)] line-clamp-2">{post.excerpt}</p>
+                <div class="mt-3 flex items-center gap-2 text-xs text-[var(--color-text-muted)]">
+                  <span>{post.readTime}</span>
+                  <span>&middot;</span>
+                  <time>{post.date}</time>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      </section>
+    )}
+
+    <!-- FAQ Section -->
+    <section class="py-6">
+      <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
+        <FAQSection faqs={homeFaqs} title={t(tr, 'home.faqTitle')} />
+      </div>
+    </section>
+
+    <!-- Disclaimer -->
+    <section class="py-6 border-t border-white/5">
+      <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
+        <p class="text-[10px] text-[var(--color-text-muted)] text-center leading-relaxed">{t(tr, 'home.disclaimer')}</p>
+      </div>
+    </section>
+  </main>
+
+  <Footer />

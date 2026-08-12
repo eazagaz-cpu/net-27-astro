@@ -272,5 +272,26 @@
     "faqUpdatedQ": "Seberapa sering daftar ini diperbarui?",
     "faqUpdatedA": "Katalog disegarkan setiap hari dari TMDB, sehingga rilis baru dan perubahan ketersediaan langsung tampil.",
     "metaDescription": "Temukan film, serial TV, dan anime {name}, lengkap dengan ketersediaan resmi setiap judul."
+  },
+  "home": {
+    "aboutHeading": "NetMirror — platform untuk menemukan film dan serial",
+    "about1": "NetMirror adalah panduan untuk menemukan film, serial TV, dan anime di layanan streaming utama. Baik rilis baru di Netflix, serial di Prime Video, judul regional di JioHotstar atau SonyLIV, maupun anime terbaru di Crunchyroll, NetMirror menunjukkan di mana masing-masing tersedia secara resmi.",
+    "about2": "Setiap halaman judul memuat pemeran, sutradara, peringkat, genre, bahasa, musim, dan ketersediaan resmi menurut negara, beserta rekomendasi terkait. Katalog disegarkan setiap hari dan antarmuka tersedia dalam sembilan belas bahasa.",
+    "about3": "NetMirror menghormati hak kekayaan intelektual. Kami tidak meng-host, mengunggah, menyimpan, atau menyiarkan konten apa pun. Kami layanan penemuan yang mengarahkan ke penyedia streaming resmi dan berlisensi. Semua merek dan judul milik pemiliknya masing-masing.",
+    "blogHeading": "Terbaru dari blog",
+    "faqTitle": "Pertanyaan umum",
+    "q1": "Apa itu NetMirror?",
+    "a1": "NetMirror adalah platform penemuan yang membantu Anda menemukan tempat menonton film, serial TV, dan anime di layanan seperti Netflix, Prime Video, JioHotstar, SonyLIV, dan Crunchyroll. Kami menyediakan informasi ketersediaan — kami tidak meng-host atau menyiarkan konten.",
+    "q2": "Bagaimana cara mencari di NetMirror?",
+    "a2": "Gunakan bilah pencarian di bagian atas halaman mana pun, atau buka halaman pencarian. Anda dapat mencari berdasarkan judul, aktor, sutradara, genre, bahasa, atau layanan streaming, dan hasilnya muncul saat Anda mengetik.",
+    "q3": "Apakah NetMirror gratis?",
+    "a3": "Ya. NetMirror gratis dan tidak memerlukan langganan. Layanan ini membantu Anda menemukan tempat konten tersedia secara legal di layanan streaming.",
+    "q4": "Apakah NetMirror menyiarkan film?",
+    "a4": "Tidak. NetMirror hanya platform penemuan. Kami menunjukkan di mana sebuah judul tersedia secara resmi di layanan berlisensi, dan tidak pernah meng-host, mengunggah, atau menyiarkan apa pun.",
+    "q5": "Seberapa mutakhir informasi ketersediaannya?",
+    "a5": "Katalog disegarkan setiap hari dari TMDB, dan data ketersediaan berasal dari JustWatch melalui TMDB. Penyedia sering mengubah katalognya, jadi setiap halaman judul menyediakan tautan untuk memastikan penawaran saat ini.",
+    "q6": "Bagaimana cara menghubungi NetMirror?",
+    "a6": "Kirim email ke net27.cc@gmail.com untuk dukungan, masukan, pemberitahuan DMCA, atau pertanyaan bisnis. Halaman kontak mencantumkan opsi lainnya.",
+    "disclaimer": "NetMirror tidak meng-host, menyimpan, atau mendistribusikan media apa pun. Kami platform penemuan yang membantu Anda menemukan tempat menonton film, serial TV, dan anime secara legal melalui layanan resmi. Semua informasi, gambar, dan merek milik pemiliknya masing-masing."
   }
 }

@@ -272,5 +272,26 @@
     "faqUpdatedQ": "Jak często ta lista jest aktualizowana?",
     "faqUpdatedA": "Katalog odświeżany jest codziennie z TMDB, więc premiery i zmiany dostępności pojawiają się bez opóźnień.",
     "metaDescription": "Odkrywaj filmy, seriale i anime {name} wraz z oficjalną dostępnością każdego tytułu."
+  },
+  "home": {
+    "aboutHeading": "NetMirror — twoja platforma do odkrywania filmów i seriali",
+    "about1": "NetMirror to przewodnik po filmach, serialach i anime w największych serwisach streamingowych. Nowość na Netflixie, serial w Prime Video, produkcje regionalne w JioHotstar czy SonyLIV, najnowsze anime w Crunchyroll — NetMirror pokazuje, gdzie każdy tytuł jest oficjalnie dostępny.",
+    "about2": "Na stronie każdego tytułu znajdziesz obsadę, reżyserię, oceny, gatunki, języki, sezony i oficjalną dostępność według kraju, a także powiązane rekomendacje. Katalog odświeżany jest codziennie, a interfejs dostępny jest w dziewiętnastu językach.",
+    "about3": "NetMirror szanuje własność intelektualną. Nie hostujemy, nie przesyłamy, nie przechowujemy ani nie udostępniamy żadnych treści. Jesteśmy serwisem wyszukiwania, który kieruje do oficjalnych, licencjonowanych dostawców streamingu. Wszystkie znaki towarowe i tytuły należą do ich właścicieli.",
+    "blogHeading": "Nowe na blogu",
+    "faqTitle": "Najczęstsze pytania",
+    "q1": "Czym jest NetMirror?",
+    "a1": "NetMirror to platforma wyszukiwania, która pomaga ustalić, gdzie obejrzeć filmy, seriale i anime w serwisach takich jak Netflix, Prime Video, JioHotstar, SonyLIV i Crunchyroll. Podajemy informacje o dostępności — nie hostujemy ani nie udostępniamy treści.",
+    "q2": "Jak szukać w NetMirror?",
+    "a2": "Skorzystaj z paska wyszukiwania u góry dowolnej strony albo otwórz stronę wyszukiwania. Możesz szukać po tytule, aktorze, reżyserze, gatunku, języku lub serwisie, a wyniki pojawiają się w trakcie pisania.",
+    "q3": "Czy NetMirror jest bezpłatny?",
+    "a3": "Tak. NetMirror jest bezpłatny i nie wymaga subskrypcji. Pomaga ustalić, gdzie treści są legalnie dostępne w serwisach streamingowych.",
+    "q4": "Czy NetMirror udostępnia filmy?",
+    "a4": "Nie. NetMirror jest wyłącznie platformą wyszukiwania. Pokazujemy, gdzie tytuł jest oficjalnie dostępny w licencjonowanych serwisach, i nigdy sami niczego nie hostujemy, nie przesyłamy ani nie udostępniamy.",
+    "q5": "Jak aktualne są informacje o dostępności?",
+    "a5": "Katalog odświeżany jest codziennie z TMDB, a dane o dostępności pochodzą z JustWatch za pośrednictwem TMDB. Dostawcy często zmieniają ofertę, dlatego na stronie każdego tytułu znajduje się link do sprawdzenia aktualnego stanu.",
+    "q6": "Jak skontaktować się z NetMirror?",
+    "a6": "Napisz na net27.cc@gmail.com w sprawie pomocy, uwag, zgłoszeń DMCA lub kwestii biznesowych. Strona kontaktu podaje dalsze możliwości.",
+    "disclaimer": "NetMirror nie hostuje, nie przechowuje ani nie rozpowszechnia żadnych materiałów. Jesteśmy platformą wyszukiwania, która pomaga ustalić, gdzie legalnie obejrzeć filmy, seriale i anime w oficjalnych serwisach. Wszystkie informacje, obrazy i znaki towarowe należą do ich właścicieli."
   }
 }

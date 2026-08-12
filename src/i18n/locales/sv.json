@@ -272,5 +272,26 @@
     "faqUpdatedQ": "Hur ofta uppdateras den här listan?",
     "faqUpdatedA": "Katalogen uppdateras dagligen från TMDB, så nya släpp och ändringar visas utan fördröjning.",
     "metaDescription": "Upptäck {name}-filmer, -serier och -anime med officiell tillgänglighet för varje titel."
+  },
+  "home": {
+    "aboutHeading": "NetMirror — din plattform för att hitta filmer och serier",
+    "about1": "NetMirror är en guide till filmer, serier och anime hos de stora streamingtjänsterna. Oavsett om det är en nyhet på Netflix, en serie på Prime Video, regionala titlar på JioHotstar eller SonyLIV, eller den senaste animen på Crunchyroll visar NetMirror var var och en finns officiellt tillgänglig.",
+    "about2": "Varje titelsida innehåller skådespelare, regi, betyg, genrer, språk, säsonger och officiell tillgänglighet per land, samt relaterade rekommendationer. Katalogen uppdateras dagligen och gränssnittet finns på nitton språk.",
+    "about3": "NetMirror respekterar immateriella rättigheter. Vi lagrar, laddar upp, sparar och strömmar inget innehåll. Vi är en söktjänst som hänvisar till officiella, licensierade streamingtjänster. Alla varumärken och titlar tillhör sina respektive ägare.",
+    "blogHeading": "Nytt på bloggen",
+    "faqTitle": "Vanliga frågor",
+    "q1": "Vad är NetMirror?",
+    "a1": "NetMirror är en söktjänst som hjälper dig hitta var du kan se filmer, serier och anime hos tjänster som Netflix, Prime Video, JioHotstar, SonyLIV och Crunchyroll. Vi tillhandahåller tillgänglighetsinformation — vi lagrar och strömmar inget innehåll.",
+    "q2": "Hur söker jag på NetMirror?",
+    "a2": "Använd sökfältet högst upp på vilken sida som helst, eller öppna söksidan. Du kan söka på titel, skådespelare, regissör, genre, språk eller streamingtjänst, och resultaten visas medan du skriver.",
+    "q3": "Är NetMirror gratis?",
+    "a3": "Ja. NetMirror är gratis och kräver ingen prenumeration. Tjänsten hjälper dig hitta var innehåll finns lagligt tillgängligt hos streamingtjänsterna.",
+    "q4": "Strömmar NetMirror filmer?",
+    "a4": "Nej. NetMirror är enbart en söktjänst. Vi visar var en titel finns officiellt tillgänglig hos licensierade tjänster och lagrar, laddar aldrig upp eller strömmar något själva.",
+    "q5": "Hur aktuell är tillgänglighetsinformationen?",
+    "a5": "Katalogen uppdateras dagligen från TMDB, och tillgängligheten kommer från JustWatch via TMDB. Tjänsterna ändrar ofta sitt utbud, så varje titelsida länkar vidare så att du kan bekräfta det aktuella erbjudandet.",
+    "q6": "Hur kontaktar jag NetMirror?",
+    "a6": "Skriv till net27.cc@gmail.com för support, synpunkter, DMCA-anmälningar eller affärsfrågor. Kontaktsidan listar fler alternativ.",
+    "disclaimer": "NetMirror lagrar, sparar och distribuerar inget media. Vi är en söktjänst som hjälper dig hitta var du lagligt kan se filmer, serier och anime via officiella tjänster. All information, alla bilder och alla varumärken tillhör sina respektive ägare."
   }
 }
