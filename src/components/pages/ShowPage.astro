@@ -1,0 +1,452 @@
+---
+/**
+ * ShowPage.astro — the body of a TV show detail page, in one locale.
+ *
+ * Rendered by both /shows/[slug]/ and /[lang]/shows/[slug]/ so the English
+ * route and its localized twins cannot drift apart.
+ */
+import type { RealTitle } from '../../lib/realTitles';
+import { loadTranslations, t } from '../../i18n';
+import { getLocalizedPath } from '../../i18n/utils';
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  title: RealTitle;
+  lang: Lang;
+}
+import Header from '../Header.astro';
+import Footer from '../Footer.astro';
+import SEOHead from '../SEOHead.astro';
+import Schema from '../Schema.astro';
+import TitleCard from '../TitleCard.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import FAQSection from '../FAQSection.astro';
+import { getRealTitlesByType, getRelatedRealTitles } from '../../lib/realTitles';
+import { genres } from '../../data/sampleTitles';
+import { breadcrumbSchema, tvSeriesSchema, faqSchema, watchActionSchema } from '../../lib/schema';
+import { SITE_URL, titleSeoHeading, titleSeoDescription } from '../../lib/seo';
+import { personUrl } from '../../lib/people';
+import { APK_UNIVERSAL_URL } from '../../lib/constants';
+import WhereToWatch from '../WhereToWatch.astro';
+import RatingsRow from '../RatingsRow.astro';
+import SeasonList from '../SeasonList.astro';
+
+
+const { title, lang } = Astro.props;
+const tr = await loadTranslations(lang);
+/** Keeps internal navigation inside the current locale. */
+const L = (path: string) => getLocalizedPath(path, lang);
+const hasDuplicateTitle = getRealTitlesByType('show').some(
+  candidate => candidate.tmdbId !== title.tmdbId
+    && candidate.title.toLowerCase() === title.title.toLowerCase()
+    && candidate.year === title.year,
+);
+const seoInput = {
+  name: title.title,
+  year: title.year,
+  overview: title.overview,
+  watch: title.watch,
+  disambiguator: hasDuplicateTitle ? title.tmdbId : undefined,
+};
+// Tier C: a page with no synopsis, no cast and no availability has nothing
+// for a searcher, so it stays reachable but out of the index rather than
+// padding it. Rare — a handful of titles out of nine hundred.
+const isThin = (title.overview || '').trim().length < 80
+  && !title.watch
+  && title.cast.length === 0;
+const seoPageTitle = titleSeoHeading(seoInput);
+const seoDescription = titleSeoDescription(seoInput);
+const isAnime = title.languages.includes('Japanese') && title.genres.includes('Animation');
+const related = getRelatedRealTitles(title);
+const breadcrumbs = [
+  { label: t(tr, 'nav.home'), href: L('/') },
+  { label: isAnime ? 'Anime' : 'TV Shows', href: isAnime ? '/anime/' : '/shows/' },
+  { label: title.title, href: `/shows/${title.slug}/` },
+];
+
+const titleGenres = genres.filter(g => title.genres.includes(g.name));
+
+const faqs = [
+  { question: `Where can I watch ${title.title}?`, answer: `Check the "Available Now" section on this page for official streaming platforms carrying ${title.title} in your region.` },
+  { question: `What is ${title.title} about?`, answer: title.overview },
+  ...(title.cast.length > 0 ? [{ question: `Who stars in ${title.title}?`, answer: `The cast includes ${title.cast.slice(0, 5).map(c => c.role ? `${c.name} as ${c.role}` : c.name).join(', ')}.` }] : []),
+  { question: `How many seasons does ${title.title} have?`, answer: title.seasons ? `${title.title} has ${title.seasons} season${title.seasons > 1 ? 's' : ''} with ${title.episodes || 'multiple'} episodes.` : `Season information for ${title.title} is being updated. Check your streaming platform for the latest episode count.` },
+  ...(title.director ? [{ question: `Who created ${title.title}?`, answer: `${title.title} was created by ${title.director}.` }] : []),
+  { question: `What genre is ${title.title}?`, answer: `${title.title} is a ${title.genres.join(', ') || ''} ${isAnime ? 'anime' : 'series'}. It first aired in ${title.year}.` },
+];
+
+const placeholderGradients = [
+  'from-red-900/80 to-purple-900/80',
+  'from-blue-900/80 to-indigo-900/80',
+  'from-emerald-900/80 to-teal-900/80',
+  'from-orange-900/80 to-red-900/80',
+  'from-violet-900/80 to-fuchsia-900/80',
+  'from-cyan-900/80 to-blue-900/80',
+  'from-rose-900/80 to-pink-900/80',
+  'from-amber-900/80 to-yellow-900/80',
+];
+const gradient = placeholderGradients[title.title.length % placeholderGradients.length];
+
+const posterGradients = [
+  'from-red-900 to-purple-900',
+  'from-blue-900 to-indigo-900',
+  'from-emerald-900 to-teal-900',
+  'from-orange-900 to-red-900',
+  'from-violet-900 to-fuchsia-900',
+  'from-cyan-900 to-blue-900',
+  'from-rose-900 to-pink-900',
+  'from-amber-900 to-yellow-900',
+];
+const posterGradient = posterGradients[title.title.length % posterGradients.length];
+
+const playerUrl = `/player/?type=tv&id=${title.tmdbId}`;
+const watchUrl = `${SITE_URL}${playerUrl}`;
+const schemaData = [
+  tvSeriesSchema({
+    title: title.title,
+    overview: title.overview,
+    poster_path: title.posterUrl,
+    first_air_date: title.releaseDate,
+    genre: title.genres,
+    number_of_seasons: title.seasons,
+  }),
+  watchActionSchema(watchUrl, title.title, 'TVSeries'),
+  breadcrumbSchema(breadcrumbs),
+  faqSchema(faqs),
+];
+---
+
+<SEOHead
+    slot="head"
+    title={seoPageTitle}
+    description={seoDescription}
+    canonical={`${SITE_URL}${L(`/shows/${title.slug}/`)}`}
+    noindex={isThin}
+    localized={true}
+    ogType="video.tv_show"
+  />
+  <Schema slot="head" schema={schemaData} />
+
+  <Header />
+
+  <main>
+    <!-- Backdrop Hero Area -->
+    <section class="relative w-full min-h-[60vh] md:min-h-[70vh] overflow-hidden">
+      <!-- Backdrop Image -->
+      {title.backdropUrl && (
+        <img src={title.backdropUrl.replace('/t/p/original/', '/t/p/w1280/')} alt={`${title.title} backdrop`} class="absolute inset-0 w-full h-full object-cover" loading="eager" decoding="async" width="1280" height="720" />
+      )}
+      <div class={`absolute inset-0 bg-gradient-to-br ${gradient} ${title.backdropUrl ? 'opacity-40' : ''}`}></div>
+
+      <!-- Dark Overlay Gradients -->
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg)] via-[var(--color-bg)]/60 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-[var(--color-bg)]/80 to-transparent"></div>
+
+      <!-- Content Overlay -->
+      <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-12 pb-8">
+        <Breadcrumbs items={breadcrumbs} />
+
+        <div class="flex flex-col md:flex-row gap-8 mt-4">
+          <!-- Poster -->
+          <div class="flex-shrink-0 w-48 md:w-64">
+            <div class={`aspect-[2/3] rounded-xl overflow-hidden shadow-2xl bg-gradient-to-br ${posterGradient} relative`}>
+              {title.posterUrl ? (
+                <img src={title.posterUrl} alt={`${title.title} poster`} class="w-full h-full object-cover" loading="eager" width="256" height="384" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'" />
+              ) : null}
+              <div class="w-full h-full flex items-center justify-center absolute inset-0" style={title.posterUrl ? 'display:none' : ''}>
+                <span class="text-lg font-bold text-white/50 text-center px-3 leading-tight">{title.title}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Info -->
+          <div class="flex-1 flex flex-col justify-end">
+            <div class="flex items-center gap-3 mb-3">
+              {isAnime && (
+                <span class="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-[var(--color-accent)]/20 text-[var(--color-accent)] border border-[var(--color-accent)]/30">
+                  Anime
+                </span>
+              )}
+              {!isAnime && (
+                <span class="px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider bg-[var(--color-accent-alt)]/20 text-[var(--color-accent-alt)] border border-[var(--color-accent-alt)]/30">
+                  TV Series
+                </span>
+              )}
+            </div>
+
+            <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-white leading-tight mb-4">
+              {title.title}
+            </h1>
+
+            <!-- Meta Row -->
+            <div class="flex flex-wrap items-center gap-3 mb-4">
+              <span class="text-[var(--color-text-secondary)] font-medium">{title.year}</span>
+              {title.runtime && (<>
+                <span class="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
+                <span class="text-[var(--color-text-secondary)]">{title.runtime}</span>
+              </>)}
+              {title.rating > 0 && (<>
+                <span class="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
+                <span class="flex items-center gap-1 text-yellow-400 font-semibold">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                  {title.rating.toFixed(1)}
+                </span>
+              </>)}
+              {title.status && (
+                <span class="px-2.5 py-1 rounded text-xs font-medium bg-white/10 text-[var(--color-text-secondary)]">
+                  {title.status}
+                </span>
+              )}
+            </div>
+
+            <!-- Seasons & Episodes -->
+            <div class="flex flex-wrap items-center gap-4 mb-5">
+              {title.seasons ? (
+                <div class="flex items-center gap-2 glass-card rounded-lg px-4 py-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                  </svg>
+                  <span class="text-white font-medium text-sm">{title.seasons} {title.seasons === 1 ? 'Season' : 'Seasons'}</span>
+                </div>
+              ) : null}
+              {title.episodes ? (
+                <div class="flex items-center gap-2 glass-card rounded-lg px-4 py-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--color-accent-alt)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M7 4v16M17 4v16M3 8h4m10 0h4M3 12h18M3 16h4m10 0h4M4 20h16a1 1 0 001-1V5a1 1 0 00-1-1H4a1 1 0 00-1 1v14a1 1 0 001 1z" />
+                  </svg>
+                  <span class="text-white font-medium text-sm">{title.episodes} Episodes</span>
+                </div>
+              ) : null}
+            </div>
+
+            <!-- Genre Chips -->
+            <div class="flex flex-wrap gap-2 mb-5">
+              {title.genres.map(genre => {
+                const archive = genres.find(item => item.name === genre);
+                return archive
+                  ? <a href={`/genre/${archive.slug}/`} class="chip text-sm">{genre}</a>
+                  : <span class="chip text-sm">{genre}</span>;
+              })}
+            </div>
+
+            <!-- Creator -->
+            {title.director && (
+              <p class="text-[var(--color-text-secondary)] mb-4">
+                <span class="text-[var(--color-text-muted)]">{isAnime ? 'Director' : 'Created by'}</span>
+                <span class="text-white font-medium ml-1">{title.director}</span>
+              </p>
+            )}
+
+            <!-- Overview -->
+            {/* Translated synopses ride along as JSON so the language switcher
+                can swap the text it already has, instead of leaving the page
+                English while the interface changes around it. */}
+            <p
+              class="text-[var(--color-text-secondary)] leading-relaxed max-w-3xl text-base md:text-lg mb-6"
+              data-i18n-overview={title.overviews ? JSON.stringify(title.overviews) : undefined}
+            >
+              {title.overview}
+            </p>
+
+            <RatingsRow ratings={title.ratings} />
+
+            <!-- Action Buttons -->
+            <div class="flex items-center gap-3 flex-wrap">
+              <a href={playerUrl} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                Watch Now
+              </a>
+              <a href={APK_UNIVERSAL_URL} download rel="noopener noreferrer" class="btn-glass px-5 py-2.5 rounded-lg text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
+                Download App
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Content Sections -->
+    <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-12 space-y-16">
+
+      <!-- Official availability, above the fold-adjacent content because it is
+           the question most visitors arrive with. -->
+      <WhereToWatch watch={title.watch} titleName={title.title} lang={lang} />
+
+      <SeasonList seasons={title.seasonList} titleName={title.title} lang={lang} />
+
+      <!-- Cast Section -->
+      {title.cast.length > 0 && (
+        <section>
+          <h2 class="section-title mb-6" data-t="sections.cast">{t(tr, 'sections.cast')}</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4" id="cast-grid">
+            {title.cast.map(member => (
+              <a
+                href={personUrl(member.name) ? L(personUrl(member.name)!) : L(`/search/?q=${encodeURIComponent(member.name)}`)}
+                class="glass-card rounded-xl p-4 text-center block hover:border-[var(--color-primary)]/40 transition-colors"
+                data-person-name={member.name}
+              >
+                <div class="w-16 h-16 mx-auto mb-3 rounded-full bg-gradient-to-br from-[var(--color-primary)]/30 to-[var(--color-accent)]/30 flex items-center justify-center overflow-hidden person-avatar">
+                  <span class="text-xl font-bold text-white/60 person-initial">{member.name.charAt(0)}</span>
+                </div>
+                <p class="text-sm font-semibold text-white truncate">{member.name}</p>
+                <p class="text-xs text-[var(--color-text-muted)] truncate mt-1">{member.role}</p>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Show Details Table -->
+      <section>
+        <h2 class="section-title mb-4" data-t="sections.details">{t(tr, 'sections.details')}</h2>
+        <div class="glass-card rounded-xl overflow-hidden">
+          <table class="w-full text-sm">
+            <tbody>
+              <tr class="border-b border-[var(--color-border)]">
+                <td class="px-5 py-3 text-[var(--color-text-muted)] w-40">First Aired</td>
+                <td class="px-5 py-3">{title.releaseDate || title.year} &middot; {title.year >= 2010 ? <a href={`/year/${title.year}/`} class="text-[var(--color-primary)] hover:underline">{title.year}</a> : <span>{title.year || 'Unknown'}</span>}</td>
+              </tr>
+              {title.seasons ? (
+                <tr class="border-b border-[var(--color-border)]">
+                  <td class="px-5 py-3 text-[var(--color-text-muted)]">Seasons</td>
+                  <td class="px-5 py-3">{title.seasons}</td>
+                </tr>
+              ) : null}
+              {title.episodes ? (
+                <tr class="border-b border-[var(--color-border)]">
+                  <td class="px-5 py-3 text-[var(--color-text-muted)]">Episodes</td>
+                  <td class="px-5 py-3">{title.episodes}</td>
+                </tr>
+              ) : null}
+              {title.runtime && (
+                <tr class="border-b border-[var(--color-border)]">
+                  <td class="px-5 py-3 text-[var(--color-text-muted)]" data-t="ui.runtime">{t(tr, 'ui.runtime')}</td>
+                  <td class="px-5 py-3">{title.runtime}</td>
+                </tr>
+              )}
+              <tr class="border-b border-[var(--color-border)]">
+                <td class="px-5 py-3 text-[var(--color-text-muted)]" data-t="ui.rating">{t(tr, 'ui.rating')}</td>
+                <td class="px-5 py-3">{title.rating}/10</td>
+              </tr>
+              <tr class="border-b border-[var(--color-border)]">
+                <td class="px-5 py-3 text-[var(--color-text-muted)]" data-t="ui.genres">{t(tr, 'ui.genres')}</td>
+                <td class="px-5 py-3">
+                  <div class="flex flex-wrap gap-2">
+                    {titleGenres.map(g => (
+                      <a href={`/genre/${g.slug}/`} class="text-[var(--color-primary)] hover:underline">{g.name}</a>
+                    ))}
+                  </div>
+                </td>
+              </tr>
+              {title.languages.length > 0 && (
+                <tr>
+                  <td class="px-5 py-3 text-[var(--color-text-muted)]" data-t="ui.languages">{t(tr, 'ui.languages')}</td>
+                  <td class="px-5 py-3">{title.languages.join(', ')}</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- Available Now (live official-platform data) -->
+      <section>
+        <h2 class="section-title mb-6" data-t="sections.availableNow">{t(tr, 'sections.availableNow')}</h2>
+        <div id="streaming-availability" data-title={title.title} data-year={title.year} data-type="tv">
+          <div data-state="loading" class="flex items-center gap-2 text-sm text-[var(--color-text-muted)]">
+            <div class="w-4 h-4 border-2 border-white/10 border-t-[var(--color-primary)] rounded-full animate-spin"></div>
+            Checking official streaming platforms...
+          </div>
+          <div data-state="list" class="hidden flex flex-wrap gap-3"></div>
+          <p data-state="empty" class="hidden text-sm text-[var(--color-text-muted)]">
+            Not currently listed on a tracked streaming platform for your region.
+          </p>
+          <p data-state="error" class="hidden text-sm text-[var(--color-text-muted)]">
+            Couldn't load official streaming info right now.
+          </p>
+        </div>
+        <p class="mt-4 text-xs text-[var(--color-text-muted)]">
+          Official, licensed streaming platforms — availability may vary by region.
+        </p>
+      </section>
+
+      <!-- Trailer Section -->
+      <section>
+        <h2 class="section-title mb-6" data-t="sections.trailer">{t(tr, 'sections.trailer')}</h2>
+        {title.trailerUrl ? (
+          <div class="aspect-video rounded-xl overflow-hidden glass-card">
+            <iframe
+              src={title.trailerUrl}
+              title={`${title.title} Trailer`}
+              class="w-full h-full"
+              allowfullscreen
+              loading="lazy"
+            ></iframe>
+          </div>
+        ) : (
+          <div class="glass-card rounded-xl p-12 text-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-16 h-16 mx-auto mb-4 text-[var(--color-text-muted)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+            </svg>
+            <p class="text-[var(--color-text-muted)] text-lg" data-t="ui.trailerSoon">{t(tr, 'ui.trailerSoon')}</p>
+            <p class="text-[var(--color-text-muted)] text-sm mt-2" data-t="ui.trailerSoonSub">{t(tr, 'ui.trailerSoonSub')}</p>
+          </div>
+        )}
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <!-- Related Titles -->
+      {related.length > 0 && (
+        <section>
+          <h2 class="section-title mb-6" data-t="sections.youMightAlsoLike">{t(tr, 'sections.youMightAlsoLike')}</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {related.map(relatedTitle => (
+              <TitleCard title={relatedTitle} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Legal Disclaimer -->
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host, store, or distribute any copyrighted content. All information provided on this page, including show details, cast, and streaming availability, is for informational purposes only. We help users discover titles and find legal streaming options. All trademarks, service marks, and content referenced belong to their respective owners. Streaming availability may vary by region and is subject to change.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
+
+<script>
+  import { mountStreamingAvailability } from '../../lib/apis/streamingAvailability';
+  mountStreamingAvailability('streaming-availability');
+
+  document.querySelectorAll('[data-person-name]').forEach(el => {
+    const name = el.getAttribute('data-person-name');
+    if (!name) return;
+    const avatar = el.querySelector('.person-avatar');
+    if (!avatar) return;
+    fetch(`/api/tmdb/person?name=${encodeURIComponent(name)}`)
+      .then(r => r.json())
+      .then(data => {
+        if (data.profileUrl) {
+          const img = document.createElement('img');
+          img.src = data.profileUrl;
+          img.alt = name;
+          img.className = 'w-full h-full object-cover';
+          img.loading = 'lazy';
+          const initial = avatar.querySelector('.person-initial') as HTMLElement;
+          if (initial) initial.style.display = 'none';
+          avatar.appendChild(img);
+        }
+      })
+      .catch(() => {});
+  });
+</script>

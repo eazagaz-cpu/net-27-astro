@@ -9,14 +9,19 @@
  *
  * Season 0 specials are already filtered out upstream.
  */
+import { loadTranslations, t } from '../i18n';
+import { DEFAULT_LANG, type Lang } from '../i18n/config';
 import type { RealSeason } from '../lib/realTitles';
 
 interface Props {
+  /** Locale for this page's headings; defaults to English. */
+  lang?: Lang;
   seasons?: RealSeason[];
   titleName: string;
 }
 
-const { seasons, titleName } = Astro.props;
+const { seasons, titleName, lang = DEFAULT_LANG } = Astro.props;
+const tr = await loadTranslations(lang);
 
 const year = (iso: string) => (iso ? iso.slice(0, 4) : '');
 const totalEpisodes = (seasons ?? []).reduce((sum, s) => sum + s.episodes, 0);
@@ -24,7 +29,7 @@ const totalEpisodes = (seasons ?? []).reduce((sum, s) => sum + s.episodes, 0);
 
 {seasons && seasons.length > 0 && (
   <section>
-    <h2 class="section-title mb-2" data-t="sections.seasons">Seasons</h2>
+    <h2 class="section-title mb-2" data-t="sections.seasons">{t(tr, "sections.seasons")}</h2>
     <p class="text-sm text-[var(--color-text-muted)] mb-6">
       {/* Built as one expression: JSX drops the whitespace between adjacent
           expression containers, which ran the count into the noun. */}

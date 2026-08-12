@@ -10,14 +10,19 @@
  * Renders nothing when a title has no listed availability, which is normal for
  * unreleased and older titles.
  */
+import { loadTranslations, t } from '../i18n';
+import { DEFAULT_LANG, type Lang } from '../i18n/config';
 import type { RealWatchAvailability } from '../lib/realTitles';
 
 interface Props {
+  /** Locale for this page's headings; defaults to English. */
+  lang?: Lang;
   watch?: RealWatchAvailability | null;
   titleName: string;
 }
 
-const { watch, titleName } = Astro.props;
+const { watch, titleName, lang = DEFAULT_LANG } = Astro.props;
+const tr = await loadTranslations(lang);
 
 const REGION_NAMES: Record<string, string> = { IN: 'India', US: 'the US' };
 
@@ -33,7 +38,7 @@ const groups = watch
 
 {groups.length > 0 && watch && (
   <section>
-    <h2 class="section-title mb-2" data-t="sections.whereToWatch">Where to Watch</h2>
+    <h2 class="section-title mb-2" data-t="sections.whereToWatch">{t(tr, "sections.whereToWatch")}</h2>
     <p class="text-sm text-[var(--color-text-muted)] mb-6">
       Official streaming availability for <strong>{titleName}</strong> in {REGION_NAMES[watch.region] ?? watch.region}.
       {watch.region !== 'IN' && ' No Indian listing was available for this title.'}

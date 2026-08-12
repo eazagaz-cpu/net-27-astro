@@ -1,0 +1,27 @@
+---
+/**
+ * Localized movie pages, one per non-default locale. English keeps its
+ * existing unprefixed URLs.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import MoviePage from '../../../components/pages/MoviePage.astro';
+import { getRealTitlesByType, type RealTitle } from '../../../lib/realTitles';
+import { LANG_CODES, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+
+export const getStaticPaths = (() => {
+  const titles = getRealTitlesByType('movie');
+  return LANG_CODES
+    .filter(code => code !== DEFAULT_LANG)
+    .flatMap(lang => titles.map(title => ({
+      params: { lang, slug: title.slug },
+      props: { title, lang },
+    })));
+}) satisfies GetStaticPaths;
+
+const { title, lang } = Astro.props as { title: RealTitle; lang: Lang };
+---
+
+<BaseLayout>
+  <MoviePage title={title} lang={lang} />
+</BaseLayout>
