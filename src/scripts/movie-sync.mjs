@@ -465,6 +465,38 @@ async function enrichWithOmdb(titles) {
   }
 }
 
+// ── Search index ─────────────────────────────────────────────────────────────
+// Search asks the TMDB proxy on every keystroke, so results arrive a round trip
+// late and cannot match on anything this site knows — cast, director, language,
+// provider. Shipping the catalogue as a small index lets those queries be
+// answered locally and instantly; the proxy still covers titles not held here.
+//
+// Fields are single letters because this file is downloaded by every visitor
+// who opens search, and 900 records of readable keys is a lot of nothing.
+function writeSearchIndex(titles) {
+  const records = titles.map(t => ({
+    s: t.slug,
+    y: t.type === 'show' ? 1 : 0,
+    t: t.title,
+    r: t.year,
+    v: t.rating,
+    // Poster path only. Every URL shared the same TMDB prefix, which cost more
+    // than the paths themselves; the client puts it back.
+    p: (t.posterUrl || '').replace(/^https:\/\/image\.tmdb\.org\/t\/p\/w\d+/, ''),
+    // Names people actually search by, flattened into one haystack. Four is
+    // enough to catch the billed leads without doubling the download.
+    c: [...t.cast.slice(0, 4).map(c => c.name), t.director].filter(Boolean).join('|'),
+    g: (t.genres || []).join('|'),
+    l: (t.languages || []).join('|'),
+    w: t.watch ? [...t.watch.stream, ...t.watch.free].map(p => p.name).join('|') : '',
+  }));
+
+  const path = join(ROOT, 'public', 'search-index.json');
+  writeFileSync(path, JSON.stringify({ built: new Date().toISOString(), items: records }), 'utf8');
+  const kb = Math.round(Buffer.byteLength(JSON.stringify(records)) / 1024);
+  console.log(`[movie-sync] Wrote search-index.json — ${records.length} records (${kb} KB).`);
+}
+
 // ── Write a cache JSON file ──────────────────────────────────────────────────
 function writeCache(category, items) {
   const payload = {
@@ -569,6 +601,14 @@ const CATEGORIES = [
 // titles is not silently truncated, while still bounding a runaway build.
 const MAX_DETAIL_TITLES = 1000;
 
+// Rebuilding the index from the titles already on disk takes a second, against
+// nine minutes for a full sync — worth having when only its shape changed.
+if (process.argv.includes('--index-only')) {
+  const { items } = JSON.parse(readFileSync(join(CACHE_DIR, 'titles.json'), 'utf8'));
+  writeSearchIndex(items);
+  process.exit(0);
+}
+
 async function main() {
   console.log('\n[movie-sync] Starting TMDB data pipeline...\n');
   const t0 = Date.now();
@@ -641,6 +681,8 @@ async function main() {
     'utf8'
   );
   console.log(`[movie-sync] Wrote titles.json — ${titles.length} titles (${detailFail} failed).`);
+
+  writeSearchIndex(titles);
 
   const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
   console.log(`\n[movie-sync] Done in ${elapsed}s — ${ok} succeeded, ${fail} failed.\n`);

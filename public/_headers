@@ -78,6 +78,13 @@
 /llms.txt
   Cache-Control: public, max-age=86400
 
+# The search index is fetched the first time a visitor opens search. It is
+# rebuilt on every deploy, so it can be cached hard and revalidated in the
+# background rather than downloaded again each session.
+/search-index.json
+  Content-Type: application/json; charset=utf-8
+  Cache-Control: public, max-age=3600, stale-while-revalidate=86400
+
 # AdSense reads ads.txt as plain text and re-crawls it periodically, so it must
 # not be served as anything else or held at the edge.
 /ads.txt

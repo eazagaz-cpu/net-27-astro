@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
+import { loadIndex, searchIndex, hitUrl, type LocalHit } from '../lib/localSearch';
 
 interface Result {
   id: number;
@@ -7,6 +8,23 @@ interface Result {
   year: number;
   rating: number;
   posterUrl: string;
+  /** Set for catalogue hits, so the row links to the real page. */
+  href?: string;
+  /** Why a catalogue hit matched, e.g. an actor's name. */
+  matchedOn?: string;
+}
+
+function hitToResult(hit: LocalHit, i: number): Result {
+  return {
+    id: -(i + 1), // negative so keys cannot collide with TMDB ids
+    type: hit.isShow ? 'tv' : 'movie',
+    title: hit.title,
+    year: hit.year,
+    rating: hit.rating,
+    posterUrl: hit.posterUrl,
+    href: hitUrl(hit),
+    matchedOn: hit.matchedOn,
+  };
 }
 
 let debounceTimer: ReturnType<typeof setTimeout>;
@@ -47,6 +65,15 @@ export default function SearchOverlay() {
   const search = useCallback((q: string) => {
     clearTimeout(debounceTimer);
     if (!q.trim()) { setResults([]); setLoading(false); return; }
+
+    // Catalogue first, with no debounce: it is a local scan, so results appear
+    // as the user types instead of a third of a second after they stop.
+    let local: Result[] = [];
+    loadIndex().then(records => {
+      local = searchIndex(records, q).map(hitToResult);
+      if (local.length > 0) { setResults(local); setLoading(false); }
+    });
+
     setLoading(true);
     debounceTimer = setTimeout(async () => {
       try {
@@ -54,8 +81,17 @@ export default function SearchOverlay() {
         const langParam = lang !== 'en' ? `&lang=${lang}` : '';
         const res = await fetch(`/api/tmdb/search?q=${encodeURIComponent(q)}${langParam}`);
         const data = await res.json();
-        setResults((data.items || []).slice(0, 12));
-      } catch { setResults([]); }
+        // Catalogue hits stay on top and keep their real page links; the proxy
+        // fills the rest with titles this site does not hold.
+        const seen = new Set(local.map(r => `${r.type}:${r.title}:${r.year}`));
+        const remote = (data.items || []).filter(
+          (r: Result) => !seen.has(`${r.type}:${r.title}:${r.year}`)
+        );
+        setResults([...local, ...remote].slice(0, 12));
+      } catch {
+        // Keep whatever the catalogue found rather than emptying the list.
+        setResults(local);
+      }
       setLoading(false);
     }, 300);
   }, []);
@@ -125,7 +161,7 @@ export default function SearchOverlay() {
               {results.map(item => (
                 <a
                   key={item.id}
-                  href={`/detail/?type=${item.type}&id=${item.id}`}
+                  href={item.href ?? `/detail/?type=${item.type}&id=${item.id}`}
                   className="search-result-row"
                   onClick={() => setOpen(false)}
                 >
@@ -147,6 +183,9 @@ export default function SearchOverlay() {
                       </span>
                       {item.rating > 0 && (
                         <span className="search-result-rating">★ {item.rating}</span>
+                      )}
+                      {item.matchedOn && (
+                        <span className="search-result-matched">{item.matchedOn}</span>
                       )}
                     </p>
                   </div>
@@ -254,6 +293,19 @@ export default function SearchOverlay() {
         .search-result-badge.movie { background: rgba(229,9,20,0.2); color: #e50914; }
         .search-result-badge.tv    { background: rgba(59,130,246,0.2); color: #60a5fa; }
         .search-result-rating { color: #f5c518; font-weight: 600; }
+        /* Says why a row matched when it was not the title — an actor's name,
+           a genre, a provider — so a cast search does not look like a bug. */
+        .search-result-matched {
+          padding: 1px 6px;
+          border-radius: 4px;
+          background: rgba(255,255,255,0.08);
+          color: var(--color-muted);
+          font-size: 11px;
+          max-width: 160px;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
         .search-result-arrow { color: rgba(255,255,255,0.2); flex-shrink:0; }
         .search-result-skeleton { display:flex;gap:14px;padding:10px 16px;align-items:center; }
         .srk-poster { width:44px;height:66px;border-radius:6px;background:rgba(255,255,255,0.06);animation:shimmer 1.4s infinite; }

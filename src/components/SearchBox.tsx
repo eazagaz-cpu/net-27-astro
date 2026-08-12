@@ -1,4 +1,5 @@
 ﻿import { useState, useEffect, useRef, useCallback } from "react";
+import { loadIndex, searchIndex, hitUrl, type LocalHit } from "../lib/localSearch";
 
 interface Result {
   id: number;
@@ -7,6 +8,23 @@ interface Result {
   year: number;
   rating: number;
   posterUrl: string;
+  /** Set for catalogue hits, so the row links to the real page. */
+  href?: string;
+  /** Why a catalogue hit matched, e.g. an actor's name. */
+  matchedOn?: string;
+}
+
+function hitToResult(hit: LocalHit, i: number): Result {
+  return {
+    id: -(i + 1), // negative so keys cannot collide with TMDB ids
+    type: hit.isShow ? "tv" : "movie",
+    title: hit.title,
+    year: hit.year,
+    rating: hit.rating,
+    posterUrl: hit.posterUrl,
+    href: hitUrl(hit),
+    matchedOn: hit.matchedOn,
+  };
 }
 
 let debounceTimer: ReturnType<typeof setTimeout>;
@@ -27,6 +45,15 @@ export default function SearchBox() {
   const doSearch = useCallback((q: string) => {
     clearTimeout(debounceTimer);
     if (!q.trim()) { setResults([]); setLoading(false); setSearched(false); return; }
+
+    // The catalogue is searched locally and shown immediately; the proxy then
+    // adds titles this site does not hold.
+    let local: Result[] = [];
+    loadIndex().then(records => {
+      local = searchIndex(records, q, 24).map(hitToResult);
+      if (local.length > 0) { setResults(local); setLoading(false); setSearched(true); }
+    });
+
     setLoading(true);
     debounceTimer = setTimeout(async () => {
       try {
@@ -34,8 +61,15 @@ export default function SearchBox() {
         const langParam = lang !== "en" ? `&lang=${lang}` : "";
         const res = await fetch(`/api/tmdb/search?q=${encodeURIComponent(q)}${langParam}`);
         const data = await res.json();
-        setResults(data.items || []);
-      } catch { setResults([]); }
+        const seen = new Set(local.map(r => `${r.type}:${r.title}:${r.year}`));
+        const remote = (data.items || []).filter(
+          (r: Result) => !seen.has(`${r.type}:${r.title}:${r.year}`)
+        );
+        setResults([...local, ...remote]);
+      } catch {
+        // Keep the catalogue results rather than emptying the page.
+        setResults(local);
+      }
       setLoading(false);
       setSearched(true);
     }, 350);
@@ -95,7 +129,7 @@ export default function SearchBox() {
           </p>
           <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fill,minmax(160px,1fr))", gap:16 }}>
             {results.map(item => (
-              <a key={item.id} href={`/detail/?type=${item.type}&id=${item.id}`}
+              <a key={item.id} href={item.href ?? `/detail/?type=${item.type}&id=${item.id}`}
                 className="title-card" style={{ display:"block", textDecoration:"none", color:"inherit" }}>
                 <div style={{ position:"relative", aspectRatio:"2/3", overflow:"hidden", borderRadius:10 }}>
                   {item.posterUrl && (
