@@ -1,0 +1,29 @@
+---
+/**
+ * Localized actor and director pages, one per non-default locale.
+ *
+ * English keeps its existing unprefixed URLs; everything else is served under
+ * its locale code so each page can carry its own canonical and hreflang.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import PersonPage from '../../../components/pages/PersonPage.astro';
+import { getAllPeople } from '../../../lib/people';
+import { LANG_CODES, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+
+export const getStaticPaths = (() => {
+  const people = getAllPeople();
+  return LANG_CODES
+    .filter(code => code !== DEFAULT_LANG)
+    .flatMap(lang => people.map(person => ({
+      params: { lang, slug: person.slug },
+      props: { person, lang },
+    })));
+}) satisfies GetStaticPaths;
+
+const { person, lang } = Astro.props as { person: ReturnType<typeof getAllPeople>[number]; lang: Lang };
+---
+
+<BaseLayout>
+  <PersonPage person={person} lang={lang} />
+</BaseLayout>

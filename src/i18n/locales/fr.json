@@ -243,5 +243,21 @@
     "switchServer": "Changer de serveur",
     "contactUs": "Nous contacter",
     "disclaimer": "Avertissement"
+  },
+  "people": {
+    "breadcrumb": "Personnes",
+    "roleActor": "Acteur",
+    "roleDirector": "Réalisateur",
+    "roleBoth": "Acteur et réalisateur",
+    "summary": "{name} apparaît dans {count} titres de notre catalogue, entre {span}.",
+    "summaryNoSpan": "{name} apparaît dans {count} titres de notre catalogue.",
+    "castCredits": "Crédité au casting de {acted}.",
+    "directorCredits": "Crédité comme réalisateur sur {directed}.",
+    "bothCredits": "Crédité au casting de {acted} et comme réalisateur sur {directed}.",
+    "asCast": "Au casting",
+    "asDirector": "Comme réalisateur",
+    "titles": "Titres",
+    "as": "dans le rôle de {role}",
+    "disclaimer": "Les crédits proviennent de TMDB et ne couvrent que les titres de ce catalogue : il ne s’agit donc pas d’une filmographie complète. NetMirror n’héberge ni ne diffuse aucun contenu — chaque page de titre indique où il est officiellement disponible."
   }
 }

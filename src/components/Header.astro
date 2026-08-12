@@ -1,5 +1,14 @@
 ---
 import UserMenu from './auth/UserMenu.tsx';
+import { loadTranslations, t } from '../i18n';
+import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+
+// Rendered server-side so a localized route arrives already translated. The
+// client swap still runs for visitors who pick a language without navigating.
+const lang = getLangFromUrl(Astro.url);
+const tr = await loadTranslations(lang);
+/** Keeps in-locale navigation in the same locale. */
+const L = (path: string) => getLocalizedPath(path, lang);
 const LANG_OPTIONS = [
   { code: 'en', native: 'English' },
   { code: 'hi', native: 'हिन्दी' },
@@ -17,13 +26,13 @@ const LANG_OPTIONS = [
 ];
 
 const navLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Movies', href: '/movies/' },
-  { label: 'TV Shows', href: '/shows/' },
-  { label: 'Anime', href: '/anime/' },
-  { label: 'Trending', href: '/trending/' },
-  { label: 'Latest', href: '/latest/' },
-  { label: 'Blog', href: '/blog/' },
+  { label: t(tr, 'nav.home'), href: L('/'), key: 'nav.home' },
+  { label: t(tr, 'nav.movies'), href: L('/movies/'), key: 'nav.movies' },
+  { label: t(tr, 'nav.tvShows'), href: L('/shows/'), key: 'nav.tvShows' },
+  { label: t(tr, 'nav.anime'), href: L('/anime/'), key: 'nav.anime' },
+  { label: t(tr, 'nav.trending'), href: L('/trending/'), key: 'nav.trending' },
+  { label: t(tr, 'nav.latest'), href: L('/latest/'), key: 'nav.latest' },
+  { label: t(tr, 'nav.blog'), href: L('/blog/'), key: 'nav.blog' },
 ];
 
 const currentPath = Astro.url.pathname;
@@ -60,6 +69,7 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
                 ? 'text-[var(--color-primary)]'
                 : 'text-[var(--color-muted)] hover:text-white',
             ]}
+            data-t={link.key}
           >
             {link.label}
           </a>

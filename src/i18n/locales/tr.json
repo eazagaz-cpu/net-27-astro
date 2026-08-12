@@ -243,5 +243,21 @@
     "switchServer": "Sunucu değiştir",
     "contactUs": "Bize ulaşın",
     "disclaimer": "Sorumluluk reddi"
+  },
+  "people": {
+    "breadcrumb": "Kişiler",
+    "roleActor": "Oyuncu",
+    "roleDirector": "Yönetmen",
+    "roleBoth": "Oyuncu ve yönetmen",
+    "summary": "{name}, kataloğumuzdaki {count} yapımda yer alıyor, {span} arasında.",
+    "summaryNoSpan": "{name}, kataloğumuzdaki {count} yapımda yer alıyor.",
+    "castCredits": "{acted} yapımda oyuncu olarak künyede.",
+    "directorCredits": "{directed} yapımda yönetmen olarak künyede.",
+    "bothCredits": "{acted} yapımda oyuncu, {directed} yapımda yönetmen olarak künyede.",
+    "asCast": "Oyuncu olarak",
+    "asDirector": "Yönetmen olarak",
+    "titles": "Yapımlar",
+    "as": "{role} rolünde",
+    "disclaimer": "Künye bilgileri TMDB’den gelir ve yalnızca bu katalogdaki yapımları kapsar; bu nedenle tam bir filmografi değildir. NetMirror hiçbir içeriği barındırmaz veya yayınlamaz — her yapım sayfası nerede resmi olarak bulunabileceğini gösterir."
   }
 }

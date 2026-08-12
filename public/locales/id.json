@@ -243,5 +243,21 @@
     "switchServer": "Ganti server",
     "contactUs": "Hubungi kami",
     "disclaimer": "Penafian"
+  },
+  "people": {
+    "breadcrumb": "Orang",
+    "roleActor": "Aktor",
+    "roleDirector": "Sutradara",
+    "roleBoth": "Aktor dan sutradara",
+    "summary": "{name} muncul dalam {count} judul di katalog kami, sepanjang {span}.",
+    "summaryNoSpan": "{name} muncul dalam {count} judul di katalog kami.",
+    "castCredits": "Tercatat sebagai pemeran pada {acted} judul.",
+    "directorCredits": "Tercatat sebagai sutradara pada {directed} judul.",
+    "bothCredits": "Tercatat sebagai pemeran pada {acted} dan sutradara pada {directed} judul.",
+    "asCast": "Sebagai pemeran",
+    "asDirector": "Sebagai sutradara",
+    "titles": "Judul",
+    "as": "sebagai {role}",
+    "disclaimer": "Kredit berasal dari TMDB dan hanya mencakup judul dalam katalog ini, jadi ini bukan filmografi lengkap. NetMirror tidak meng-host atau menyiarkan konten apa pun — setiap halaman judul menunjukkan di mana judul tersebut tersedia secara resmi."
   }
 }

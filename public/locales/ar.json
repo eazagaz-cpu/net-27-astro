@@ -243,5 +243,21 @@
     "switchServer": "تغيير الخادم",
     "contactUs": "اتصل بنا",
     "disclaimer": "إخلاء مسؤولية"
+  },
+  "people": {
+    "breadcrumb": "أشخاص",
+    "roleActor": "ممثل",
+    "roleDirector": "مخرج",
+    "roleBoth": "ممثل ومخرج",
+    "summary": "يظهر {name} في {count} عنوانًا في مكتبتنا، خلال {span}.",
+    "summaryNoSpan": "يظهر {name} في {count} عنوانًا في مكتبتنا.",
+    "castCredits": "مُدرج ضمن طاقم عمل {acted}.",
+    "directorCredits": "مُدرج كمخرج في {directed}.",
+    "bothCredits": "مُدرج ضمن طاقم عمل {acted} وكمخرج في {directed}.",
+    "asCast": "ضمن طاقم العمل",
+    "asDirector": "كمخرج",
+    "titles": "العناوين",
+    "as": "بدور {role}",
+    "disclaimer": "بيانات الأعمال مصدرها TMDB وتشمل فقط عناوين هذه المكتبة، لذا فهي ليست قائمة أعمال كاملة. لا يستضيف NetMirror أي محتوى ولا يبثه — تُبيّن صفحة كل عنوان أين يتوفر رسميًا."
   }
 }

@@ -1,5 +1,7 @@
 ---
 import { getPosterUrl } from '../lib/media';
+import { getLocalizedPath } from '../i18n/utils';
+import type { Lang } from '../i18n/config';
 
 // Structural shape shared by both the legacy `Title` (lib/types.ts, poster as
 // a TMDB relative path) and the real `RealTitle` (lib/realTitles.ts, posterUrl
@@ -18,11 +20,14 @@ interface CardTitle {
 
 interface Props {
   title: CardTitle;
+  /** Keeps the card's link inside the locale it is rendered in. */
+  lang?: Lang;
 }
 
-const { title } = Astro.props;
+const { title, lang } = Astro.props;
 
-const href = title.type === 'movie' ? `/movies/${title.slug}/` : `/shows/${title.slug}/`;
+const basePath = title.type === 'movie' ? `/movies/${title.slug}/` : `/shows/${title.slug}/`;
+const href = lang ? getLocalizedPath(basePath, lang) : basePath;
 const posterUrl = title.posterUrl || getPosterUrl(title.poster || '');
 
 const displayGenres = title.genres.slice(0, 2);

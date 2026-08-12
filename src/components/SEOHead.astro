@@ -1,5 +1,7 @@
 ---
 import { generateSEO } from '../lib/seo';
+import { getAlternateLinks, getLangFromUrl } from '../i18n/utils';
+import { LANGUAGES, DEFAULT_LANG, type Lang } from '../i18n/config';
 
 interface Props {
   title: string;
@@ -8,15 +10,44 @@ interface Props {
   ogImage?: string;
   ogType?: string;
   noindex?: boolean;
+  /**
+   * Set when a page has localized equivalents. Emits a reciprocal hreflang
+   * cluster and locale-aware Open Graph tags. Left off for pages that exist
+   * only in English, since hreflang must not point at URLs that 404.
+   */
+  localized?: boolean;
 }
 
 const seo = generateSEO(Astro.props);
 const ogImageAlt = 'NetMirror - Movies, TV Shows, Anime and Hindi Dubbed Discovery';
+
+const lang: Lang = getLangFromUrl(Astro.url);
+// The cluster is built from the path, so every locale in it resolves to the
+// same page rather than a homepage fallback.
+const alternates = Astro.props.localized ? getAlternateLinks(Astro.url.pathname) : [];
+
+/** Open Graph wants a full locale, not a bare language code. */
+const OG_LOCALES: Record<Lang, string> = {
+  en: 'en_US', hi: 'hi_IN', ur: 'ur_PK', bn: 'bn_IN', es: 'es_ES', fr: 'fr_FR',
+  de: 'de_DE', it: 'it_IT', pt: 'pt_BR', ru: 'ru_RU', ja: 'ja_JP', ko: 'ko_KR',
+  ms: 'ms_MY', pl: 'pl_PL', id: 'id_ID', ar: 'ar_AR', bg: 'bg_BG', tr: 'tr_TR',
+  sv: 'sv_SE',
+};
+const ogLocale = OG_LOCALES[lang] ?? 'en_US';
+const otherOgLocales = Astro.props.localized
+  ? (Object.keys(LANGUAGES) as Lang[]).filter(code => code !== lang).map(code => OG_LOCALES[code])
+  : [];
 ---
 
 <title>{seo.title}</title>
 <meta name="description" content={seo.description} />
 <link rel="canonical" href={seo.canonical} />
+
+{/* Reciprocal hreflang. Each locale references itself and every equivalent,
+    with x-default on the English URL, so the cluster validates. */}
+{alternates.map(alt => (
+  <link rel="alternate" hreflang={alt.lang} href={alt.href} />
+))}
 
 <!-- Open Graph -->
 <meta property="og:title" content={seo.ogTitle} />
@@ -30,6 +61,8 @@ const ogImageAlt = 'NetMirror - Movies, TV Shows, Anime and Hindi Dubbed Discove
 <meta property="og:url" content={seo.canonical} />
 <meta property="og:type" content={seo.ogType} />
 <meta property="og:site_name" content="NetMirror" />
+<meta property="og:locale" content={ogLocale} />
+{otherOgLocales.map(code => <meta property="og:locale:alternate" content={code} />)}
 
 <!-- Twitter Card -->
 <meta name="twitter:card" content={seo.twitterCard} />

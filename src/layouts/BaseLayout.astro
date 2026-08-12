@@ -17,10 +17,9 @@ const dir = getDir(lang);
   <link rel="preconnect" href="https://image.tmdb.org" />
   <link rel="dns-prefetch" href="https://www.2embed.cc" />
   <link rel="dns-prefetch" href="https://autoembed.co" />
-  <!-- No hreflang tags: the site serves a single crawlable (English) HTML
-       version per URL — other languages are a client-side text-swap layer
-       only, not separate indexable pages, so hreflang alternates would be
-       inaccurate. -->
+  <!-- hreflang is emitted by SEOHead for pages that have localized routes,
+       where the cluster resolves to a real equivalent. Pages without one omit
+       it rather than pointing at URLs that would 404. -->
   <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
   <!-- Bing Webmaster Tools site verification. Must stay even after verifying —
        Bing rechecks it and un-verifies the site if it disappears. -->

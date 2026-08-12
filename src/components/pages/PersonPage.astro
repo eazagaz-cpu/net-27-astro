@@ -1,0 +1,136 @@
+---
+/**
+ * PersonPage.astro — the body of an actor or director page, in one locale.
+ *
+ * Rendered by both /person/[slug]/ and /[lang]/person/[slug]/ so the two routes
+ * cannot drift apart. Every string comes from the translation files, and every
+ * internal link stays inside the current locale.
+ */
+import Header from '../Header.astro';
+import Footer from '../Footer.astro';
+import SEOHead from '../SEOHead.astro';
+import Schema from '../Schema.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import TitleCard from '../TitleCard.astro';
+import type { Person } from '../../lib/people';
+import { breadcrumbSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { loadTranslations, t } from '../../i18n';
+import { getLocalizedPath } from '../../i18n/utils';
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  person: Person;
+  lang: Lang;
+}
+
+const { person, lang } = Astro.props;
+const tr = await loadTranslations(lang);
+const L = (path: string) => getLocalizedPath(path, lang);
+
+const canonical = `${SITE_URL}${L(`/person/${person.slug}/`)}`;
+
+const breadcrumbs = [
+  { label: t(tr, 'nav.home'), href: L('/') },
+  { label: t(tr, 'people.breadcrumb'), href: L('/sitemap/') },
+  { label: person.name, href: L(`/person/${person.slug}/`) },
+];
+
+const directed = person.credits.filter(c => c.directed);
+const acted = person.credits.filter(c => !c.directed);
+const years = person.credits.map(c => c.title.year).filter(Boolean);
+const span = years.length > 1 ? `${Math.min(...years)}–${Math.max(...years)}` : '';
+
+const roleLabel = person.primaryRole === 'Director'
+  ? t(tr, 'people.roleDirector')
+  : person.primaryRole === 'Actor and director'
+    ? t(tr, 'people.roleBoth')
+    : t(tr, 'people.roleActor');
+
+// Built from the credits rather than a fixed sentence, so each page states
+// something true about this person in the reader's language.
+const summary = span
+  ? t(tr, 'people.summary', { name: person.name, count: person.credits.length, span })
+  : t(tr, 'people.summaryNoSpan', { name: person.name, count: person.credits.length });
+
+const creditLine = acted.length > 0 && directed.length > 0
+  ? t(tr, 'people.bothCredits', { acted: acted.length, directed: directed.length })
+  : directed.length > 0
+    ? t(tr, 'people.directorCredits', { directed: directed.length })
+    : t(tr, 'people.castCredits', { acted: acted.length });
+
+const personSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: person.name,
+  url: canonical,
+  jobTitle: roleLabel,
+  // Locale of this page's prose, not of the person.
+  inLanguage: lang,
+};
+---
+
+<SEOHead
+  slot="head"
+  title={`${person.name} — ${roleLabel}`}
+  description={`${summary} ${creditLine}`}
+  canonical={canonical}
+  localized={true}
+/>
+<Schema slot="head" schema={[personSchema, breadcrumbSchema(breadcrumbs)]} />
+
+<Header />
+
+<main class="min-h-screen">
+  <section class="relative overflow-hidden">
+    <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-accent)]/10 to-[var(--color-accent-alt)]/10"></div>
+    <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+    <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-24 pb-10">
+      <Breadcrumbs items={breadcrumbs} />
+      <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+        <span class="gradient-text">{person.name}</span>
+      </h1>
+      <p class="mt-2 text-sm font-medium text-[var(--color-primary)]">{roleLabel}</p>
+      <p class="mt-4 max-w-3xl text-sm md:text-base text-[var(--color-text-secondary)] leading-relaxed">
+        {`${summary} ${creditLine}`}
+      </p>
+    </div>
+  </section>
+
+  <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-12 space-y-16">
+    {acted.length > 0 && (
+      <section>
+        <h2 class="section-title mb-6">
+          {directed.length > 0 ? t(tr, 'people.asCast') : t(tr, 'people.titles')}
+        </h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {acted.map(credit => (
+            <div>
+              <TitleCard title={credit.title} lang={lang} />
+              {credit.role && (
+                <p class="mt-1 text-[11px] text-[var(--color-text-muted)] truncate" title={credit.role}>
+                  {t(tr, 'people.as', { role: credit.role })}
+                </p>
+              )}
+            </div>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {directed.length > 0 && (
+      <section>
+        <h2 class="section-title mb-6">{t(tr, 'people.asDirector')}</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {directed.map(credit => <TitleCard title={credit.title} lang={lang} />)}
+        </div>
+      </section>
+    )}
+
+    <section class="glass-card rounded-xl p-6">
+      <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">{t(tr, 'people.disclaimer')}</p>
+    </section>
+  </div>
+</main>
+
+<Footer />

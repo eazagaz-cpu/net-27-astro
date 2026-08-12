@@ -243,5 +243,21 @@
     "switchServer": "Byt server",
     "contactUs": "Kontakta oss",
     "disclaimer": "Friskrivning"
+  },
+  "people": {
+    "breadcrumb": "Personer",
+    "roleActor": "Skådespelare",
+    "roleDirector": "Regissör",
+    "roleBoth": "Skådespelare och regissör",
+    "summary": "{name} förekommer i {count} titlar i vår katalog, mellan {span}.",
+    "summaryNoSpan": "{name} förekommer i {count} titlar i vår katalog.",
+    "castCredits": "Krediterad i rollistan för {acted} titlar.",
+    "directorCredits": "Krediterad som regissör för {directed} titlar.",
+    "bothCredits": "Krediterad i rollistan för {acted} och som regissör för {directed} titlar.",
+    "asCast": "I rollistan",
+    "asDirector": "Som regissör",
+    "titles": "Titlar",
+    "as": "som {role}",
+    "disclaimer": "Krediterna kommer från TMDB och omfattar bara titlarna i den här katalogen, så det är inte en fullständig filmografi. NetMirror lagrar och strömmar inget innehåll — varje titelsida visar var den finns officiellt tillgänglig."
   }
 }

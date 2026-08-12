@@ -243,5 +243,21 @@
     "switchServer": "서버 변경",
     "contactUs": "문의하기",
     "disclaimer": "면책 조항"
+  },
+  "people": {
+    "breadcrumb": "인물",
+    "roleActor": "배우",
+    "roleDirector": "감독",
+    "roleBoth": "배우 및 감독",
+    "summary": "{name} 은(는) 카탈로그의 {count}개 작품에 등장합니다({span}).",
+    "summaryNoSpan": "{name} 은(는) 카탈로그의 {count}개 작품에 등장합니다.",
+    "castCredits": "{acted}개 작품에 배우로 크레딧.",
+    "directorCredits": "{directed}개 작품에 감독으로 크레딧.",
+    "bothCredits": "{acted}개 작품에 배우, {directed}개 작품에 감독으로 크레딧.",
+    "asCast": "배우로",
+    "asDirector": "감독으로",
+    "titles": "작품",
+    "as": "{role} 역",
+    "disclaimer": "크레딧은 TMDB에서 제공되며 이 카탈로그의 작품만 포함하므로 전체 필모그래피가 아닙니다. NetMirror는 콘텐츠를 호스팅하거나 스트리밍하지 않습니다 — 각 작품 페이지에서 공식 시청 경로를 확인할 수 있습니다."
   }
 }

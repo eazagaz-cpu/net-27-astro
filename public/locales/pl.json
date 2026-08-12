@@ -243,5 +243,21 @@
     "switchServer": "Zmień serwer",
     "contactUs": "Kontakt",
     "disclaimer": "Zastrzeżenie"
+  },
+  "people": {
+    "breadcrumb": "Osoby",
+    "roleActor": "Aktor",
+    "roleDirector": "Reżyser",
+    "roleBoth": "Aktor i reżyser",
+    "summary": "{name} występuje w {count} tytułach w naszym katalogu, w latach {span}.",
+    "summaryNoSpan": "{name} występuje w {count} tytułach w naszym katalogu.",
+    "castCredits": "W obsadzie {acted} tytułów.",
+    "directorCredits": "Jako reżyser w {directed} tytułach.",
+    "bothCredits": "W obsadzie {acted} tytułów i jako reżyser w {directed}.",
+    "asCast": "W obsadzie",
+    "asDirector": "Jako reżyser",
+    "titles": "Tytuły",
+    "as": "jako {role}",
+    "disclaimer": "Dane o obsadzie pochodzą z TMDB i obejmują wyłącznie tytuły z tego katalogu, nie jest to więc pełna filmografia. NetMirror nie hostuje ani nie udostępnia treści — każda strona tytułu wskazuje, gdzie jest on oficjalnie dostępny."
   }
 }

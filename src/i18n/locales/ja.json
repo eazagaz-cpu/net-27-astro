@@ -243,5 +243,21 @@
     "switchServer": "サーバーを切り替え",
     "contactUs": "お問い合わせ",
     "disclaimer": "免責事項"
+  },
+  "people": {
+    "breadcrumb": "人物",
+    "roleActor": "俳優",
+    "roleDirector": "監督",
+    "roleBoth": "俳優・監督",
+    "summary": "{name} は当カタログの {count} 作品に出演しています（{span}）。",
+    "summaryNoSpan": "{name} は当カタログの {count} 作品に出演しています。",
+    "castCredits": "{acted} 作品でキャストとしてクレジット。",
+    "directorCredits": "{directed} 作品で監督としてクレジット。",
+    "bothCredits": "{acted} 作品でキャスト、{directed} 作品で監督としてクレジット。",
+    "asCast": "キャストとして",
+    "asDirector": "監督として",
+    "titles": "作品",
+    "as": "{role} 役",
+    "disclaimer": "クレジットは TMDB のデータで、当カタログの作品のみを対象としているため、完全なフィルモグラフィーではありません。NetMirror はコンテンツをホストも配信もしません。各作品ページで公式の視聴先を確認できます。"
   }
 }
