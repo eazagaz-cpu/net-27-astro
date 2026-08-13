@@ -247,7 +247,8 @@
     "streamingInfoError": "公式の配信情報を読み込めませんでした。",
     "switchServer": "サーバーを切り替え",
     "contactUs": "お問い合わせ",
-    "disclaimer": "免責事項"
+    "disclaimer": "免責事項",
+    "faqHeading": "よくある質問"
   },
   "people": {
     "breadcrumb": "人物",

@@ -247,7 +247,8 @@
     "streamingInfoError": "Info streaming resmi tidak dapat dimuat saat ini.",
     "switchServer": "Ganti server",
     "contactUs": "Hubungi kami",
-    "disclaimer": "Penafian"
+    "disclaimer": "Penafian",
+    "faqHeading": "Pertanyaan Umum"
   },
   "people": {
     "breadcrumb": "Orang",

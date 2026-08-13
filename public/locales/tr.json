@@ -247,7 +247,8 @@
     "streamingInfoError": "Resmi yayın bilgisi şu anda yüklenemedi.",
     "switchServer": "Sunucu değiştir",
     "contactUs": "Bize ulaşın",
-    "disclaimer": "Sorumluluk reddi"
+    "disclaimer": "Sorumluluk reddi",
+    "faqHeading": "Sık Sorulan Sorular"
   },
   "people": {
     "breadcrumb": "Kişiler",

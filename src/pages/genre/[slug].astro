@@ -62,6 +62,7 @@ const faqs = [
     title={`Best ${genre.name} Movies & Shows to Watch Free Online (${new Date().getFullYear()})`}
     description={`Discover ${genre.name.toLowerCase()} movies, TV shows, and anime. Watch the best ${genre.name.toLowerCase()} titles free online on NetMirror — no sign-up required.`}
     canonical={`${SITE_URL}/genre/${genre.slug}/`}
+  localized={true}
   />
   <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
 

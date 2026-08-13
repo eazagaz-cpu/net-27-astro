@@ -247,7 +247,8 @@
     "streamingInfoError": "تعذر تحميل معلومات البث الرسمية الآن.",
     "switchServer": "تغيير الخادم",
     "contactUs": "اتصل بنا",
-    "disclaimer": "إخلاء مسؤولية"
+    "disclaimer": "إخلاء مسؤولية",
+    "faqHeading": "الأسئلة الشائعة"
   },
   "people": {
     "breadcrumb": "أشخاص",

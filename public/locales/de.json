@@ -247,7 +247,8 @@
     "streamingInfoError": "Offizielle Streaming-Infos konnten nicht geladen werden.",
     "switchServer": "Server wechseln",
     "contactUs": "Kontakt",
-    "disclaimer": "Haftungsausschluss"
+    "disclaimer": "Haftungsausschluss",
+    "faqHeading": "Häufig gestellte Fragen"
   },
   "people": {
     "breadcrumb": "Personen",

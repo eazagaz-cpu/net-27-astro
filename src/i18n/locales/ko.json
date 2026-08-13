@@ -247,7 +247,8 @@
     "streamingInfoError": "공식 스트리밍 정보를 불러오지 못했습니다.",
     "switchServer": "서버 변경",
     "contactUs": "문의하기",
-    "disclaimer": "면책 조항"
+    "disclaimer": "면책 조항",
+    "faqHeading": "자주 묻는 질문"
   },
   "people": {
     "breadcrumb": "인물",

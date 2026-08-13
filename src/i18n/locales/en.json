@@ -247,7 +247,8 @@
     "streamingInfoError": "Couldn't load official streaming info right now.",
     "switchServer": "Switch Server",
     "contactUs": "Contact Us",
-    "disclaimer": "Disclaimer"
+    "disclaimer": "Disclaimer",
+    "faqHeading": "Frequently Asked Questions"
   },
   "people": {
     "breadcrumb": "People",

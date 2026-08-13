@@ -247,7 +247,8 @@
     "streamingInfoError": "Nie udało się wczytać oficjalnych informacji o dostępności.",
     "switchServer": "Zmień serwer",
     "contactUs": "Kontakt",
-    "disclaimer": "Zastrzeżenie"
+    "disclaimer": "Zastrzeżenie",
+    "faqHeading": "Często zadawane pytania"
   },
   "people": {
     "breadcrumb": "Osoby",

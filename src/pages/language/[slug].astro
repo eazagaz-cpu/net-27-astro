@@ -56,6 +56,7 @@ const faqs = [
     title={`Best ${language.name} Movies & Shows (${new Date().getFullYear()}) - Stream Online`}
     description={`Discover ${language.name} movies, TV shows, and anime. Find the best ${language.name} content to stream on Netflix, Prime Video, and more.`}
     canonical={`${SITE_URL}/language/${language.slug}/`}
+  localized={true}
   />
   <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
 

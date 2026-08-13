@@ -247,7 +247,8 @@
     "streamingInfoError": "No se pudo cargar la información oficial de streaming.",
     "switchServer": "Cambiar servidor",
     "contactUs": "Contacto",
-    "disclaimer": "Aviso legal"
+    "disclaimer": "Aviso legal",
+    "faqHeading": "Preguntas frecuentes"
   },
   "people": {
     "breadcrumb": "Personas",

@@ -247,7 +247,8 @@
     "streamingInfoError": "Kunde inte ladda officiell tillgänglighetsinfo just nu.",
     "switchServer": "Byt server",
     "contactUs": "Kontakta oss",
-    "disclaimer": "Friskrivning"
+    "disclaimer": "Friskrivning",
+    "faqHeading": "Vanliga frågor"
   },
   "people": {
     "breadcrumb": "Personer",
