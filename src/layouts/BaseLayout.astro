@@ -1,10 +1,29 @@
 ---
 import '../styles/global.css';
-import { getLangFromUrl, getDir } from '../i18n/utils';
+import { getLangFromUrl, getDir, stripLangFromPath } from '../i18n/utils';
+import PopAd from '../components/PopAd.astro';
 import SearchOverlay from '../components/SearchOverlay.tsx';
 
 const lang = getLangFromUrl(Astro.url);
 const dir = getDir(lang);
+
+/**
+ * Pages the popunder is kept off.
+ *
+ * Not a policy hedge — a popunder pays on the click that opens it, so it earns
+ * nothing on a page nobody clicks through. These are the pages where it would
+ * only cost goodwill: the legal and compliance documents, the contact form, and
+ * the signed-in surfaces, which are noindex and carry no search traffic anyway.
+ *
+ * Matching is on the language-stripped path, so a locale prefix cannot smuggle
+ * a legal page past the list.
+ */
+const POP_AD_EXCLUDED = [
+  '/privacy/', '/terms/', '/disclaimer/', '/dmca/', '/editorial/',
+  '/contact/', '/about/', '/login/', '/watchlist/',
+];
+const barePath = stripLangFromPath(Astro.url.pathname);
+const showPopAd = !POP_AD_EXCLUDED.includes(barePath);
 ---
 
 <!DOCTYPE html>
@@ -233,5 +252,6 @@ const dir = getDir(lang);
         document.head.appendChild(s);
     })()
   </script>
+  {showPopAd && <PopAd />}
 </body>
 </html>

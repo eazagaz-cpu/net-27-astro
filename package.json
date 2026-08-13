@@ -25,7 +25,8 @@
     "validate:sitemap": "node scripts/validate-sitemap.mjs",
     "validate:indexing": "node scripts/validate-sitemap.mjs",
     "validate:html-sitemap": "node scripts/validate-html-sitemap.mjs",
-    "validate:og": "node scripts/validate-og.mjs"
+    "validate:og": "node scripts/validate-og.mjs",
+    "validate:blog-i18n": "node scripts/validate-blog-i18n.mjs"
   },
   "dependencies": {
     "@astrojs/react": "^4.2.0",

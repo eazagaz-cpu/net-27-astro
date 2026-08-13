@@ -1,12 +1,14 @@
 ---
 interface Props {
   items: { id: string; title: string; level: number }[];
+  /** Heading; defaults to the English label so English output is unchanged. */
+  title?: string;
 }
-const { items } = Astro.props;
+const { items, title = 'Table of Contents' } = Astro.props;
 ---
 
 <nav class="blog-toc my-8 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-card)] p-5 md:p-6">
-  <p class="text-sm font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-3" data-t="blog.tableOfContents">Table of Contents</p>
+  <p class="text-sm font-bold uppercase tracking-wider text-[var(--color-text-muted)] mb-3" data-t="blog.tableOfContents">{title}</p>
   <ol class="space-y-1.5 list-none pl-0">
     {items.map((item, i) => (
       <li class={item.level === 3 ? 'pl-5' : ''}>

@@ -1,0 +1,31 @@
+---
+/**
+ * PopAd.astro — the ProfitON popunder tag.
+ *
+ * Deliberately NOT in BaseLayout. Two reasons:
+ *
+ * 1. AdSense. The site runs AdSense on every page, and AdSense policy
+ *    disallows placing its ads on pages carrying pop-ups or popunders that
+ *    interfere with navigation. Loading this everywhere would put the whole
+ *    AdSense account at risk, which is worth far more than the pop revenue.
+ *    Keeping it off the pages a policy reviewer looks at first — legal, about,
+ *    contact, editorial — limits the exposure.
+ *
+ * 2. Revenue per impression is not flat. A popunder pays on the click that
+ *    opens it, so it earns on pages where visitors already click a lot: the
+ *    player, a title page where they are choosing where to watch, the APK
+ *    download page. On a privacy policy it earns nothing and costs goodwill.
+ *
+ * Include it per page, never globally. See PLACEMENT below for the current set.
+ */
+---
+
+{/* ProfitON popunder. data-cfasync="false" keeps Cloudflare Rocket Loader from
+    deferring it, which the vendor requires for the tag to fire on first click. */}
+<script
+  data-cfasync="false"
+  async
+  type="text/javascript"
+  src="//wk.sortallav.com/rRTB1HjUh1Q/149339"
+  is:inline
+></script>

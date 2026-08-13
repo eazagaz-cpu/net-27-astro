@@ -141,9 +141,9 @@ const localesWithPage = localesWithPost(english.slug);
       />
     </div>
 
-    {post.quickAnswer && <QuickAnswer answer={post.quickAnswer} />}
+    {post.quickAnswer && <QuickAnswer answer={post.quickAnswer} title={t(tr, 'blog.quickAnswer')} />}
 
-    {post.toc && post.toc.length > 0 && <TableOfContents items={post.toc} />}
+    {post.toc && post.toc.length > 0 && <TableOfContents items={post.toc} title={t(tr, 'blog.tableOfContents')} />}
 
     <div class="blog-content" set:html={post.content} />
 
@@ -157,7 +157,7 @@ const localesWithPage = localesWithPost(english.slug);
 
     {post.safetyNote && <SafetyNote note={post.safetyNote} />}
 
-    {post.faqs && post.faqs.length > 0 && <BlogFAQ faqs={post.faqs} />}
+    {post.faqs && post.faqs.length > 0 && <BlogFAQ faqs={post.faqs} title={t(tr, 'blog.faqs')} />}
 
     <ArticleCTA
       title={post.ctaTitle}
@@ -167,7 +167,7 @@ const localesWithPage = localesWithPost(english.slug);
     <AuthorBox author={english.author} />
 
     {relatedPosts.length > 0 && (
-      <RelatedPosts posts={relatedPosts.map(related => {
+      <RelatedPosts title={t(tr, 'blog.relatedArticles')} posts={relatedPosts.map(related => {
         // Related cards use each target's own translation when it has one, so a
         // localized article never links out through an English teaser.
         const rel = getLocalizedPost(lang, related.slug);

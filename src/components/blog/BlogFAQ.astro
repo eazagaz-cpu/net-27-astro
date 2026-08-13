@@ -1,13 +1,15 @@
 ---
 interface Props {
   faqs: { question: string; answer: string }[];
+  /** Heading; defaults to the English label so English output is unchanged. */
+  title?: string;
 }
-const { faqs } = Astro.props;
+const { faqs, title = 'Frequently Asked Questions' } = Astro.props;
 ---
 
 {faqs.length > 0 && (
   <div class="blog-faq my-10">
-    <h2 id="faqs" class="text-xl font-bold mb-6 text-[var(--color-text-primary)]">Frequently Asked Questions</h2>
+    <h2 id="faqs" class="text-xl font-bold mb-6 text-[var(--color-text-primary)]">{title}</h2>
     <div class="space-y-3">
       {faqs.map((faq, i) => (
         <details class="group glass-card rounded-xl overflow-hidden" open={i === 0}>

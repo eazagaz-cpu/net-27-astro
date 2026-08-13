@@ -12,13 +12,15 @@ interface RelatedPost {
 
 interface Props {
   posts: RelatedPost[];
+  /** Heading; defaults to the English label so English output is unchanged. */
+  title?: string;
 }
-const { posts } = Astro.props;
+const { posts, title = 'Related Articles' } = Astro.props;
 ---
 
 {posts.length > 0 && (
   <div class="blog-related my-10">
-    <h2 class="text-xl font-bold mb-6 text-[var(--color-text-primary)]" data-t="blog.relatedArticles">Related Articles</h2>
+    <h2 class="text-xl font-bold mb-6 text-[var(--color-text-primary)]" data-t="blog.relatedArticles">{title}</h2>
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
       {posts.map(post => (
         <a href={post.href ?? `/blog/${post.slug}/`} class="glass-card group rounded-xl overflow-hidden hover:border-[var(--color-primary)]/40 transition-all duration-300">
