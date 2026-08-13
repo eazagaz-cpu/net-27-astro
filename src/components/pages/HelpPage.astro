@@ -1,0 +1,258 @@
+---
+/**
+ * HelpPage.astro — the three troubleshooting guides and the app download page,
+ * in any locale.
+ *
+ * Markup mirrors what the original standalone pages emitted so the English
+ * output is unchanged; the difference is that the copy now comes from
+ * src/i18n/static/help and every locale renders the same structure.
+ */
+import Header from '../Header.astro';
+import Footer from '../Footer.astro';
+import SEOHead from '../SEOHead.astro';
+import Schema from '../Schema.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import FAQSection from '../FAQSection.astro';
+import RichText from './RichText.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { CONTACT_EMAIL, APK_UNIVERSAL_URL, APK_ARM64_URL, APK_ARM32_URL } from '../../lib/constants';
+import { loadTranslations, t } from '../../i18n';
+import { getLocalizedPath } from '../../i18n/utils';
+import { getHelpDocs } from '../../i18n/static/help';
+import type { HelpDocKey } from '../../i18n/static/types';
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  doc: HelpDocKey;
+  lang: Lang;
+}
+
+const { doc: docKey, lang } = Astro.props;
+const tr = await loadTranslations(lang);
+const L = (path: string) => getLocalizedPath(path, lang);
+
+const PATHS: Record<HelpDocKey, string> = {
+  appNotInstalled: '/help/app-not-installed/',
+  parsingPackageError: '/help/parsing-package-error/',
+  videoNotPlaying: '/help/video-not-playing/',
+  appDownload: '/app/download/',
+};
+
+/** Download buttons name a variant; the URL stays in one place. */
+const APK_URLS: Record<'universal' | 'arm64' | 'arm32', string> = {
+  universal: APK_UNIVERSAL_URL,
+  arm64: APK_ARM64_URL,
+  arm32: APK_ARM32_URL,
+};
+
+const doc = getHelpDocs(lang)[docKey];
+const path = PATHS[docKey];
+const canonical = `${SITE_URL}${L(path)}`;
+
+// The guides carry a "Help" crumb between home and the page; the download page
+// does not, matching the original breadcrumb trails.
+const breadcrumbs = [
+  { label: t(tr, 'nav.home'), href: L('/') },
+  ...(doc.breadcrumbParent ? [{ label: doc.breadcrumbParent, href: L(path) }] : []),
+  { label: doc.breadcrumb, href: L(path) },
+];
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'TechArticle',
+  headline: doc.seoTitle,
+  description: doc.seoDescription,
+  url: canonical,
+  inLanguage: lang,
+};
+---
+
+<SEOHead
+  slot="head"
+  title={doc.seoTitle}
+  description={doc.seoDescription}
+  canonical={canonical}
+  localized={true}
+/>
+<Schema slot="head" schema={[articleSchema, breadcrumbSchema(breadcrumbs), faqSchema(doc.faqs)]} />
+
+<Header />
+
+<main class="min-h-screen pt-36">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <h1 class="text-3xl md:text-4xl font-bold mt-4 mb-4">
+      {doc.h1Prefix && `${doc.h1Prefix} `}<span class="gradient-text">{doc.h1Highlight}</span>
+    </h1>
+
+    <div class="glass-card rounded-xl p-6 mb-8">
+      <p class="text-[var(--color-text-secondary)] leading-relaxed">
+        <RichText text={doc.intro} lang={lang} />
+      </p>
+    </div>
+
+    {doc.sections.map(section => (
+      <section class="mb-12">
+        <h2 class="text-2xl font-bold mb-4">{section.heading}</h2>
+
+        {section.blocks.map(block => {
+          if (block.t === 'cards') {
+            return (
+              <div class:list={[block.roomy ? 'space-y-6' : 'space-y-4']}>
+                {block.cards.map(card => (
+                  <div class:list={['glass-card rounded-xl', block.roomy ? 'p-6' : 'p-5']}>
+                    <h3 class:list={block.roomy ? 'font-bold text-lg mb-3' : 'font-semibold mb-2'}>{card.title}</h3>
+                    <p class="text-[var(--color-text-secondary)] text-sm" class:list={[card.items ? 'mb-3' : '']}>
+                      <RichText text={card.text} lang={lang} />
+                    </p>
+                    {card.items && (
+                      <div class="bg-[var(--color-bg-primary)] rounded-lg p-4">
+                        {card.solutionHeading && <h4 class="font-semibold text-sm mb-2">{card.solutionHeading}</h4>}
+                        {card.ordered ? (
+                          <ol class="text-sm text-[var(--color-text-secondary)] space-y-1.5 list-decimal list-inside">
+                            {card.items.map(item => <li><RichText text={item} lang={lang} /></li>)}
+                          </ol>
+                        ) : (
+                          <ul class="text-sm text-[var(--color-text-secondary)] space-y-1.5">
+                            {card.items.map(item => <li><RichText text={item} lang={lang} /></li>)}
+                          </ul>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            );
+          }
+
+          if (block.t === 'steps') {
+            return (
+              <div class="text-[var(--color-text-secondary)] leading-relaxed">
+                {block.intro && <p class="mb-4"><RichText text={block.intro} lang={lang} /></p>}
+                <ol class="space-y-6 list-none">
+                  {block.steps.map((step, i) => (
+                    <li class="flex items-start gap-4">
+                      <span class="flex-shrink-0 w-8 h-8 rounded-full bg-[var(--color-primary)] text-white flex items-center justify-center font-bold text-sm">{i + 1}</span>
+                      <div>
+                        <p class="font-medium text-[var(--color-text-primary)]">{step.title}</p>
+                        <p class="text-sm mt-1"><RichText text={step.text} lang={lang} /></p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            );
+          }
+
+          if (block.t === 'prose') {
+            return (
+              <div class="text-[var(--color-text-secondary)] leading-relaxed space-y-3">
+                {block.paragraphs.map(p => <p><RichText text={p} lang={lang} /></p>)}
+              </div>
+            );
+          }
+
+          if (block.t === 'tipGrid') {
+            return (
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {block.tips.map(tip => (
+                  <div class="glass-card rounded-xl p-5">
+                    <h3 class="font-semibold mb-2">{tip.title}</h3>
+                    <ul class="text-sm text-[var(--color-text-secondary)] space-y-1.5">
+                      {tip.items.map(item => <li><RichText text={item} lang={lang} /></li>)}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+            );
+          }
+
+          if (block.t === 'checklist') {
+            return (
+              <div class="glass-card rounded-xl p-6">
+                <ul class="space-y-3 text-[var(--color-text-secondary)]">
+                  {block.items.map(item => (
+                    <li class="flex items-start gap-3">
+                      <span class="text-[var(--color-primary)] mt-0.5">&#10003;</span>
+                      <span><RichText text={item} lang={lang} /></span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          }
+
+          if (block.t === 'linkCards') {
+            return (
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {block.cards.map(card => (
+                  <a href={card.href.startsWith('/') ? L(card.href) : card.href} class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)] transition-colors group">
+                    <h3 class="font-semibold group-hover:text-[var(--color-primary)] transition-colors">{card.title}</h3>
+                    <p class="text-sm text-[var(--color-text-muted)] mt-1">{card.text}</p>
+                  </a>
+                ))}
+              </div>
+            );
+          }
+
+          if (block.t === 'linkList') {
+            return (
+              <ul class="space-y-2 text-[var(--color-text-secondary)]">
+                {block.links.map(link => (
+                  <li>
+                    <a href={link.href.startsWith('/') ? L(link.href) : link.href} class="hover:text-[var(--color-primary)] transition-colors">{link.label}</a>
+                  </li>
+                ))}
+              </ul>
+            );
+          }
+
+          if (block.t === 'downloads') {
+            return (
+              <div class="space-y-4">
+                {block.items.map(item => (
+                  <div class="glass-card rounded-xl p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div>
+                      <h3 class="font-bold text-lg">{item.title}</h3>
+                      <p class="text-sm text-[var(--color-text-muted)]">{item.meta}</p>
+                      <p class="text-sm text-[var(--color-text-secondary)] mt-1">{item.text}</p>
+                    </div>
+                    <a href={APK_URLS[item.variant]} class="btn-primary whitespace-nowrap">{item.button}</a>
+                  </div>
+                ))}
+              </div>
+            );
+          }
+
+          return (
+            <div class="glass-card rounded-xl p-5">
+              <h3 class="font-semibold mb-3">{block.title}</h3>
+              <ul class="space-y-2 text-sm">
+                {block.items.map(item => (
+                  <li class="flex items-start gap-2">
+                    <span class="text-[var(--color-primary)] font-bold">{item.label}</span>
+                    <span>{item.text}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </section>
+    ))}
+
+    <FAQSection faqs={doc.faqs} title={t(tr, 'home.faqTitle')} />
+
+    <section class="mt-12 glass-card rounded-xl p-6">
+      <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+        <strong class="text-[var(--color-text-secondary)]">{doc.disclaimerLabel}</strong>{' '}
+        <RichText text={doc.disclaimer} lang={lang} />{' '}
+        <a href={`mailto:${CONTACT_EMAIL}`} class="text-[var(--color-primary)] hover:underline">{CONTACT_EMAIL}</a>.
+      </p>
+    </section>
+  </div>
+</main>
+
+<Footer />

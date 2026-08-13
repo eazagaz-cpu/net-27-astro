@@ -1,0 +1,52 @@
+---
+/**
+ * RichText.astro — renders the tiny inline markup used by the localized help
+ * content: `**bold**` for emphasis and `[label](href)` for links.
+ *
+ * Tokens become real elements rather than raw HTML, so a translated string can
+ * never inject markup. Internal hrefs are run through the locale prefixer;
+ * absolute and mailto links are left alone.
+ */
+import { getLocalizedPath } from '../../i18n/utils';
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  text: string;
+  lang: Lang;
+}
+
+const { text, lang } = Astro.props;
+
+type Token =
+  | { t: 'text'; value: string }
+  | { t: 'bold'; value: string }
+  | { t: 'link'; label: string; href: string };
+
+/** Matches a bold run or a link, whichever comes first. */
+const PATTERN = /\*\*([^*]+)\*\*|\[([^\]]+)\]\(([^)]+)\)/g;
+
+function tokenize(input: string): Token[] {
+  const tokens: Token[] = [];
+  let at = 0;
+  for (const m of input.matchAll(PATTERN)) {
+    if (m.index! > at) tokens.push({ t: 'text', value: input.slice(at, m.index) });
+    if (m[1] !== undefined) tokens.push({ t: 'bold', value: m[1] });
+    else tokens.push({ t: 'link', label: m[2], href: m[3] });
+    at = m.index! + m[0].length;
+  }
+  if (at < input.length) tokens.push({ t: 'text', value: input.slice(at) });
+  return tokens;
+}
+
+/** Only site-relative paths get a locale prefix. */
+const resolve = (href: string) =>
+  href.startsWith('/') ? getLocalizedPath(href, lang) : href;
+
+const tokens = tokenize(text);
+---
+
+{tokens.map(token => {
+  if (token.t === 'text') return token.value;
+  if (token.t === 'bold') return <strong class="text-[var(--color-text-primary)]">{token.value}</strong>;
+  return <a href={resolve(token.href)} class="text-[var(--color-primary)] hover:underline">{token.label}</a>;
+})}

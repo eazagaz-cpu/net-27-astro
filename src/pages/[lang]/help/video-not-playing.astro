@@ -1,0 +1,22 @@
+---
+/**
+ * Localized help/video-not-playing pages, one per non-default routed locale. English keeps its
+ * existing unprefixed URL.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import HelpPage from '../../../components/pages/HelpPage.astro';
+import { ROUTED_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+
+export const getStaticPaths = (() => {
+  return ROUTED_LANGS
+    .filter(code => code !== DEFAULT_LANG)
+    .map(lang => ({ params: { lang }, props: { lang } }));
+}) satisfies GetStaticPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+---
+
+<BaseLayout>
+  <HelpPage doc="videoNotPlaying" lang={lang} />
+</BaseLayout>
