@@ -45,6 +45,30 @@ permissions that matter — the token that broke deploys did exactly that — wh
 is why `cf:check` calls the real Pages endpoint instead of trusting a status
 field.
 
+### A `_headers` change needs a cache purge
+
+Editing [public/_headers](public/_headers) alone does **not** reach visitors on
+`net-27.cc`, even after the deploy reports success. If a page's HTML body has not
+changed, its ETag has not changed either, so the edge revalidates, gets a 304,
+and keeps serving the response it already had — old headers included. The fix is
+live at origin the whole time: `net-27-astro.pages.dev` shows the new header
+while `net-27.cc` shows the old one.
+
+How to tell: `curl -sI https://net-27.cc/movies/` and look at `cf-cache-status`.
+`REVALIDATED` means you are seeing cached headers; `MISS`, `EXPIRED` or
+`DYNAMIC` means you are seeing current ones. Appending a unique query string
+(`?cb=123`) forces a `MISS` and reveals what the origin is really sending.
+
+Purging needs *Zone · Cache Purge*, which the project login does not have — the
+API answers `Authentication error [10000]`. So it is a dashboard step:
+**net-27.cc → Caching → Configuration → Purge Everything**.
+
+This bit once, on the CSP fix that unblocked the ProfitON popunder: the ad tag
+was correct, the vendor answered 200, the policy was fixed and deployed, and the
+home page still blocked the script for as long as its cached headers survived.
+`npm run validate:csp` catches the policy mistake at build time; only a purge
+gets the corrected policy to visitors.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build
