@@ -36,7 +36,12 @@
     "latest": "Novita",
     "blog": "Blog",
     "search": "Cerca",
-    "signIn": "Accedi"
+    "signIn": "Accedi",
+    "latestReleases": "Ultime uscite",
+    "downloadApp": "Scarica l'app",
+    "about": "Chi siamo",
+    "contact": "Contatti",
+    "sitemap": "Mappa del sito"
   },
   "footer": {
     "quickLinks": "Link rapidi",
@@ -305,5 +310,26 @@
     "trendingIntro": "I titoli più visti della settimana, aggiornati ogni giorno.",
     "latestH1": "Ultime uscite",
     "latestIntro": "I film e le serie più recenti, aggiornati ogni giorno."
+  },
+  "pages": {
+    "searchH1": "Cerca",
+    "searchLead": "Trova film, serie TV e anime su tutte le piattaforme di streaming.",
+    "popularGenres": "Generi popolari",
+    "watchlistClearAll": "Cancella tutto",
+    "watchlistEmpty": "La tua lista è vuota",
+    "watchlistEmptyHint": "Tocca ♥ su un film o una serie per salvarlo qui",
+    "watchlistBrowse": "Sfoglia i contenuti",
+    "watchlistDescription": "I tuoi film e serie TV salvati su NetMirror.",
+    "sitemapH1": "Mappa del sito",
+    "sitemapLead": "Sfoglia tutte le pagine di {site} — film, serie TV, anime, download dell'app, guide di aiuto, piattaforme di streaming, generi, articoli del blog e informazioni legali.",
+    "sitemapMain": "Directory principali",
+    "sitemapTitles": "Directory dei titoli",
+    "sitemapTitlesHint": "Ogni pagina di film e serie generata è collegata in gruppi scansionabili da 30.",
+    "sitemapDisclaimer": "{site} non ospita, archivia né distribuisce alcun contenuto multimediale. Tutte le informazioni sono solo per finalità di scoperta. Tutti i marchi appartengono ai rispettivi proprietari.",
+    "sitemapMovieDir": "Directory dei film",
+    "sitemapShowDir": "Directory delle serie TV",
+    "sitemapPage": "{label} — pagina {n}",
+    "sitemapTitle": "Mappa del sito",
+    "sitemapDescription": "Sfoglia tutte le pagine importanti di {site}, incluse film, serie TV, anime, pagine di download dell'app, guide di aiuto, pagine delle piattaforme, pagine dei generi, articoli del blog, pagine legali e versioni linguistiche."
   }
 }

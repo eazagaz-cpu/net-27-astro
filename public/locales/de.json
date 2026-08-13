@@ -36,7 +36,12 @@
     "latest": "Neuheiten",
     "blog": "Blog",
     "search": "Suche",
-    "signIn": "Anmelden"
+    "signIn": "Anmelden",
+    "latestReleases": "Neuerscheinungen",
+    "downloadApp": "App herunterladen",
+    "about": "Über uns",
+    "contact": "Kontakt",
+    "sitemap": "Sitemap"
   },
   "footer": {
     "quickLinks": "Schnellzugriff",
@@ -305,5 +310,26 @@
     "trendingIntro": "Die meistgesehenen Titel dieser Woche, täglich aktualisiert.",
     "latestH1": "Neue Veröffentlichungen",
     "latestIntro": "Die neuesten Filme und Serien, täglich aktualisiert."
+  },
+  "pages": {
+    "searchH1": "Suche",
+    "searchLead": "Finde Filme, Serien und Anime auf allen Streaming-Plattformen.",
+    "popularGenres": "Beliebte Genres",
+    "watchlistClearAll": "Alle löschen",
+    "watchlistEmpty": "Deine Merkliste ist leer",
+    "watchlistEmptyHint": "Tippe bei einem Film oder einer Serie auf ♥, um sie hier zu speichern",
+    "watchlistBrowse": "Inhalte durchsuchen",
+    "watchlistDescription": "Deine gespeicherten Filme und Serien auf NetMirror.",
+    "sitemapH1": "Sitemap",
+    "sitemapLead": "Durchsuche alle Seiten von {site} — Filme, Serien, Anime, App-Downloads, Hilfe-Anleitungen, Streaming-Plattformen, Genres, Blogartikel und rechtliche Informationen.",
+    "sitemapMain": "Hauptverzeichnisse",
+    "sitemapTitles": "Titelverzeichnisse",
+    "sitemapTitlesHint": "Jede erzeugte Film- und Serienseite ist in crawlbaren Gruppen von 30 verlinkt.",
+    "sitemapDisclaimer": "{site} hostet, speichert und verbreitet keine Medieninhalte. Alle Informationen dienen nur der Entdeckung. Alle Marken gehören ihren jeweiligen Eigentümern.",
+    "sitemapMovieDir": "Filmverzeichnis",
+    "sitemapShowDir": "Serienverzeichnis",
+    "sitemapPage": "{label} — Seite {n}",
+    "sitemapTitle": "Sitemap",
+    "sitemapDescription": "Durchsuche alle wichtigen Seiten von {site}, einschließlich Filme, Serien, Anime, App-Download-Seiten, Hilfe-Anleitungen, Plattformseiten, Genreseiten, Blogartikel, rechtliche Seiten und Sprachversionen."
   }
 }

@@ -36,7 +36,12 @@
     "latest": "最新",
     "blog": "ブログ",
     "search": "検索",
-    "signIn": "ログイン"
+    "signIn": "ログイン",
+    "latestReleases": "最新作",
+    "downloadApp": "アプリをダウンロード",
+    "about": "運営情報",
+    "contact": "お問い合わせ",
+    "sitemap": "サイトマップ"
   },
   "footer": {
     "quickLinks": "クイックリンク",
@@ -305,5 +310,26 @@
     "trendingIntro": "今週最も見られている作品。毎日更新。",
     "latestH1": "最新作",
     "latestIntro": "公開・配信されたばかりの映画とシリーズ。毎日更新。"
+  },
+  "pages": {
+    "searchH1": "検索",
+    "searchLead": "すべての配信プラットフォームから映画・TV番組・アニメを探せます。",
+    "popularGenres": "人気のジャンル",
+    "watchlistClearAll": "すべて削除",
+    "watchlistEmpty": "ウォッチリストは空です",
+    "watchlistEmptyHint": "映画や番組の ♥ をタップすると、ここに保存されます",
+    "watchlistBrowse": "コンテンツを見る",
+    "watchlistDescription": "NetMirror に保存した映画とTV番組。",
+    "sitemapH1": "サイトマップ",
+    "sitemapLead": "{site} のすべてのページを閲覧できます — 映画、TV番組、アニメ、アプリのダウンロード、ヘルプガイド、配信プラットフォーム、ジャンル、ブログ記事、法的情報。",
+    "sitemapMain": "主なディレクトリ",
+    "sitemapTitles": "タイトル一覧",
+    "sitemapTitlesHint": "生成されたすべての映画・TVページは、クロール可能な30件ずつのまとまりでリンクされています。",
+    "sitemapDisclaimer": "{site} はメディアコンテンツをホスト・保存・配布しません。すべての情報は作品を見つけるためのものです。すべての商標は各権利者に帰属します。",
+    "sitemapMovieDir": "映画ディレクトリ",
+    "sitemapShowDir": "TV番組ディレクトリ",
+    "sitemapPage": "{label} — ページ {n}",
+    "sitemapTitle": "サイトマップ",
+    "sitemapDescription": "映画、TV番組、アニメ、アプリのダウンロードページ、ヘルプガイド、プラットフォームページ、ジャンルページ、ブログ記事、法的ページ、各言語版を含む {site} の主要なページをすべて閲覧できます。"
   }
 }

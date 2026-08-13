@@ -36,7 +36,12 @@
     "latest": "Senaste",
     "blog": "Blogg",
     "search": "Sök",
-    "signIn": "Logga in"
+    "signIn": "Logga in",
+    "latestReleases": "Senaste släppen",
+    "downloadApp": "Ladda ner appen",
+    "about": "Om oss",
+    "contact": "Kontakt",
+    "sitemap": "Webbplatskarta"
   },
   "footer": {
     "quickLinks": "Snabblänkar",
@@ -305,5 +310,26 @@
     "trendingIntro": "De mest sedda titlarna denna vecka, uppdateras dagligen.",
     "latestH1": "Senaste släppen",
     "latestIntro": "De nyaste filmerna och serierna, uppdateras dagligen."
+  },
+  "pages": {
+    "searchH1": "Sök",
+    "searchLead": "Hitta filmer, tv-serier och anime på alla streamingplattformar.",
+    "popularGenres": "Populära genrer",
+    "watchlistClearAll": "Rensa allt",
+    "watchlistEmpty": "Din bevakningslista är tom",
+    "watchlistEmptyHint": "Tryck på ♥ på en film eller serie för att spara den här",
+    "watchlistBrowse": "Utforska innehåll",
+    "watchlistDescription": "Dina sparade filmer och tv-serier på NetMirror.",
+    "sitemapH1": "Webbplatskarta",
+    "sitemapLead": "Utforska alla sidor på {site} — filmer, tv-serier, anime, appnedladdningar, hjälpguider, streamingplattformar, genrer, blogginlägg och juridisk information.",
+    "sitemapMain": "Huvudkataloger",
+    "sitemapTitles": "Titelkataloger",
+    "sitemapTitlesHint": "Varje genererad film- och tv-sida länkas i genomsökningsbara grupper om 30.",
+    "sitemapDisclaimer": "{site} lagrar, sparar eller distribuerar inget medieinnehåll. All information är enbart för att hitta titlar. Alla varumärken tillhör sina respektive ägare.",
+    "sitemapMovieDir": "Filmkatalog",
+    "sitemapShowDir": "Tv-seriekatalog",
+    "sitemapPage": "{label} — sida {n}",
+    "sitemapTitle": "Webbplatskarta",
+    "sitemapDescription": "Utforska alla viktiga sidor på {site}, inklusive filmer, tv-serier, anime, sidor för appnedladdning, hjälpguider, plattformssidor, genresidor, blogginlägg, juridiska sidor och språkversioner."
   }
 }

@@ -36,7 +36,12 @@
     "latest": "Lancamentos",
     "blog": "Blog",
     "search": "Buscar",
-    "signIn": "Entrar"
+    "signIn": "Entrar",
+    "latestReleases": "Últimos lançamentos",
+    "downloadApp": "Baixar o app",
+    "about": "Sobre",
+    "contact": "Contato",
+    "sitemap": "Mapa do site"
   },
   "footer": {
     "quickLinks": "Links rapidos",
@@ -305,5 +310,26 @@
     "trendingIntro": "Os títulos mais assistidos da semana, atualizados diariamente.",
     "latestH1": "Últimos lançamentos",
     "latestIntro": "Os filmes e séries mais recentes, atualizados diariamente."
+  },
+  "pages": {
+    "searchH1": "Buscar",
+    "searchLead": "Encontre filmes, séries e animes em todas as plataformas de streaming.",
+    "popularGenres": "Gêneros populares",
+    "watchlistClearAll": "Limpar tudo",
+    "watchlistEmpty": "Sua lista está vazia",
+    "watchlistEmptyHint": "Toque em ♥ em qualquer filme ou série para salvá-lo aqui",
+    "watchlistBrowse": "Explorar conteúdo",
+    "watchlistDescription": "Seus filmes e séries salvos no NetMirror.",
+    "sitemapH1": "Mapa do site",
+    "sitemapLead": "Explore todas as páginas do {site} — filmes, séries, animes, downloads do app, guias de ajuda, plataformas de streaming, gêneros, artigos do blog e informações legais.",
+    "sitemapMain": "Diretórios principais",
+    "sitemapTitles": "Diretórios de títulos",
+    "sitemapTitlesHint": "Cada página de filme e série gerada está vinculada em lotes rastreáveis de 30.",
+    "sitemapDisclaimer": "O {site} não hospeda, armazena nem distribui qualquer conteúdo de mídia. Todas as informações são apenas para fins de descoberta. Todas as marcas pertencem aos seus respectivos proprietários.",
+    "sitemapMovieDir": "Diretório de filmes",
+    "sitemapShowDir": "Diretório de séries",
+    "sitemapPage": "{label} — página {n}",
+    "sitemapTitle": "Mapa do site",
+    "sitemapDescription": "Explore todas as páginas importantes do {site}, incluindo filmes, séries, animes, páginas de download do app, guias de ajuda, páginas de plataformas, páginas de gêneros, artigos do blog, páginas legais e versões por idioma."
   }
 }

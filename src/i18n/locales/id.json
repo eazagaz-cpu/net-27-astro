@@ -36,7 +36,12 @@
     "latest": "Terbaru",
     "blog": "Blog",
     "search": "Cari",
-    "signIn": "Masuk"
+    "signIn": "Masuk",
+    "latestReleases": "Rilis Terbaru",
+    "downloadApp": "Unduh Aplikasi",
+    "about": "Tentang",
+    "contact": "Kontak",
+    "sitemap": "Peta Situs"
   },
   "footer": {
     "quickLinks": "Tautan cepat",
@@ -305,5 +310,26 @@
     "trendingIntro": "Judul yang paling banyak ditonton pekan ini, diperbarui setiap hari.",
     "latestH1": "Rilis terbaru",
     "latestIntro": "Film dan serial terbaru, diperbarui setiap hari."
+  },
+  "pages": {
+    "searchH1": "Cari",
+    "searchLead": "Temukan film, acara TV, dan anime di semua platform streaming.",
+    "popularGenres": "Genre Populer",
+    "watchlistClearAll": "Hapus Semua",
+    "watchlistEmpty": "Daftar tontonan Anda kosong",
+    "watchlistEmptyHint": "Ketuk ♥ pada film atau acara mana pun untuk menyimpannya di sini",
+    "watchlistBrowse": "Jelajahi Konten",
+    "watchlistDescription": "Film dan acara TV yang Anda simpan di NetMirror.",
+    "sitemapH1": "Peta Situs",
+    "sitemapLead": "Jelajahi semua halaman {site} — film, acara TV, anime, unduhan aplikasi, panduan bantuan, platform streaming, genre, artikel blog, dan informasi hukum.",
+    "sitemapMain": "Direktori utama",
+    "sitemapTitles": "Direktori judul",
+    "sitemapTitlesHint": "Setiap halaman film dan TV yang dihasilkan ditautkan dalam kelompok 30 yang dapat dirayapi.",
+    "sitemapDisclaimer": "{site} tidak meng-host, menyimpan, atau mendistribusikan konten media apa pun. Semua informasi hanya untuk tujuan penemuan. Semua merek dagang milik pemiliknya masing-masing.",
+    "sitemapMovieDir": "Direktori film",
+    "sitemapShowDir": "Direktori acara TV",
+    "sitemapPage": "{label} — halaman {n}",
+    "sitemapTitle": "Peta Situs",
+    "sitemapDescription": "Jelajahi semua halaman penting {site}, termasuk film, acara TV, anime, halaman unduhan aplikasi, panduan bantuan, halaman platform, halaman genre, artikel blog, halaman hukum, dan versi bahasa."
   }
 }

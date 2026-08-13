@@ -36,7 +36,12 @@
     "latest": "Nouveautes",
     "blog": "Blog",
     "search": "Rechercher",
-    "signIn": "Se connecter"
+    "signIn": "Se connecter",
+    "latestReleases": "Dernières sorties",
+    "downloadApp": "Télécharger l'app",
+    "about": "À propos",
+    "contact": "Contact",
+    "sitemap": "Plan du site"
   },
   "footer": {
     "quickLinks": "Liens rapides",
@@ -305,5 +310,26 @@
     "trendingIntro": "Les titres les plus regardés cette semaine, actualisés chaque jour.",
     "latestH1": "Dernières sorties",
     "latestIntro": "Les films et séries les plus récents, actualisés chaque jour."
+  },
+  "pages": {
+    "searchH1": "Recherche",
+    "searchLead": "Trouvez films, séries et animes sur toutes les plateformes de streaming.",
+    "popularGenres": "Genres populaires",
+    "watchlistClearAll": "Tout effacer",
+    "watchlistEmpty": "Votre liste est vide",
+    "watchlistEmptyHint": "Appuyez sur ♥ sur un film ou une série pour l'enregistrer ici",
+    "watchlistBrowse": "Parcourir le catalogue",
+    "watchlistDescription": "Vos films et séries enregistrés sur NetMirror.",
+    "sitemapH1": "Plan du site",
+    "sitemapLead": "Parcourez toutes les pages de {site} — films, séries, animes, téléchargements de l'application, guides d'aide, plateformes de streaming, genres, articles du blog et informations légales.",
+    "sitemapMain": "Répertoires principaux",
+    "sitemapTitles": "Répertoires de titres",
+    "sitemapTitlesHint": "Chaque page de film et de série générée est liée par lots explorables de 30.",
+    "sitemapDisclaimer": "{site} n'héberge, ne stocke ni ne distribue aucun contenu multimédia. Toutes les informations servent uniquement à la découverte. Toutes les marques appartiennent à leurs propriétaires respectifs.",
+    "sitemapMovieDir": "Répertoire des films",
+    "sitemapShowDir": "Répertoire des séries",
+    "sitemapPage": "{label} — page {n}",
+    "sitemapTitle": "Plan du site",
+    "sitemapDescription": "Parcourez toutes les pages importantes de {site}, y compris les films, séries, animes, pages de téléchargement de l'application, guides d'aide, pages de plateformes, pages de genres, articles du blog, pages légales et versions linguistiques."
   }
 }

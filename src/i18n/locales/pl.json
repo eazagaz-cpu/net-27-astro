@@ -36,7 +36,12 @@
     "latest": "Nowości",
     "blog": "Blog",
     "search": "Szukaj",
-    "signIn": "Zaloguj się"
+    "signIn": "Zaloguj się",
+    "latestReleases": "Najnowsze premiery",
+    "downloadApp": "Pobierz aplikację",
+    "about": "O nas",
+    "contact": "Kontakt",
+    "sitemap": "Mapa strony"
   },
   "footer": {
     "quickLinks": "Szybkie linki",
@@ -305,5 +310,26 @@
     "trendingIntro": "Najczęściej oglądane tytuły tego tygodnia, aktualizowane codziennie.",
     "latestH1": "Najnowsze premiery",
     "latestIntro": "Najnowsze filmy i seriale, aktualizowane codziennie."
+  },
+  "pages": {
+    "searchH1": "Szukaj",
+    "searchLead": "Znajdź filmy, seriale i anime na wszystkich platformach streamingowych.",
+    "popularGenres": "Popularne gatunki",
+    "watchlistClearAll": "Wyczyść wszystko",
+    "watchlistEmpty": "Twoja lista jest pusta",
+    "watchlistEmptyHint": "Kliknij ♥ przy dowolnym filmie lub serialu, aby zapisać go tutaj",
+    "watchlistBrowse": "Przeglądaj katalog",
+    "watchlistDescription": "Twoje zapisane filmy i seriale w NetMirror.",
+    "sitemapH1": "Mapa strony",
+    "sitemapLead": "Przeglądaj wszystkie strony {site} — filmy, seriale, anime, pobieranie aplikacji, poradniki pomocy, platformy streamingowe, gatunki, artykuły z bloga i informacje prawne.",
+    "sitemapMain": "Główne katalogi",
+    "sitemapTitles": "Katalogi tytułów",
+    "sitemapTitlesHint": "Każda wygenerowana strona filmu i serialu jest linkowana w indeksowalnych partiach po 30.",
+    "sitemapDisclaimer": "{site} nie hostuje, nie przechowuje ani nie rozpowszechnia żadnych treści multimedialnych. Wszystkie informacje służą wyłącznie do wyszukiwania. Wszystkie znaki towarowe należą do ich właścicieli.",
+    "sitemapMovieDir": "Katalog filmów",
+    "sitemapShowDir": "Katalog seriali",
+    "sitemapPage": "{label} — strona {n}",
+    "sitemapTitle": "Mapa strony",
+    "sitemapDescription": "Przeglądaj wszystkie ważne strony {site}, w tym filmy, seriale, anime, strony pobierania aplikacji, poradniki pomocy, strony platform, strony gatunków, artykuły z bloga, strony prawne i wersje językowe."
   }
 }

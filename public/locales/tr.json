@@ -36,7 +36,12 @@
     "latest": "En yeni",
     "blog": "Blog",
     "search": "Ara",
-    "signIn": "Giriş yap"
+    "signIn": "Giriş yap",
+    "latestReleases": "En Yeni Çıkanlar",
+    "downloadApp": "Uygulamayı İndir",
+    "about": "Hakkımızda",
+    "contact": "İletişim",
+    "sitemap": "Site Haritası"
   },
   "footer": {
     "quickLinks": "Hızlı bağlantılar",
@@ -305,5 +310,26 @@
     "trendingIntro": "Bu hafta en çok izlenen yapımlar, her gün güncellenir.",
     "latestH1": "Son çıkanlar",
     "latestIntro": "En yeni film ve diziler, her gün güncellenir."
+  },
+  "pages": {
+    "searchH1": "Ara",
+    "searchLead": "Tüm yayın platformlarında film, dizi ve anime bulun.",
+    "popularGenres": "Popüler Türler",
+    "watchlistClearAll": "Tümünü Temizle",
+    "watchlistEmpty": "İzleme listeniz boş",
+    "watchlistEmptyHint": "Herhangi bir film veya dizide ♥ simgesine dokunun, burada saklanır",
+    "watchlistBrowse": "İçeriğe Göz At",
+    "watchlistDescription": "NetMirror'da kaydettiğiniz film ve diziler.",
+    "sitemapH1": "Site Haritası",
+    "sitemapLead": "{site} sitesindeki tüm sayfalara göz atın — filmler, diziler, anime, uygulama indirmeleri, yardım kılavuzları, yayın platformları, türler, blog yazıları ve yasal bilgiler.",
+    "sitemapMain": "Ana dizinler",
+    "sitemapTitles": "Başlık dizinleri",
+    "sitemapTitlesHint": "Oluşturulan her film ve dizi sayfası, taranabilir 30'luk gruplar hâlinde bağlanır.",
+    "sitemapDisclaimer": "{site} hiçbir medya içeriğini barındırmaz, saklamaz veya dağıtmaz. Tüm bilgiler yalnızca keşif amaçlıdır. Tüm ticari markalar ilgili sahiplerine aittir.",
+    "sitemapMovieDir": "Film dizini",
+    "sitemapShowDir": "Dizi dizini",
+    "sitemapPage": "{label} — sayfa {n}",
+    "sitemapTitle": "Site Haritası",
+    "sitemapDescription": "Filmler, diziler, anime, uygulama indirme sayfaları, yardım kılavuzları, platform sayfaları, tür sayfaları, blog yazıları, yasal sayfalar ve dil sürümleri dâhil {site} sitesindeki tüm önemli sayfalara göz atın."
   }
 }

@@ -36,7 +36,12 @@
     "latest": "Latest",
     "blog": "Blog",
     "search": "Search",
-    "signIn": "Sign In"
+    "signIn": "Sign In",
+    "latestReleases": "Latest Releases",
+    "downloadApp": "Download App",
+    "about": "About",
+    "contact": "Contact",
+    "sitemap": "Sitemap"
   },
   "footer": {
     "quickLinks": "Quick Links",
@@ -305,5 +310,26 @@
     "trendingIntro": "The titles people are watching most this week, refreshed daily.",
     "latestH1": "Latest Releases",
     "latestIntro": "The newest films and series to arrive, refreshed daily."
+  },
+  "pages": {
+    "searchH1": "Search",
+    "searchLead": "Find movies, TV shows, and anime across all streaming platforms.",
+    "popularGenres": "Popular Genres",
+    "watchlistClearAll": "Clear All",
+    "watchlistEmpty": "Your watchlist is empty",
+    "watchlistEmptyHint": "Click the ♥ on any movie or show to save it here",
+    "watchlistBrowse": "Browse Content",
+    "watchlistDescription": "Your saved movies and TV shows on NetMirror.",
+    "sitemapH1": "Sitemap",
+    "sitemapLead": "Browse all {site} pages — movies, TV shows, anime, app downloads, help guides, streaming platforms, genres, blog articles, and legal information.",
+    "sitemapMain": "Main directories",
+    "sitemapTitles": "Title directories",
+    "sitemapTitlesHint": "Every generated movie and TV page is linked in crawlable batches of 30.",
+    "sitemapDisclaimer": "{site} does not host, store, or distribute any media content. All information is for discovery purposes only. All trademarks belong to their respective owners.",
+    "sitemapMovieDir": "Movie directory",
+    "sitemapShowDir": "TV show directory",
+    "sitemapPage": "{label} — page {n}",
+    "sitemapTitle": "Sitemap",
+    "sitemapDescription": "Browse all important {site} pages, including movies, TV shows, anime, app download pages, help guides, platform pages, genre pages, blog articles, legal pages, and language versions."
   }
 }

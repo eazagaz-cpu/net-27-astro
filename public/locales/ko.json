@@ -36,7 +36,12 @@
     "latest": "최신",
     "blog": "블로그",
     "search": "검색",
-    "signIn": "로그인"
+    "signIn": "로그인",
+    "latestReleases": "최신 개봉작",
+    "downloadApp": "앱 다운로드",
+    "about": "소개",
+    "contact": "문의",
+    "sitemap": "사이트맵"
   },
   "footer": {
     "quickLinks": "바로가기",
@@ -305,5 +310,26 @@
     "trendingIntro": "이번 주 가장 많이 시청된 작품. 매일 갱신됩니다.",
     "latestH1": "최신 개봉작",
     "latestIntro": "가장 최근에 공개된 영화와 시리즈. 매일 갱신됩니다."
+  },
+  "pages": {
+    "searchH1": "검색",
+    "searchLead": "모든 스트리밍 플랫폼에서 영화, TV 프로그램, 애니메이션을 찾아보세요.",
+    "popularGenres": "인기 장르",
+    "watchlistClearAll": "전체 삭제",
+    "watchlistEmpty": "보관함이 비어 있습니다",
+    "watchlistEmptyHint": "영화나 프로그램의 ♥ 를 누르면 여기에 저장됩니다",
+    "watchlistBrowse": "콘텐츠 둘러보기",
+    "watchlistDescription": "NetMirror에 저장한 영화와 TV 프로그램입니다.",
+    "sitemapH1": "사이트맵",
+    "sitemapLead": "{site}의 모든 페이지를 둘러보세요 — 영화, TV 프로그램, 애니메이션, 앱 다운로드, 도움말 가이드, 스트리밍 플랫폼, 장르, 블로그 글, 법적 정보.",
+    "sitemapMain": "주요 디렉터리",
+    "sitemapTitles": "타이틀 디렉터리",
+    "sitemapTitlesHint": "생성된 모든 영화 및 TV 페이지는 크롤링 가능한 30개 묶음으로 연결되어 있습니다.",
+    "sitemapDisclaimer": "{site}는 어떠한 미디어 콘텐츠도 호스팅, 저장, 배포하지 않습니다. 모든 정보는 작품을 찾기 위한 용도입니다. 모든 상표는 각 소유자의 재산입니다.",
+    "sitemapMovieDir": "영화 디렉터리",
+    "sitemapShowDir": "TV 프로그램 디렉터리",
+    "sitemapPage": "{label} — {n}페이지",
+    "sitemapTitle": "사이트맵",
+    "sitemapDescription": "영화, TV 프로그램, 애니메이션, 앱 다운로드 페이지, 도움말 가이드, 플랫폼 페이지, 장르 페이지, 블로그 글, 법적 페이지, 언어별 버전을 포함한 {site}의 모든 주요 페이지를 둘러보세요."
   }
 }

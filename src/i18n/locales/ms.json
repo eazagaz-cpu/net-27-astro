@@ -36,7 +36,12 @@
     "latest": "Terkini",
     "blog": "Blog",
     "search": "Cari",
-    "signIn": "Log masuk"
+    "signIn": "Log masuk",
+    "latestReleases": "Keluaran Terkini",
+    "downloadApp": "Muat Turun Apl",
+    "about": "Tentang",
+    "contact": "Hubungi",
+    "sitemap": "Peta Laman"
   },
   "footer": {
     "quickLinks": "Pautan pantas",
@@ -305,5 +310,26 @@
     "trendingIntro": "Judul paling banyak ditonton minggu ini, dikemas kini setiap hari.",
     "latestH1": "Keluaran terbaru",
     "latestIntro": "Filem dan siri terbaharu, dikemas kini setiap hari."
+  },
+  "pages": {
+    "searchH1": "Cari",
+    "searchLead": "Cari filem, rancangan TV dan anime merentas semua platform penstriman.",
+    "popularGenres": "Genre Popular",
+    "watchlistClearAll": "Kosongkan Semua",
+    "watchlistEmpty": "Senarai tontonan anda kosong",
+    "watchlistEmptyHint": "Tekan ♥ pada mana-mana filem atau rancangan untuk menyimpannya di sini",
+    "watchlistBrowse": "Layari Kandungan",
+    "watchlistDescription": "Filem dan rancangan TV yang anda simpan di NetMirror.",
+    "sitemapH1": "Peta Laman",
+    "sitemapLead": "Layari semua halaman {site} — filem, rancangan TV, anime, muat turun apl, panduan bantuan, platform penstriman, genre, artikel blog dan maklumat undang-undang.",
+    "sitemapMain": "Direktori utama",
+    "sitemapTitles": "Direktori tajuk",
+    "sitemapTitlesHint": "Setiap halaman filem dan TV yang dihasilkan dipautkan dalam kumpulan 30 yang boleh dirangkak.",
+    "sitemapDisclaimer": "{site} tidak mengehos, menyimpan atau mengedar apa-apa kandungan media. Semua maklumat adalah untuk tujuan penemuan sahaja. Semua tanda dagangan dimiliki oleh pemilik masing-masing.",
+    "sitemapMovieDir": "Direktori filem",
+    "sitemapShowDir": "Direktori rancangan TV",
+    "sitemapPage": "{label} — halaman {n}",
+    "sitemapTitle": "Peta Laman",
+    "sitemapDescription": "Layari semua halaman penting {site}, termasuk filem, rancangan TV, anime, halaman muat turun apl, panduan bantuan, halaman platform, halaman genre, artikel blog, halaman undang-undang dan versi bahasa."
   }
 }

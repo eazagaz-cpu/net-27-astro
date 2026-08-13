@@ -21,15 +21,15 @@ import { SITE_URL } from '../lib/seo';
     <div style="max-width:100%;margin:0 auto;padding:0 clamp(16px,2vw,64px)">
       <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
         <h1 style="font-size:1.5rem;font-weight:700;color:#fff" data-t="ui.myWatchlist">My Watchlist</h1>
-        <button id="wl-clear" style="font-size:12px;color:#71717a;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px" onmouseenter="this.style.color='#ef4444'" onmouseleave="this.style.color='#71717a'">Clear All</button>
+        <button id="wl-clear" style="font-size:12px;color:#71717a;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px" onmouseenter="this.style.color='#ef4444'" onmouseleave="this.style.color='#71717a'" data-t="pages.watchlistClearAll">Clear All</button>
       </div>
 
       <!-- Empty state -->
       <div id="wl-empty" style="display:none;text-align:center;padding:5rem 1rem">
         <svg xmlns="http://www.w3.org/2000/svg" width="56" height="56" fill="none" viewBox="0 0 24 24" stroke="#3f3f46" stroke-width="1.5" style="margin:0 auto 1.5rem"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-        <p style="color:#a1a1aa;font-size:1rem;margin-bottom:0.5rem">Your watchlist is empty</p>
-        <p style="color:#52525b;font-size:0.85rem;margin-bottom:1.5rem">Click the ♥ on any movie or show to save it here</p>
-        <a href="/" style="display:inline-block;padding:0.6rem 1.5rem;background:var(--color-primary);color:#fff;border-radius:8px;text-decoration:none;font-size:0.875rem;font-weight:600">Browse Content</a>
+        <p style="color:#a1a1aa;font-size:1rem;margin-bottom:0.5rem" data-t="pages.watchlistEmpty">Your watchlist is empty</p>
+        <p style="color:#52525b;font-size:0.85rem;margin-bottom:1.5rem" data-t="pages.watchlistEmptyHint">Click the ♥ on any movie or show to save it here</p>
+        <a href="/" style="display:inline-block;padding:0.6rem 1.5rem;background:var(--color-primary);color:#fff;border-radius:8px;text-decoration:none;font-size:0.875rem;font-weight:600" data-t="pages.watchlistBrowse">Browse Content</a>
       </div>
 
       <!-- Grid -->

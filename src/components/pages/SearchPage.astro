@@ -1,0 +1,71 @@
+---
+/**
+ * SearchPage.astro — the search page in any locale.
+ *
+ * SearchBox is a client island and localises itself from the runtime bundle;
+ * the surrounding chrome comes from the locale JSON.
+ */
+import Header from '../Header.astro';
+import Footer from '../Footer.astro';
+import SEOHead from '../SEOHead.astro';
+import Schema from '../Schema.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import SearchBox from '../SearchBox.tsx';
+import { breadcrumbSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { genres } from '../../data/sampleTitles';
+import { loadTranslations, t } from '../../i18n';
+import { getLocalizedPath } from '../../i18n/utils';
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const tr = await loadTranslations(lang);
+const L = (path: string) => getLocalizedPath(path, lang);
+
+const canonical = `${SITE_URL}${L('/search/')}`;
+const breadcrumbs = [
+  { label: t(tr, 'nav.home'), href: L('/') },
+  { label: t(tr, 'nav.search'), href: L('/search/') },
+];
+---
+
+<SEOHead
+  slot="head"
+  title={t(tr, 'seo.searchTitle')}
+  description={t(tr, 'pages.searchLead')}
+  canonical={canonical}
+  localized={true}
+/>
+<Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+
+<Header />
+
+<main class="min-h-screen pt-36">
+  <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="mb-8">
+      <h1 class="text-3xl md:text-4xl font-bold mb-2">{t(tr, 'pages.searchH1')}</h1>
+      <p class="text-[var(--color-text-secondary)]">{t(tr, 'pages.searchLead')}</p>
+    </div>
+
+    <SearchBox client:load />
+
+    <section class="mt-16 pt-8 border-t border-[var(--color-border)]">
+      <h2 class="section-title mb-6">{t(tr, 'pages.popularGenres')}</h2>
+      <div class="flex flex-wrap gap-3">
+        {genres.map(genre => (
+          <a href={L(`/genre/${genre.slug}/`)} class="chip">
+            {genre.name}
+          </a>
+        ))}
+      </div>
+    </section>
+  </div>
+</main>
+
+<Footer />

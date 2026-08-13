@@ -1,0 +1,126 @@
+---
+/**
+ * SitemapPage.astro — the human-readable sitemap in any locale.
+ *
+ * The paged title directories under /sitemap/<section>/<n>/ stay on their
+ * English URLs: they exist purely so every generated title page has a crawlable
+ * inbound link, and duplicating 30-item index pages per locale would add
+ * hundreds of near-empty pages for no benefit. Their labels are translated.
+ */
+import Header from '../Header.astro';
+import Footer from '../Footer.astro';
+import SEOHead from '../SEOHead.astro';
+import Schema from '../Schema.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { SITE_NAME } from '../../lib/constants';
+import { getAllRealTitles } from '../../lib/realTitles';
+import { loadTranslations, t } from '../../i18n';
+import { getLocalizedPath } from '../../i18n/utils';
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const tr = await loadTranslations(lang);
+const L = (path: string) => getLocalizedPath(path, lang);
+
+const allTitles = getAllRealTitles();
+const movieTitles = allTitles.filter(title => title.type === 'movie');
+const showTitles = allTitles.filter(title => title.type === 'show');
+const archivePageSize = 30;
+const archiveLinks = [
+  { label: t(tr, 'pages.sitemapMovieDir'), section: 'movies', count: movieTitles.length },
+  { label: t(tr, 'pages.sitemapShowDir'), section: 'shows', count: showTitles.length },
+].flatMap(group => Array.from(
+  { length: Math.ceil(group.count / archivePageSize) },
+  (_, index) => ({
+    label: t(tr, 'pages.sitemapPage', { label: group.label, n: index + 1 }),
+    href: `/sitemap/${group.section}/${index + 1}/`,
+  }),
+));
+
+const hubLinks = [
+  { label: t(tr, 'nav.home'), href: '/' },
+  { label: t(tr, 'nav.movies'), href: '/movies/' },
+  { label: t(tr, 'nav.tvShows'), href: '/shows/' },
+  { label: t(tr, 'nav.anime'), href: '/anime/' },
+  { label: t(tr, 'nav.trending'), href: '/trending/' },
+  { label: t(tr, 'nav.latestReleases'), href: '/latest/' },
+  { label: t(tr, 'nav.search'), href: '/search/' },
+  { label: t(tr, 'nav.blog'), href: '/blog/' },
+  { label: t(tr, 'nav.downloadApp'), href: '/app/download/' },
+  { label: t(tr, 'nav.about'), href: '/about/' },
+  { label: t(tr, 'nav.contact'), href: '/contact/' },
+];
+
+const canonical = `${SITE_URL}${L('/sitemap/')}`;
+const heading = t(tr, 'pages.sitemapH1');
+const lead = t(tr, 'pages.sitemapLead', { site: SITE_NAME });
+const description = t(tr, 'pages.sitemapDescription', { site: SITE_NAME });
+
+const breadcrumbs = [
+  { label: t(tr, 'nav.home'), href: L('/') },
+  { label: heading, href: L('/sitemap/') },
+];
+
+const sitemapSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: `${heading} | ${SITE_NAME}`,
+  description: lead,
+  url: canonical,
+  inLanguage: lang,
+};
+---
+
+<SEOHead
+  slot="head"
+  title={`${t(tr, 'pages.sitemapTitle')} — ${SITE_NAME}`}
+  description={description}
+  canonical={canonical}
+  localized={true}
+/>
+<Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), sitemapSchema]} />
+
+<Header />
+
+<main class="min-h-screen pt-36">
+  <div class="max-w-6xl mx-auto px-4 py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <h1 class="text-3xl md:text-4xl font-bold mb-3">{heading}</h1>
+    <p class="text-sm text-[var(--color-text-secondary)] mb-10 max-w-2xl">{lead}</p>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-12">
+      <section class="glass-card rounded-xl p-5">
+        <h2 class="text-lg font-bold mb-4">{t(tr, 'pages.sitemapMain')}</h2>
+        <ul class="space-y-2">
+          {hubLinks.map(link => (
+            <li><a href={L(link.href)} class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{link.label}</a></li>
+          ))}
+        </ul>
+      </section>
+      <section class="glass-card rounded-xl p-5">
+        <h2 class="text-lg font-bold mb-4">{t(tr, 'pages.sitemapTitles')}</h2>
+        <p class="text-xs text-[var(--color-text-muted)] mb-4">{t(tr, 'pages.sitemapTitlesHint')}</p>
+        <ul class="space-y-2">
+          {archiveLinks.map(link => (
+            <li><a href={link.href} class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{link.label}</a></li>
+          ))}
+        </ul>
+      </section>
+    </div>
+
+    <div class="border-t border-white/5 pt-6">
+      <p class="text-[10px] text-[var(--color-text-muted)] text-center leading-relaxed max-w-2xl mx-auto">
+        {t(tr, 'pages.sitemapDisclaimer', { site: SITE_NAME })}
+      </p>
+    </div>
+  </div>
+</main>
+
+<Footer />

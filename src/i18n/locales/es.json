@@ -36,7 +36,12 @@
     "latest": "Estrenos",
     "blog": "Blog",
     "search": "Buscar",
-    "signIn": "Iniciar Sesion"
+    "signIn": "Iniciar Sesion",
+    "latestReleases": "Últimos estrenos",
+    "downloadApp": "Descargar la app",
+    "about": "Acerca de",
+    "contact": "Contacto",
+    "sitemap": "Mapa del sitio"
   },
   "footer": {
     "quickLinks": "Enlaces Rapidos",
@@ -305,5 +310,26 @@
     "trendingIntro": "Los títulos más vistos esta semana, actualizados a diario.",
     "latestH1": "Últimos estrenos",
     "latestIntro": "Las películas y series más recientes, actualizadas a diario."
+  },
+  "pages": {
+    "searchH1": "Buscar",
+    "searchLead": "Encuentra películas, series y anime en todas las plataformas de streaming.",
+    "popularGenres": "Géneros populares",
+    "watchlistClearAll": "Borrar todo",
+    "watchlistEmpty": "Tu lista está vacía",
+    "watchlistEmptyHint": "Pulsa ♥ en cualquier película o serie para guardarla aquí",
+    "watchlistBrowse": "Explorar contenido",
+    "watchlistDescription": "Tus películas y series guardadas en NetMirror.",
+    "sitemapH1": "Mapa del sitio",
+    "sitemapLead": "Explora todas las páginas de {site}: películas, series, anime, descargas de la app, guías de ayuda, plataformas de streaming, géneros, artículos del blog e información legal.",
+    "sitemapMain": "Directorios principales",
+    "sitemapTitles": "Directorios de títulos",
+    "sitemapTitlesHint": "Cada página de película y serie generada está enlazada en lotes rastreables de 30.",
+    "sitemapDisclaimer": "{site} no aloja, almacena ni distribuye ningún contenido multimedia. Toda la información es solo para fines de descubrimiento. Todas las marcas pertenecen a sus respectivos propietarios.",
+    "sitemapMovieDir": "Directorio de películas",
+    "sitemapShowDir": "Directorio de series",
+    "sitemapPage": "{label} — página {n}",
+    "sitemapTitle": "Mapa del sitio",
+    "sitemapDescription": "Explora todas las páginas importantes de {site}, incluidas películas, series, anime, páginas de descarga de la app, guías de ayuda, páginas de plataformas, páginas de géneros, artículos del blog, páginas legales y versiones por idioma."
   }
 }
