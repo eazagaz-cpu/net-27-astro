@@ -1,0 +1,158 @@
+---
+/**
+ * ContactPage.astro — the contact page in any locale.
+ *
+ * The form posts nowhere (action="#") exactly as before; this change is
+ * translation only. Option `value` attributes stay in English so anything that
+ * ever reads the submitted subject keeps working across locales.
+ */
+import Header from '../Header.astro';
+import Footer from '../Footer.astro';
+import SEOHead from '../SEOHead.astro';
+import Schema from '../Schema.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { CONTACT_EMAIL } from '../../lib/constants';
+import { loadTranslations, t } from '../../i18n';
+import { getLocalizedPath } from '../../i18n/utils';
+import { getStaticDocs } from '../../i18n/static';
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const tr = await loadTranslations(lang);
+const L = (path: string) => getLocalizedPath(path, lang);
+
+const doc = getStaticDocs(lang).contact;
+const canonical = `${SITE_URL}${L('/contact/')}`;
+
+const breadcrumbs = [
+  { label: t(tr, 'nav.home'), href: L('/') },
+  { label: doc.breadcrumb, href: L('/contact/') },
+];
+
+const FIELD_CLASS =
+  'w-full px-4 py-3 rounded-lg bg-[var(--color-bg-card)] border border-[var(--color-border)] text-[var(--color-text-primary)] placeholder-[var(--color-text-muted)] focus:border-[var(--color-primary)] focus:outline-none focus:ring-1 focus:ring-[var(--color-primary)] transition-colors';
+
+/** Option values stay stable across locales; only the labels are translated. */
+const SUBJECTS = ['general', 'feedback', 'bug', 'content', 'dmca', 'other'] as const;
+---
+
+<SEOHead
+  slot="head"
+  title={doc.seoTitle}
+  description={doc.seoDescription}
+  canonical={canonical}
+  localized={true}
+/>
+<Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+
+<Header />
+
+<main class="min-h-screen pt-36">
+  <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 mt-4">
+      <div>
+        <h1 class="text-3xl md:text-4xl font-bold mb-4">{doc.h1}</h1>
+        <p class="text-[var(--color-text-secondary)] mb-8">{doc.lead}</p>
+
+        <form class="space-y-6" action="#" method="POST">
+          <div>
+            <label for="name" class="block text-sm font-medium mb-2">{doc.form.name}</label>
+            <input
+              type="text"
+              id="name"
+              name="name"
+              required
+              class={FIELD_CLASS}
+              placeholder={doc.form.namePlaceholder}
+            />
+          </div>
+
+          <div>
+            <label for="email" class="block text-sm font-medium mb-2">{doc.form.email}</label>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              required
+              class={FIELD_CLASS}
+              placeholder={doc.form.emailPlaceholder}
+            />
+          </div>
+
+          <div>
+            <label for="subject" class="block text-sm font-medium mb-2">{doc.form.subject}</label>
+            <select id="subject" name="subject" class={FIELD_CLASS}>
+              {SUBJECTS.map(value => (
+                <option value={value}>{doc.form.subjectOptions[value]}</option>
+              ))}
+            </select>
+          </div>
+
+          <div>
+            <label for="message" class="block text-sm font-medium mb-2">{doc.form.message}</label>
+            <textarea
+              id="message"
+              name="message"
+              rows="5"
+              required
+              class={`${FIELD_CLASS} resize-none`}
+              placeholder={doc.form.messagePlaceholder}
+            ></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary w-full justify-center">
+            {doc.form.submit}
+          </button>
+        </form>
+      </div>
+
+      <div class="space-y-8">
+        <div class="glass-card rounded-xl p-8">
+          <h2 class="text-xl font-bold mb-4">{doc.infoHeading}</h2>
+          <div class="space-y-4 text-[var(--color-text-secondary)]">
+            <div class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[var(--color-primary)] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              </svg>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">{doc.emailLabel}</p>
+                <p>{CONTACT_EMAIL}</p>
+              </div>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-[var(--color-primary)] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <div>
+                <p class="font-medium text-[var(--color-text-primary)]">{doc.responseLabel}</p>
+                <p>{doc.responseValue}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="glass-card rounded-xl p-8">
+          <h2 class="text-xl font-bold mb-4">{doc.faqHeading}</h2>
+          <div class="space-y-4">
+            {doc.faqs.map(faq => (
+              <div>
+                <h3 class="font-medium mb-1">{faq.question}</h3>
+                <p class="text-sm text-[var(--color-text-secondary)]">{faq.answer}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<Footer />

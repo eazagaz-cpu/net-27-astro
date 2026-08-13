@@ -1,0 +1,197 @@
+---
+/**
+ * LegalPage.astro — the five long-form prose pages (privacy, terms,
+ * disclaimer, DMCA, editorial) in any locale.
+ *
+ * The English routes render this too, so a localized page can never drift from
+ * its English counterpart: they are the same markup driven by the same
+ * structure, only the strings differ. Content comes from src/i18n/static.
+ *
+ * Markup deliberately mirrors what the original standalone pages emitted —
+ * same wrappers, same Tailwind classes, same margin rhythm — so the English
+ * output is unchanged.
+ */
+import Header from '../Header.astro';
+import Footer from '../Footer.astro';
+import SEOHead from '../SEOHead.astro';
+import Schema from '../Schema.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { loadTranslations, t } from '../../i18n';
+import { getLocalizedPath } from '../../i18n/utils';
+import { getStaticDocs } from '../../i18n/static';
+import type { LegalDocKey } from '../../i18n/static';
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  doc: LegalDocKey;
+  lang: Lang;
+}
+
+const { doc: docKey, lang } = Astro.props;
+const tr = await loadTranslations(lang);
+const L = (path: string) => getLocalizedPath(path, lang);
+
+const PATHS: Record<LegalDocKey, string> = {
+  privacy: '/privacy/',
+  terms: '/terms/',
+  disclaimer: '/disclaimer/',
+  dmca: '/dmca/',
+  editorial: '/editorial/',
+};
+
+const doc = getStaticDocs(lang)[docKey];
+const path = PATHS[docKey];
+const canonical = `${SITE_URL}${L(path)}`;
+
+const breadcrumbs = [
+  { label: t(tr, 'nav.home'), href: L('/') },
+  { label: doc.breadcrumb, href: L(path) },
+];
+
+/**
+ * The editorial policy carries a standfirst and no effective date, and spaces
+ * its sections a little wider. Everything else shares the one rhythm.
+ */
+const isEditorial = Boolean(doc.standfirst);
+
+/** Splits a paragraph carrying an inline link into the text either side of it. */
+function splitLink(text: string): [string, string] {
+  const at = text.indexOf('{link}');
+  if (at === -1) return [text, ''];
+  return [text.slice(0, at), text.slice(at + '{link}'.length)];
+}
+
+const pageSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebPage',
+  name: doc.h1,
+  description: doc.seoDescription,
+  url: canonical,
+  inLanguage: lang,
+};
+---
+
+<SEOHead
+  slot="head"
+  title={doc.seoTitle}
+  description={doc.seoDescription}
+  canonical={canonical}
+  localized={true}
+/>
+<Schema slot="head" schema={[pageSchema, breadcrumbSchema(breadcrumbs)]} />
+
+<Header />
+
+<main class="min-h-screen pt-36">
+  <div class="max-w-4xl mx-auto px-4 py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    {isEditorial ? (
+      <Fragment>
+        <h1 class="text-3xl md:text-4xl font-bold mb-2 mt-4">{doc.h1}</h1>
+        <p class="text-[var(--color-text-muted)] mb-8">{doc.standfirst}</p>
+      </Fragment>
+    ) : (
+      <h1 class="text-3xl md:text-4xl font-bold mb-8">{doc.h1}</h1>
+    )}
+
+    <div
+      class:list={[
+        isEditorial ? 'space-y-10' : 'space-y-8',
+        'text-[var(--color-text-secondary)] leading-relaxed',
+      ]}
+    >
+      {doc.updated && <p class="text-lg">{doc.updated}</p>}
+
+      {doc.sections.map(section => (
+        <section>
+          <h2 class="text-xl font-bold text-[var(--color-text-primary)] mb-3">{section.heading}</h2>
+          {section.blocks.map((block, i) => {
+            // The first block in a section sits flush under the heading; later
+            // ones get the same 12px gap the original pages used.
+            const gap = i === 0 ? '' : 'mt-3';
+
+            if (block.t === 'p') {
+              if (!block.link) return <p class={gap}>{block.text}</p>;
+              const [before, after] = splitLink(block.text);
+              return (
+                <p class={gap}>
+                  {before}
+                  <a href={L(block.link.href)} class="text-[var(--color-primary)] hover:underline">{block.link.anchor}</a>
+                  {after}
+                </p>
+              );
+            }
+
+            if (block.t === 'ul') {
+              return (
+                <ul class:list={['list-disc list-inside space-y-2', gap]}>
+                  {block.items.map(item => <li>{item}</li>)}
+                </ul>
+              );
+            }
+
+            if (block.t === 'ol') {
+              return (
+                <ol class:list={['list-decimal list-inside space-y-2', gap]}>
+                  {block.items.map(item => <li>{item}</li>)}
+                </ol>
+              );
+            }
+
+            if (block.t === 'dl') {
+              return (
+                <ul class:list={['list-disc list-inside space-y-2', gap]}>
+                  {block.items.map(item => (
+                    <li><strong class="text-[var(--color-text-primary)]">{item.term}</strong> {item.text}</li>
+                  ))}
+                </ul>
+              );
+            }
+
+            // A source card (rows carry a `sub` line) is roomier than a plain
+            // contact card, matching the two shapes the original pages used.
+            const isSourceCard = block.rows.some(row => row.sub);
+            return (
+              <div
+                class:list={[
+                  'glass-card p-6',
+                  isSourceCard ? 'rounded-xl mt-4 space-y-3' : 'rounded-lg mt-3',
+                ]}
+              >
+                {block.rows.map(row => {
+                  if (row.sub) {
+                    return (
+                      <div>
+                        <p class="font-medium text-[var(--color-text-primary)]">{row.label}</p>
+                        <p class="text-sm">{row.sub}</p>
+                      </div>
+                    );
+                  }
+                  if (row.label && row.value) {
+                    const href = row.href?.startsWith('mailto:') ? row.href : row.href ? L(row.href) : undefined;
+                    return (
+                      <p>
+                        {`${row.label}: `}
+                        {href
+                          ? <a href={href} class="text-[var(--color-primary)] hover:underline">{row.value}</a>
+                          : row.value}
+                      </p>
+                    );
+                  }
+                  return (
+                    <p class={row.strong ? 'font-medium text-[var(--color-text-primary)]' : undefined}>{row.text}</p>
+                  );
+                })}
+              </div>
+            );
+          })}
+        </section>
+      ))}
+    </div>
+  </div>
+</main>
+
+<Footer />
