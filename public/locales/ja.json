@@ -164,7 +164,12 @@
     "tableOfContents": "目次",
     "faqs": "よくある質問",
     "relatedArticles": "関連記事",
-    "publishedBy": "投稿者"
+    "publishedBy": "投稿者",
+    "disclaimerLabel": "免責事項:",
+    "disclaimer": "{site} はメディアコンテンツをホスト・保存・配布しません。すべての情報は作品を見つけるためのものです。配信状況は地域によって異なります。すべての商標は各権利者に帰属します。",
+    "lastUpdated": "最終更新: {date}。",
+    "indexLead": "映画、TV番組、配信プラットフォーム、NetMirror アプリに関する最新ニュース・ガイド・解説。",
+    "indexDescription": "映画、TV番組、アニメ、配信プラットフォームに関する専門記事。ダウンロード手順、トラブルシューティング、業界分析。"
   },
   "app": {
     "downloadTitle": "NetMirror APKをダウンロード",

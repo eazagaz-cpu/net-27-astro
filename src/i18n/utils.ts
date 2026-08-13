@@ -42,13 +42,28 @@ export function getLanguageName(lang: Lang): string {
   return entry.nativeName || entry.name || lang;
 }
 
-export function getAlternateLinks(path: string): { lang: string; href: string }[] {
+/**
+ * Builds the hreflang cluster for a path.
+ *
+ * Defaults to every routed locale, which is right for page families generated
+ * for all of them. Pass `available` for pages that exist in only some locales —
+ * blog articles are translated one at a time, and an hreflang pointing at a 404
+ * invalidates the whole cluster. English is always included: it is the
+ * x-default and every localized page has an English original.
+ */
+export function getAlternateLinks(
+  path: string,
+  available?: Lang[],
+): { lang: string; href: string }[] {
   const clean = stripLangFromPath(path);
+  const codes = available
+    ? ROUTED_LANGS.filter(code => code === DEFAULT_LANG || available.includes(code))
+    : ROUTED_LANGS;
+
   const links: { lang: string; href: string }[] = [
     { lang: 'x-default', href: `${SITE_DOMAIN}${clean}` },
   ];
-  // Only routed locales: an hreflang pointing at a 404 invalidates the cluster.
-  for (const code of ROUTED_LANGS) {
+  for (const code of codes) {
     const localPath = code === DEFAULT_LANG ? clean : `/${code}${clean}`;
     links.push({ lang: code, href: `${SITE_DOMAIN}${localPath}` });
   }

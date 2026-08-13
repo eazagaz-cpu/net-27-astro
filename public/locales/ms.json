@@ -164,7 +164,12 @@
     "tableOfContents": "Isi kandungan",
     "faqs": "Soalan lazim",
     "relatedArticles": "Artikel berkaitan",
-    "publishedBy": "Diterbitkan oleh"
+    "publishedBy": "Diterbitkan oleh",
+    "disclaimerLabel": "Penafian:",
+    "disclaimer": "{site} tidak mengehos, menyimpan atau mengedar apa-apa kandungan media. Semua maklumat adalah untuk tujuan penemuan. Ketersediaan penstriman berbeza mengikut wilayah. Semua tanda dagangan dimiliki oleh pemilik masing-masing.",
+    "lastUpdated": "Kemas kini terakhir: {date}.",
+    "indexLead": "Berita terkini, panduan dan pandangan tentang filem, rancangan, platform penstriman dan apl NetMirror.",
+    "indexDescription": "Artikel pakar tentang filem, rancangan TV, anime dan platform penstriman. Panduan muat turun, tip penyelesaian masalah dan analisis industri."
   },
   "app": {
     "downloadTitle": "Muat turun NetMirror APK",

@@ -164,7 +164,12 @@
     "tableOfContents": "İçindekiler",
     "faqs": "Sıkça sorulan sorular",
     "relatedArticles": "İlgili yazılar",
-    "publishedBy": "Yayınlayan"
+    "publishedBy": "Yayınlayan",
+    "disclaimerLabel": "Yasal uyarı:",
+    "disclaimer": "{site} hiçbir medya içeriğini barındırmaz, saklamaz veya dağıtmaz. Tüm bilgiler keşif amaçlıdır. Yayın erişilebilirliği bölgeye göre değişir. Tüm ticari markalar ilgili sahiplerine aittir.",
+    "lastUpdated": "Son güncelleme: {date}.",
+    "indexLead": "Filmler, diziler, yayın platformları ve NetMirror uygulaması hakkında en son haberler, kılavuzlar ve analizler.",
+    "indexDescription": "Filmler, diziler, anime ve yayın platformları hakkında uzman yazılar. İndirme kılavuzları, sorun giderme ipuçları ve sektör analizleri."
   },
   "app": {
     "downloadTitle": "NetMirror APK İndir",

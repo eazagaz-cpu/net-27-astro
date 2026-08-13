@@ -1,0 +1,23 @@
+---
+/**
+ * Localized blog indexes. A locale only gets one once it has at least one
+ * translated article, so the index is never an empty page.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BlogIndexPage from '../../../components/pages/BlogIndexPage.astro';
+import { translatedSlugs } from '../../../i18n/blog';
+import { ROUTED_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+
+export const getStaticPaths = (() => {
+  return ROUTED_LANGS
+    .filter(code => code !== DEFAULT_LANG && translatedSlugs(code).length > 0)
+    .map(lang => ({ params: { lang }, props: { lang } }));
+}) satisfies GetStaticPaths;
+
+const { lang } = Astro.props as { lang: Lang };
+---
+
+<BaseLayout>
+  <BlogIndexPage lang={lang} />
+</BaseLayout>

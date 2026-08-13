@@ -16,6 +16,13 @@ interface Props {
    * only in English, since hreflang must not point at URLs that 404.
    */
   localized?: boolean;
+  /**
+   * Narrows the cluster to these locales. Blog articles are translated one at a
+   * time, so an article's cluster must list only the locales that actually have
+   * it — the default of every routed locale would advertise URLs that 404.
+   * Ignored unless `localized` is set.
+   */
+  localesWithPage?: Lang[];
 }
 
 const seo = generateSEO(Astro.props);
@@ -24,7 +31,9 @@ const ogImageAlt = 'NetMirror - Movies, TV Shows, Anime and Hindi Dubbed Discove
 const lang: Lang = getLangFromUrl(Astro.url);
 // The cluster is built from the path, so every locale in it resolves to the
 // same page rather than a homepage fallback.
-const alternates = Astro.props.localized ? getAlternateLinks(Astro.url.pathname) : [];
+const alternates = Astro.props.localized
+  ? getAlternateLinks(Astro.url.pathname, Astro.props.localesWithPage)
+  : [];
 
 /** Open Graph wants a full locale, not a bare language code. */
 const OG_LOCALES: Record<Lang, string> = {

@@ -164,7 +164,12 @@
     "tableOfContents": "Inhaltsverzeichnis",
     "faqs": "Haeufig gestellte Fragen",
     "relatedArticles": "Verwandte Artikel",
-    "publishedBy": "Veroeffentlicht von"
+    "publishedBy": "Veroeffentlicht von",
+    "disclaimerLabel": "Haftungsausschluss:",
+    "disclaimer": "{site} hostet, speichert und verbreitet keine Medieninhalte. Alle Informationen dienen der Entdeckung. Die Streaming-Verfügbarkeit variiert je nach Region. Alle Marken gehören ihren jeweiligen Eigentümern.",
+    "lastUpdated": "Letzte Aktualisierung: {date}.",
+    "indexLead": "Aktuelle News, Guides und Einblicke zu Filmen, Serien, Streaming-Plattformen und der NetMirror-App.",
+    "indexDescription": "Fachartikel zu Filmen, Serien, Anime und Streaming-Plattformen. Download-Anleitungen, Tipps zur Fehlerbehebung und Branchenanalysen."
   },
   "app": {
     "downloadTitle": "NetMirror APK herunterladen",

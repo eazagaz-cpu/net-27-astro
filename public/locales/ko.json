@@ -164,7 +164,12 @@
     "tableOfContents": "목차",
     "faqs": "자주 묻는 질문",
     "relatedArticles": "관련 기사",
-    "publishedBy": "게시자"
+    "publishedBy": "게시자",
+    "disclaimerLabel": "면책 조항:",
+    "disclaimer": "{site}는 어떠한 미디어 콘텐츠도 호스팅, 저장, 배포하지 않습니다. 모든 정보는 작품을 찾기 위한 것입니다. 스트리밍 제공 여부는 지역에 따라 다릅니다. 모든 상표는 각 소유자의 재산입니다.",
+    "lastUpdated": "최종 업데이트: {date}.",
+    "indexLead": "영화, TV 프로그램, 스트리밍 플랫폼, NetMirror 앱에 관한 최신 소식과 가이드, 분석.",
+    "indexDescription": "영화, TV 프로그램, 애니메이션, 스트리밍 플랫폼에 관한 전문 기사. 다운로드 가이드, 문제 해결 팁, 업계 분석."
   },
   "app": {
     "downloadTitle": "NetMirror APK 다운로드",

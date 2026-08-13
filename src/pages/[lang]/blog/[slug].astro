@@ -1,0 +1,33 @@
+---
+/**
+ * Localized blog articles.
+ *
+ * Paths come from the translation store, not from the post list, so an article
+ * only gets a localized URL once it has been translated. That is what makes it
+ * safe to translate the blog in tranches: there is never a /hi/blog/… URL
+ * wrapping an English body.
+ */
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import BlogPostPage from '../../../components/pages/BlogPostPage.astro';
+import { blogPosts } from '../../../data/blogPosts';
+import { translatedPairs } from '../../../i18n/blog';
+import type { Lang } from '../../../i18n/config';
+import type { BlogPost } from '../../../lib/types';
+
+export const getStaticPaths = (() => {
+  const bySlug = new Map(blogPosts.map(post => [post.slug, post]));
+  return translatedPairs()
+    .filter(pair => bySlug.has(pair.slug))
+    .map(({ lang, slug }) => ({
+      params: { lang, slug },
+      props: { post: bySlug.get(slug)!, lang },
+    }));
+}) satisfies GetStaticPaths;
+
+const { post, lang } = Astro.props as { post: BlogPost; lang: Lang };
+---
+
+<BaseLayout>
+  <BlogPostPage post={post} lang={lang} />
+</BaseLayout>

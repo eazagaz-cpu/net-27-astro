@@ -164,7 +164,12 @@
     "tableOfContents": "Sumario",
     "faqs": "Perguntas frequentes",
     "relatedArticles": "Artigos relacionados",
-    "publishedBy": "Publicado por"
+    "publishedBy": "Publicado por",
+    "disclaimerLabel": "Aviso:",
+    "disclaimer": "O {site} não hospeda, armazena nem distribui qualquer conteúdo de mídia. Todas as informações são para fins de descoberta. A disponibilidade de streaming varia por região. Todas as marcas pertencem aos seus respectivos proprietários.",
+    "lastUpdated": "Última atualização: {date}.",
+    "indexLead": "Notícias, guias e análises sobre filmes, séries, plataformas de streaming e o app NetMirror.",
+    "indexDescription": "Artigos especializados sobre filmes, séries, animes e plataformas de streaming. Guias de download, dicas de solução de problemas e análise do setor."
   },
   "app": {
     "downloadTitle": "Baixar NetMirror APK",

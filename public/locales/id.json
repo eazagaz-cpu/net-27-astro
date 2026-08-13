@@ -164,7 +164,12 @@
     "tableOfContents": "Daftar isi",
     "faqs": "Pertanyaan yang sering diajukan",
     "relatedArticles": "Artikel terkait",
-    "publishedBy": "Diterbitkan oleh"
+    "publishedBy": "Diterbitkan oleh",
+    "disclaimerLabel": "Penafian:",
+    "disclaimer": "{site} tidak meng-host, menyimpan, atau mendistribusikan konten media apa pun. Semua informasi untuk tujuan penemuan. Ketersediaan streaming berbeda menurut wilayah. Semua merek dagang milik pemiliknya masing-masing.",
+    "lastUpdated": "Terakhir diperbarui: {date}.",
+    "indexLead": "Berita terbaru, panduan, dan wawasan tentang film, acara TV, platform streaming, dan aplikasi NetMirror.",
+    "indexDescription": "Artikel ahli tentang film, acara TV, anime, dan platform streaming. Panduan unduhan, tips pemecahan masalah, dan analisis industri."
   },
   "app": {
     "downloadTitle": "Unduh NetMirror APK",

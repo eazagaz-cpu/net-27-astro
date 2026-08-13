@@ -1,0 +1,195 @@
+---
+/**
+ * BlogPostPage.astro — one blog article, in any locale.
+ *
+ * Merges the English post with its translation for `lang`, so untranslated
+ * fields fall back to English rather than vanishing. Only articles that have a
+ * translation get a localized route at all, so in practice the merge is total —
+ * the fallback exists to keep the build honest if a translation is partial.
+ *
+ * Markup mirrors the original standalone route, so English output is unchanged.
+ */
+import Header from '../Header.astro';
+import Footer from '../Footer.astro';
+import SEOHead from '../SEOHead.astro';
+import Schema from '../Schema.astro';
+import Breadcrumbs from '../Breadcrumbs.astro';
+import QuickAnswer from '../blog/QuickAnswer.astro';
+import TableOfContents from '../blog/TableOfContents.astro';
+import ArticleTable from '../blog/ArticleTable.astro';
+import ProsCons from '../blog/ProsCons.astro';
+import SafetyNote from '../blog/SafetyNote.astro';
+import BlogFAQ from '../blog/BlogFAQ.astro';
+import RelatedPosts from '../blog/RelatedPosts.astro';
+import ArticleCTA from '../blog/ArticleCTA.astro';
+import AuthorBox from '../blog/AuthorBox.astro';
+import { getRelatedPosts } from '../../data/blogPosts';
+import { getBlogImage } from '../../data/blogImages';
+import { breadcrumbSchema, articleSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { SITE_NAME } from '../../lib/constants';
+import { loadTranslations, t } from '../../i18n';
+import { getLocalizedPath } from '../../i18n/utils';
+import { getLocalizedPost, localesWithPost } from '../../i18n/blog';
+import type { BlogPost } from '../../lib/types';
+import type { Lang } from '../../i18n/config';
+
+interface Props {
+  post: BlogPost;
+  lang: Lang;
+}
+
+const { post: english, lang } = Astro.props;
+const tr = await loadTranslations(lang);
+const L = (path: string) => getLocalizedPath(path, lang);
+
+const localized = getLocalizedPost(lang, english.slug);
+/** Translation wins field by field; anything it omits stays English. */
+const post: BlogPost = localized ? { ...english, ...localized } : english;
+
+const relatedPosts = getRelatedPosts(english);
+const blogImage = getBlogImage(english.slug, english.tags);
+const path = `/blog/${english.slug}/`;
+const canonical = `${SITE_URL}${L(path)}`;
+
+const breadcrumbs = [
+  { label: t(tr, 'nav.home'), href: L('/') },
+  { label: t(tr, 'nav.blog'), href: L('/blog/') },
+  { label: post.title, href: L(path) },
+];
+
+// Dates render in the reader's locale but always describe the English original's
+// publication date — a translation is not a new article.
+const dateLocale = lang === 'en' ? 'en-US' : lang;
+const fullDate = new Date(english.date).toLocaleDateString(dateLocale, {
+  month: 'long', day: 'numeric', year: 'numeric',
+});
+const monthYear = new Date(english.date).toLocaleDateString(dateLocale, {
+  month: 'long', year: 'numeric',
+});
+
+const schemas: object[] = [
+  breadcrumbSchema(breadcrumbs),
+  articleSchema({
+    title: post.title,
+    excerpt: post.excerpt,
+    datePublished: english.date,
+    dateModified: english.modifiedDate || english.date,
+    author: english.author,
+    image: blogImage.url,
+    slug: english.slug,
+  }),
+];
+if (post.faqs && post.faqs.length > 0) schemas.push(faqSchema(post.faqs));
+
+// Only the locales that actually have this article, or the cluster would
+// advertise URLs that 404 while the blog is translated in tranches.
+const localesWithPage = localesWithPost(english.slug);
+---
+
+<SEOHead
+  slot="head"
+  title={post.title}
+  description={post.excerpt}
+  canonical={canonical}
+  ogImage={blogImage.url}
+  ogType="article"
+  localized={localesWithPage.length > 0}
+  localesWithPage={localesWithPage}
+/>
+<Schema slot="head" schema={schemas} />
+
+<Header />
+
+<main class="min-h-screen pt-36">
+  <article class="max-w-[860px] mx-auto px-4 py-8">
+    <Breadcrumbs items={breadcrumbs} />
+
+    <header class="mb-8">
+      <div class="flex flex-wrap items-center gap-2 mb-4">
+        <span class="text-[10px] px-2.5 py-1 rounded-full bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-semibold uppercase tracking-wider">{post.category}</span>
+        {post.tags.slice(0, 3).map(tag => (
+          <span class="text-[10px] px-2 py-0.5 rounded-full bg-[var(--color-bg-card)] text-[var(--color-text-muted)] border border-[var(--color-border)]">{tag}</span>
+        ))}
+      </div>
+
+      <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold mb-4 leading-tight text-[var(--color-text-primary)]">
+        {post.title}
+      </h1>
+
+      <div class="flex flex-wrap items-center gap-3 text-xs text-[var(--color-text-muted)]">
+        <span>{t(tr, 'blog.by')} {english.author}</span>
+        <span class="text-[var(--color-border)]">&bull;</span>
+        <time datetime={english.date}>{t(tr, 'blog.updatedOn')} {fullDate}</time>
+        <span class="text-[var(--color-border)]">&bull;</span>
+        <span>{post.readTime}</span>
+        <span class="text-[var(--color-border)]">&bull;</span>
+        <span>{post.category}</span>
+      </div>
+    </header>
+
+    <div class="aspect-[16/9] rounded-xl overflow-hidden mb-8 border border-[var(--color-border)]">
+      <img
+        src={blogImage.url}
+        alt={blogImage.alt}
+        width={blogImage.width}
+        height={blogImage.height}
+        class="w-full h-full object-cover"
+        loading="eager"
+        decoding="async"
+        onerror="this.onerror=null;this.src='https://image.tmdb.org/t/p/w1280/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg'"
+      />
+    </div>
+
+    {post.quickAnswer && <QuickAnswer answer={post.quickAnswer} />}
+
+    {post.toc && post.toc.length > 0 && <TableOfContents items={post.toc} />}
+
+    <div class="blog-content" set:html={post.content} />
+
+    {post.tables && post.tables.map(table => (
+      <ArticleTable headers={table.headers} rows={table.rows} caption={table.caption} />
+    ))}
+
+    {post.pros && post.cons && (
+      <ProsCons pros={post.pros} cons={post.cons} />
+    )}
+
+    {post.safetyNote && <SafetyNote note={post.safetyNote} />}
+
+    {post.faqs && post.faqs.length > 0 && <BlogFAQ faqs={post.faqs} />}
+
+    <ArticleCTA
+      title={post.ctaTitle}
+      description={post.ctaDescription}
+    />
+
+    <AuthorBox author={english.author} />
+
+    {relatedPosts.length > 0 && (
+      <RelatedPosts posts={relatedPosts.map(related => {
+        // Related cards use each target's own translation when it has one, so a
+        // localized article never links out through an English teaser.
+        const rel = getLocalizedPost(lang, related.slug);
+        return {
+          slug: related.slug,
+          title: rel?.title ?? related.title,
+          excerpt: rel?.excerpt ?? related.excerpt,
+          image: getBlogImage(related.slug, related.tags).url,
+          readTime: rel?.readTime ?? related.readTime,
+          tags: rel?.tags ?? related.tags,
+          href: rel ? L(`/blog/${related.slug}/`) : `/blog/${related.slug}/`,
+        };
+      })} />
+    )}
+
+    <div class="mt-10 pt-6 border-t border-[var(--color-border)]">
+      <p class="text-[10px] text-[var(--color-text-muted)] leading-relaxed">
+        <strong class="text-[var(--color-text-secondary)]">{t(tr, 'blog.disclaimerLabel')}</strong>{' '}
+        {t(tr, 'blog.disclaimer', { site: SITE_NAME })} {t(tr, 'blog.lastUpdated', { date: monthYear })}
+      </p>
+    </div>
+  </article>
+</main>
+
+<Footer />

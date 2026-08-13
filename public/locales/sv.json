@@ -164,7 +164,12 @@
     "tableOfContents": "Innehållsförteckning",
     "faqs": "Vanliga frågor",
     "relatedArticles": "Relaterade artiklar",
-    "publishedBy": "Publicerad av"
+    "publishedBy": "Publicerad av",
+    "disclaimerLabel": "Friskrivning:",
+    "disclaimer": "{site} lagrar, sparar eller distribuerar inget medieinnehåll. All information är avsedd för att hitta titlar. Tillgängligheten för streaming varierar per region. Alla varumärken tillhör sina respektive ägare.",
+    "lastUpdated": "Senast uppdaterad: {date}.",
+    "indexLead": "Senaste nyheter, guider och insikter om filmer, serier, streamingplattformar och NetMirror-appen.",
+    "indexDescription": "Expertartiklar om filmer, tv-serier, anime och streamingplattformar. Nedladdningsguider, felsökningstips och branschanalyser."
   },
   "app": {
     "downloadTitle": "Ladda ner NetMirror APK",
