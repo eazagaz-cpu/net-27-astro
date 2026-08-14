@@ -65,6 +65,10 @@ export interface RealTitle {
   overview: string;
   genres: string[];
   languages: string[];
+  /** TMDB `original_language` ISO code — the language the title was made in. */
+  originalLanguage?: string;
+  /** TMDB production countries. */
+  countries?: string[];
   cast: RealCastMember[];
   director: string;
   trailerUrl: string;

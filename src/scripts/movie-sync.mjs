@@ -279,6 +279,12 @@ async function fetchTitleDetail(type, id) {
     overview: d.overview || '',
     genres: (d.genres || []).map(g => g.name),
     languages: (d.spoken_languages || []).map(l => l.english_name).filter(Boolean),
+    // The language the title was made in, which `languages` cannot stand in for:
+    // that lists every spoken track, so a Hollywood film with a Hindi dub looks
+    // identical to an Indian production. Used to decide which titles get an
+    // OMDb rating lookup, where the two must not be confused.
+    originalLanguage: d.original_language || '',
+    countries: (d.production_countries || []).map(c => c.name).filter(Boolean),
     cast: (d.credits?.cast || []).slice(0, 10).map(c => ({ name: c.name, role: c.character || '' })),
     director,
     trailerUrl: trailer ? `https://www.youtube.com/embed/${trailer.key}` : '',
@@ -382,6 +388,14 @@ function extractWatchProviders(block) {
 // the quota is gone — ratings are a bonus, never a reason for a build to fail.
 const OMDB_MAX_TITLES = 200;
 
+/**
+ * ISO codes TMDB returns in `original_language` for Indian productions. Codes
+ * rather than names, because that is the shape of the field being tested.
+ */
+const INDIAN_LANGUAGES = new Set([
+  'hi', 'ta', 'te', 'ml', 'kn', 'bn', 'mr', 'pa', 'gu', 'ur',
+]);
+
 function parseRating(ratings, source) {
   const hit = (ratings || []).find(r => r.Source === source);
   return hit?.Value || '';
@@ -422,14 +436,40 @@ async function enrichWithOmdb(titles) {
     return;
   }
 
-  // Best-known titles first, so a truncated run still covers what most
-  // visitors actually open.
-  const queue = titles
-    .filter(t => t.imdbId)
-    .sort((a, b) => (b.voteCount || 0) - (a.voteCount || 0))
-    .slice(0, OMDB_MAX_TITLES);
+  // Two pools, interleaved, rather than one global popularity ranking.
+  //
+  // Sorting purely by TMDB vote count fills the whole budget with Hollywood:
+  // even the 200th title had more votes than any Indian release, so of 92
+  // Hindi-language titles only 5 were covered and no India-country title was
+  // covered at all. Search Console puts 70% of this site's clicks in India, so
+  // that spent the entire OMDb quota on the titles the audience opens least.
+  //
+  // Interleaving keeps the same request count — the quota is 1,000 a day and
+  // several builds can run in one — while making the covered set look like the
+  // traffic. Each pool stays vote-sorted, so within a pool the best-known
+  // titles still come first and a truncated run degrades sensibly.
+  const byVotes = (a, b) => (b.voteCount || 0) - (a.voteCount || 0);
+  const eligible = titles.filter(t => t.imdbId);
+  const isIndian = t =>
+    INDIAN_LANGUAGES.has(t.originalLanguage) || (t.countries || []).includes('India');
 
-  console.log(`\n[movie-sync] Fetching OMDb ratings for ${queue.length} titles...`);
+  const indian = eligible.filter(isIndian).sort(byVotes);
+  const global = eligible.filter(t => !isIndian(t)).sort(byVotes);
+
+  const queue = [];
+  for (let i = 0; queue.length < OMDB_MAX_TITLES && (i < indian.length || i < global.length); i++) {
+    if (i < indian.length && queue.length < OMDB_MAX_TITLES) queue.push(indian[i]);
+    if (i < global.length && queue.length < OMDB_MAX_TITLES) queue.push(global[i]);
+  }
+
+  // Report the split. The previous ranking silently covered 5 of 92 Hindi
+  // titles, which is exactly the kind of thing that hides in a passing build.
+  const indianInQueue = queue.filter(isIndian).length;
+  console.log(
+    `\n[movie-sync] Fetching OMDb ratings for ${queue.length} titles ` +
+    `(${indianInQueue} Indian, ${queue.length - indianInQueue} global; ` +
+    `pools: ${indian.length}/${global.length})...`,
+  );
   let done = 0;
   let missing = 0;
   // Reasons are surfaced because a silent "0 attached" gives no way to tell a
