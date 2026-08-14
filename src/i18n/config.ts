@@ -49,6 +49,7 @@ export const ROUTED_LANGS: Lang[] = [
   // kill looks like rather than a timeout.
   'es', 'ar', 'id', 'pt',
   'ru', 'fr', 'de', 'tr',
+  'it', 'ja', 'ko', 'ms',
 ];
 
 export const RTL_LANGS: Lang[] = ['ar', 'ur'];
