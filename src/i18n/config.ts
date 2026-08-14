@@ -48,6 +48,7 @@ export const ROUTED_LANGS: Lang[] = [
   // the logs stopped mid-render with no error, which is what an out-of-memory
   // kill looks like rather than a timeout.
   'es', 'ar', 'id', 'pt',
+  'ru', 'fr', 'de', 'tr',
 ];
 
 export const RTL_LANGS: Lang[] = ['ar', 'ur'];
