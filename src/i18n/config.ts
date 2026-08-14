@@ -38,7 +38,17 @@ export const LANG_CODES = Object.keys(LANGUAGES) as Lang[];
  * 10% in Pakistan and 2% in Bangladesh. hreflang is generated from this list
  * rather than from LANGUAGES, so it never points at a URL that does not exist.
  */
-export const ROUTED_LANGS: Lang[] = ['en', 'hi', 'ur', 'bn'];
+export const ROUTED_LANGS: Lang[] = [
+  // Audience first: Search Console puts 70% of clicks in India, 10% in
+  // Pakistan, 2% in Bangladesh.
+  'en', 'hi', 'ur', 'bn',
+  // Then the largest remaining language communities. Added in batches and
+  // measured each time, because routing all nineteen at once produced ~25,000
+  // pages and Cloudflare's builder was killed part way through, four times —
+  // the logs stopped mid-render with no error, which is what an out-of-memory
+  // kill looks like rather than a timeout.
+  'es', 'ar', 'id', 'pt',
+];
 
 export const RTL_LANGS: Lang[] = ['ar', 'ur'];
 
