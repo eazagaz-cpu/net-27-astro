@@ -21,6 +21,7 @@ import { SITE_URL } from '../../lib/seo';
 import { loadTranslations, t } from '../../i18n';
 import { getLocalizedPath } from '../../i18n/utils';
 import { getStaticDocs } from '../../i18n/static';
+import { TRANSLATED_LANGS } from '../../i18n/static';
 import type { LegalDocKey } from '../../i18n/static';
 import type { Lang } from '../../i18n/config';
 
@@ -44,6 +45,10 @@ const PATHS: Record<LegalDocKey, string> = {
 const doc = getStaticDocs(lang)[docKey];
 const path = PATHS[docKey];
 const canonical = `${SITE_URL}${L(path)}`;
+
+// hreflang names only the locales whose prose exists; the catalogue is
+// localized everywhere, but this page is not.
+const localesWithPage = TRANSLATED_LANGS.filter(code => code !== 'en');
 
 const breadcrumbs = [
   { label: t(tr, 'nav.home'), href: L('/') },
@@ -79,6 +84,7 @@ const pageSchema = {
   description={doc.seoDescription}
   canonical={canonical}
   localized={true}
+  localesWithPage={localesWithPage}
 />
 <Schema slot="head" schema={[pageSchema, breadcrumbSchema(breadcrumbs)]} />
 

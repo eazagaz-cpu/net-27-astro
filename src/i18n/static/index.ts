@@ -19,7 +19,13 @@ export function getStaticDocs(lang: Lang): StaticDocs {
   return DOCS[lang] ?? en;
 }
 
-/** Locales that have a hand-written translation rather than the English fallback. */
+/**
+ * Locales with a hand-written translation, as opposed to the English fallback.
+ *
+ * Routes are generated from this rather than from ROUTED_LANGS, so adding a
+ * locale to the site cannot silently produce /xx/privacy/ pages wrapping
+ * English prose — the page simply does not exist until it is translated.
+ */
 export const TRANSLATED_LANGS = Object.keys(DOCS) as Lang[];
 
 export type { StaticDocs, LegalDoc, AboutDoc, ContactDoc, LegalDocKey, Block, CardRow } from './types';

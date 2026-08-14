@@ -20,6 +20,7 @@ import { CONTACT_EMAIL, APK_UNIVERSAL_URL, APK_ARM64_URL, APK_ARM32_URL } from '
 import { loadTranslations, t } from '../../i18n';
 import { getLocalizedPath } from '../../i18n/utils';
 import { getHelpDocs } from '../../i18n/static/help';
+import { TRANSLATED_HELP_LANGS } from '../../i18n/static/help';
 import type { HelpDocKey } from '../../i18n/static/types';
 import type { Lang } from '../../i18n/config';
 
@@ -50,6 +51,10 @@ const doc = getHelpDocs(lang)[docKey];
 const path = PATHS[docKey];
 const canonical = `${SITE_URL}${L(path)}`;
 
+// hreflang names only the locales whose prose exists; the catalogue is
+// localized everywhere, but this page is not.
+const localesWithPage = TRANSLATED_HELP_LANGS.filter(code => code !== 'en');
+
 // The guides carry a "Help" crumb between home and the page; the download page
 // does not, matching the original breadcrumb trails.
 const breadcrumbs = [
@@ -74,6 +79,7 @@ const articleSchema = {
   description={doc.seoDescription}
   canonical={canonical}
   localized={true}
+  localesWithPage={localesWithPage}
 />
 <Schema slot="head" schema={[articleSchema, breadcrumbSchema(breadcrumbs), faqSchema(doc.faqs)]} />
 

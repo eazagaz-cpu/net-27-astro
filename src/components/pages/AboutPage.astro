@@ -17,6 +17,7 @@ import { SITE_NAME } from '../../lib/constants';
 import { loadTranslations, t } from '../../i18n';
 import { getLocalizedPath } from '../../i18n/utils';
 import { getStaticDocs } from '../../i18n/static';
+import { TRANSLATED_LANGS } from '../../i18n/static';
 import type { Lang } from '../../i18n/config';
 
 interface Props {
@@ -29,6 +30,10 @@ const L = (path: string) => getLocalizedPath(path, lang);
 
 const doc = getStaticDocs(lang).about;
 const canonical = `${SITE_URL}${L('/about/')}`;
+
+// hreflang names only the locales whose prose exists; the catalogue is
+// localized everywhere, but this page is not.
+const localesWithPage = TRANSLATED_LANGS.filter(code => code !== 'en');
 
 const breadcrumbs = [
   { label: t(tr, 'nav.home'), href: L('/') },
@@ -57,6 +62,7 @@ const [h1Before, h1After] = (() => {
   description={doc.seoDescription}
   canonical={canonical}
   localized={true}
+  localesWithPage={localesWithPage}
 />
 <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), organizationSchema()]} />
 

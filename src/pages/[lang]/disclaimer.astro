@@ -7,10 +7,14 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import LegalPage from '../../components/pages/LegalPage.astro';
 import { ROUTED_LANGS, DEFAULT_LANG, type Lang } from '../../i18n/config';
+import { TRANSLATED_LANGS } from '../../i18n/static';
 
 export const getStaticPaths = (() => {
+  // Only locales that actually have this page translated. A locale added to
+  // ROUTED_LANGS gets the catalogue in its own language immediately; this page
+  // waits until its prose exists, rather than serving English under its URL.
   return ROUTED_LANGS
-    .filter(code => code !== DEFAULT_LANG)
+    .filter(code => code !== DEFAULT_LANG && TRANSLATED_LANGS.includes(code))
     .map(lang => ({ params: { lang }, props: { lang } }));
 }) satisfies GetStaticPaths;
 

@@ -15,3 +15,12 @@ const DOCS: Partial<Record<Lang, HelpDocs>> = { en, hi, ur, bn };
 export function getHelpDocs(lang: Lang): HelpDocs {
   return DOCS[lang] ?? en;
 }
+
+/**
+ * Locales with a hand-written translation, as opposed to the English fallback.
+ *
+ * Routes are generated from this rather than from ROUTED_LANGS, so adding a
+ * locale to the site cannot silently produce /xx/help/... pages wrapping
+ * English prose — the page simply does not exist until it is translated.
+ */
+export const TRANSLATED_HELP_LANGS = Object.keys(DOCS) as Lang[];
