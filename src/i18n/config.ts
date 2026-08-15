@@ -49,13 +49,18 @@ export const ROUTED_LANGS: Lang[] = [
   // kill looks like rather than a timeout.
   'es', 'ar', 'id', 'pt',
   'ru', 'fr', 'de', 'tr',
-  // Measured ceiling. 15,937 pages (12 locales) builds; 21,205 (16) does not —
-  // the log stops mid-render with no error, which is an out-of-memory kill, not
-  // a timeout. Build time was never the constraint: 5,400 pages took 250s and
-  // 10,668 took 237s, because the clock is spent in movie-sync fetching from
-  // TMDB, a fixed cost. Adding more locales needs the builder's memory raised
-  // or the page count per locale reduced, not a longer build window.
+  'it', 'ja', 'ko', 'ms', 'pl', 'bg', 'sv',
 ];
+
+// A note on the ceiling this hit on the way here. Routing 16 locales — 21,205
+// pages — killed Cloudflare's builder: the log ended mid-render with no error,
+// which is an out-of-memory kill, not a timeout. Build time was never the
+// constraint (5,400 pages took 250s, 10,668 took 237s; the clock goes to
+// movie-sync fetching from TMDB). The fix was NODE_OPTIONS
+// --max-old-space-size=4096 on the Pages project: a dev machine gives Node a
+// 4.19GB heap by default and builds all 25,155 pages inside it, while the
+// builder's default is smaller. If a future locale or a larger catalogue
+// reintroduces the same silent truncation, raise that number first.
 
 export const RTL_LANGS: Lang[] = ['ar', 'ur'];
 
