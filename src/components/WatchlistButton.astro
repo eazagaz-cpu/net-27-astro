@@ -1,0 +1,110 @@
+---
+/**
+ * Adds a title to the watchlist.
+ *
+ * The watchlist page, the header link and the Firestore sync all existed
+ * before this button did, which meant the list could be read, cleared and
+ * synced across devices but never filled — it was empty for everyone.
+ *
+ * The label lives in two spans rather than one. BaseLayout translates
+ * `data-t` nodes by assigning textContent, which would delete the icon if it
+ * shared an element with the text, and would fight the state toggle if one
+ * span had to carry both labels.
+ */
+interface Props {
+  id: number | string;
+  type: 'movie' | 'tv';
+  title: string;
+  poster?: string;
+  year?: number | string;
+  slug?: string;
+}
+
+const { id, type, title, poster = '', year = '', slug = '' } = Astro.props;
+---
+
+<button
+  type="button"
+  class="btn-glass px-5 py-2.5 rounded-lg text-sm wl-toggle"
+  data-wl-toggle
+  data-id={String(id)}
+  data-type={type}
+  data-title={title}
+  data-poster={poster}
+  data-year={String(year)}
+  data-slug={slug}
+  aria-pressed="false"
+>
+  <svg class="w-4 h-4 wl-icon-add" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+  </svg>
+  <svg class="w-4 h-4 wl-icon-done hidden" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+    <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+  </svg>
+  <span class="wl-label-add" data-t="ui.addToWatchlist">Add to Watchlist</span>
+  <span class="wl-label-done hidden" data-t="ui.inWatchlist">In Watchlist</span>
+</button>
+
+<style>
+  .wl-toggle[aria-pressed='true'] { color: #4ade80; border-color: rgba(74, 222, 128, 0.35); }
+  .wl-toggle .hidden { display: none; }
+</style>
+
+<script>
+  const WL_KEY = 'netmirror:watchlist';
+
+  function getWL(): any[] {
+    try { return JSON.parse(localStorage.getItem(WL_KEY) || '[]'); } catch { return []; }
+  }
+  function saveWL(list: any[]) {
+    try { localStorage.setItem(WL_KEY, JSON.stringify(list)); } catch {}
+  }
+
+  function paint(btn: HTMLElement, inList: boolean) {
+    btn.setAttribute('aria-pressed', String(inList));
+    btn.querySelector('.wl-icon-add')?.classList.toggle('hidden', inList);
+    btn.querySelector('.wl-label-add')?.classList.toggle('hidden', inList);
+    btn.querySelector('.wl-icon-done')?.classList.toggle('hidden', !inList);
+    btn.querySelector('.wl-label-done')?.classList.toggle('hidden', !inList);
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-wl-toggle]').forEach(btn => {
+    const d = btn.dataset;
+    const id = String(d.id);
+
+    paint(btn, getWL().some((i: any) => String(i.id) === id));
+
+    btn.addEventListener('click', async () => {
+      const list = getWL();
+      const existing = list.findIndex((i: any) => String(i.id) === id);
+      const adding = existing === -1;
+
+      const item = {
+        id,
+        type: d.type,
+        title: d.title,
+        poster: d.poster || '',
+        year: d.year || '',
+        slug: d.slug || '',
+        addedAt: Date.now(),
+      };
+
+      // Repaint before the network call: the list is authoritative in
+      // localStorage, and Firestore is a mirror of it rather than the source.
+      if (adding) list.unshift(item);
+      else list.splice(existing, 1);
+      saveWL(list);
+      paint(btn, adding);
+
+      try {
+        const {
+          getCurrentUid, firestoreAddToWatchlist, firestoreRemoveFromWatchlist,
+        } = await import('../lib/firestore');
+        const uid = await getCurrentUid();
+        if (!uid) return;
+        if (adding) await firestoreAddToWatchlist(uid, item as any);
+        else await firestoreRemoveFromWatchlist(uid, id);
+      } catch {}
+    });
+  });
+</script>

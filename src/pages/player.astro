@@ -869,14 +869,37 @@ import { SITE_URL } from '../lib/seo';
         if (loadingSubEl) loadingSubEl.textContent = data.title;
 
         // Continue-watching history
+        const entry = {
+          id, type,
+          title: data.title,
+          year: data.year || '',
+          poster: data.posterUrl || '',
+          // Which episode this was, so the rail resumes where the viewer left
+          // off instead of sending every show back to season 1 episode 1.
+          ...(type === 'tv' ? { season, episode } : {}),
+          progress: 0,
+          watchedAt: Date.now(),
+          addedAt: Date.now(),
+        };
         try {
           const CW_KEY = 'netmirror:history';
           let list = JSON.parse(localStorage.getItem(CW_KEY) || '[]');
           list = list.filter((i: any) => !(String(i.id) === String(id) && i.type === type));
-          list.unshift({ id, type, title: data.title, year: data.year || '', poster: data.posterUrl || '', addedAt: Date.now() });
+          list.unshift(entry);
           if (list.length > 30) list = list.slice(0, 30);
           localStorage.setItem(CW_KEY, JSON.stringify(list));
         } catch {}
+
+        // Mirror it to the account, if there is one. Without this the cloud
+        // copy only ever updated at sign-in, so everything watched during a
+        // session stayed on the one device until the next login.
+        (async () => {
+          try {
+            const { getCurrentUid, firestoreUpsertHistory } = await import('../lib/firestore');
+            const uid = await getCurrentUid();
+            if (uid) await firestoreUpsertHistory(uid, entry as any);
+          } catch {}
+        })();
         // Trailer link on error screen
         if (data.trailerKey) {
           const link = document.getElementById('trailer-link');

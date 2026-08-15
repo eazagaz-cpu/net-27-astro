@@ -19,9 +19,26 @@ import { SITE_URL } from '../lib/seo';
 
   <main style="min-height:80vh;padding:2rem 0">
     <div style="max-width:100%;margin:0 auto;padding:0 clamp(16px,2vw,64px)">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem">
-        <h1 style="font-size:1.5rem;font-weight:700;color:#fff" data-t="ui.myWatchlist">My Watchlist</h1>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.5rem;flex-wrap:wrap;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <h1 style="font-size:1.5rem;font-weight:700;color:#fff" data-t="ui.myWatchlist">My Watchlist</h1>
+          <!-- Sync status indicator -->
+          <span id="wl-sync-badge" style="display:none;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(34,197,94,0.15);border:1px solid rgba(34,197,94,0.3);color:#4ade80;letter-spacing:0.04em">
+            ☁ Synced
+          </span>
+          <span id="wl-syncing-badge" style="display:none;font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;background:rgba(234,179,8,0.1);border:1px solid rgba(234,179,8,0.2);color:#facc15">
+            Syncing...
+          </span>
+        </div>
         <button id="wl-clear" style="font-size:12px;color:#71717a;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px" onmouseenter="this.style.color='#ef4444'" onmouseleave="this.style.color='#71717a'" data-t="pages.watchlistClearAll">Clear All</button>
+      </div>
+
+      <!-- Login prompt (shown to anonymous users) -->
+      <div id="wl-login-prompt" style="display:none;margin-bottom:1.25rem;padding:12px 16px;border-radius:12px;background:rgba(229,9,20,0.07);border:1px solid rgba(229,9,20,0.15);display:flex;align-items:center;gap:10px">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e50914" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <p style="font-size:13px;color:rgba(255,255,255,0.7);margin:0">
+          <a href="/login/" style="color:#e50914;font-weight:600;text-decoration:none">Sign in</a> to sync your watchlist across all your devices.
+        </p>
       </div>
 
       <!-- Empty state -->
@@ -55,55 +72,126 @@ import { SITE_URL } from '../lib/seo';
 
 <script>
   const WL_KEY = 'netmirror:watchlist';
+
   function getWL(): any[] { try { return JSON.parse(localStorage.getItem(WL_KEY) || '[]'); } catch { return []; } }
   function saveWL(list: any[]) { try { localStorage.setItem(WL_KEY, JSON.stringify(list)); } catch {} }
 
-  function render() {
-    const list = getWL();
-    const grid = document.getElementById('wl-grid')!;
-    const empty = document.getElementById('wl-empty')!;
-
-    if (list.length === 0) {
-      empty.style.display = 'block';
-      grid.style.display = 'none';
-      return;
-    }
-    empty.style.display = 'none';
-    grid.style.display = 'grid';
-
-    grid.innerHTML = list.map((item: any) => {
-      const href = `/detail/?type=${item.type}&id=${item.id}`;
-      const typeLabel = item.type === 'tv' ? 'TV' : item.type === 'movie' ? '' : item.type.toUpperCase();
-      return `
-        <div class="wl-card-wrap">
-          <a href="${href}" class="wl-card">
-            ${item.poster
-              ? `<img src="${item.poster}" alt="${item.title}" width="185" height="278" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
-              : ''}
-            <div class="wl-card-fb" style="${item.poster ? 'display:none' : ''}">
-              <span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);text-align:center">${item.title}</span>
-            </div>
-            <div class="wl-card-info">
-              <p class="wl-card-title">${item.title}</p>
-              <p class="wl-card-meta">${item.year || ''}${typeLabel ? ' · ' + typeLabel : ''}</p>
-            </div>
-          </a>
-          <button class="wl-remove" data-id="${item.id}" aria-label="Remove from watchlist" onclick="window.__wlRemove('${item.id}')">
-            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
-        </div>`;
-    }).join('');
+  function showSyncBadge(state: 'synced' | 'syncing' | 'none') {
+    const synced = document.getElementById('wl-sync-badge');
+    const syncing = document.getElementById('wl-syncing-badge');
+    if (!synced || !syncing) return;
+    synced.style.display = state === 'synced' ? 'inline-flex' : 'none';
+    syncing.style.display = state === 'syncing' ? 'inline-flex' : 'none';
   }
 
-  (window as any).__wlRemove = function(id: string) {
+  function cardHtml(item: any): string {
+    // Link to real page if type and id exist, fallback to detail route
+    const href = item.slug
+      ? `/${item.type === 'tv' ? 'shows' : 'movies'}/${item.slug}/`
+      : `/detail/?type=${item.type}&id=${item.id}`;
+    const typeLabel = item.type === 'tv' ? 'TV' : item.type === 'movie' ? '' : item.type?.toUpperCase() || '';
+    return `
+      <div class="wl-card-wrap">
+        <a href="${href}" class="wl-card">
+          ${item.poster
+            ? `<img src="${item.poster}" alt="${item.title}" width="185" height="278" loading="lazy" decoding="async" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">`
+            : ''}
+          <div class="wl-card-fb" style="${item.poster ? 'display:none' : ''}">
+            <span style="font-size:12px;font-weight:700;color:rgba(255,255,255,0.4);text-align:center">${item.title}</span>
+          </div>
+          <div class="wl-card-info">
+            <p class="wl-card-title">${item.title}</p>
+            <p class="wl-card-meta">${item.year || ''}${typeLabel ? ' · ' + typeLabel : ''}</p>
+          </div>
+        </a>
+        <button class="wl-remove" data-id="${item.id}" aria-label="Remove from watchlist" onclick="window.__wlRemove('${item.id}')">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>`;
+  }
+
+  function render(list?: any[]) {
+    const items = list ?? getWL();
+    const grid = document.getElementById('wl-grid')!;
+    const empty = document.getElementById('wl-empty')!;
+    if (items.length === 0) {
+      empty.style.display = 'block';
+      grid.style.display = 'none';
+    } else {
+      empty.style.display = 'none';
+      grid.style.display = 'grid';
+      grid.innerHTML = items.map(cardHtml).join('');
+    }
+  }
+
+  // Remove item: local + Firestore if logged in
+  (window as any).__wlRemove = async function(id: string) {
     const list = getWL().filter((i: any) => String(i.id) !== String(id));
     saveWL(list);
-    render();
+    render(list);
+
+    try {
+      const { getCurrentUid, firestoreRemoveFromWatchlist } = await import('../lib/firestore');
+      const uid = await getCurrentUid();
+      if (uid) await firestoreRemoveFromWatchlist(uid, id);
+    } catch {}
   };
 
-  document.getElementById('wl-clear')?.addEventListener('click', () => {
-    if (confirm('Clear your entire watchlist?')) { saveWL([]); render(); }
+  // Clear all
+  document.getElementById('wl-clear')?.addEventListener('click', async () => {
+    if (!confirm('Clear your entire watchlist?')) return;
+    saveWL([]);
+    render([]);
+    try {
+      const { getCurrentUid, firestoreClearWatchlist } = await import('../lib/firestore');
+      const uid = await getCurrentUid();
+      if (uid) {
+        showSyncBadge('syncing');
+        await firestoreClearWatchlist(uid);
+        showSyncBadge('synced');
+        setTimeout(() => showSyncBadge('none'), 2500);
+      }
+    } catch {}
   });
 
-  render();
+  // Boot — try to load from Firestore if logged in, else localStorage
+  async function boot() {
+    render(); // instant render from localStorage
+
+    try {
+      const { getCurrentUid, firestoreGetWatchlist } = await import('../lib/firestore');
+      const uid = await getCurrentUid();
+
+      if (!uid) {
+        // Show login nudge for anonymous users who have items
+        if (getWL().length > 0) {
+          const prompt = document.getElementById('wl-login-prompt');
+          if (prompt) prompt.style.display = 'flex';
+        }
+        return;
+      }
+
+      // Logged in — reconcile the two copies. Replacing local with the cloud
+      // list outright would delete anything added before signing in, or while
+      // offline, on the first visit to this page.
+      showSyncBadge('syncing');
+      const { firestoreAddToWatchlist } = await import('../lib/firestore');
+      const cloudList = await firestoreGetWatchlist(uid);
+      const cloudIds = new Set(cloudList.map((i: any) => String(i.id)));
+      const localOnly = getWL().filter((i: any) => !cloudIds.has(String(i.id)));
+
+      await Promise.all(localOnly.map((i: any) => firestoreAddToWatchlist(uid, i)));
+
+      const merged = [...localOnly, ...cloudList]
+        .sort((a: any, b: any) => (b.addedAt || 0) - (a.addedAt || 0));
+      saveWL(merged);
+      render(merged);
+      showSyncBadge('synced');
+      setTimeout(() => showSyncBadge('none'), 2500);
+    } catch {
+      // Firestore unavailable — localStorage already rendered above
+    }
+  }
+
+  boot();
 </script>

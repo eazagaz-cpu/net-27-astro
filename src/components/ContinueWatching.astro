@@ -1,5 +1,5 @@
 ---
-// Client-side only — reads localStorage 'netmirror:history', renders nothing if empty
+// Client-side only — reads localStorage 'netmirror:history' and Firestore when logged in
 ---
 
 <div id="cw-rail-section" style="display:none;padding:1rem 0">
@@ -10,6 +10,8 @@
         <span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--color-primary);color:#fff;text-transform:uppercase;letter-spacing:0.05em">
           NEW
         </span>
+        <!-- Cloud sync indicator -->
+        <span id="cw-cloud-dot" style="display:none;width:7px;height:7px;border-radius:50%;background:#4ade80" title="Synced with cloud"></span>
       </div>
       <button id="cw-clear-btn" style="font-size:12px;color:#71717a;background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:6px" onmouseenter="this.style.color='#ef4444'" onmouseleave="this.style.color='#71717a'">Clear</button>
     </div>
@@ -22,6 +24,7 @@
 <script>
   const CW_KEY = 'netmirror:history';
   function getCW(): any[] { try { return JSON.parse(localStorage.getItem(CW_KEY) || '[]'); } catch { return []; } }
+  function saveCW(list: any[]) { try { localStorage.setItem(CW_KEY, JSON.stringify(list)); } catch {} }
 
   const FALLBACK_GRADIENTS = [
     'linear-gradient(135deg,#1a1a2e,#16213e)',
@@ -31,16 +34,16 @@
     'linear-gradient(135deg,#1f1c2c,#928dab)',
   ];
 
-  function renderCW() {
-    const list = getCW().slice(0, 12);
+  function renderCW(list?: any[]) {
+    const items = (list ?? getCW()).slice(0, 12);
     const section = document.getElementById('cw-rail-section')!;
     const rail = document.getElementById('cw-scroll')!;
     if (!section || !rail) return;
-    if (list.length === 0) { section.style.display = 'none'; return; }
+    if (items.length === 0) { section.style.display = 'none'; return; }
     section.style.display = 'block';
 
-    rail.innerHTML = list.map((item: any, i: number) => {
-      const href = `/player/?type=${item.type}&id=${item.id}`;
+    rail.innerHTML = items.map((item: any, i: number) => {
+      const href = `/player/?type=${item.type}&id=${item.id}${item.season ? `&season=${item.season}&episode=${item.episode || 1}` : ''}`;
       const grad = FALLBACK_GRADIENTS[i % FALLBACK_GRADIENTS.length];
       const progress = item.progress || 0;
       const pct = Math.min(Math.max(progress, 0), 100);
@@ -73,11 +76,63 @@
     }).join('');
   }
 
-  document.getElementById('cw-clear-btn')?.addEventListener('click', () => {
+  // Clear — also wipes Firestore if logged in
+  document.getElementById('cw-clear-btn')?.addEventListener('click', async () => {
     try { localStorage.removeItem(CW_KEY); } catch {}
     const section = document.getElementById('cw-rail-section')!;
     if (section) section.style.display = 'none';
+
+    try {
+      const { getCurrentUid, firestoreClearHistory } = await import('../lib/firestore');
+      const uid = await getCurrentUid();
+      if (uid) await firestoreClearHistory(uid);
+    } catch {}
   });
 
-  renderCW();
+  /** When the same entry exists in both copies, the later timestamp wins. */
+  function when(item: any): number { return item.watchedAt || item.addedAt || 0; }
+
+  /** One row per title, or per episode for a show. */
+  function keyOf(item: any): string {
+    return item.season != null
+      ? `${item.type}:${item.id}:s${item.season}e${item.episode ?? 1}`
+      : `${item.type}:${item.id}`;
+  }
+
+  /**
+   * Cloud and local are merged rather than one replacing the other. Overwriting
+   * local with the cloud copy discarded anything watched offline, or in the
+   * moments before the write to Firestore landed.
+   */
+  function mergeCW(local: any[], cloud: any[]): any[] {
+    const byKey = new Map<string, any>();
+    for (const item of [...cloud, ...local]) {
+      const key = keyOf(item);
+      const seen = byKey.get(key);
+      if (!seen || when(item) > when(seen)) byKey.set(key, item);
+    }
+    return [...byKey.values()].sort((a, b) => when(b) - when(a)).slice(0, 30);
+  }
+
+  // Boot
+  async function boot() {
+    renderCW(); // instant from localStorage
+
+    try {
+      const { getCurrentUid, firestoreGetHistory } = await import('../lib/firestore');
+      const uid = await getCurrentUid();
+      if (!uid) return;
+
+      const cloudList = await firestoreGetHistory(uid);
+      if (cloudList.length === 0) return;
+
+      const merged = mergeCW(getCW(), cloudList);
+      saveCW(merged);
+      renderCW(merged);
+      const dot = document.getElementById('cw-cloud-dot');
+      if (dot) dot.style.display = 'inline-block';
+    } catch {}
+  }
+
+  boot();
 </script>

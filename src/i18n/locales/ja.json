@@ -243,6 +243,8 @@
     "rating": "評価",
     "all": "すべて",
     "myWatchlist": "マイリスト",
+    "addToWatchlist": "マイリストに追加",
+    "inWatchlist": "マイリストに追加済み",
     "back": "戻る",
     "browseByGenre": "ジャンルから探す",
     "fromTheBlog": "ブログから",

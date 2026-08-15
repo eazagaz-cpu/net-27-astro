@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { clearLocalOnSignOut } from '../../lib/firestore';
 
 interface UserInfo {
   displayName: string | null;
@@ -52,6 +53,7 @@ export default function UserMenu() {
         const { signOut } = await import('firebase/auth');
         await signOut(auth);
       }
+      clearLocalOnSignOut();
       setUser(null);
       setMenuOpen(false);
     } catch {}

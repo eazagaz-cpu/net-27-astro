@@ -243,6 +243,8 @@
     "rating": "평점",
     "all": "전체",
     "myWatchlist": "내 목록",
+    "addToWatchlist": "내 목록에 추가",
+    "inWatchlist": "내 목록에 있음",
     "back": "뒤로",
     "browseByGenre": "장르별 보기",
     "fromTheBlog": "블로그에서",

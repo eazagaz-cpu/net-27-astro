@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { signInWithGoogle, signOut, onAuthChange, isFirebaseConfigured, type AuthUser } from '../../lib/auth';
+import { syncOnLogin, clearLocalOnSignOut } from '../../lib/firestore';
 
 const GOOGLE_ICON = (
   <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -97,6 +98,8 @@ export default function AuthModal() {
     try {
       const u = await signInWithGoogle();
       if (u) {
+        // Silently merge localStorage → Firestore, then refresh localStorage
+        syncOnLogin(u.uid).catch(() => {});
         setToast(`Signed in as ${u.displayName || u.email}`);
         closeModal();
       }
@@ -108,6 +111,7 @@ export default function AuthModal() {
 
   const handleSignOut = async () => {
     await signOut();
+    clearLocalOnSignOut(); // wipe localStorage so next user starts fresh
     setUser(null);
     setShowUserMenu(false);
     setToast('Signed out successfully');

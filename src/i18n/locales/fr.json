@@ -243,6 +243,8 @@
     "rating": "Note",
     "all": "Tout",
     "myWatchlist": "Ma liste",
+    "addToWatchlist": "Ajouter à Ma liste",
+    "inWatchlist": "Dans Ma liste",
     "back": "Retour",
     "browseByGenre": "Parcourir par genre",
     "fromTheBlog": "Du blog",
