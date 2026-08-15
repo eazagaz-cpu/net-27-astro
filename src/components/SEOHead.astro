@@ -23,10 +23,29 @@ interface Props {
    * Ignored unless `localized` is set.
    */
   localesWithPage?: Lang[];
+  /**
+   * Dimensions of `ogImage`. The default is the site card; a page passing its
+   * own image must pass its size with it, because a declared size that does not
+   * match the file makes crawlers crop or skip the preview.
+   */
+  ogImageWidth?: number;
+  ogImageHeight?: number;
+  /** Describes `ogImage`. Title pages name the title rather than the site. */
+  ogImageAlt?: string;
 }
 
 const seo = generateSEO(Astro.props);
-const ogImageAlt = 'NetMirror - Movies, TV Shows, Anime and Hindi Dubbed Discovery';
+
+const ogImageAlt =
+  Astro.props.ogImageAlt ??
+  'NetMirror - Movies, TV Shows, Anime and Hindi Dubbed Discovery';
+const ogImageWidth = Astro.props.ogImageWidth ?? 1200;
+const ogImageHeight = Astro.props.ogImageHeight ?? 630;
+
+// Facebook, X and WhatsApp only render raster previews, so the type has to be
+// the truth about the file rather than a constant: TMDB serves JPEG, the site
+// card is a PNG. Declaring the wrong one loses the preview.
+const ogImageType = /\.jpe?g($|\?)/i.test(seo.ogImage) ? 'image/jpeg' : 'image/png';
 
 const lang: Lang = getLangFromUrl(Astro.url);
 // The cluster is built from the path, so every locale in it resolves to the
@@ -63,9 +82,9 @@ const otherOgLocales = Astro.props.localized
 <meta property="og:description" content={seo.ogDescription} />
 <meta property="og:image" content={seo.ogImage} />
 <meta property="og:image:secure_url" content={seo.ogImage} />
-<meta property="og:image:type" content="image/png" />
-<meta property="og:image:width" content="1200" />
-<meta property="og:image:height" content="630" />
+<meta property="og:image:type" content={ogImageType} />
+<meta property="og:image:width" content={String(ogImageWidth)} />
+<meta property="og:image:height" content={String(ogImageHeight)} />
 <meta property="og:image:alt" content={ogImageAlt} />
 <meta property="og:url" content={seo.canonical} />
 <meta property="og:type" content={seo.ogType} />

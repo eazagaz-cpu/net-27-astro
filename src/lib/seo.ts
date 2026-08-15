@@ -94,6 +94,42 @@ export function titleSeoDescription(input: TitleSeoInput): string {
   return `Where to watch ${name} (${year}).${synopsis} Streaming availability, cast, ratings and release details.`;
 }
 
+/**
+ * The share preview for one title.
+ *
+ * A generated card was tried first and cannot work here: Facebook, X, WhatsApp
+ * and LinkedIn only render raster previews, so an SVG returned by a Function is
+ * simply dropped, and rasterising one per request costs more CPU than a Pages
+ * Function is allowed. The backdrop TMDB already gives us is a real JPEG at
+ * close to the 1.91:1 ratio these crawlers want, needs no request of our own,
+ * and shows the actual film — so it beats a generated card on every count.
+ *
+ * 46 of 920 titles have no backdrop; those keep the site card.
+ */
+export function titleOgImage(
+  backdropUrl: string | undefined | null,
+  titleName: string,
+): { ogImage: string; ogImageWidth: number; ogImageHeight: number; ogImageAlt: string } {
+  // w1280 rather than the stored `original`: originals run to several MB, and
+  // crawlers give up on images past about 5MB.
+  const sized = backdropUrl?.replace('/t/p/original/', '/t/p/w1280/');
+  if (!sized) {
+    return {
+      ogImage: `${SITE_URL}/og-image.png`,
+      ogImageWidth: 1200,
+      ogImageHeight: 630,
+      ogImageAlt: `${titleName} on ${SITE_NAME}`,
+    };
+  }
+  // TMDB backdrops are 16:9, which w1280 makes 1280×720.
+  return {
+    ogImage: sized,
+    ogImageWidth: 1280,
+    ogImageHeight: 720,
+    ogImageAlt: `${titleName} — backdrop image`,
+  };
+}
+
 export function generateSEO(input: SEOInput): SEOOutput {
   const hasBrand = input.title.toLowerCase().includes('netmirror') || input.title.toLowerCase().includes('net mirror');
   const brandSuffix = ` | ${SITE_NAME}`;
