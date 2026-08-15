@@ -81,3 +81,35 @@ Consult these guides before working on related tasks:
 - [Adding or managing content](https://docs.astro.build/en/guides/content-collections/)
 - [Adding styles or using Tailwind](https://docs.astro.build/en/guides/styling/)
 - [Supporting multiple languages](https://docs.astro.build/en/guides/internationalization/)
+
+### Two deploy paths, not one
+
+Production is reached two ways, and both must stay green:
+
+1. **Git integration** — pushing to `main` builds on Cloudflare's own builder.
+2. **[.github/workflows/daily-sync.yml](.github/workflows/daily-sync.yml)** — runs
+   4× daily on cron, refreshes the TMDB cache, builds, and deploys with
+   `wrangler pages deploy` using `secrets.CLOUDFLARE_API_TOKEN`.
+
+The second one is easy to forget, because its failures arrive as GitHub emails
+that read like Cloudflare build failures. It sat broken for four days — sixteen
+consecutive runs — after wrangler was pinned to 4.120.1, which requires Node 22
+while the workflow asked for Node 20. Check it with `gh run list --workflow
+daily-sync.yml`, not just the Pages dashboard.
+
+Because that workflow holds a Cloudflare API token as a GitHub secret, **do not
+delete API tokens without checking what uses them** — deploys survive losing the
+Git integration's token but not that one.
+
+### A silently truncated build is out of memory, not a timeout
+
+Astro renders every page into memory. When a Pages build log stops mid-render
+with no error, Node ran out of heap; a timeout would not truncate the log that
+way, and build time here barely tracks page count anyway (5,400 pages took 250s,
+10,668 took 237s — the clock goes to movie-sync fetching from TMDB).
+
+Routing 16 locales — 21,205 pages — died that way. The fix is
+`NODE_OPTIONS=--max-old-space-size=4096` in the Pages project's environment
+variables: a dev machine gives Node a 4.19GB heap by default and builds all
+25,156 pages inside it, while the builder's default is smaller. Raise that
+number first if it happens again.
