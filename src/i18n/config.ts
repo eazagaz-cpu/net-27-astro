@@ -49,18 +49,26 @@ export const ROUTED_LANGS: Lang[] = [
   // kill looks like rather than a timeout.
   'es', 'ar', 'id', 'pt',
   'ru', 'fr', 'de', 'tr',
-  'it', 'ja', 'ko', 'ms', 'pl', 'bg', 'sv',
 ];
 
-// A note on the ceiling this hit on the way here. Routing 16 locales — 21,205
-// pages — killed Cloudflare's builder: the log ended mid-render with no error,
-// which is an out-of-memory kill, not a timeout. Build time was never the
-// constraint (5,400 pages took 250s, 10,668 took 237s; the clock goes to
-// movie-sync fetching from TMDB). The fix was NODE_OPTIONS
-// --max-old-space-size=4096 on the Pages project: a dev machine gives Node a
-// 4.19GB heap by default and builds all 25,155 pages inside it, while the
-// builder's default is smaller. If a future locale or a larger catalogue
-// reintroduces the same silent truncation, raise that number first.
+// The measured ceiling, after three attempts at it.
+//
+//   12 locales · 15,937 pages · builds
+//   16 locales · 21,205 pages · dies
+//   19 locales · 24,892 pages · dies, even with NODE_OPTIONS
+//                               --max-old-space-size=4096
+//
+// Each failure ends the same way: the log stops mid-render with no error, which
+// is an out-of-memory kill. Build time was never the constraint — 5,400 pages
+// took 250s and 10,668 took 237s, because the clock goes to movie-sync fetching
+// from TMDB, not to rendering. Raising Node's heap did not move it either, so
+// the limit is the builder container's memory rather than the JS heap inside it.
+//
+// The seven left out — it, ja, ko, ms, pl, bg, sv — are the ones Search Console
+// shows almost no traffic for, and they still translate through the client-side
+// switcher. They just have no URLs of their own. Adding them back needs fewer
+// pages per locale (dropping person pages or year archives outside the main
+// locales would do it) rather than another memory setting.
 
 export const RTL_LANGS: Lang[] = ['ar', 'ur'];
 
