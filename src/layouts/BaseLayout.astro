@@ -74,6 +74,15 @@ const showPopAd = !POP_AD_EXCLUDED.includes(barePath);
       });
     })();
   </script>
+  <!-- Service Worker registration — deferred until after first interaction -->
+  <script is:inline>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          .catch(function() {}); // Silently fail — SW is enhancement only
+      });
+    }
+  </script>
 </head>
 <body class="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
   <SearchOverlay client:media="(min-width: 768px)" />
@@ -227,25 +236,7 @@ const showPopAd = !POP_AD_EXCLUDED.includes(barePath);
     }
   })();
   </script>
-  <!-- One-time cleanup after removing RollerAds push. A service worker lives in
-       the browser rather than the page, so deleting /3055833.sw.js does not stop
-       the workers already registered on visitors' devices — they would keep
-       delivering notifications until a 404 on some future update check happened
-       to unregister them. This removes them on the next visit instead, and also
-       drops the push subscription, which is owned by the worker.
 
-       Safe to delete once traffic has cycled through; it is a no-op for anyone
-       who never subscribed. -->
-  <script is:inline>
-    if ('serviceWorker' in navigator) {
-      navigator.serviceWorker.getRegistrations().then(function (regs) {
-        regs.forEach(function (reg) {
-          var script = (reg.active || reg.installing || reg.waiting || {}).scriptURL || '';
-          if (script.indexOf('3055833.sw.js') !== -1) reg.unregister();
-        });
-      }).catch(function () {});
-    }
-  </script>
   {showPopAd && <PopAd />}
 </body>
 </html>

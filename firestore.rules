@@ -1,0 +1,39 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ── Reviews ───────────────────────────────────────────────────────────────
+    // Public catalogue: anyone can read aggregate ratings.
+    // A user can only write/update/delete their own review document.
+    match /reviews/{tmdbId}/ratings/{uid} {
+      allow read: if true;
+      allow write: if request.auth != null && request.auth.uid == uid;
+    }
+
+    // ── User profile data ────────────────────────────────────────────────────
+    // Each user can only read and write their own data.
+    match /users/{uid} {
+      allow read, write: if request.auth != null && request.auth.uid == uid;
+
+      // Watchlist sub-collection
+      match /watchlist/{itemId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+
+      // Watch history sub-collection
+      match /history/{itemId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+
+      // Push notification tokens — user-scoped, writable only by the owner
+      match /notifications/{docId} {
+        allow read, write: if request.auth != null && request.auth.uid == uid;
+      }
+    }
+
+    // ── Default deny ─────────────────────────────────────────────────────────
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

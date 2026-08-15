@@ -33,6 +33,7 @@ import { SITE_URL } from '../../lib/seo';
 import { SITE_NAME } from '../../lib/constants';
 import { getCachedItems } from '../../lib/movie-cache';
 import { getAllBlogPosts } from '../../data/blogPosts';
+import GeoRail from '../GeoRail.tsx';
 
 // Build-time pre-fetched data (from movie-sync.mjs cache).
 // Returns [] gracefully if sync hasn't been run yet.
@@ -139,6 +140,11 @@ const homeFaqs = [
 
     <!-- Continue Watching — client-side localStorage rail -->
     <ContinueWatching />
+
+    <!-- Geo-Personalized Rail — country-specific content -->
+    <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] py-6">
+      <GeoRail client:idle />
+    </div>
 
     <!-- Top 10 — directly after hero, no CTA interruption -->
     <Top10Rail mediaType="movie" items={cachedPopularMovies} />

@@ -103,15 +103,21 @@
   Content-Type: text/html; charset=utf-8
   Cache-Control: no-cache
 
-# Tombstone for the retired RollerAds push worker. It unregisters itself, so it
-# must never be cached: the previous file's cached 200 outlived its deletion at
-# origin and kept update checks from ever seeing the 404 that would have removed
-# the worker. Its CSP is minimal because it loads nothing.
-/3055833.sw.js
-  Content-Type: text/javascript; charset=utf-8
-  Content-Security-Policy: default-src 'none'
-  Cache-Control: no-store, max-age=0
-  X-Robots-Tag: noindex
 
 /watch/*
   Referrer-Policy: no-referrer-when-downgrade
+
+# Service worker must never be edge-cached — browsers check it every 24h and
+# a stale SW means users never receive updates.
+/sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+/firebase-messaging-sw.js
+  Cache-Control: no-cache, no-store, must-revalidate
+
+# PWA icons — long cache, versioned by filename if changed
+/icons/*
+  Cache-Control: public, max-age=2592000
+
+/manifest.json
+  Cache-Control: no-cache

@@ -1,0 +1,99 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import DynamicGrid from '../../components/DynamicGrid.tsx';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+
+// Years we have cache files for (must be defined both here and inside getStaticPaths
+// because Astro runs getStaticPaths in an isolated scope)
+const SUPPORTED_YEARS = [2026, 2025, 2024, 2023];
+
+export async function getStaticPaths() {
+  const years = [2026, 2025, 2024, 2023];
+  return years.map(year => ({
+    params: { year: String(year) },
+  }));
+}
+
+const { year } = Astro.params;
+const yearNum = Number(year);
+
+// Category key matches the cache file name: new-2026, latest-movies (fallback)
+const categoryKey = yearNum === 2026 ? 'new-2026' : 'latest-movies';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'New Releases', href: '/new/' },
+  { label: year!, href: `/new/${year}/` },
+];
+
+const faqs = [
+  { question: `What movies and shows are available from ${year}?`, answer: `Our ${year} catalog includes the latest releases from major streaming platforms like Netflix, Prime Video, Disney+, JioHotstar, and more. The list is updated regularly as new titles are added.` },
+  { question: `Where can I stream ${year} releases?`, answer: `Each title card shows the streaming platforms available in your region. Click on any title to find out where to watch it legally.` },
+  { question: `Are ${year} movies available in HD?`, answer: `Yes — quality depends on the streaming platform. Most 2024–2026 releases are available in HD or 4K on premium platforms.` },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title={`Best Movies & Shows of ${year} — Watch Free Online | Net27`}
+    description={`Discover the best movies, TV shows, and anime of ${year}. Stream the top ${year} releases on Netflix, Prime Video, Disney+, JioHotstar and more — all in one place.`}
+    canonical={`${SITE_URL}/new/${year}/`}
+    localized={true}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+
+  <Header />
+
+  <main class="min-h-screen">
+
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+      <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-28 pb-10">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="mt-4 text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
+          Best of <span class="gradient-text">{year}</span>
+        </h1>
+        <p class="mt-3 text-[var(--color-text-secondary)] text-lg max-w-2xl">
+          The top movies, TV shows, and anime released in {year} — find where to stream them all.
+        </p>
+        <!-- Year navigation -->
+        <div class="mt-6 flex flex-wrap gap-2">
+          {SUPPORTED_YEARS.map(y => (
+            <a
+              href={`/new/${y}/`}
+              class={`chip ${y === yearNum ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]' : ''}`}
+            >
+              {y}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-10 space-y-10">
+
+      <section>
+        <DynamicGrid client:idle category={categoryKey} title={`Best of ${year}`} />
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host, store, or distribute any copyrighted content. Streaming availability varies by region and is subject to change.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -102,3 +102,12 @@ const otherOgLocales = Astro.props.localized
 {/* follow, not nofollow: these pages should stay out of the index while still
     passing crawlers through to the catalogue they link to. */}
 {seo.noindex && <meta name="robots" content="noindex, follow" />}
+
+<!-- PWA / Web App -->
+<link rel="manifest" href="/manifest.json" />
+<meta name="theme-color" content="#e51d4c" />
+<meta name="mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+<meta name="apple-mobile-web-app-title" content="Net27" />
+<link rel="apple-touch-icon" href="/favicon.svg" />

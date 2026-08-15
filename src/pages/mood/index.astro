@@ -1,0 +1,167 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Mood', href: '/mood/' },
+];
+
+const moods = [
+  {
+    id: 'funny',
+    emoji: '😂',
+    label: 'Make Me Laugh',
+    description: 'Comedies, rom-coms, and feel-good titles that guarantee a smile.',
+    genre: 'comedy',
+    colorClass: 'from-yellow-500/20 to-orange-500/20',
+    hoverClass: 'hover:border-yellow-500/40',
+    badgeClass: 'bg-yellow-500/20 text-yellow-300',
+  },
+  {
+    id: 'scary',
+    emoji: '😱',
+    label: 'Scare Me',
+    description: 'Horror and thriller titles that will keep you up at night.',
+    genre: 'horror',
+    colorClass: 'from-red-900/20 to-purple-900/20',
+    hoverClass: 'hover:border-red-500/40',
+    badgeClass: 'bg-red-500/20 text-red-300',
+  },
+  {
+    id: 'romantic',
+    emoji: '💕',
+    label: 'I Feel Romantic',
+    description: 'Love stories and rom-coms perfect for a cozy night in.',
+    genre: 'romance',
+    colorClass: 'from-pink-500/20 to-rose-500/20',
+    hoverClass: 'hover:border-pink-500/40',
+    badgeClass: 'bg-pink-500/20 text-pink-300',
+  },
+  {
+    id: 'mind-bending',
+    emoji: '🤯',
+    label: 'Blow My Mind',
+    description: 'Mind-bending sci-fi and psychological thrillers that challenge reality.',
+    genre: 'sci-fi',
+    colorClass: 'from-cyan-500/20 to-blue-500/20',
+    hoverClass: 'hover:border-cyan-500/40',
+    badgeClass: 'bg-cyan-500/20 text-cyan-300',
+  },
+  {
+    id: 'emotional',
+    emoji: '😢',
+    label: 'I Want to Feel',
+    description: 'Emotionally powerful dramas that move you to tears.',
+    genre: 'drama',
+    colorClass: 'from-blue-500/20 to-indigo-500/20',
+    hoverClass: 'hover:border-blue-500/40',
+    badgeClass: 'bg-blue-500/20 text-blue-300',
+  },
+  {
+    id: 'action',
+    emoji: '⚡',
+    label: 'Pure Adrenaline',
+    description: 'High-octane action and adventure titles that get your heart pumping.',
+    genre: 'action',
+    colorClass: 'from-orange-500/20 to-red-500/20',
+    hoverClass: 'hover:border-orange-500/40',
+    badgeClass: 'bg-orange-500/20 text-orange-300',
+  },
+];
+
+const faqs = [
+  { question: "How does Mood-Based Discovery work?", answer: "Select how you feel right now and we'll show you titles perfectly matched to that mood — from laugh-out-loud comedies to spine-chilling horror, emotionally powerful dramas to mind-bending sci-fi." },
+  { question: "Can I switch moods without reloading the page?", answer: "Yes! Click any mood card and you'll be taken to the matching genre page instantly." },
+  { question: "Are these mood categories updated regularly?", answer: "The title catalog behind each mood is refreshed regularly with new releases and trending picks." },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title={`What's Your Mood? Watch Movies & Shows by Mood — Net27`}
+    description={`Not sure what to watch? Pick your mood — funny, scary, romantic, mind-bending, emotional, or action-packed — and discover perfectly matched movies and TV shows on Net27.`}
+    canonical={`${SITE_URL}/mood/`}
+    localized={true}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+
+  <Header />
+
+  <main class="min-h-screen">
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+      <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-28 pb-10">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="mt-4 text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
+          What's Your <span class="gradient-text">Mood</span>?
+        </h1>
+        <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-2xl">
+          Stop scrolling endlessly. Tell us how you feel and we'll find the perfect watch for you — right now.
+        </p>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-10 space-y-12">
+
+      <!-- Mood Picker Cards -->
+      <section>
+        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4">
+          {moods.map(mood => (
+            <a
+              href={`/genre/${mood.genre}/`}
+              class={`glass-card rounded-2xl p-5 flex flex-col items-center gap-3 text-center transition-all duration-300 bg-gradient-to-br ${mood.colorClass} ${mood.hoverClass} group no-underline`}
+              aria-label={`Watch ${mood.label} titles`}
+            >
+              <span class="text-4xl transition-transform duration-300 group-hover:scale-125">{mood.emoji}</span>
+              <span class={`text-xs font-semibold px-2 py-1 rounded-full ${mood.badgeClass}`}>{mood.label}</span>
+              <p class="text-xs text-[var(--color-text-muted)] hidden sm:block">{mood.description}</p>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- What to Expect Section -->
+      <section>
+        <h2 class="section-title mb-6">Every Mood Has a Perfect Match</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {moods.map(mood => (
+            <a
+              href={`/genre/${mood.genre}/`}
+              class={`glass-card rounded-xl p-6 flex items-start gap-4 transition-all duration-300 bg-gradient-to-br ${mood.colorClass} ${mood.hoverClass} group no-underline`}
+            >
+              <span class="text-3xl mt-1 flex-shrink-0">{mood.emoji}</span>
+              <div>
+                <h3 class="font-bold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors">{mood.label}</h3>
+                <p class="text-sm text-[var(--color-text-muted)] mt-1">{mood.description}</p>
+                <span class={`inline-block mt-3 text-xs font-semibold px-3 py-1 rounded-full ${mood.badgeClass}`}>Browse →</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host, store, or distribute any copyrighted content. All mood-based recommendations are sourced from publicly available metadata. All trademarks belong to their respective owners.
+        </p>
+      </section>
+
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

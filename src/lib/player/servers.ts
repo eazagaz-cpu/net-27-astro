@@ -28,6 +28,8 @@ export function getServers(p: {
       { id: 'vidsrc-cc',  name: 'Server 3', sandboxMode: 'none', streamMode: false, url: `https://vidsrc.cc/v2/embed/movie/${id}` },
       { id: 'vidlink',    name: 'Server 4', sandboxMode: 'none', streamMode: false, url: `https://vidlink.pro/movie/${id}` },
       { id: 'multiembed', name: 'Server 5', sandboxMode: 'none', streamMode: false, url: `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1` },
+      { id: '2embed',     name: 'Server 6', sandboxMode: 'none', streamMode: false, url: `https://www.2embed.cc/embed/${id}` },
+      { id: 'superembed', name: 'Server 7', sandboxMode: 'none', streamMode: false, url: `https://superembed.stream/embed/tmdb/movie/${id}` },
     ];
   }
 
@@ -37,5 +39,7 @@ export function getServers(p: {
     { id: 'vidsrc-cc',  name: 'Server 3', sandboxMode: 'none', streamMode: false, url: `https://vidsrc.cc/v2/embed/tv/${id}/${s}/${e}` },
     { id: 'vidlink',    name: 'Server 4', sandboxMode: 'none', streamMode: false, url: `https://vidlink.pro/tv/${id}/${s}/${e}` },
     { id: 'multiembed', name: 'Server 5', sandboxMode: 'none', streamMode: false, url: `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}` },
+    { id: '2embed',     name: 'Server 6', sandboxMode: 'none', streamMode: false, url: `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}` },
+    { id: 'superembed', name: 'Server 7', sandboxMode: 'none', streamMode: false, url: `https://superembed.stream/embed/tmdb/tv/${id}/${s}/${e}` },
   ];
 }

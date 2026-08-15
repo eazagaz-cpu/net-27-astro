@@ -1,0 +1,48 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import SEOHead from '../components/SEOHead.astro';
+import Schema from '../components/Schema.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import ProfileClient from '../components/ProfileClient.tsx';
+import { breadcrumbSchema } from '../lib/schema';
+import { SITE_URL } from '../lib/seo';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Profile', href: '/profile/' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="My Profile — Net27"
+    description="View your watch stats, recently watched titles, and saved watchlist on Net27."
+    canonical={`${SITE_URL}/profile/`}
+  />
+  <Schema slot="head" schema={breadcrumbSchema(breadcrumbs)} />
+
+  <Header />
+
+  <main class="min-h-screen">
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+      <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-28 pb-8">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="mt-4 text-4xl font-extrabold leading-tight">
+          My <span class="gradient-text">Profile</span>
+        </h1>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-8">
+      <ProfileClient client:only="react" />
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

@@ -127,6 +127,26 @@ export default function UserMenu() {
               </p>
             </div>
             <div style={{ padding: 6 }}>
+              {[
+                { href: '/profile/', label: '👤 My Profile' },
+                { href: '/watchlist/', label: '🔖 My Watchlist' },
+                { href: '/mood/', label: '😊 Mood Discovery' },
+              ].map(item => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  style={{
+                    display: 'block', width: '100%', padding: '10px 12px', borderRadius: 8,
+                    fontSize: 13, fontWeight: 500, color: '#fff',
+                    textDecoration: 'none', transition: 'background 0.15s',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.05)'}
+                  onMouseLeave={(e) => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                >
+                  {item.label}
+                </a>
+              ))}
+              <div style={{ height: 1, background: 'rgba(255,255,255,0.06)', margin: '4px 0' }} />
               <button
                 onClick={handleSignOut}
                 className="cursor-pointer"

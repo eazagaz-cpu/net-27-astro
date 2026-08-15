@@ -10,6 +10,29 @@ export interface StreamSource {
   qualityScore: number;
 }
 
+/**
+ * Seed localStorage quality scores from the global server-health endpoint.
+ * Called once per page — uses sessionStorage to avoid hammering the API.
+ */
+export async function seedServerHealthScores(): Promise<void> {
+  if (typeof window === 'undefined') return;
+  try {
+    const lastSeed = sessionStorage.getItem('health-seeded');
+    if (lastSeed && Date.now() - Number(lastSeed) < 5 * 60 * 1000) return; // 5 min cooldown
+    const res = await fetch('/api/server-health', { cache: 'default' });
+    if (!res.ok) return;
+    const data = await res.json() as { servers: Record<string, { score: number; ok: boolean }> };
+    if (!data?.servers) return;
+    // Merge into localStorage quality scores (key: netmirror:serverQuality)
+    const stored = JSON.parse(localStorage.getItem('netmirror:serverQuality') || '{}');
+    for (const [id, info] of Object.entries(data.servers)) {
+      stored[id] = { ...(stored[id] ?? {}), qualityScore: info.score, globalOk: info.ok };
+    }
+    localStorage.setItem('netmirror:serverQuality', JSON.stringify(stored));
+    sessionStorage.setItem('health-seeded', String(Date.now()));
+  } catch {}
+}
+
 export function getStreamSources(params: {
   tmdbId: number | string;
   type: 'movie' | 'tv';
@@ -46,6 +69,18 @@ export function getStreamSources(params: {
         type: 'iframe', priority: 4, enabled: true,
         adExperience: 'moderate', qualityScore: 65,
       },
+      {
+        id: 'server-5', name: 'Server 5', label: '2Embed',
+        url: `https://www.2embed.cc/embed/${tmdbId}`,
+        type: 'iframe', priority: 5, enabled: true,
+        adExperience: 'moderate', qualityScore: 60,
+      },
+      {
+        id: 'server-6', name: 'Server 6', label: 'SuperEmbed',
+        url: `https://superembed.stream/embed/tmdb/movie/${tmdbId}`,
+        type: 'iframe', priority: 6, enabled: true,
+        adExperience: 'moderate', qualityScore: 55,
+      },
     ];
   }
 
@@ -73,6 +108,18 @@ export function getStreamSources(params: {
       url: `https://autoembed.co/tv/tmdb/${tmdbId}-${s}-${e}`,
       type: 'iframe', priority: 4, enabled: true,
       adExperience: 'moderate', qualityScore: 65,
+    },
+    {
+      id: 'server-5', name: 'Server 5', label: '2Embed',
+      url: `https://www.2embed.cc/embedtv/${tmdbId}&s=${s}&e=${e}`,
+      type: 'iframe', priority: 5, enabled: true,
+      adExperience: 'moderate', qualityScore: 60,
+    },
+    {
+      id: 'server-6', name: 'Server 6', label: 'SuperEmbed',
+      url: `https://superembed.stream/embed/tmdb/tv/${tmdbId}/${s}/${e}`,
+      type: 'iframe', priority: 6, enabled: true,
+      adExperience: 'moderate', qualityScore: 55,
     },
   ];
 }

@@ -1,0 +1,155 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import PushSubscribeButton from '../../components/PushSubscribeButton.tsx';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import upcomingRaw from '../../data/cache/upcoming.json';
+
+interface UpcomingItem {
+  id: number;
+  type: string;
+  title: string;
+  year: number | string;
+  rating?: number;
+  posterUrl?: string;
+  backdropUrl?: string;
+  overview?: string;
+  genreIds?: string | number[];
+  language?: string;
+}
+
+const upcoming: UpcomingItem[] = Array.isArray((upcomingRaw as any).results)
+  ? (upcomingRaw as any).results
+  : Array.isArray(upcomingRaw)
+    ? upcomingRaw as unknown as UpcomingItem[]
+    : [];
+
+// Sort by year (most recent first), filter out titles without posters
+const sorted = upcoming
+  .filter(t => t.posterUrl)
+  .slice(0, 48);
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Coming Soon', href: '/coming-soon/' },
+];
+
+const faqs = [
+  { question: 'When will these titles be available to watch?', answer: 'Coming Soon titles are upcoming releases. Once they hit streaming platforms, they\'ll appear in our main catalog. Check back regularly or search for a specific title.' },
+  { question: 'How often is the Coming Soon list updated?', answer: 'The list is updated regularly from TMDB\'s upcoming movies database, ensuring you always see the latest anticipated releases.' },
+  { question: 'Can I get notified when a title releases?', answer: 'Sign in and add a title to your watchlist — you\'ll be able to track anticipated releases alongside your current watchlist.' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title={`Coming Soon — Upcoming Movies & Shows (${new Date().getFullYear()}) | Net27`}
+    description={`Discover the most anticipated upcoming movies and TV shows of ${new Date().getFullYear()}. Preview trailers, release dates, and be first to know when they hit streaming platforms.`}
+    canonical={`${SITE_URL}/coming-soon/`}
+    localized={true}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+
+  <Header />
+
+  <main class="min-h-screen">
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+      <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-28 pb-10">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="mt-4 text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
+          🎬 <span class="gradient-text">Coming Soon</span>
+        </h1>
+        <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-2xl">
+          The most anticipated upcoming movies and shows — preview what's heading to streaming platforms next.
+        </p>
+        <div class="mt-4 flex items-center gap-3">
+          <span class="chip">🎥 {sorted.length} upcoming titles</span>
+          <span class="chip">🗓 Updated {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-10 space-y-10">
+
+      <!-- Upcoming Grid -->
+      <section>
+        <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+          {sorted.map(title => (
+            <div class="group relative">
+              <!-- Poster -->
+              <div class="relative rounded-xl overflow-hidden bg-white/5 aspect-[2/3]">
+                <img
+                  src={title.posterUrl}
+                  alt={title.title}
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                  width="200"
+                  height="300"
+                />
+                <!-- Coming Soon badge -->
+                <div class="absolute top-2 left-2 bg-[var(--color-primary)] text-white text-[10px] font-bold px-2 py-1 rounded-full">
+                  COMING SOON
+                </div>
+                <!-- Hover overlay -->
+                <div class="absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3">
+                  <p class="text-xs text-white/80 line-clamp-3">{title.overview}</p>
+                </div>
+              </div>
+              <!-- Info -->
+              <div class="mt-2 px-1">
+                <p class="text-sm font-semibold text-[var(--color-text-primary)] truncate">{title.title}</p>
+                <p class="text-xs text-[var(--color-text-muted)]">{title.year}</p>
+                <div class="mt-1.5">
+                  <PushSubscribeButton client:idle titleName={title.title} compact={true} />
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- What to Expect -->
+      <section class="glass-card rounded-2xl p-8">
+        <h2 class="section-title mb-6">Stay Ahead of the Curve</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm">
+          <div>
+            <div class="text-2xl mb-2">🔔</div>
+            <h3 class="font-bold text-[var(--color-text-primary)] mb-2">Never Miss a Release</h3>
+            <p class="text-[var(--color-text-muted)]">Add upcoming titles to your watchlist to track them. When they drop on streaming platforms, you'll find them in your saved list.</p>
+          </div>
+          <div>
+            <div class="text-2xl mb-2">📅</div>
+            <h3 class="font-bold text-[var(--color-text-primary)] mb-2">Updated Regularly</h3>
+            <p class="text-[var(--color-text-muted)]">Our upcoming catalog syncs from TMDB's database — ensuring you always see the freshest anticipated releases.</p>
+          </div>
+          <div>
+            <div class="text-2xl mb-2">🌍</div>
+            <h3 class="font-bold text-[var(--color-text-primary)] mb-2">Global Releases</h3>
+            <p class="text-[var(--color-text-muted)]">From Hollywood blockbusters to international releases — our catalog covers upcoming titles from every major film-producing country.</p>
+          </div>
+        </div>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Release dates and streaming availability for upcoming titles may change. Net27 does not host or distribute any copyrighted content. All information is sourced from TMDB and is for informational purposes only.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

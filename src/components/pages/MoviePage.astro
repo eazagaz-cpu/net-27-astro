@@ -30,6 +30,7 @@ import { APK_UNIVERSAL_URL } from '../../lib/constants';
 import WhereToWatch from '../WhereToWatch.astro';
 import RatingsRow from '../RatingsRow.astro';
 import WatchlistButton from '../WatchlistButton.astro';
+import UserReviews from '../UserReviews.tsx';
 
 
 const { title, lang } = Astro.props;
@@ -372,6 +373,9 @@ const schemaData = [
 
       <FAQSection faqs={faqs} title={t(tr, 'ui.faqHeading')} />
 
+      <!-- User Reviews -->
+      <UserReviews client:only="react" tmdbId={title.tmdbId} titleName={title.title} />
+
       <!-- Related Titles -->
       {related.length > 0 && (
         <section>
@@ -399,5 +403,37 @@ const schemaData = [
 
 <script>
   import { mountStreamingAvailability } from '../../lib/apis/streamingAvailability';
+  import { seedServerHealthScores } from '../../lib/streamSources';
   mountStreamingAvailability('streaming-availability');
+  seedServerHealthScores(); // Background: seed global server health scores
+</script>
+
+<script is:inline>
+  // Inject Schema.org AggregateRating into the Movie JSON-LD when UserReviews
+  // emits the aggregate-rating event (fired after Firestore reviews are loaded).
+  window.addEventListener('aggregate-rating', function(e) {
+    var detail = e.detail;
+    if (!detail || !detail.ratingCount || Number(detail.ratingCount) < 1) return;
+    // Find the Movie JSON-LD block
+    var scripts = document.querySelectorAll('script[type="application/ld+json"]');
+    for (var i = 0; i < scripts.length; i++) {
+      try {
+        var data = JSON.parse(scripts[i].textContent);
+        var items = Array.isArray(data) ? data : [data];
+        for (var j = 0; j < items.length; j++) {
+          if (items[j]['@type'] === 'Movie') {
+            items[j].aggregateRating = {
+              '@type': 'AggregateRating',
+              ratingValue: String(detail.ratingValue),
+              bestRating: '5',
+              worstRating: '1',
+              ratingCount: String(detail.ratingCount),
+            };
+            scripts[i].textContent = JSON.stringify(Array.isArray(data) ? items : items[0]);
+            break;
+          }
+        }
+      } catch(err) {}
+    }
+  });
 </script>

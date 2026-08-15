@@ -1,0 +1,108 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import { awardCategories } from '../../data/awardsData';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Awards', href: '/awards/' },
+];
+
+const faqs = [
+  { question: 'Which award ceremonies are covered?', answer: 'We cover the Academy Awards (Oscars), Golden Globes, Cannes Film Festival (Palme d\'Or), and Primetime Emmy Awards — the most prestigious honors in film and television.' },
+  { question: 'Can I watch these award-winning titles on Net27?', answer: 'Yes! Each awards page shows which winners are available to stream, along with which platforms carry them — Netflix, Prime Video, Disney+, and more.' },
+  { question: 'Is the awards catalog updated?', answer: 'Yes — we update the catalog after each ceremony to include the latest winners.' },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="Award-Winning Movies & Shows — Watch Online | Net27"
+    description="Discover Oscar winners, Golden Globe champions, Cannes Palme d'Or recipients, and Emmy award winners. Watch award-winning films and series on Net27."
+    canonical={`${SITE_URL}/awards/`}
+    localized={true}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+
+  <Header />
+
+  <main class="min-h-screen">
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-yellow-600/10 to-amber-500/10"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+      <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-28 pb-10">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="mt-4 text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
+          🏆 <span class="gradient-text">Award-Winning</span><br />Films & Series
+        </h1>
+        <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-2xl">
+          The best of the best — Oscars, Golden Globes, Cannes, and Emmys. Watch history's most celebrated titles, all in one place.
+        </p>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-10 space-y-12">
+
+      <!-- Awards Grid -->
+      <section>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+          {awardCategories.map(award => (
+            <a
+              href={`/awards/${award.slug}/`}
+              class={`glass-card rounded-2xl p-8 flex flex-col items-center text-center bg-gradient-to-br ${award.color} hover:border-[var(--color-primary)]/40 transition-all duration-300 group no-underline`}
+            >
+              <span class="text-6xl mb-4">{award.emoji}</span>
+              <h2 class="text-xl font-extrabold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors leading-tight">
+                {award.name}
+              </h2>
+              <p class="mt-3 text-sm text-[var(--color-text-muted)] line-clamp-3">{award.description}</p>
+              <span class="mt-4 chip text-xs">{award.winners.length} winners →</span>
+            </a>
+          ))}
+        </div>
+      </section>
+
+      <!-- Why Awards Matter section -->
+      <section class="glass-card rounded-2xl p-8">
+        <h2 class="section-title mb-4">Why Watch Award Winners?</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-[var(--color-text-secondary)]">
+          <div>
+            <div class="text-2xl mb-2">🎭</div>
+            <h3 class="font-bold text-[var(--color-text-primary)] mb-2">Guaranteed Quality</h3>
+            <p>Award-winning films and series go through the most rigorous peer evaluation in the industry. They represent the pinnacle of storytelling, direction, and performance.</p>
+          </div>
+          <div>
+            <div class="text-2xl mb-2">🌍</div>
+            <h3 class="font-bold text-[var(--color-text-primary)] mb-2">Cultural Significance</h3>
+            <p>These titles shape culture, spark conversations, and leave lasting impressions. Watching them connects you to shared human experiences across generations and borders.</p>
+          </div>
+          <div>
+            <div class="text-2xl mb-2">🔍</div>
+            <h3 class="font-bold text-[var(--color-text-primary)] mb-2">Discover Hidden Gems</h3>
+            <p>Not every winner was a blockbuster. Award pages surface critically acclaimed arthouse films and foreign language titles you might never have found otherwise.</p>
+          </div>
+        </div>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Award information is sourced from publicly available records. Net27 does not host or distribute any copyrighted content. All award names and trademarks belong to their respective organizations.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

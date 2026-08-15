@@ -1,0 +1,160 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import TitleCard from '../../components/TitleCard.astro';
+import { awardCategories, getAwardBySlug } from '../../data/awardsData';
+import { getAllRealTitles } from '../../lib/realTitles';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+
+export const getStaticPaths = (() => {
+  return awardCategories.map(award => ({
+    params: { slug: award.slug },
+    props: { award },
+  }));
+}) satisfies GetStaticPaths;
+
+const { award } = Astro.props;
+
+// Match TMDB IDs against our real titles catalog
+const allTitles = getAllRealTitles();
+const tmdbIdSet = new Set(award.winners.map(w => w.tmdbId));
+const awardMap = new Map(award.winners.map(w => [w.tmdbId, w.award]));
+
+const matchedTitles = allTitles
+  .filter(t => tmdbIdSet.has(t.tmdbId))
+  .map(t => ({ ...t, awardLabel: awardMap.get(t.tmdbId) ?? '' }));
+
+// Titles in the award list that aren't in our catalog (show limited info)
+const matchedIds = new Set(matchedTitles.map(t => t.tmdbId));
+const unmatchedWinners = award.winners.filter(w => !matchedIds.has(w.tmdbId));
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'Awards', href: '/awards/' },
+  { label: award.shortName, href: `/awards/${award.slug}/` },
+];
+
+const faqs = [
+  {
+    question: `What films/shows won the ${award.shortName}?`,
+    answer: `This page lists ${award.shortName} winners available to stream on Net27. We match award-winning titles against our streaming catalog so you can watch them directly.`,
+  },
+  {
+    question: `Where can I stream ${award.shortName} winners?`,
+    answer: `Each title card shows which streaming platforms (Netflix, Prime Video, Disney+, JioHotstar, etc.) carry the title. Platform availability varies by region.`,
+  },
+  {
+    question: `Is this list updated every year?`,
+    answer: `Yes — we update our awards catalog after each ceremony to include the latest winners.`,
+  },
+];
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title={`${award.name} — Watch Online Free | Net27`}
+    description={`Watch ${award.shortName} winners online. ${award.description} Find where to stream them on Netflix, Prime Video, Disney+, and more.`}
+    canonical={`${SITE_URL}/awards/${award.slug}/`}
+    localized={true}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
+
+  <Header />
+
+  <main class="min-h-screen">
+
+    <!-- Hero -->
+    <section class="relative overflow-hidden">
+      <div class={`absolute inset-0 bg-gradient-to-br ${award.color}`}></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-[var(--color-bg-primary)] to-transparent"></div>
+      <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-28 pb-10">
+        <Breadcrumbs items={breadcrumbs} />
+        <div class="mt-4 flex items-center gap-4">
+          <span class="text-5xl">{award.emoji}</span>
+          <div>
+            <h1 class="text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+              <span class="gradient-text">{award.name}</span>
+            </h1>
+            <p class="mt-2 text-[var(--color-text-secondary)] text-lg max-w-3xl">{award.description}</p>
+          </div>
+        </div>
+        <div class="mt-4 flex items-center gap-3">
+          <span class="chip">{matchedTitles.length} titles on Net27</span>
+          <span class="chip">{award.winners.length} total winners</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-10 space-y-12">
+
+      <!-- Matched Titles Grid -->
+      {matchedTitles.length > 0 && (
+        <section>
+          <h2 class="section-title mb-6">Watch on Net27</h2>
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
+            {matchedTitles.map(title => (
+              <div class="relative">
+                {title.awardLabel && (
+                  <div class="absolute top-2 left-2 z-10 bg-black/80 text-yellow-400 text-[10px] font-bold px-2 py-1 rounded-full max-w-[calc(100%-1rem)] truncate" title={title.awardLabel}>
+                    {award.emoji} Winner
+                  </div>
+                )}
+                <TitleCard title={title} />
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Winners not yet in catalog -->
+      {unmatchedWinners.length > 0 && (
+        <section>
+          <h2 class="section-title mb-4">Other Winners</h2>
+          <p class="text-sm text-[var(--color-text-muted)] mb-4">These winners aren't in our catalog yet — check back soon or search for them.</p>
+          <div class="flex flex-wrap gap-3">
+            {unmatchedWinners.map(w => (
+              <span class="chip">{w.award}</span>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <!-- Browse Other Awards -->
+      <section>
+        <h2 class="section-title mb-4">Browse Other Awards</h2>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {awardCategories
+            .filter(a => a.slug !== award.slug)
+            .map(a => (
+              <a
+                href={`/awards/${a.slug}/`}
+                class={`glass-card rounded-xl p-4 text-center bg-gradient-to-br ${a.color} hover:border-[var(--color-primary)]/40 transition-all group no-underline`}
+              >
+                <div class="text-3xl mb-2">{a.emoji}</div>
+                <div class="text-sm font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors">{a.shortName}</div>
+              </a>
+            ))
+          }
+        </div>
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <section class="glass-card rounded-xl p-6">
+        <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Award winner information is sourced from publicly available records. Net27 does not host, store, or distribute any copyrighted content. All trademarks and award names belong to their respective organizations. Streaming availability varies by region and may change without notice.
+        </p>
+      </section>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>
