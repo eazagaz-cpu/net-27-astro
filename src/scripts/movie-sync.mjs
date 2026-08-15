@@ -285,7 +285,11 @@ async function fetchTitleDetail(type, id) {
     // OMDb rating lookup, where the two must not be confused.
     originalLanguage: d.original_language || '',
     countries: (d.production_countries || []).map(c => c.name).filter(Boolean),
-    cast: (d.credits?.cast || []).slice(0, 10).map(c => ({ name: c.name, role: c.character || '' })),
+    cast: (d.credits?.cast || []).slice(0, 10).map(c => ({
+      name: c.name,
+      role: c.character || '',
+      profileUrl: c.profile_path ? `${IMG_BASE}/w185${c.profile_path}` : '',
+    })),
     director,
     trailerUrl: trailer ? `https://www.youtube.com/embed/${trailer.key}` : '',
     releaseDate,

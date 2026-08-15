@@ -7,6 +7,8 @@
 export interface RealCastMember {
   name: string;
   role: string;
+  /** Build-time synced TMDB profile image URL — avoids runtime API calls per cast card. */
+  profileUrl?: string;
 }
 
 export interface RealWatchProvider {
