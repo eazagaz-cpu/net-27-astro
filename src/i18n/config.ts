@@ -49,7 +49,12 @@ export const ROUTED_LANGS: Lang[] = [
   // kill looks like rather than a timeout.
   'es', 'ar', 'id', 'pt',
   'ru', 'fr', 'de', 'tr',
-  'it', 'ja', 'ko', 'ms',
+  // Measured ceiling. 15,937 pages (12 locales) builds; 21,205 (16) does not —
+  // the log stops mid-render with no error, which is an out-of-memory kill, not
+  // a timeout. Build time was never the constraint: 5,400 pages took 250s and
+  // 10,668 took 237s, because the clock is spent in movie-sync fetching from
+  // TMDB, a fixed cost. Adding more locales needs the builder's memory raised
+  // or the page count per locale reduced, not a longer build window.
 ];
 
 export const RTL_LANGS: Lang[] = ['ar', 'ur'];

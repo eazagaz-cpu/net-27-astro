@@ -26,7 +26,10 @@ jobs:
       # ── 2. Setup Node with npm cache ──────────────────────────────────────
       - uses: actions/setup-node@v4
         with:
-          node-version: '20'
+          # 22, not 20: the deploy step runs wrangler, and wrangler 4.120.1
+          # requires Node >= 22. Pinning 20 here is what broke every scheduled
+          # run after the wrangler pin landed.
+          node-version: '22'
           cache: 'npm'
 
       # ── 3. Install dependencies ───────────────────────────────────────────
