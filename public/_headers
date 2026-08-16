@@ -36,20 +36,27 @@
   Cache-Control: public, max-age=86400
 
 /robots.txt
-  Content-Type: text/plain
+  Content-Type: text/plain; charset=utf-8
   Cache-Control: no-cache
+  Access-Control-Allow-Origin: *
 
 /sitemap-index.xml
   Content-Type: application/xml; charset=utf-8
   Cache-Control: no-cache
+  Access-Control-Allow-Origin: *
+  X-Robots-Tag: noindex
 
 /sitemap.xml
   Content-Type: application/xml; charset=utf-8
   Cache-Control: no-cache
+  Access-Control-Allow-Origin: *
+  X-Robots-Tag: noindex
 
 /sitemap-0.xml
   Content-Type: application/xml; charset=utf-8
   Cache-Control: no-cache
+  Access-Control-Allow-Origin: *
+  X-Robots-Tag: noindex
 
 # These URLs stay crawlable so search engines can see noindex and remove old
 # query variants from their indexes.
@@ -103,6 +110,12 @@
   Content-Type: text/html; charset=utf-8
   Cache-Control: no-cache
 
+
+# IndexNow key — Bing/Yandex/Yahoo instant indexing verification
+/e9d6b5a3c2f1e8d7b4a0c5f2e1d8b3a6.txt
+  Content-Type: text/plain; charset=utf-8
+  Cache-Control: no-cache, no-store
+  Access-Control-Allow-Origin: *
 
 /watch/*
   Referrer-Policy: no-referrer-when-downgrade

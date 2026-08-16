@@ -10,6 +10,7 @@
     "sync": "node src/scripts/movie-sync.mjs",
     "prebuild": "node src/scripts/movie-sync.mjs",
     "build": "astro build",
+    "ping": "node scripts/ping-sitemaps.mjs",
     "preview": "astro preview",
     "astro": "astro",
     "cf": "node scripts/wrangler.mjs",

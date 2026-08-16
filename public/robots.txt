@@ -1,5 +1,56 @@
+# net-27.cc — robots.txt
+# Updated: 2026-08-16
+#
+# /player/ and /watchlist/ are deliberately NOT disallowed here. Both already
+# serve <meta name="robots" content="noindex, follow">, and that is the
+# directive that actually removes them from an index. Blocking them here would
+# stop crawlers fetching the page at all, so they would never read the noindex —
+# the pages would sit in Search Console as "Indexed, though blocked by
+# robots.txt", which is the opposite of what blocking them is meant to achieve.
+# `follow` also keeps link equity flowing on through to the catalogue.
+# scripts/validate-sitemap.mjs fails the build if a Disallow for /player/ comes
+# back.
+#
+# /api/ is different and stays blocked: those endpoints return JSON, so there is
+# no HTML head to carry a noindex in.
+
+# ── Search engine crawlers ──────────────────────────────────────────────────
+User-agent: Googlebot
+Allow: /
+Disallow: /api/
+
+User-agent: Googlebot-Image
+Allow: /
+Disallow: /api/
+
+User-agent: Googlebot-Video
+Allow: /
+Disallow: /api/
+
+User-agent: Bingbot
+Allow: /
+Disallow: /api/
+
+User-agent: Slurp
+Allow: /
+Disallow: /api/
+
+User-agent: DuckDuckBot
+Allow: /
+Disallow: /api/
+
+User-agent: Baiduspider
+Allow: /
+Disallow: /api/
+
+# ── All other bots ──────────────────────────────────────────────────────────
 User-agent: *
 Allow: /
 Disallow: /api/
 
+# ── Sitemaps ────────────────────────────────────────────────────────────────
+# One entry only. sitemap.xml is a byte-for-byte copy of sitemap-0.xml, and
+# sitemap-index.xml just points at sitemap-0.xml, so listing all three offers
+# the same URL set three times over and gives search engines duplicate work
+# rather than more coverage.
 Sitemap: https://net-27.cc/sitemap.xml
