@@ -141,11 +141,6 @@ const homeFaqs = [
     <!-- Continue Watching — client-side localStorage rail -->
     <ContinueWatching />
 
-    <!-- Geo-Personalized Rail — country-specific content -->
-    <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] py-6">
-      <GeoRail client:idle />
-    </div>
-
     <!-- Top 10 — directly after hero, no CTA interruption -->
     <Top10Rail mediaType="movie" items={cachedPopularMovies} />
     <Top10Rail mediaType="tv" items={cachedPopularTv} />
@@ -172,6 +167,11 @@ const homeFaqs = [
     {cachedPakistani.length > 0 && <StaticRail title="Pakistani Dramas" items={cachedPakistani} viewAllHref="/language/urdu/" railKey="pakistani-drama" badge="PK" />}
     {cachedTurkish.length  > 0 && <StaticRail title="Turkish Dramas (Urdu Dubbed)" items={cachedTurkish} viewAllHref="/language/turkish/" railKey="turkish-drama" badge="TR" />}
     <StaticRail title="Trending Globally — Coming Soon" items={cachedUpcoming} railKey="upcoming" badge="Upcoming" />
+
+    <!-- Geo-Personalized Rail — country-specific content (last rail before search) -->
+    <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] py-6">
+      <GeoRail client:idle />
+    </div>
 
     <!-- Search Block -->
     <SearchBlock />

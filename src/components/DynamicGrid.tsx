@@ -24,22 +24,56 @@ const FALLBACK_GRADIENTS = [
   'linear-gradient(135deg, #1f1c2c, #928dab)',
 ];
 
+// Vite: bundle all cache files for lazy-loading as a fallback.
+// This map is resolved at build time; entries are loaded on demand.
+const CACHE_MODULES = import.meta.glob<{ default: { items?: GridItem[]; results?: GridItem[] } }>(
+  '../data/cache/*.json',
+  { eager: false }
+);
+
+async function loadFromStaticCache(category: string): Promise<GridItem[]> {
+  const key = `../data/cache/${category}.json`;
+  const loader = CACHE_MODULES[key];
+  if (!loader) return [];
+  try {
+    const mod = await loader();
+    const json = mod.default;
+    return json.items ?? (json.results as GridItem[] | undefined) ?? [];
+  } catch {
+    return [];
+  }
+}
+
 export default function DynamicGrid({ category, title }: Props) {
   const [items, setItems] = useState<GridItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     setLoading(true);
-    fetchCached<{ items?: GridItem[] }>(
-      `nm:cat:${category}:p3`,
-      `/api/tmdb/category?type=${encodeURIComponent(category)}&pages=3`
-    )
-      .then(data => {
-        setItems(data.items || []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+
+    const loadData = async () => {
+      // Primary: Cloudflare Worker (production)
+      try {
+        const data = await fetchCached<{ items?: GridItem[] }>(
+          `nm:cat:${category}:p3`,
+          `/api/tmdb/category?type=${encodeURIComponent(category)}&pages=3`
+        );
+        if (data.items && data.items.length > 0) {
+          setItems(data.items);
+          setLoading(false);
+          return;
+        }
+      } catch {}
+
+      // Fallback: static build-time cache (dev mode or CF Worker unavailable)
+      const cached = await loadFromStaticCache(category);
+      setItems(cached);
+      setLoading(false);
+    };
+
+    loadData();
   }, [category]);
+
 
   if (loading) {
     return (
