@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Static fallback sitemap-index.xml
+  
+  @astrojs/sitemap generates a real sitemap-index.xml at build time — that
+  generated copy replaces this file in the dist/ folder on every successful
+  build. This static copy is kept in public/ so that:
+    • The Cloudflare edge always has *something* to serve if a build fails
+      partway through before the sitemap integration runs.
+    • Local `astro dev` can respond to /sitemap-index.xml without a full build.
+  
+  Update <lastmod> whenever a major site restructure happens.
+-->
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <sitemap>
+    <loc>https://net-27.cc/sitemap-0.xml</loc>
+    <lastmod>2026-08-16</lastmod>
+  </sitemap>
+</sitemapindex>

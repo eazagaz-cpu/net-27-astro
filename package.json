@@ -16,7 +16,7 @@
     "cf": "node scripts/wrangler.mjs",
     "cf:login": "node scripts/wrangler.mjs login",
     "cf:check": "node scripts/check-cloudflare-auth.mjs",
-    "cf:deploy": "npm run cf:check && astro build && node scripts/wrangler.mjs pages deploy ./dist --project-name net-27-astro",
+    "cf:deploy": "npm run cf:check && astro build && node scripts/wrangler.mjs pages deploy ./dist --project-name net-27-astro --branch main --commit-dirty=true",
     "validate:api": "node scripts/validate-api-config.mjs",
     "validate:media": "node scripts/validate-media.mjs",
     "validate:routes": "node scripts/validate-routes.mjs",

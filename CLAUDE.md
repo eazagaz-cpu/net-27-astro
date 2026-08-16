@@ -113,3 +113,25 @@ Routing 16 locales — 21,205 pages — died that way. The fix is
 variables: a dev machine gives Node a 4.19GB heap by default and builds all
 25,156 pages inside it, while the builder's default is smaller. Raise that
 number first if it happens again.
+
+### "Active" in `wrangler pages deployment list` does not mean live
+
+That Status column reports the **build** stage, so a deployment still compiling
+shows `Active` — the same word it shows once the deployment is serving. Reading
+it as "done" sends you off checking URLs that legitimately 404 or serve the
+previous build, and the obvious next conclusion — that the build silently
+dropped pages — is wrong. This has cost time twice.
+
+Ask the API for the stage instead. `deploy=success` is the only state that means
+visitors can see it:
+
+```
+GET /accounts/{account}/pages/projects/net-27-astro/deployments
+  → result[].latest_stage.{name,status}
+  → result[].deployment_trigger.metadata.commit_hash
+```
+
+A build in progress reads `build:active deploy:idle`; a finished one reads
+`build:success deploy:success`. Until the second one appears, the site is still
+serving the previous deployment, and comparing a file's ETag against the local
+copy will keep disagreeing for a perfectly ordinary reason.
