@@ -64,7 +64,23 @@
     "searchTitle": "Search Movies, TV Shows & Anime",
     "searchDescription": "Find any title by name, actor, genre, or platform.",
     "resultsFor": "Results for",
-    "noResultsFor": "No results found for"
+    "noResultsFor": "No results found for",
+    "filters": "Filters",
+    "type": "Type",
+    "movies": "Movies",
+    "series": "Series",
+    "movie": "Movie",
+    "genre": "Genre",
+    "language": "Language",
+    "platform": "Platform",
+    "fromYear": "From Year",
+    "anyYear": "Any year",
+    "minRating": "Min Rating",
+    "anyRating": "Any rating",
+    "clearAll": "Clear all",
+    "filterMatch": "{n} titles match your filters",
+    "noFilterMatch": "No titles match these filters",
+    "hintSub": "Or use filters to browse by genre, language, platform"
   },
   "chips": {
     "trending": "Trending",
@@ -112,7 +128,9 @@
     "sonyliv": "Popular on SonyLIV",
     "pakistani-drama": "Pakistani Dramas",
     "turkish-drama": "Turkish Dramas (Urdu Dubbed)",
-    "upcoming": "Coming Soon"
+    "upcoming": "Coming Soon",
+    "new2026": "New in 2026",
+    "hindiDubbed": "Hindi Dubbed Hits"
   },
   "player": {
     "loadingPlayer": "Loading player...",

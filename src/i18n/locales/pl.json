@@ -64,7 +64,23 @@
     "searchTitle": "Szukaj filmów, seriali i anime",
     "searchDescription": "Znajdź dowolny tytuł po nazwie, aktorze, gatunku lub platformie.",
     "resultsFor": "Wyniki dla",
-    "noResultsFor": "Brak wyników dla"
+    "noResultsFor": "Brak wyników dla",
+    "filters": "Filtry",
+    "type": "Typ",
+    "movies": "Filmy",
+    "series": "Seriale",
+    "movie": "Film",
+    "genre": "Gatunek",
+    "language": "Język",
+    "platform": "Platforma",
+    "fromYear": "Od roku",
+    "anyYear": "Dowolny rok",
+    "minRating": "Min. ocena",
+    "anyRating": "Dowolna ocena",
+    "clearAll": "Wyczyść wszystko",
+    "filterMatch": "{n} tytułów pasuje do filtrów",
+    "noFilterMatch": "Żaden tytuł nie pasuje do tych filtrów",
+    "hintSub": "Albo filtruj według gatunku, języka lub platformy"
   },
   "chips": {
     "trending": "Popularne",
@@ -112,7 +128,9 @@
     "sonyliv": "Popularne na SonyLIV",
     "pakistani-drama": "Pakistańskie seriale",
     "turkish-drama": "Tureckie seriale (dubbing urdu)",
-    "upcoming": "Wkrótce"
+    "upcoming": "Wkrótce",
+    "new2026": "Nowości 2026",
+    "hindiDubbed": "Hity z dubbingiem hindi"
   },
   "player": {
     "loadingPlayer": "Ładowanie odtwarzacza...",

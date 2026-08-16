@@ -64,7 +64,23 @@
     "searchTitle": "Cari filem, rancangan TV dan anime",
     "searchDescription": "Cari mana-mana tajuk mengikut nama, pelakon, genre atau platform.",
     "resultsFor": "Hasil untuk",
-    "noResultsFor": "Tiada hasil untuk"
+    "noResultsFor": "Tiada hasil untuk",
+    "filters": "Penapis",
+    "type": "Jenis",
+    "movies": "Filem",
+    "series": "Siri",
+    "movie": "Filem",
+    "genre": "Genre",
+    "language": "Bahasa",
+    "platform": "Platform",
+    "fromYear": "Dari tahun",
+    "anyYear": "Mana-mana tahun",
+    "minRating": "Penilaian minimum",
+    "anyRating": "Mana-mana penilaian",
+    "clearAll": "Kosongkan semua",
+    "filterMatch": "{n} tajuk sepadan dengan penapis anda",
+    "noFilterMatch": "Tiada tajuk sepadan dengan penapis ini",
+    "hintSub": "Atau guna penapis untuk melayari mengikut genre, bahasa, platform"
   },
   "chips": {
     "trending": "Trending",
@@ -112,7 +128,9 @@
     "sonyliv": "Popular di SonyLIV",
     "pakistani-drama": "Drama Pakistan",
     "turkish-drama": "Drama Turki (alih suara Urdu)",
-    "upcoming": "Akan datang"
+    "upcoming": "Akan datang",
+    "new2026": "Baharu pada 2026",
+    "hindiDubbed": "Hit Alih Suara Hindi"
   },
   "player": {
     "loadingPlayer": "Memuatkan pemain...",

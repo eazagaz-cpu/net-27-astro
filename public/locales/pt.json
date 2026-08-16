@@ -64,7 +64,23 @@
     "searchTitle": "Buscar filmes, series e animes",
     "searchDescription": "Encontre qualquer titulo por nome, ator, genero ou plataforma.",
     "resultsFor": "Resultados para",
-    "noResultsFor": "Nenhum resultado para"
+    "noResultsFor": "Nenhum resultado para",
+    "filters": "Filtros",
+    "type": "Tipo",
+    "movies": "Filmes",
+    "series": "Séries",
+    "movie": "Filme",
+    "genre": "Gênero",
+    "language": "Idioma",
+    "platform": "Plataforma",
+    "fromYear": "A partir do ano",
+    "anyYear": "Qualquer ano",
+    "minRating": "Nota mínima",
+    "anyRating": "Qualquer nota",
+    "clearAll": "Limpar tudo",
+    "filterMatch": "{n} títulos correspondem aos seus filtros",
+    "noFilterMatch": "Nenhum título corresponde a estes filtros",
+    "hintSub": "Ou use os filtros para navegar por gênero, idioma ou plataforma"
   },
   "chips": {
     "trending": "Em alta",
@@ -112,7 +128,9 @@
     "sonyliv": "Popular no SonyLIV",
     "pakistani-drama": "Novelas paquistanesas",
     "turkish-drama": "Novelas turcas (dubladas em urdu)",
-    "upcoming": "Em breve"
+    "upcoming": "Em breve",
+    "new2026": "Novidades de 2026",
+    "hindiDubbed": "Sucessos dublados em hindi"
   },
   "player": {
     "loadingPlayer": "Carregando o player...",
@@ -253,7 +271,9 @@
     "switchServer": "Trocar servidor",
     "contactUs": "Fale conosco",
     "disclaimer": "Aviso legal",
-    "faqHeading": "Perguntas frequentes"
+    "faqHeading": "Perguntas frequentes",
+    "addToWatchlist": "Adicionar à Minha lista",
+    "inWatchlist": "Na Minha lista"
   },
   "people": {
     "breadcrumb": "Pessoas",

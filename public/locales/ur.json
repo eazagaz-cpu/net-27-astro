@@ -64,7 +64,23 @@
     "searchTitle": "فلمیں، ٹی وی شوز اور انیمے تلاش کریں",
     "searchDescription": "نام، اداکار، صنف، یا پلیٹ فارم کے ذریعے کوئی بھی ٹائٹل تلاش کریں۔",
     "resultsFor": "کے نتائج",
-    "noResultsFor": "کے لیے کوئی نتائج نہیں ملے"
+    "noResultsFor": "کے لیے کوئی نتائج نہیں ملے",
+    "filters": "فلٹر",
+    "type": "قسم",
+    "movies": "فلمیں",
+    "series": "سیریز",
+    "movie": "فلم",
+    "genre": "صنف",
+    "language": "زبان",
+    "platform": "پلیٹ فارم",
+    "fromYear": "کس سال سے",
+    "anyYear": "کوئی بھی سال",
+    "minRating": "کم از کم درجہ بندی",
+    "anyRating": "کوئی بھی درجہ بندی",
+    "clearAll": "سب ہٹائیں",
+    "filterMatch": "{n} ٹائٹل آپ کے فلٹر سے میل کھاتے ہیں",
+    "noFilterMatch": "ان فلٹرز سے کوئی ٹائٹل میل نہیں کھاتا",
+    "hintSub": "یا صنف، زبان، پلیٹ فارم سے چھانٹنے کے لیے فلٹر استعمال کریں"
   },
   "chips": {
     "trending": "ٹرینڈنگ",
@@ -112,7 +128,9 @@
     "sonyliv": "SonyLIV پر مقبول",
     "pakistani-drama": "پاکستانی ڈرامے",
     "turkish-drama": "ترک ڈرامے (اردو ڈب)",
-    "upcoming": "جلد آ رہے ہیں"
+    "upcoming": "جلد آ رہے ہیں",
+    "new2026": "2026 میں نیا",
+    "hindiDubbed": "ہندی ڈب ہٹس"
   },
   "player": {
     "loadingPlayer": "پلیئر لوڈ ہو رہا ہے...",
@@ -253,7 +271,9 @@
     "switchServer": "سرور تبدیل کریں",
     "contactUs": "رابطہ کریں",
     "disclaimer": "دستبرداری",
-    "faqHeading": "اکثر پوچھے جانے والے سوالات"
+    "faqHeading": "اکثر پوچھے جانے والے سوالات",
+    "addToWatchlist": "واچ لسٹ میں شامل کریں",
+    "inWatchlist": "واچ لسٹ میں شامل ہے"
   },
   "people": {
     "breadcrumb": "لوگ",

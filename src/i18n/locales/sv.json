@@ -64,7 +64,23 @@
     "searchTitle": "Sök filmer, TV-serier och anime",
     "searchDescription": "Hitta vilken titel som helst efter namn, skådespelare, genre eller plattform.",
     "resultsFor": "Resultat för",
-    "noResultsFor": "Inga resultat för"
+    "noResultsFor": "Inga resultat för",
+    "filters": "Filter",
+    "type": "Typ",
+    "movies": "Filmer",
+    "series": "Serier",
+    "movie": "Film",
+    "genre": "Genre",
+    "language": "Språk",
+    "platform": "Plattform",
+    "fromYear": "Från år",
+    "anyYear": "Alla år",
+    "minRating": "Lägsta betyg",
+    "anyRating": "Alla betyg",
+    "clearAll": "Rensa allt",
+    "filterMatch": "{n} titlar matchar dina filter",
+    "noFilterMatch": "Inga titlar matchar dessa filter",
+    "hintSub": "Eller använd filter för att bläddra efter genre, språk eller plattform"
   },
   "chips": {
     "trending": "Trendande",
@@ -112,7 +128,9 @@
     "sonyliv": "Populärt på SonyLIV",
     "pakistani-drama": "Pakistanska dramer",
     "turkish-drama": "Turkiska dramer (urdudubbade)",
-    "upcoming": "Kommer snart"
+    "upcoming": "Kommer snart",
+    "new2026": "Nytt 2026",
+    "hindiDubbed": "Hindidubbade hits"
   },
   "player": {
     "loadingPlayer": "Laddar spelaren...",

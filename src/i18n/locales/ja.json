@@ -64,7 +64,23 @@
     "searchTitle": "映画、ドラマ、アニメを検索",
     "searchDescription": "タイトル名、俳優、ジャンル、プラットフォームで検索できます。",
     "resultsFor": "検索結果：",
-    "noResultsFor": "該当する結果がありません："
+    "noResultsFor": "該当する結果がありません：",
+    "filters": "フィルター",
+    "type": "種類",
+    "movies": "映画",
+    "series": "シリーズ",
+    "movie": "映画",
+    "genre": "ジャンル",
+    "language": "言語",
+    "platform": "配信先",
+    "fromYear": "開始年",
+    "anyYear": "すべての年",
+    "minRating": "最低評価",
+    "anyRating": "すべての評価",
+    "clearAll": "すべてクリア",
+    "filterMatch": "{n}件がフィルターに一致",
+    "noFilterMatch": "このフィルターに一致する作品はありません",
+    "hintSub": "ジャンル・言語・配信先で絞り込むこともできます"
   },
   "chips": {
     "trending": "トレンド",
@@ -112,7 +128,9 @@
     "sonyliv": "SonyLIVの人気作",
     "pakistani-drama": "パキスタンのドラマ",
     "turkish-drama": "トルコのドラマ（ウルドゥー語吹替）",
-    "upcoming": "近日公開"
+    "upcoming": "近日公開",
+    "new2026": "2026年の新作",
+    "hindiDubbed": "ヒンディー語吹替の人気作"
   },
   "player": {
     "loadingPlayer": "プレーヤーを読み込み中...",

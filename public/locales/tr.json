@@ -64,7 +64,23 @@
     "searchTitle": "Film, dizi ve anime ara",
     "searchDescription": "Herhangi bir yapımı ada, oyuncuya, türe veya platforma göre bulun.",
     "resultsFor": "Sonuçlar:",
-    "noResultsFor": "Sonuç bulunamadı:"
+    "noResultsFor": "Sonuç bulunamadı:",
+    "filters": "Filtreler",
+    "type": "Tür",
+    "movies": "Filmler",
+    "series": "Diziler",
+    "movie": "Film",
+    "genre": "Tarz",
+    "language": "Dil",
+    "platform": "Platform",
+    "fromYear": "Şu yıldan",
+    "anyYear": "Herhangi bir yıl",
+    "minRating": "Min. puan",
+    "anyRating": "Herhangi bir puan",
+    "clearAll": "Tümünü temizle",
+    "filterMatch": "{n} başlık filtrelerinizle eşleşiyor",
+    "noFilterMatch": "Bu filtrelerle eşleşen başlık yok",
+    "hintSub": "Veya türe, dile, platforma göre gezinmek için filtreleri kullanın"
   },
   "chips": {
     "trending": "Popüler",
@@ -112,7 +128,9 @@
     "sonyliv": "SonyLIV’de popüler",
     "pakistani-drama": "Pakistan dizileri",
     "turkish-drama": "Türk dizileri (Urduca dublaj)",
-    "upcoming": "Yakında"
+    "upcoming": "Yakında",
+    "new2026": "2026'da Yeni",
+    "hindiDubbed": "Hintçe Dublajlı Hitler"
   },
   "player": {
     "loadingPlayer": "Oynatıcı yükleniyor...",
@@ -253,7 +271,9 @@
     "switchServer": "Sunucu değiştir",
     "contactUs": "Bize ulaşın",
     "disclaimer": "Sorumluluk reddi",
-    "faqHeading": "Sık Sorulan Sorular"
+    "faqHeading": "Sık Sorulan Sorular",
+    "addToWatchlist": "Listeme ekle",
+    "inWatchlist": "Listemde"
   },
   "people": {
     "breadcrumb": "Kişiler",

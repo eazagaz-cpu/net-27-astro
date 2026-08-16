@@ -28,7 +28,8 @@
     "validate:html-sitemap": "node scripts/validate-html-sitemap.mjs",
     "validate:og": "node scripts/validate-og.mjs",
     "validate:blog-i18n": "node scripts/validate-blog-i18n.mjs",
-    "validate:csp": "node scripts/validate-csp.mjs"
+    "validate:csp": "node scripts/validate-csp.mjs",
+    "validate:locales": "node scripts/validate-locales.mjs"
   },
   "dependencies": {
     "@astrojs/check": "^0.9.10",

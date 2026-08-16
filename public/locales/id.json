@@ -64,7 +64,23 @@
     "searchTitle": "Cari film, acara TV, dan anime",
     "searchDescription": "Temukan judul apa pun berdasarkan nama, aktor, genre, atau platform.",
     "resultsFor": "Hasil untuk",
-    "noResultsFor": "Tidak ada hasil untuk"
+    "noResultsFor": "Tidak ada hasil untuk",
+    "filters": "Filter",
+    "type": "Tipe",
+    "movies": "Film",
+    "series": "Serial",
+    "movie": "Film",
+    "genre": "Genre",
+    "language": "Bahasa",
+    "platform": "Platform",
+    "fromYear": "Dari tahun",
+    "anyYear": "Tahun apa saja",
+    "minRating": "Rating minimum",
+    "anyRating": "Rating apa saja",
+    "clearAll": "Hapus semua",
+    "filterMatch": "{n} judul cocok dengan filter Anda",
+    "noFilterMatch": "Tidak ada judul yang cocok dengan filter ini",
+    "hintSub": "Atau gunakan filter untuk menjelajah berdasarkan genre, bahasa, platform"
   },
   "chips": {
     "trending": "Tren",
@@ -112,7 +128,9 @@
     "sonyliv": "Populer di SonyLIV",
     "pakistani-drama": "Drama Pakistan",
     "turkish-drama": "Drama Turki (sulih suara Urdu)",
-    "upcoming": "Segera hadir"
+    "upcoming": "Segera hadir",
+    "new2026": "Baru di 2026",
+    "hindiDubbed": "Hit Sulih Suara Hindi"
   },
   "player": {
     "loadingPlayer": "Memuat pemutar...",
@@ -253,7 +271,9 @@
     "switchServer": "Ganti server",
     "contactUs": "Hubungi kami",
     "disclaimer": "Penafian",
-    "faqHeading": "Pertanyaan Umum"
+    "faqHeading": "Pertanyaan Umum",
+    "addToWatchlist": "Tambahkan ke daftar saya",
+    "inWatchlist": "Ada di daftar saya"
   },
   "people": {
     "breadcrumb": "Orang",

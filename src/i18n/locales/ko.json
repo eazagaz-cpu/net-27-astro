@@ -64,7 +64,23 @@
     "searchTitle": "영화, TV 프로그램, 애니메이션 검색",
     "searchDescription": "제목, 배우, 장르 또는 플랫폼으로 검색하세요.",
     "resultsFor": "검색 결과:",
-    "noResultsFor": "검색 결과 없음:"
+    "noResultsFor": "검색 결과 없음:",
+    "filters": "필터",
+    "type": "종류",
+    "movies": "영화",
+    "series": "시리즈",
+    "movie": "영화",
+    "genre": "장르",
+    "language": "언어",
+    "platform": "플랫폼",
+    "fromYear": "시작 연도",
+    "anyYear": "모든 연도",
+    "minRating": "최소 평점",
+    "anyRating": "모든 평점",
+    "clearAll": "모두 지우기",
+    "filterMatch": "{n}개 작품이 필터와 일치합니다",
+    "noFilterMatch": "이 필터와 일치하는 작품이 없습니다",
+    "hintSub": "또는 장르, 언어, 플랫폼으로 필터링해 보세요"
   },
   "chips": {
     "trending": "인기",
@@ -112,7 +128,9 @@
     "sonyliv": "SonyLIV 인기작",
     "pakistani-drama": "파키스탄 드라마",
     "turkish-drama": "터키 드라마 (우르두어 더빙)",
-    "upcoming": "공개 예정"
+    "upcoming": "공개 예정",
+    "new2026": "2026년 신작",
+    "hindiDubbed": "힌디어 더빙 인기작"
   },
   "player": {
     "loadingPlayer": "플레이어 로딩 중...",

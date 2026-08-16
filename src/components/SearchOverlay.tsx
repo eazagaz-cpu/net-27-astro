@@ -52,7 +52,35 @@ const YEAR_OPTIONS = [
 
 let debounceTimer: ReturnType<typeof setTimeout>;
 
+/**
+ * Translations for this island.
+ *
+ * BaseLayout fetches /locales/<lang>.json and publishes `window.__nmT` plus an
+ * `nm:locale:ready` event for exactly this purpose. Two details matter: the
+ * fetch is async and usually resolves after React has mounted, so the event has
+ * to trigger a re-render; and it never runs at all for English, where the
+ * fallback passed at each call site is already the right string.
+ *
+ * The site's other translation path — swapping textContent on `data-t` nodes —
+ * cannot work here, because React overwrites the DOM on its next render.
+ */
+function useT() {
+  const [, bump] = useState(0);
+
+  useEffect(() => {
+    const onReady = () => bump(n => n + 1);
+    document.addEventListener('nm:locale:ready', onReady);
+    return () => document.removeEventListener('nm:locale:ready', onReady);
+  }, []);
+
+  return useCallback((key: string, fallback: string) => {
+    const lookup = (window as any).__nmT;
+    return (typeof lookup === 'function' && lookup(key)) || fallback;
+  }, []);
+}
+
 export default function SearchOverlay() {
+  const t = useT();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<Result[]>([]);
@@ -204,7 +232,7 @@ export default function SearchOverlay() {
             type="text"
             value={query}
             onChange={handleChange}
-            placeholder="Search movies, shows, anime, actors..."
+            placeholder={t('search.placeholder', 'Search movies, shows, anime...')}
             className="search-overlay-input"
           />
           {query && (
@@ -217,7 +245,7 @@ export default function SearchOverlay() {
             type="button"
             onClick={() => setShowFilters(f => !f)}
             className={`search-filter-toggle ${showFilters ? 'active' : ''} ${activeFilterCount > 0 ? 'has-filters' : ''}`}
-            title="Toggle filters"
+            title={t('search.filters', 'Filters')}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path strokeLinecap="round" strokeLinejoin="round" d="M3 4h18M7 8h10M11 12h2M9 16h6"/>
@@ -234,7 +262,7 @@ export default function SearchOverlay() {
           <div className="active-filters-row">
             {filters.type && (
               <span className="filter-chip">
-                {filters.type === 'movie' ? '🎬 Movies' : '📺 Series'}
+                {filters.type === 'movie' ? `🎬 ${t('search.movies', 'Movies')}` : `📺 ${t('search.series', 'Series')}`}
                 <button onClick={() => clearFilter('type')}>×</button>
               </span>
             )}
@@ -268,7 +296,7 @@ export default function SearchOverlay() {
                 <button onClick={() => clearFilter('minRating')}>×</button>
               </span>
             )}
-            <button className="clear-all-chip" onClick={clearAllFilters}>Clear all</button>
+            <button className="clear-all-chip" onClick={clearAllFilters}>{t('search.clearAll', 'Clear all')}</button>
           </div>
         )}
 
@@ -277,15 +305,15 @@ export default function SearchOverlay() {
           <div className="filter-panel">
             {/* Type */}
             <div className="filter-group">
-              <label className="filter-label">Type</label>
+              <label className="filter-label">{t('search.type', 'Type')}</label>
               <div className="filter-pills">
-                {(['movie', 'show'] as const).map(t => (
+                {(['movie', 'show'] as const).map(kind => (
                   <button
-                    key={t}
-                    className={`filter-pill ${filters.type === t ? 'selected' : ''}`}
-                    onClick={() => handleFilterChange('type', filters.type === t ? undefined : t)}
+                    key={kind}
+                    className={`filter-pill ${filters.type === kind ? 'selected' : ''}`}
+                    onClick={() => handleFilterChange('type', filters.type === kind ? undefined : kind)}
                   >
-                    {t === 'movie' ? '🎬 Movies' : '📺 Series'}
+                    {kind === 'movie' ? `🎬 ${t('search.movies', 'Movies')}` : `📺 ${t('search.series', 'Series')}`}
                   </button>
                 ))}
               </div>
@@ -294,7 +322,7 @@ export default function SearchOverlay() {
             {/* Genre */}
             {facetData.genres.length > 0 && (
               <div className="filter-group">
-                <label className="filter-label">Genre</label>
+                <label className="filter-label">{t('search.genre', 'Genre')}</label>
                 <div className="filter-scroll-row">
                   {facetData.genres.slice(0, 20).map(g => (
                     <button
@@ -312,7 +340,7 @@ export default function SearchOverlay() {
             {/* Language */}
             {facetData.languages.length > 0 && (
               <div className="filter-group">
-                <label className="filter-label">Language</label>
+                <label className="filter-label">{t('search.language', 'Language')}</label>
                 <div className="filter-scroll-row">
                   {facetData.languages.slice(0, 16).map(l => (
                     <button
@@ -330,7 +358,7 @@ export default function SearchOverlay() {
             {/* Provider */}
             {facetData.providers.length > 0 && (
               <div className="filter-group">
-                <label className="filter-label">Platform</label>
+                <label className="filter-label">{t('search.platform', 'Platform')}</label>
                 <div className="filter-scroll-row">
                   {facetData.providers.slice(0, 14).map(p => (
                     <button
@@ -348,26 +376,26 @@ export default function SearchOverlay() {
             {/* Year + Rating row */}
             <div className="filter-row-inline">
               <div className="filter-group flex-1">
-                <label className="filter-label">From Year</label>
+                <label className="filter-label">{t('search.fromYear', 'From Year')}</label>
                 <select
                   className="filter-select"
                   value={filters.minYear ?? ''}
                   onChange={e => handleFilterChange('minYear', e.target.value ? Number(e.target.value) : undefined)}
                 >
-                  <option value="">Any year</option>
+                  <option value="">{t('search.anyYear', 'Any year')}</option>
                   {YEAR_OPTIONS.map(y => (
                     <option key={y} value={y}>{y}+</option>
                   ))}
                 </select>
               </div>
               <div className="filter-group flex-1">
-                <label className="filter-label">Min Rating</label>
+                <label className="filter-label">{t('search.minRating', 'Min Rating')}</label>
                 <select
                   className="filter-select"
                   value={filters.minRating ?? ''}
                   onChange={e => handleFilterChange('minRating', e.target.value ? Number(e.target.value) : undefined)}
                 >
-                  <option value="">Any rating</option>
+                  <option value="">{t('search.anyRating', 'Any rating')}</option>
                   {[9,8,7,6,5].map(r => (
                     <option key={r} value={r}>★ {r}+</option>
                   ))}
@@ -382,7 +410,11 @@ export default function SearchOverlay() {
           {/* Filter-only mode header */}
           {!query.trim() && activeFilterCount > 0 && results.length > 0 && (
             <div className="filter-results-header">
-              {results.length} title{results.length !== 1 ? 's' : ''} match your filters
+              {/* {n} rather than an English plural rule: languages disagree on
+                  when to pluralise, and several here do not inflect this noun
+                  at all, so the count is substituted into a whole sentence. */}
+              {t('search.filterMatch', '{n} titles match your filters')
+                .replace('{n}', String(results.length))}
             </div>
           )}
 
@@ -423,7 +455,7 @@ export default function SearchOverlay() {
                     <p className="search-result-meta">
                       <span>{item.year || '—'}</span>
                       <span className={`search-result-badge ${item.type}`}>
-                        {item.type === 'tv' ? 'Series' : 'Movie'}
+                        {item.type === 'tv' ? t('search.series', 'Series') : t('search.movie', 'Movie')}
                       </span>
                       {item.rating > 0 && (
                         <span className="search-result-rating">★ {item.rating}</span>
@@ -450,8 +482,8 @@ export default function SearchOverlay() {
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
               </svg>
               {activeFilterCount > 0 && !query.trim()
-                ? <p>No titles match these filters</p>
-                : <p>No results for "<strong>{query}</strong>"</p>
+                ? <p>{t('search.noFilterMatch', 'No titles match these filters')}</p>
+                : <p>{t('search.noResultsFor', 'No results found for')} "<strong>{query}</strong>"</p>
               }
             </div>
           )}
@@ -461,8 +493,8 @@ export default function SearchOverlay() {
               <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.15)" strokeWidth="1.5" style={{margin:'0 auto 10px',display:'block'}}>
                 <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
               </svg>
-              <p>Search movies, shows, anime, actors...</p>
-              <p className="search-hint-sub">Or use filters to browse by genre, language, platform</p>
+              <p>{t('search.placeholder', 'Search movies, shows, anime...')}</p>
+              <p className="search-hint-sub">{t('search.hintSub', 'Or use filters to browse by genre, language, platform')}</p>
             </div>
           )}
         </div>
