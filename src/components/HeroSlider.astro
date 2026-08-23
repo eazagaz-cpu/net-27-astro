@@ -99,10 +99,10 @@ const slides = titles.slice(0, 5);
     );
   })}
 
-  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-2">
+  <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex items-center gap-1">
     {slides.map((_, i) => (
       <button
-        class:list={['hero-dot w-2 h-2 rounded-full transition-all duration-300 cursor-pointer', i === 0 ? 'bg-white w-6' : 'bg-white/40']}
+        class:list={['hero-dot touch-dot rounded-full transition-all duration-300 cursor-pointer', i === 0 ? 'bg-white' : 'bg-white/40']}
         data-dot-index={i}
         aria-label={`Go to slide ${i + 1}`}
       />
@@ -122,9 +122,7 @@ const slides = titles.slice(0, 5);
     });
     dots.forEach((d, i) => {
       d.classList.toggle('bg-white', i === idx);
-      d.classList.toggle('w-6', i === idx);
       d.classList.toggle('bg-white/40', i !== idx);
-      d.classList.toggle('w-2', i !== idx);
     });
     current = idx;
   }
@@ -147,3 +145,17 @@ const slides = titles.slice(0, 5);
   heroSection?.addEventListener('mouseenter', () => clearInterval(interval));
   heroSection?.addEventListener('mouseleave', () => { interval = setInterval(next, 6000); });
 </script>
+
+<style>
+  .touch-dot {
+    width: 44px;
+    height: 44px;
+    border: 0;
+    background-clip: content-box;
+    padding: 18px 10px;
+  }
+
+  .touch-dot.bg-white {
+    padding-inline: 4px;
+  }
+</style>

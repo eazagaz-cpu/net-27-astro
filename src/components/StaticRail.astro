@@ -3,7 +3,7 @@
  * StaticRail.astro — Server-rendered (build-time) content carousel.
  * Uses pre-fetched TMDB cache from movie-sync.mjs.
  * Visually identical to DynamicRail.tsx but renders at build time (zero JS, SSR-friendly).
- * A small inline <script> handles scroll arrow clicks.
+ * A small inline browser script handles scroll arrow clicks.
  */
 import type { CachedItem } from '../lib/movie-cache';
 import { titleDetailUrl } from '../lib/title-url';

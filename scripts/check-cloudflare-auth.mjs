@@ -41,10 +41,13 @@ function fromEnvLocal(key) {
 
 console.log('=== Cloudflare Auth Check ===\n');
 
-const token = process.env.CLOUDFLARE_API_TOKEN || fromEnvLocal('CLOUDFLARE_API_TOKEN');
+const envToken = process.env.CLOUDFLARE_API_TOKEN;
+const localToken = fromEnvLocal('CLOUDFLARE_API_TOKEN');
+const token = envToken || localToken;
+const tokenSource = envToken ? 'environment' : localToken ? '.env.local' : null;
 const hasPrivateStore = existsSync(join(ROOT, '.cf-auth', '.wrangler', 'config', 'default.toml'));
 
-if (token) ok('Using CLOUDFLARE_API_TOKEN from .env.local (outranks the shared login)');
+if (token) ok(`Found CLOUDFLARE_API_TOKEN from ${tokenSource} (Wrangler prefers it over OAuth)`);
 else if (hasPrivateStore) ok('Using this project\'s private login under .cf-auth/');
 else {
   bad('No project-scoped credential — wrangler will fall back to the machine-wide login');
@@ -60,6 +63,36 @@ else {
 `);
 }
 
+async function checkPrivateLogin() {
+  const privateEnv = { ...process.env };
+  delete privateEnv.CLOUDFLARE_API_TOKEN;
+
+  try {
+    const whoami = await run(
+      process.execPath,
+      [join(ROOT, 'scripts', 'wrangler.mjs'), 'whoami'],
+      { env: privateEnv }
+    );
+    if (whoami.stdout.includes(EMAIL)) ok(`Logged in as ${EMAIL}`);
+    else {
+      const seen = whoami.stdout.match(/associated with the email ([^\s.]+)/)?.[1];
+      bad(`Logged in as ${seen ?? 'an unknown account'}, expected ${EMAIL}`);
+    }
+    if (whoami.stdout.includes(ACCOUNT_ID)) ok('Account ID matches net27');
+    else bad('net27 account ID not listed for this login');
+
+    const projects = await run(
+      process.execPath,
+      [join(ROOT, 'scripts', 'wrangler.mjs'), 'pages', 'project', 'list'],
+      { env: privateEnv }
+    );
+    if (projects.stdout.includes('net-27-astro')) ok('Pages project "net-27-astro" is visible to OAuth login');
+    else bad('Project "net-27-astro" is not visible to this OAuth login');
+  } catch {
+    bad('wrangler could not authenticate — run: npm run cf:login');
+  }
+}
+
 const accountId = process.env.CLOUDFLARE_ACCOUNT_ID || fromEnvLocal('CLOUDFLARE_ACCOUNT_ID');
 if (!accountId) warn('CLOUDFLARE_ACCOUNT_ID not set — wrangler has to look the account up');
 else if (accountId !== ACCOUNT_ID) bad(`CLOUDFLARE_ACCOUNT_ID is ${accountId}, expected ${ACCOUNT_ID}`);
@@ -73,8 +106,15 @@ if (token) {
     headers: { Authorization: `Bearer ${token}` },
   }).then((r) => r.json());
   if (!res.success) {
-    bad(`Token cannot list Pages projects: ${res.errors?.[0]?.message ?? 'unknown error'}`);
-    console.log('\n  It is missing "Cloudflare Pages · Edit" on this account.\n');
+    warn(`Token cannot list Pages projects: ${res.errors?.[0]?.message ?? 'unknown error'}`);
+    console.log('\n  It is missing "Cloudflare Pages · Edit" on this account.');
+    if (hasPrivateStore) {
+      console.log('  Falling back to this project\'s private OAuth login.\n');
+      await checkPrivateLogin();
+    } else {
+      bad('No private OAuth login is available as a fallback');
+      console.log('');
+    }
   } else {
     const names = res.result.map((p) => p.name);
     ok(`Pages reachable — ${names.length} project(s): ${names.join(', ')}`);
@@ -82,18 +122,7 @@ if (token) {
   }
 } else {
   // Go through the wrapper so we test the private store, not the shared one.
-  try {
-    const { stdout } = await run(process.execPath, [join(ROOT, 'scripts', 'wrangler.mjs'), 'whoami']);
-    if (stdout.includes(EMAIL)) ok(`Logged in as ${EMAIL}`);
-    else {
-      const seen = stdout.match(/associated with the email ([^\s.]+)/)?.[1];
-      bad(`Logged in as ${seen ?? 'an unknown account'}, expected ${EMAIL}`);
-    }
-    if (stdout.includes(ACCOUNT_ID)) ok('Account ID matches net27');
-    else bad('net27 account ID not listed for this login');
-  } catch {
-    bad('wrangler could not authenticate — run: npm run cf:login');
-  }
+  await checkPrivateLogin();
 }
 
 console.log(`\n${failed ? '❌ Cloudflare auth needs attention (see above)' : '✅ Cloudflare auth is good — deploys will work'}`);

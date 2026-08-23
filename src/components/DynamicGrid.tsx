@@ -24,10 +24,11 @@ const FALLBACK_GRADIENTS = [
   'linear-gradient(135deg, #1f1c2c, #928dab)',
 ];
 
-// Vite: bundle all cache files for lazy-loading as a fallback.
-// This map is resolved at build time; entries are loaded on demand.
+// Vite: bundle category cache files for lazy-loading as a fallback.
+// Keep titles.json out: it is the full detail catalogue and would add a
+// multi-megabyte JS chunk that DynamicGrid never needs.
 const CACHE_MODULES = import.meta.glob<{ default: { items?: GridItem[]; results?: GridItem[] } }>(
-  '../data/cache/*.json',
+  ['../data/cache/*.json', '!../data/cache/titles.json'],
   { eager: false }
 );
 
