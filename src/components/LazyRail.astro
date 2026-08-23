@@ -1,0 +1,161 @@
+---
+interface Props {
+  title: string;
+  category: string;
+  viewAllHref?: string;
+  railKey?: string;
+  badge?: string;
+}
+
+const { title, category, viewAllHref, badge } = Astro.props;
+const railKey = Astro.props.railKey
+  ?? title.replace(/[^a-z0-9]/gi, '-').toLowerCase().replace(/-+/g, '-').slice(0, 30);
+const scrollId = `lr-${railKey}`;
+---
+
+<section
+  class="rail-section lazy-rail-section"
+  style="padding:1rem 0;min-height:305px"
+  data-lazy-rail
+  data-category={category}
+  data-target={scrollId}
+>
+  <div style="max-width:100%;margin:0 auto;padding:0 clamp(16px,2vw,64px)">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem">
+      <div style="display:flex;align-items:center;gap:0.5rem">
+        <h2 class="section-title" data-t={`rails.${railKey}`}>{title}</h2>
+        {badge && (
+          <span style="font-size:10px;font-weight:700;padding:2px 6px;border-radius:4px;background:var(--color-primary);color:#fff;text-transform:uppercase;letter-spacing:0.05em">
+            {badge}
+          </span>
+        )}
+      </div>
+      {viewAllHref && (
+        <a href={viewAllHref} data-t="common.viewAll" style="font-size:12px;color:var(--color-primary);font-weight:500">View All -></a>
+      )}
+    </div>
+
+    <div class="static-rail-wrap rail-wrap">
+      <button class="sr-arrow sr-arrow-left" data-target={scrollId} data-dir="left" aria-label="Scroll left">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        </svg>
+      </button>
+      <div id={scrollId} class="scroll-rail lazy-rail-placeholder" aria-busy="true">
+        {Array.from({ length: 8 }).map(() => (
+          <div class="lazy-card-skeleton" aria-hidden="true"></div>
+        ))}
+      </div>
+      <button class="sr-arrow sr-arrow-right" data-target={scrollId} data-dir="right" aria-label="Scroll right">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</section>
+
+<style is:global>
+  .lazy-card-skeleton {
+    width: clamp(130px, 13vw, 185px);
+    aspect-ratio: 2 / 3;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: var(--color-surface-soft);
+    opacity: .55;
+  }
+</style>
+
+<script>
+  const w = window as Window & { __lazyRailInit?: boolean };
+  if (!w.__lazyRailInit) {
+    w.__lazyRailInit = true;
+
+    const gradients = [
+      'linear-gradient(135deg,#1a1a2e,#16213e)',
+      'linear-gradient(135deg,#2d1b69,#11998e)',
+      'linear-gradient(135deg,#8b0000,#1a0000)',
+      'linear-gradient(135deg,#0f0c29,#302b63)',
+      'linear-gradient(135deg,#1f1c2c,#928dab)',
+    ];
+
+    function esc(value: unknown) {
+      return String(value ?? '').replace(/[&<>"']/g, (ch) => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+      }[ch]!));
+    }
+
+    function smallPoster(url: string) {
+      return String(url || '').replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w185/');
+    }
+
+    function detailHref(item: any) {
+      const type = item.type === 'tv' || item.type === 'show' ? 'tv' : 'movie';
+      return `/detail/?type=${type}&id=${encodeURIComponent(String(item.id))}`;
+    }
+
+    function render(section: HTMLElement, items: any[]) {
+      const rail = document.getElementById(section.dataset.target || '');
+      if (!rail) return;
+      const rows = items.slice(0, 20).map((item, index) => {
+        const grad = gradients[Math.abs(Number(item.id) || index) % gradients.length];
+        const poster = smallPoster(item.posterUrl);
+        const title = esc(item.title);
+        const type = item.type === 'tv' || item.type === 'show' ? 'tv' : 'movie';
+        return `
+          <a href="${detailHref(item)}" class="title-card" style="width:clamp(130px, 13vw, 185px);flex-shrink:0;display:block;text-decoration:none;color:inherit" title="${title}">
+            <div style="position:relative;aspect-ratio:2/3;overflow:hidden;border-radius:10px">
+              ${poster ? `<img src="${esc(poster)}" alt="${title} poster" loading="lazy" decoding="async" fetchpriority="low" width="185" height="278" style="width:100%;height:100%;object-fit:cover;display:block" onerror="this.style.display='none';var fb=this.nextElementSibling;if(fb)fb.style.display='flex';">` : ''}
+              <div style="position:absolute;inset:0;background:${grad};display:${poster ? 'none' : 'flex'};align-items:center;justify-content:center;padding:8px">
+                <span style="font-size:13px;font-weight:700;color:rgba(255,255,255,0.45);text-align:center;line-height:1.3;word-break:break-word">${title}</span>
+              </div>
+              ${type === 'tv' ? '<span style="position:absolute;top:6px;left:6px;font-size:9px;padding:2px 6px;border-radius:3px;font-weight:700;background:#e50914;color:#fff;text-transform:uppercase;letter-spacing:0.04em;z-index:4">SERIES</span>' : ''}
+              ${item.rating > 0 ? `<span style="position:absolute;top:6px;right:6px;display:flex;align-items:center;gap:2px;padding:2px 6px;border-radius:4px;background:rgba(0,0,0,0.75);backdrop-filter:blur(4px);font-size:11px;font-weight:600;color:#f5c518;z-index:4">★ ${esc(item.rating)}</span>` : ''}
+            </div>
+            <div style="padding:6px 4px">
+              <p style="font-size:13px;font-weight:600;color:#fff;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:0">${title}</p>
+              <span style="font-size:11px;color:var(--color-muted)">${esc(item.year || '')}</span>
+            </div>
+          </a>`;
+      });
+      rail.innerHTML = rows.join('');
+      rail.removeAttribute('aria-busy');
+      rail.classList.remove('lazy-rail-placeholder');
+    }
+
+    async function load(section: HTMLElement) {
+      if (section.dataset.loaded === 'true') return;
+      section.dataset.loaded = 'true';
+      try {
+        const category = section.dataset.category || '';
+        const response = await fetch(`/catalog/${encodeURIComponent(category)}.json`, {
+          headers: { Accept: 'application/json' },
+        });
+        if (!response.ok) throw new Error('lazy rail unavailable');
+        const data = await response.json();
+        render(section, data.items || []);
+      } catch {
+        section.style.display = 'none';
+      }
+    }
+
+    function boot() {
+      const sections = document.querySelectorAll<HTMLElement>('[data-lazy-rail]');
+      if (!('IntersectionObserver' in window)) {
+        sections.forEach(load);
+        return;
+      }
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          observer.unobserve(entry.target);
+          load(entry.target as HTMLElement);
+        });
+      }, { rootMargin: '900px 0px' });
+      sections.forEach((section) => observer.observe(section));
+    }
+
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot, { once: true });
+    else boot();
+  }
+</script>

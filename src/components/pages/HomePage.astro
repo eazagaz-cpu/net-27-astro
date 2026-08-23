@@ -24,6 +24,7 @@ import Schema from '../Schema.astro';
 import DynamicHero from '../DynamicHero.astro';
 import AppCTA from '../AppCTA.astro';
 import StaticRail from '../StaticRail.astro';
+import LazyRail from '../LazyRail.astro';
 import ContinueWatching from '../ContinueWatching.astro';
 import Top10Rail from '../Top10Rail.astro';
 import SearchBlock from '../SearchBlock.astro';
@@ -41,23 +42,11 @@ const cachedTrending      = getCachedItems('trending',         20);
 const cachedLatest        = getCachedItems('latest-movies',    20);
 const cachedNetflix       = getCachedItems('netflix',          20);
 const cachedHindiDubbed   = getCachedItems('hindi-dubbed',     20);
-const cachedUpcoming      = getCachedItems('upcoming',         20);
 const cachedPopularMovies = getCachedItems('popular-movies',   10);
 const cachedPopularTv     = getCachedItems('popular-tv',       10);
-const cachedPakistani     = getCachedItems('pakistani-drama',  20);
-const cachedTurkish       = getCachedItems('turkish-drama',    20);
 // India is where most of the audience is, so South Indian cinema, Indian TV
 // and the Indian OTT catalogues get their own rails rather than being left to
 // the language and platform pages.
-const cachedSouthDubbed   = getCachedItems('south-hindi-dubbed', 20);
-const cachedTelugu        = getCachedItems('telugu',           20);
-const cachedTamil         = getCachedItems('tamil',            20);
-const cachedMalayalam     = getCachedItems('malayalam',        20);
-const cachedKannada       = getCachedItems('kannada',          20);
-const cachedIndianTv      = getCachedItems('indian-tv',        20);
-const cachedJioHotstar    = getCachedItems('jiohotstar',       20);
-const cachedZee5          = getCachedItems('zee5',             20);
-const cachedSonyLiv       = getCachedItems('sonyliv',          20);
 const latestPosts         = getAllBlogPosts().slice(0, 3);
 const firstHeroBackdrop = cachedTrending.find((item) => item.backdropUrl)?.backdropUrl || '';
 const heroSmall = firstHeroBackdrop.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w780/');
@@ -154,23 +143,23 @@ const homeFaqs = [
     <!-- India-focused sections. Most visitors are there, so South Indian
          cinema, Indian TV and the Indian OTT catalogues sit ahead of the
          regional drama rails rather than below them. -->
-    {cachedSouthDubbed.length > 0 && <StaticRail title="South Indian Movies (Hindi Dubbed)" items={cachedSouthDubbed} viewAllHref="/genre/hindi-dubbed/" railKey="south-hindi-dubbed" badge="Popular" />}
-    {cachedJioHotstar.length > 0 && <StaticRail title="Popular on JioHotstar" items={cachedJioHotstar} viewAllHref="/platform/jiohotstar/" railKey="jiohotstar" />}
-    {cachedTelugu.length    > 0 && <StaticRail title="Telugu Movies" items={cachedTelugu} viewAllHref="/language/telugu/" railKey="telugu" />}
-    {cachedTamil.length     > 0 && <StaticRail title="Tamil Movies" items={cachedTamil} viewAllHref="/language/tamil/" railKey="tamil" />}
-    {cachedMalayalam.length > 0 && <StaticRail title="Malayalam Movies" items={cachedMalayalam} viewAllHref="/language/malayalam/" railKey="malayalam" />}
-    {cachedKannada.length   > 0 && <StaticRail title="Kannada Movies" items={cachedKannada} viewAllHref="/language/kannada/" railKey="kannada" />}
-    {cachedIndianTv.length  > 0 && <StaticRail title="Indian TV Shows" items={cachedIndianTv} viewAllHref="/country/india/" railKey="indian-tv" badge="IN" />}
-    {cachedZee5.length      > 0 && <StaticRail title="Popular on ZEE5" items={cachedZee5} viewAllHref="/platform/zee5/" railKey="zee5" />}
-    {cachedSonyLiv.length   > 0 && <StaticRail title="Popular on SonyLIV" items={cachedSonyLiv} viewAllHref="/platform/sonyliv/" railKey="sonyliv" />}
+    <LazyRail title="South Indian Movies (Hindi Dubbed)" category="south-hindi-dubbed" viewAllHref="/genre/hindi-dubbed/" railKey="south-hindi-dubbed" badge="Popular" />
+    <LazyRail title="Popular on JioHotstar" category="jiohotstar" viewAllHref="/platform/jiohotstar/" railKey="jiohotstar" />
+    <LazyRail title="Telugu Movies" category="telugu" viewAllHref="/language/telugu/" railKey="telugu" />
+    <LazyRail title="Tamil Movies" category="tamil" viewAllHref="/language/tamil/" railKey="tamil" />
+    <LazyRail title="Malayalam Movies" category="malayalam" viewAllHref="/language/malayalam/" railKey="malayalam" />
+    <LazyRail title="Kannada Movies" category="kannada" viewAllHref="/language/kannada/" railKey="kannada" />
+    <LazyRail title="Indian TV Shows" category="indian-tv" viewAllHref="/country/india/" railKey="indian-tv" badge="IN" />
+    <LazyRail title="Popular on ZEE5" category="zee5" viewAllHref="/platform/zee5/" railKey="zee5" />
+    <LazyRail title="Popular on SonyLIV" category="sonyliv" viewAllHref="/platform/sonyliv/" railKey="sonyliv" />
 
-    {cachedPakistani.length > 0 && <StaticRail title="Pakistani Dramas" items={cachedPakistani} viewAllHref="/language/urdu/" railKey="pakistani-drama" badge="PK" />}
-    {cachedTurkish.length  > 0 && <StaticRail title="Turkish Dramas (Urdu Dubbed)" items={cachedTurkish} viewAllHref="/language/turkish/" railKey="turkish-drama" badge="TR" />}
-    <StaticRail title="Trending Globally — Coming Soon" items={cachedUpcoming} railKey="upcoming" badge="Upcoming" />
+    <LazyRail title="Pakistani Dramas" category="pakistani-drama" viewAllHref="/language/urdu/" railKey="pakistani-drama" badge="PK" />
+    <LazyRail title="Turkish Dramas (Urdu Dubbed)" category="turkish-drama" viewAllHref="/language/turkish/" railKey="turkish-drama" badge="TR" />
+    <LazyRail title="Trending Globally — Coming Soon" category="upcoming" railKey="upcoming" badge="Upcoming" />
 
     <!-- Geo-Personalized Rail — country-specific content (last rail before search) -->
     <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] py-6">
-      <GeoRail client:idle />
+      <GeoRail client:visible />
     </div>
 
     <!-- Search Block -->

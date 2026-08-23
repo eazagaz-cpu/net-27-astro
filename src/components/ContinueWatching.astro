@@ -114,7 +114,7 @@
     return [...byKey.values()].sort((a, b) => when(b) - when(a)).slice(0, 30);
   }
 
-  // Boot
+  // Boot after first paint; this rail is personal history, not critical content.
   async function boot() {
     renderCW(); // instant from localStorage
 
@@ -134,5 +134,12 @@
     } catch {}
   }
 
-  boot();
+  function scheduleBoot() {
+    const idle = (window as any).requestIdleCallback;
+    if (idle) idle(boot, { timeout: 2500 });
+    else window.setTimeout(boot, 1200);
+  }
+
+  if (document.readyState === 'complete') scheduleBoot();
+  else window.addEventListener('load', scheduleBoot, { once: true });
 </script>
