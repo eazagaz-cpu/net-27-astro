@@ -50,9 +50,26 @@ const showPopAd = !POP_AD_EXCLUDED.includes(barePath);
   <!-- ProfitON domain verification. Tag method rather than the txt file, for the
        same Cloudflare Pages reason as Yandex above. Must stay after verifying. -->
   <meta name="profiton-domain-verification" content="40186f11d9a1befb7ed17486cac0f9806604e5e13e242d6ad1bdbad050106ef5" />
-  <!-- Google AdSense. Loads on every page because AdSense verifies ownership
-       and reviews the site by finding this tag, not just on the home page. -->
-  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4341205984811312" crossorigin="anonymous" is:inline></script>
+  <!-- Keep AdSense ownership discoverable without making its runtime part of
+       the critical rendering path. Auto Ads starts after real user intent. -->
+  <meta name="google-adsense-account" content="ca-pub-4341205984811312" />
+  <script is:inline>
+    (function(){
+      var loaded=false;
+      function loadAds(){
+        if(loaded)return;
+        loaded=true;
+        var s=document.createElement('script');
+        s.async=true;
+        s.crossOrigin='anonymous';
+        s.src='https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4341205984811312';
+        document.head.appendChild(s);
+      }
+      ['pointerdown','keydown','touchstart'].forEach(function(event){
+        window.addEventListener(event,loadAds,{once:true,passive:true});
+      });
+    })();
+  </script>
   <slot name="head" />
   <!-- Analytics is loaded after real user intent, keeping third-party code out of the critical path. -->
   <script is:inline>

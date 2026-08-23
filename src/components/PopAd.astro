@@ -20,12 +20,23 @@
  */
 ---
 
-{/* ProfitON popunder. data-cfasync="false" keeps Cloudflare Rocket Loader from
-    deferring it, which the vendor requires for the tag to fire on first click. */}
-<script
-  data-cfasync="false"
-  async
-  type="text/javascript"
-  src="//wk.sortallav.com/rRTB1HjUh1Q/149339"
-  is:inline
-></script>
+{/* Load ProfitON after genuine user intent so its execution cannot delay the
+    first render. It remains async and available for subsequent clicks. */}
+<script is:inline>
+  (function(){
+    var loaded=false;
+    function loadPopAd(){
+      if(loaded)return;
+      loaded=true;
+      var s=document.createElement('script');
+      s.async=true;
+      s.type='text/javascript';
+      s.setAttribute('data-cfasync','false');
+      s.src='https://wk.sortallav.com/rRTB1HjUh1Q/149339';
+      document.head.appendChild(s);
+    }
+    ['pointerdown','keydown','touchstart'].forEach(function(event){
+      window.addEventListener(event,loadPopAd,{once:true,passive:true});
+    });
+  })();
+</script>
