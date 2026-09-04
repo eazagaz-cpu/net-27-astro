@@ -6,6 +6,13 @@ import sitemap from '@astrojs/sitemap';
 import { copyFile } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 
+// DMCA-denied slugs — must never appear in sitemap.
+// Keep in sync with src/lib/dmcaDenyList.ts.
+const DMCA_DENIED_SLUGS = new Set([
+  'spider-man-brand-new-day-969681',
+  'the-death-of-robin-hood-1284465',
+]);
+
 // @astrojs/sitemap emits an index plus sitemap-0.xml. This site is well below
 // the 50,000 URL limit, so also publish a stable, direct /sitemap.xml URL set.
 // Search engines can consume it without an extra index fetch, while the
@@ -100,13 +107,23 @@ export default defineConfig({
     react(),
     sitemap({
       entryLimit: 50000,
-      filter: (page) =>
-        !page.includes('/player/') &&
-        !page.includes('/detail/') &&
-        !page.includes('/login/') &&
-        !page.includes('/help/') &&
-        !page.includes('/watchlist/') &&
-        ![...thinTitleSlugs].some(slug => page.endsWith(slug)),
+      filter: (page) => {
+        // Exclude noindex pages
+        if (
+          page.includes('/player/') ||
+          page.includes('/detail/') ||
+          page.includes('/login/') ||
+          page.includes('/help/') ||
+          page.includes('/watchlist/')
+        ) return false;
+        // Exclude thin title pages
+        if ([...thinTitleSlugs].some(slug => page.endsWith(slug))) return false;
+        // Exclude DMCA-denied movie slugs from sitemap
+        for (const slug of DMCA_DENIED_SLUGS) {
+          if (page.includes(`/${slug}/`) || page.includes(`/${slug}`)) return false;
+        }
+        return true;
+      },
     }),
     directSitemap,
   ],

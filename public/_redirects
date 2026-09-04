@@ -1,3 +1,18 @@
+# DMCA / LEGAL TAKEDOWN — HTTP 410 Gone
+# These URLs have been permanently removed following Cloudflare abuse reports.
+# Do NOT remove these entries. Do NOT redirect to alternative copies.
+# Do NOT re-publish this content under different slugs.
+#
+# Report afd2de4e15d0c7ae — Spider-Man: Brand New Day
+/movies/spider-man-brand-new-day-969681 /gone 410
+/movies/spider-man-brand-new-day-969681/ /gone 410
+# Report a37e65dce9a83274 — The Death of Robin Hood
+/movies/the-death-of-robin-hood-1284465 /gone 410
+/movies/the-death-of-robin-hood-1284465/ /gone 410
+# Active 451 — Player TMDB ID 1477712
+/player?id=1477712&type=movie /gone 410
+/player?id=1477712 /gone 410
+
 # www to non-www
 https://www.net-27.cc/* https://net-27.cc/:splat 301
 

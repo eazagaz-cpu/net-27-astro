@@ -7,10 +7,12 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import MoviePage from '../../../components/pages/MoviePage.astro';
 import { getRealTitlesByType, type RealTitle } from '../../../lib/realTitles';
+import { isDmcaDenied } from '../../../lib/dmcaDenyList';
 import { ROUTED_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
 
 export const getStaticPaths = (() => {
-  const titles = getRealTitlesByType('movie');
+  const titles = getRealTitlesByType('movie')
+    .filter(title => !isDmcaDenied(title.slug, title.tmdbId));
   return ROUTED_LANGS
     .filter(code => code !== DEFAULT_LANG)
     .flatMap(lang => titles.map(title => ({
