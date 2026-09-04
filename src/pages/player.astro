@@ -319,6 +319,7 @@ import { SITE_URL } from '../lib/seo';
   import { LANGUAGES, loadLang, saveLang } from '../lib/player/languages';
   import { reportIssue } from '../lib/serverQuality';
   import type { ReportType } from '../lib/serverQuality';
+  import { isDmcaBlockedId } from '../lib/dmcaDenyList';
 
   // ── URL params ────────────────────────────────────────────────────────────
   const params   = new URLSearchParams(window.location.search);
@@ -326,6 +327,24 @@ import { SITE_URL } from '../lib/seo';
   const id       = params.get('id') || '';
   let season  = parseInt(params.get('s') || '1');
   let episode = parseInt(params.get('e') || '1');
+
+  // ── DMCA / Legal Guard ──────────────────────────────────────────────────
+  if (isDmcaBlockedId(id)) {
+    document.title = 'Content Removed — NetMirror';
+    const mainEl = document.querySelector('main.player-shell');
+    if (mainEl) {
+      mainEl.innerHTML = `
+        <div style="display:flex;align-items:center;justify-content:center;min-height:100vh;background:#0a0a0f;color:#fff;text-align:center;padding:2rem;font-family:system-ui,sans-serif">
+          <div style="max-width:480px">
+            <h1 style="font-size:1.5rem;font-weight:700;margin-bottom:.75rem">Content Not Available</h1>
+            <p style="color:rgba(255,255,255,.6);font-size:.9rem;line-height:1.6">This title has been removed and is no longer available on NetMirror.</p>
+            <a href="/" style="display:inline-block;margin-top:1.5rem;padding:.6rem 1.5rem;background:#e50914;color:#fff;border-radius:8px;text-decoration:none;font-weight:600;font-size:.875rem">Browse Other Titles</a>
+          </div>
+        </div>
+      `;
+    }
+    throw new Error('DMCA removed title blocked');
+  }
 
   // ── Constants & state ─────────────────────────────────────────────────────
   const DEV          = import.meta.env.DEV;

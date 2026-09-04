@@ -2,9 +2,9 @@
  * dmcaDenyList.ts — DMCA/legal takedown deny list.
  *
  * Slugs and TMDB IDs listed here are:
- *   1. Excluded from getStaticPaths (movie/show pages never generated)
+ *   1. Excluded from getStaticPaths (movie/show pages never generated -> genuine 404)
  *   2. Excluded from the sitemap
- *   3. Served 410 Gone via public/_redirects
+ *   3. Enforced at Cloudflare Pages Function layer (functions/player.js -> 404 for /player?id=...)
  *
  * To add a new removal: append the slug and/or TMDB ID.
  * Do NOT remove existing entries — the list is a permanent legal record.
@@ -37,3 +37,12 @@ export function isDmcaDenied(slug: string, tmdbId?: number): boolean {
   if (tmdbId !== undefined && DMCA_DENIED_TMDB_IDS.has(tmdbId)) return true;
   return false;
 }
+
+/**
+ * Returns true when a TMDB ID is on the deny list.
+ */
+export function isDmcaBlockedId(id: string | number): boolean {
+  const num = typeof id === 'string' ? parseInt(id, 10) : id;
+  return !Number.isNaN(num) && DMCA_DENIED_TMDB_IDS.has(num);
+}
+

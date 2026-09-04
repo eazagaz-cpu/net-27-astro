@@ -1,18 +1,3 @@
-# DMCA / LEGAL TAKEDOWN — HTTP 410 Gone
-# These URLs have been permanently removed following Cloudflare abuse reports.
-# Do NOT remove these entries. Do NOT redirect to alternative copies.
-# Do NOT re-publish this content under different slugs.
-#
-# Report afd2de4e15d0c7ae — Spider-Man: Brand New Day
-/movies/spider-man-brand-new-day-969681 /gone 410
-/movies/spider-man-brand-new-day-969681/ /gone 410
-# Report a37e65dce9a83274 — The Death of Robin Hood
-/movies/the-death-of-robin-hood-1284465 /gone 410
-/movies/the-death-of-robin-hood-1284465/ /gone 410
-# Active 451 — Player TMDB ID 1477712
-/player?id=1477712&type=movie /gone 410
-/player?id=1477712 /gone 410
-
 # www to non-www
 https://www.net-27.cc/* https://net-27.cc/:splat 301
 
@@ -34,3 +19,20 @@ https://www.net-27.cc/* https://net-27.cc/:splat 301
 
 # Old country/language/year archive URLs are unchanged (same slugs, now real
 # DynamicGrid data) — no redirect needed there.
+
+# -----------------------------------------------------------------------
+# DMCA / LEGAL TAKEDOWN — Application-layer enforcement only
+#
+# /movies/spider-man-brand-new-day-969681  (Report afd2de4e15d0c7ae)
+# /movies/the-death-of-robin-hood-1284465/ (Report a37e65dce9a83274)
+#   => Excluded from getStaticPaths. Cloudflare Pages returns genuine 404
+#      because no HTML file exists in dist for these slugs.
+#
+# /player?id=1477712&type=movie (Active 451 mitigation)
+#   => Blocked in functions/player.js (Cloudflare Pages Function).
+#      The function inspects query params server-side and returns 404
+#      before any player or embed content is rendered.
+#
+# NOTE: Cloudflare Pages _redirects supports only 301/302/303/307/308.
+# 410 status and query-parameter matching are NOT supported here.
+# All DMCA enforcement is at the application layer.
