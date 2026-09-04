@@ -23,7 +23,7 @@ const POP_AD_EXCLUDED = [
   '/contact/', '/about/', '/login/', '/watchlist/',
 ];
 const barePath = stripLangFromPath(Astro.url.pathname);
-const showPopAd = !POP_AD_EXCLUDED.includes(barePath);
+const showPopAd = false; // Temporarily disabled — popunder flagged domain as spam/phishing
 ---
 
 <!DOCTYPE html>
