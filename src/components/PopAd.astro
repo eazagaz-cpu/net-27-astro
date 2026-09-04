@@ -1,42 +1,18 @@
 ---
 /**
- * PopAd.astro — the ProfitON popunder tag.
+ * PopAd.astro — PERMANENTLY DISABLED.
  *
- * Deliberately NOT in BaseLayout. Two reasons:
+ * The ProfitON / sortallav.com popunder implementation has been removed.
  *
- * 1. AdSense. The site runs AdSense on every page, and AdSense policy
- *    disallows placing its ads on pages carrying pop-ups or popunders that
- *    interfere with navigation. Loading this everywhere would put the whole
- *    AdSense account at risk, which is worth far more than the pop revenue.
- *    Keeping it off the pages a policy reviewer looks at first — legal, about,
- *    contact, editorial — limits the exposure.
+ * Removal reason: The sortallav.com ad network caused the domain net-27.cc
+ * to be classified as "Spam URLs" by Fortinet and "Malicious" by Forcepoint,
+ * triggering a Cloudflare phishing mitigation (Report ID: c4038a977bbb788e).
  *
- * 2. Revenue per impression is not flat. A popunder pays on the click that
- *    opens it, so it earns on pages where visitors already click a lot: the
- *    player, a title page where they are choosing where to watch, the APK
- *    download page. On a privacy policy it earns nothing and costs goodwill.
+ * This file is kept as an empty stub so any remaining import references
+ * resolve cleanly. The component renders nothing.
  *
- * Include it per page, never globally. See PLACEMENT below for the current set.
+ * Removed: 2026-09-05
+ * Related report: c4038a977bbb788e
  */
 ---
-
-{/* Load ProfitON after genuine user intent so its execution cannot delay the
-    first render. It remains async and available for subsequent clicks. */}
-<script is:inline>
-  (function(){
-    var loaded=false;
-    function loadPopAd(){
-      if(loaded)return;
-      loaded=true;
-      var s=document.createElement('script');
-      s.async=true;
-      s.type='text/javascript';
-      s.setAttribute('data-cfasync','false');
-      s.src='https://wk.sortallav.com/rRTB1HjUh1Q/149339';
-      document.head.appendChild(s);
-    }
-    ['pointerdown','keydown','touchstart'].forEach(function(event){
-      window.addEventListener(event,loadPopAd,{once:true,passive:true});
-    });
-  })();
-</script>
+{/* PopAd permanently disabled — renders nothing */}
