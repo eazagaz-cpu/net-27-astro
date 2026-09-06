@@ -24,6 +24,7 @@ const env = { ...process.env, XDG_CONFIG_HOME: join(ROOT, '.cf-auth') };
 // that login and break Pages deploys, so keep wrapper calls scoped to OAuth.
 delete env.CLOUDFLARE_API_TOKEN;
 delete env.CF_API_TOKEN;
+env.CLOUDFLARE_ACCOUNT_ID = '34bdd56a73c7dc40d4223f7fa255d419';
 
 const child = spawn('npx', ['wrangler', ...process.argv.slice(2)], {
   stdio: 'inherit',

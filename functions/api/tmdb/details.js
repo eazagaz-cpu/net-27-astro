@@ -10,6 +10,11 @@ export async function onRequestGet(context) {
     return new Response(JSON.stringify({ error: 'Missing parameters or API key' }), { headers });
   }
 
+  const DMCA_BLOCKED_IDS = new Set(['969681', '1284465', '1477712']);
+  if (DMCA_BLOCKED_IDS.has(String(id))) {
+    return new Response(JSON.stringify({ error: 'Title removed per legal request' }), { status: 404, headers });
+  }
+
   try {
     const tmdbUrl = `https://api.themoviedb.org/3/${type}/${id}?api_key=${apiKey}&append_to_response=credits,recommendations,videos,similar`;
     const res = await fetch(tmdbUrl);

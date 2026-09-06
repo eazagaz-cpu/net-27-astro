@@ -19,6 +19,7 @@
 export const DMCA_DENIED_SLUGS = new Set<string>([
   'spider-man-brand-new-day-969681',
   'the-death-of-robin-hood-1284465',
+  'ice-cream-man-1477712',
 ]);
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */

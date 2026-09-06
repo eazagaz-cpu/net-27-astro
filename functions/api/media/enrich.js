@@ -12,6 +12,11 @@ export async function onRequestGet(context) {
     return new Response(JSON.stringify({ error: 'Missing title' }), { headers });
   }
 
+  const DMCA_BLOCKED_IDS = new Set(['969681', '1284465', '1477712']);
+  if (tmdbId && DMCA_BLOCKED_IDS.has(String(tmdbId))) {
+    return new Response(JSON.stringify({ error: 'Title removed per legal request' }), { status: 404, headers });
+  }
+
   const result = { ratings: null, awards: null, trailer: null, availability: [], imdbId: imdbId || null };
   const tasks = [];
 

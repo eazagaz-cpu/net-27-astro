@@ -93,36 +93,43 @@ async function checkPrivateLogin() {
   }
 }
 
-const accountId = process.env.CLOUDFLARE_ACCOUNT_ID || fromEnvLocal('CLOUDFLARE_ACCOUNT_ID');
+const accountId = fromEnvLocal('CLOUDFLARE_ACCOUNT_ID') || process.env.CLOUDFLARE_ACCOUNT_ID;
 if (!accountId) warn('CLOUDFLARE_ACCOUNT_ID not set — wrangler has to look the account up');
 else if (accountId !== ACCOUNT_ID) bad(`CLOUDFLARE_ACCOUNT_ID is ${accountId}, expected ${ACCOUNT_ID}`);
 else ok('CLOUDFLARE_ACCOUNT_ID points at the net27 account');
 
-// A token can verify as "active" and still lack the permissions that matter —
-// that is exactly how the previous one failed — so always exercise the real
-// Pages endpoint rather than trusting a status field.
-if (token) {
+// Prefer project-scoped credentials: if .cf-auth exists and localToken is not set,
+// test the private store directly because machine-level tokens may belong to other projects.
+if (localToken) {
   const res = await fetch(`${API}/accounts/${ACCOUNT_ID}/pages/projects`, {
-    headers: { Authorization: `Bearer ${token}` },
+    headers: { Authorization: `Bearer ${localToken}` },
   }).then((r) => r.json());
   if (!res.success) {
     warn(`Token cannot list Pages projects: ${res.errors?.[0]?.message ?? 'unknown error'}`);
-    console.log('\n  It is missing "Cloudflare Pages · Edit" on this account.');
     if (hasPrivateStore) {
       console.log('  Falling back to this project\'s private OAuth login.\n');
       await checkPrivateLogin();
     } else {
       bad('No private OAuth login is available as a fallback');
-      console.log('');
     }
   } else {
     const names = res.result.map((p) => p.name);
     ok(`Pages reachable — ${names.length} project(s): ${names.join(', ')}`);
     if (!names.includes('net-27-astro')) bad('Project "net-27-astro" is not visible to this token');
   }
-} else {
-  // Go through the wrapper so we test the private store, not the shared one.
+} else if (hasPrivateStore) {
   await checkPrivateLogin();
+} else if (envToken) {
+  const res = await fetch(`${API}/accounts/${ACCOUNT_ID}/pages/projects`, {
+    headers: { Authorization: `Bearer ${envToken}` },
+  }).then((r) => r.json());
+  if (!res.success) {
+    bad(`Environment token cannot access net-27: ${res.errors?.[0]?.message ?? 'unknown error'}`);
+  } else {
+    ok(`Pages reachable via environment token`);
+  }
+} else {
+  bad('No project-scoped credential — run npm run cf:login');
 }
 
 console.log(`\n${failed ? '❌ Cloudflare auth needs attention (see above)' : '✅ Cloudflare auth is good — deploys will work'}`);

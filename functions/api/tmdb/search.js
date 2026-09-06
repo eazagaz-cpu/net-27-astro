@@ -13,6 +13,8 @@ export async function onRequestGet(context) {
     return new Response(JSON.stringify({ error: 'TMDB_API_KEY not configured', items: [] }), { headers });
   }
 
+  const DMCA_BLOCKED_IDS = new Set([969681, 1284465, 1477712]);
+
   try {
     const tmdbUrl = `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${encodeURIComponent(query)}`;
     const res = await fetch(tmdbUrl);
@@ -20,7 +22,7 @@ export async function onRequestGet(context) {
     const data = await res.json();
 
     const items = (data.results || [])
-      .filter(i => !i.adult && (i.media_type === 'movie' || i.media_type === 'tv') && (i.title || i.name))
+      .filter(i => !i.adult && (i.media_type === 'movie' || i.media_type === 'tv') && (i.title || i.name) && !DMCA_BLOCKED_IDS.has(i.id))
       .slice(0, 20)
       .map(i => ({
         id: i.id,

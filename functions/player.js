@@ -17,6 +17,8 @@
 
 const DMCA_BLOCKED_IDS = new Set([
   '1477712', // Active Cloudflare 451 — do not remove
+  '969681',  // Spider-Man: Brand New Day — Report afd2de4e15d0c7ae
+  '1284465', // The Death of Robin Hood    — Report a37e65dce9a83274
 ]);
 
 const GONE_HTML = `<!DOCTYPE html>

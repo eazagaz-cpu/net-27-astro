@@ -11,6 +11,7 @@ import { readFileSync } from 'node:fs';
 const DMCA_DENIED_SLUGS = new Set([
   'spider-man-brand-new-day-969681',
   'the-death-of-robin-hood-1284465',
+  'ice-cream-man-1477712',
 ]);
 
 // @astrojs/sitemap emits an index plus sitemap-0.xml. This site is well below
@@ -25,8 +26,8 @@ const thinTitleSlugs = (() => {
     const { items } = JSON.parse(readFileSync('./src/data/cache/titles.json', 'utf8'));
     return new Set(
       items
-        .filter(t => (t.overview || '').trim().length < 80 && !t.watch && (t.cast || []).length === 0)
-        .map(t => `/${t.type === 'show' ? 'shows' : 'movies'}/${t.slug}/`)
+        .filter((/** @type {any} */ t) => (t.overview || '').trim().length < 80 && !t.watch && (t.cast || []).length === 0)
+        .map((/** @type {any} */ t) => `/${t.type === 'show' ? 'shows' : 'movies'}/${t.slug}/`)
     );
   } catch {
     return new Set();
@@ -36,7 +37,7 @@ const thinTitleSlugs = (() => {
 const directSitemap = {
   name: 'net27-direct-sitemap',
   hooks: {
-    'astro:build:done': async ({ dir }) => {
+    'astro:build:done': async (/** @type {any} */ { dir }) => {
       await copyFile(new URL('sitemap-0.xml', dir), new URL('sitemap.xml', dir));
 
       // IndexNow — tells the Bing/Yandex/Yahoo network that these URLs changed.
@@ -79,8 +80,8 @@ const directSitemap = {
         } else {
           console.warn(`[IndexNow] Unexpected status: ${res.status}`);
         }
-      } catch (err) {
-        console.warn('[IndexNow] Ping failed (non-blocking):', err.message);
+      } catch (/** @type {any} */ err) {
+        console.warn('[IndexNow] Ping failed (non-blocking):', err?.message || String(err));
       }
     },
   },

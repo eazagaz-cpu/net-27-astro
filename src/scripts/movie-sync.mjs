@@ -41,6 +41,20 @@ if (!API_KEY) {
 
 mkdirSync(CACHE_DIR, { recursive: true });
 
+// ── DMCA / Legal Deny List ──────────────────────────────────────────────────
+// Slugs and TMDB IDs that must never be fetched, cached, or written to index.
+const DMCA_DENIED_TMDB_IDS = new Set([
+  969681,   // Spider-Man: Brand New Day — Report afd2de4e15d0c7ae
+  1284465,  // The Death of Robin Hood    — Report a37e65dce9a83274
+  1477712,  // Player ID — 451 active
+]);
+
+const DMCA_DENIED_SLUGS = new Set([
+  'spider-man-brand-new-day-969681',
+  'the-death-of-robin-hood-1284465',
+  'ice-cream-man-1477712',
+]);
+
 // ── Normalize a raw TMDB item ────────────────────────────────────────────────
 function normalize(item) {
   const isTV = !!(item.name || item.first_air_date || item.media_type === 'tv');
@@ -214,7 +228,7 @@ async function fetchCategory(category, maxPages = 2) {
         for (const raw of data.results || []) {
           if (raw.adult) continue;
           if (!(raw.title || raw.name)) continue;
-          if (seen.has(raw.id)) continue;
+          if (seen.has(raw.id) || DMCA_DENIED_TMDB_IDS.has(raw.id)) continue;
           if (!raw.poster_path && !raw.backdrop_path) continue; // skip imageless items
           seen.add(raw.id);
           items.push(normalize(raw));
@@ -242,6 +256,7 @@ function slugify(text) {
 // fictional sampleTitles.ts dataset that movies/[slug].astro and
 // shows/[slug].astro render from. ─────────────────────────────────────────
 async function fetchTitleDetail(type, id) {
+  if (DMCA_DENIED_TMDB_IDS.has(id)) return null;
   const path = type === 'tv' ? `/tv/${id}` : `/movie/${id}`;
   // watch/providers rides along on the same request — append_to_response costs
   // no extra call, so availability data is effectively free here.
@@ -518,7 +533,9 @@ async function enrichWithOmdb(titles) {
 // Fields are single letters because this file is downloaded by every visitor
 // who opens search, and 900 records of readable keys is a lot of nothing.
 function writeSearchIndex(titles) {
-  const records = titles.map(t => ({
+  const records = titles
+    .filter(t => !DMCA_DENIED_TMDB_IDS.has(t.tmdbId) && !DMCA_DENIED_SLUGS.has(t.slug))
+    .map(t => ({
     s: t.slug,
     y: t.type === 'show' ? 1 : 0,
     t: t.title,
@@ -590,7 +607,7 @@ async function fetchTrakt() {
   const seen = new Set();
   for (const entry of data) {
     const tmdbId = entry.movie?.ids?.tmdb;
-    if (!tmdbId || seen.has(tmdbId)) continue;
+    if (!tmdbId || seen.has(tmdbId) || DMCA_DENIED_TMDB_IDS.has(tmdbId)) continue;
     seen.add(tmdbId);
     try {
       const d = await tmdbFetch(`/movie/${tmdbId}`, {});
