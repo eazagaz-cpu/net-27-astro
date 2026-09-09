@@ -1,4 +1,4 @@
-import type { LocalizedPost } from '../index';
+﻿import type { LocalizedPost } from '../index';
 
 /**
  * Bengali translation of "What Is NetMirror?".
@@ -45,7 +45,7 @@ const post: LocalizedPost = {
 
 <h2 id="how-to-use-netmirror">NetMirror কীভাবে ব্যবহার করবেন</h2>
 <ol>
-  <li><a href="/bn/">net-27.cc</a>-এ যান বা NetMirror Android অ্যাপ খুলুন</li>
+  <li><a href="/bn/">net27.watch</a>-এ যান বা NetMirror Android অ্যাপ খুলুন</li>
   <li>সার্চ বারে যেকোনো সিনেমা, টিভি শো বা অ্যানিমে খুঁজুন</li>
   <li>কোনো টাইটেল খুলে তার বিবরণ, স্ট্রিমিং প্রাপ্যতা, অভিনয়শিল্পী ও রেটিং দেখুন</li>
   <li>এমবেডেড প্লেয়ার দেখতে "Watch Now"-এ ক্লিক করুন, অথবা অফিসিয়াল সেবায় দেখতে প্ল্যাটফর্ম লিঙ্কে যান</li>

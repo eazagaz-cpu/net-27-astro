@@ -23,7 +23,7 @@ try {
 try {
   const html = await readFile(`${DIST}/index.html`, 'utf-8');
 
-  if (html.includes('og:image" content="https://net-27.cc/og-image.png"')) {
+  if (html.includes('og:image" content="https://net27.watch/og-image.png"')) {
     console.log('  OK: homepage has correct og:image');
   } else if (html.includes('og:image')) {
     console.log('  WARN: homepage has og:image but may not use og-image.png');
@@ -32,7 +32,7 @@ try {
     errors++;
   }
 
-  if (html.includes('twitter:image" content="https://net-27.cc/og-image.png"')) {
+  if (html.includes('twitter:image" content="https://net27.watch/og-image.png"')) {
     console.log('  OK: homepage has correct twitter:image');
   } else if (html.includes('twitter:image')) {
     console.log('  WARN: homepage has twitter:image but may not use og-image.png');
@@ -59,7 +59,7 @@ try {
   const ogMatches = html.match(/og:image.*?content="([^"]*)"/g) || [];
   for (const m of ogMatches) {
     if (m.includes('pages.dev')) { console.error('  ERROR: og:image uses pages.dev'); errors++; }
-    if (m.includes('net27.cc/') && !m.includes('net-27.cc')) { console.error('  ERROR: og:image uses net27.cc'); errors++; }
+    if (m.includes('net27.cc/') && !m.includes('net27.watch')) { console.error('  ERROR: og:image uses net27.cc'); errors++; }
   }
 
 } catch (e) {

@@ -1,4 +1,4 @@
-import type { HelpDocs } from '../types';
+﻿import type { HelpDocs } from '../types';
 import { CONTACT_EMAIL } from '../../../lib/constants';
 
 /**
@@ -189,7 +189,7 @@ const bn: HelpDocs = {
                 items: [
                   'আপনার Android সংস্করণ দেখুন: **Settings > About Phone > Android Version**।',
                   'আপনার সংস্করণ ৬.০-র নিচে হলে দেখুন সিস্টেম আপডেট আছে কি না: **Settings > System > Software Update**।',
-                  'কোনো আপডেট না থাকলে আপনার ডিভাইস সমর্থিত নাও হতে পারে। এর বদলে **net-27.cc**-এ ওয়েব ব্রাউজার দিয়ে NetMirror ব্যবহার করার কথা ভাবুন।',
+                  'কোনো আপডেট না থাকলে আপনার ডিভাইস সমর্থিত নাও হতে পারে। এর বদলে **net27.watch**-এ ওয়েব ব্রাউজার দিয়ে NetMirror ব্যবহার করার কথা ভাবুন।',
                 ],
               },
               {

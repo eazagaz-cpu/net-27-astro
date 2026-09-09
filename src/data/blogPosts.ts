@@ -1,4 +1,4 @@
-import type { BlogPost } from '../lib/types';
+﻿import type { BlogPost } from '../lib/types';
 import { getBlogImage } from './blogImages';
 
 export const blogPosts: BlogPost[] = [
@@ -136,7 +136,7 @@ export const blogPosts: BlogPost[] = [
 
 <h2 id="safety-tips">Safety Tips for Downloading APKs</h2>
 
-<p>Always download NetMirror from official sources only. The URLs listed in this guide point to the official distribution hosted on Cloudflare R2 storage. Avoid third-party APK mirror sites, as they may repackage apps with unwanted modifications. If you have questions about the authenticity of a download link, contact us at <a href="mailto:net27.cc@gmail.com">net27.cc@gmail.com</a> for verification.</p>
+<p>Always download NetMirror from official sources only. The URLs listed in this guide point to the official distribution hosted on Cloudflare R2 storage. Avoid third-party APK mirror sites, as they may repackage apps with unwanted modifications. If you have questions about the authenticity of a download link, contact us at <a href="mailto:about@net27.watch">about@net27.watch</a> for verification.</p>
 
 <p>NetMirror is a content discovery tool that helps you find streaming availability information. It uses the TMDB API to provide accurate, up-to-date data about where movies and TV shows are available across different platforms in your region. Read more in our <a href="/blog/is-netmirror-safe/">safety guide</a>.</p>`,
     author: 'NetMirror Editorial',
@@ -251,7 +251,7 @@ export const blogPosts: BlogPost[] = [
 
 <p>For most users in 2026, the <strong>ARM64 build</strong> is the right choice. The vast majority of Android devices sold in the last six years are 64-bit. If you have an older device or are not sure, grab the Universal APK.</p>
 
-<p>For the complete installation walkthrough, visit our <a href="/blog/netmirror-apk-download-guide/">NetMirror APK Download Guide</a>. If you run into any issues, reach out to us at <a href="mailto:net27.cc@gmail.com">net27.cc@gmail.com</a>.</p>`,
+<p>For the complete installation walkthrough, visit our <a href="/blog/netmirror-apk-download-guide/">NetMirror APK Download Guide</a>. If you run into any issues, reach out to us at <a href="mailto:about@net27.watch">about@net27.watch</a>.</p>`,
     author: 'NetMirror Editorial',
     date: '2026-06-25',
     image: getBlogImage('arm64-vs-arm32-apk').url,
@@ -342,7 +342,7 @@ export const blogPosts: BlogPost[] = [
   <li><strong>Verify URLs before downloading</strong> — Confirm the URL matches the official Cloudflare R2 domain</li>
   <li><strong>Review permissions after updates</strong> — Check the app's permissions in Android Settings after each update</li>
   <li><strong>Use current security patches</strong> — Keep your device updated to the latest security patch level</li>
-  <li><strong>Report concerns directly</strong> — Contact us at <a href="mailto:net27.cc@gmail.com">net27.cc@gmail.com</a></li>
+  <li><strong>Report concerns directly</strong> — Contact us at <a href="mailto:about@net27.watch">about@net27.watch</a></li>
 </ul>
 
 <h2 id="bottom-line">The Bottom Line</h2>
@@ -401,7 +401,7 @@ export const blogPosts: BlogPost[] = [
       'Play Protect may show generic warning',
       'Requires internet connection to function',
     ],
-    safetyNote: 'Always download NetMirror from the official Cloudflare R2 URLs. If an APK claiming to be NetMirror requests permissions for camera, microphone, contacts, or location, it is NOT the official build. Contact net27.cc@gmail.com to report suspicious downloads.',
+    safetyNote: 'Always download NetMirror from the official Cloudflare R2 URLs. If an APK claiming to be NetMirror requests permissions for camera, microphone, contacts, or location, it is NOT the official build. Contact about@net27.watch to report suspicious downloads.',
     faqs: [
       { question: 'Does NetMirror contain ads or malware?', answer: 'No. NetMirror does not contain ads, trackers, or malware. It is a clean content discovery tool that only connects to the TMDB API for movie data.' },
       { question: 'Why is NetMirror not on the Google Play Store?', answer: 'NetMirror is distributed as a direct APK download through Cloudflare R2 storage. This gives users a direct, fast download without Play Store dependency.' },
@@ -1976,7 +1976,7 @@ export const blogPosts: BlogPost[] = [
 
 <h2 id="how-to-use-netmirror">How to Use NetMirror</h2>
 <ol>
-  <li>Go to <a href="/">net-27.cc</a> or open the NetMirror Android app</li>
+  <li>Go to <a href="/">net27.watch</a> or open the NetMirror Android app</li>
   <li>Search for any movie, TV show, or anime in the search bar</li>
   <li>Open a title to see its details, streaming availability, cast, and ratings</li>
   <li>Click "Watch Now" to view an embedded player, or follow the platform link to watch on the official service</li>

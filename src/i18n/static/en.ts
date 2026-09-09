@@ -1,4 +1,4 @@
-import type { StaticDocs } from './types';
+﻿import type { StaticDocs } from './types';
 
 /**
  * English source of the prose pages, transcribed verbatim from the original
@@ -18,7 +18,7 @@ const en: StaticDocs = {
       'NetMirror helps you discover where to watch movies, TV shows and anime legally across Netflix, Prime Video and 30+ streaming platforms.',
     h1: 'About {name}',
     lead: [
-      'NetMirror (net-27.cc) is a free movie and TV show discovery platform that helps you find where to watch movies, TV shows, and anime legally across Netflix, Prime Video, Disney+, JioHotstar, Crunchyroll, and 30+ streaming platforms worldwide. NetMirror does not host or stream any content — it is a search and discovery tool only.',
+      'NetMirror (net27.watch) is a free movie and TV show discovery platform that helps you find where to watch movies, TV shows, and anime legally across Netflix, Prime Video, Disney+, JioHotstar, Crunchyroll, and 30+ streaming platforms worldwide. NetMirror does not host or stream any content — it is a search and discovery tool only.',
       'We believe finding great content to watch should be effortless. NetMirror is your companion for discovering movies, TV shows, and anime across every major streaming platform.',
     ],
     body: [
@@ -114,7 +114,7 @@ const en: StaticDocs = {
         blocks: [
           {
             t: 'p',
-            text: 'NetMirror ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website net27.cc. Please read this policy carefully.',
+            text: 'NetMirror ("we," "us," or "our") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you visit our website net27.watch. Please read this policy carefully.',
           },
         ],
       },
@@ -212,8 +212,8 @@ const en: StaticDocs = {
           {
             t: 'card',
             rows: [
-              { label: 'Email', value: 'net27.cc@gmail.com' },
-              { label: 'Website', value: 'net27.cc/contact', href: '/contact/' },
+              { label: 'Email', value: 'about@net27.watch' },
+              { label: 'Website', value: 'net27.watch/contact', href: '/contact/' },
             ],
           },
         ],
@@ -234,7 +234,7 @@ const en: StaticDocs = {
         blocks: [
           {
             t: 'p',
-            text: 'By accessing and using NetMirror (net27.cc), you accept and agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you may not access the website.',
+            text: 'By accessing and using NetMirror (net27.watch), you accept and agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you may not access the website.',
           },
         ],
       },
@@ -322,8 +322,8 @@ const en: StaticDocs = {
           {
             t: 'card',
             rows: [
-              { label: 'Email', value: 'net27.cc@gmail.com' },
-              { label: 'Website', value: 'net27.cc/contact', href: '/contact/' },
+              { label: 'Email', value: 'about@net27.watch' },
+              { label: 'Website', value: 'net27.watch/contact', href: '/contact/' },
             ],
           },
         ],
@@ -344,7 +344,7 @@ const en: StaticDocs = {
         blocks: [
           {
             t: 'p',
-            text: 'The information provided on NetMirror (net-27.cc) is for general informational and entertainment discovery purposes only. NetMirror is a content discovery platform that helps users find where to watch movies, TV shows, and anime on official streaming services. We make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of any information on this website.',
+            text: 'The information provided on NetMirror (net27.watch) is for general informational and entertainment discovery purposes only. NetMirror is a content discovery platform that helps users find where to watch movies, TV shows, and anime on official streaming services. We make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, suitability, or availability of any information on this website.',
           },
         ],
       },
@@ -362,7 +362,7 @@ const en: StaticDocs = {
         blocks: [
           {
             t: 'p',
-            text: 'The NetMirror application is available for download from our official sources only. Download APK files only from links provided directly on net-27.cc or our official Telegram channel. We are not responsible for any modified, repackaged, or redistributed versions of our application obtained from third-party sources. Always verify download links before installing.',
+            text: 'The NetMirror application is available for download from our official sources only. Download APK files only from links provided directly on net27.watch or our official Telegram channel. We are not responsible for any modified, repackaged, or redistributed versions of our application obtained from third-party sources. Always verify download links before installing.',
           },
           {
             t: 'p',
@@ -413,8 +413,8 @@ const en: StaticDocs = {
           {
             t: 'card',
             rows: [
-              { label: 'Email', value: 'net27.cc@gmail.com', href: 'mailto:net27.cc@gmail.com' },
-              { label: 'Website', value: 'net-27.cc/contact', href: '/contact/' },
+              { label: 'Email', value: 'about@net27.watch', href: 'mailto:about@net27.watch' },
+              { label: 'Website', value: 'net27.watch/contact', href: '/contact/' },
             ],
           },
         ],
@@ -490,7 +490,7 @@ const en: StaticDocs = {
             rows: [
               { text: 'DMCA Agent', strong: true },
               { text: 'NetMirror' },
-              { label: 'Email', value: 'net27.cc@gmail.com' },
+              { label: 'Email', value: 'about@net27.watch' },
             ],
           },
         ],
@@ -662,7 +662,7 @@ const en: StaticDocs = {
           {
             t: 'card',
             rows: [
-              { label: 'Email', value: 'net27.cc@gmail.com' },
+              { label: 'Email', value: 'about@net27.watch' },
               { label: 'General inquiries', value: 'Contact form', href: '/contact/' },
               { label: 'Content corrections', value: 'Report an issue', href: '/contact/' },
             ],

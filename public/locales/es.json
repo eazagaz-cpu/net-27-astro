@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "siteName": "NetMirror",
     "tagline": "Ver Peliculas, Series y Anime en Linea",
@@ -322,7 +322,7 @@
     "q5": "¿Está actualizada la información de disponibilidad?",
     "a5": "El catálogo se actualiza a diario desde TMDB y la disponibilidad procede de JustWatch a través de TMDB. Los proveedores cambian su catálogo a menudo, así que cada página de título enlaza para que confirmes la oferta actual.",
     "q6": "¿Cómo contacto con NetMirror?",
-    "a6": "Escribe a net27.cc@gmail.com para soporte, comentarios, avisos de DMCA o consultas comerciales. La página de contacto ofrece más opciones.",
+    "a6": "Escribe a about@net27.watch para soporte, comentarios, avisos de DMCA o consultas comerciales. La página de contacto ofrece más opciones.",
     "disclaimer": "NetMirror no aloja, almacena ni distribuye ningún contenido. Somos una plataforma de descubrimiento que te ayuda a encontrar dónde ver películas, series y anime legalmente a través de servicios oficiales. Toda la información, las imágenes y las marcas pertenecen a sus respectivos propietarios."
   },
   "collection": {

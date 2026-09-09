@@ -1,4 +1,4 @@
-import type { LocalizedPost } from '../index';
+﻿import type { LocalizedPost } from '../index';
 
 /**
  * Urdu translation of "Is NetMirror Safe?".
@@ -68,7 +68,7 @@ const post: LocalizedPost = {
   <li><strong>ڈاؤن لوڈ سے پہلے URL تصدیق کریں</strong> — تصدیق کریں کہ URL سرکاری Cloudflare R2 ڈومین سے مطابقت رکھتا ہے</li>
   <li><strong>اپ ڈیٹ کے بعد اجازتیں دیکھیں</strong> — ہر اپ ڈیٹ کے بعد Android سیٹنگز میں ایپ کی اجازتیں جانچیں</li>
   <li><strong>موجودہ سیکیورٹی پیچ استعمال کریں</strong> — اپنے آلے کو تازہ ترین سیکیورٹی پیچ کی سطح پر رکھیں</li>
-  <li><strong>تشویش براہِ راست بتائیں</strong> — ہم سے <a href="mailto:net27.cc@gmail.com">net27.cc@gmail.com</a> پر رابطہ کریں</li>
+  <li><strong>تشویش براہِ راست بتائیں</strong> — ہم سے <a href="mailto:about@net27.watch">about@net27.watch</a> پر رابطہ کریں</li>
 </ul>
 
 <h2 id="bottom-line">خلاصہ</h2>
@@ -122,7 +122,7 @@ const post: LocalizedPost = {
     'کام کرنے کے لیے انٹرنیٹ کنکشن درکار ہے',
   ],
   safetyNote:
-    'NetMirror ہمیشہ سرکاری Cloudflare R2 URLs سے ڈاؤن لوڈ کریں۔ اگر کوئی APK خود کو NetMirror بتاتے ہوئے کیمرے، مائیکروفون، رابطوں یا مقام کی اجازت مانگے، تو وہ سرکاری بلڈ نہیں ہے۔ مشتبہ ڈاؤن لوڈ کی اطلاع کے لیے net27.cc@gmail.com پر رابطہ کریں۔',
+    'NetMirror ہمیشہ سرکاری Cloudflare R2 URLs سے ڈاؤن لوڈ کریں۔ اگر کوئی APK خود کو NetMirror بتاتے ہوئے کیمرے، مائیکروفون، رابطوں یا مقام کی اجازت مانگے، تو وہ سرکاری بلڈ نہیں ہے۔ مشتبہ ڈاؤن لوڈ کی اطلاع کے لیے about@net27.watch پر رابطہ کریں۔',
   faqs: [
     {
       question: 'کیا NetMirror میں اشتہارات یا مالویئر ہیں؟',

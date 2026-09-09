@@ -1,4 +1,4 @@
-import type { HelpDocs } from '../types';
+﻿import type { HelpDocs } from '../types';
 import { CONTACT_EMAIL } from '../../../lib/constants';
 
 /**
@@ -189,7 +189,7 @@ const ur: HelpDocs = {
                 items: [
                   'اپنا Android ورژن دیکھیں: **Settings > About Phone > Android Version**۔',
                   'اگر آپ کا ورژن 6.0 سے نیچے ہے تو دیکھیں کہ سسٹم اپ ڈیٹ دستیاب ہے یا نہیں: **Settings > System > Software Update**۔',
-                  'اگر کوئی اپ ڈیٹ دستیاب نہیں تو آپ کا ڈیوائس سپورٹ شدہ نہیں ہو سکتا۔ اس کے بجائے **net-27.cc** پر ویب براؤزر سے NetMirror استعمال کرنے پر غور کریں۔',
+                  'اگر کوئی اپ ڈیٹ دستیاب نہیں تو آپ کا ڈیوائس سپورٹ شدہ نہیں ہو سکتا۔ اس کے بجائے **net27.watch** پر ویب براؤزر سے NetMirror استعمال کرنے پر غور کریں۔',
                 ],
               },
               {

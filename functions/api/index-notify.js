@@ -15,11 +15,11 @@
  *      Environment Variables (Settings → Environment variables)
  *
  * Usage (after deploy):
- *   POST https://net-27.cc/api/index-notify
+ *   POST https://net27.watch/api/index-notify
  *   Content-Type: application/json
- *   { "urls": ["https://net-27.cc/movies/inception/", "https://net-27.cc/"] }
+ *   { "urls": ["https://net27.watch/movies/inception/", "https://net27.watch/"] }
  *
- * Or: GET https://net-27.cc/api/index-notify  (pings homepage only)
+ * Or: GET https://net27.watch/api/index-notify  (pings homepage only)
  *
  * Quota: 200 URLs/day on free tier. Use sparingly — only for new/updated content.
  */
@@ -127,7 +127,7 @@ export async function onRequest(context) {
   }
 
   // Parse URLs to notify
-  let urls = ['https://net-27.cc/'];
+  let urls = ['https://net27.watch/'];
   if (request.method === 'POST') {
     try {
       const body = await request.json();

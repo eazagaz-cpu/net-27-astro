@@ -20,7 +20,7 @@ import { promisify } from 'util';
 const run = promisify(execFile);
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const ACCOUNT_ID = '34bdd56a73c7dc40d4223f7fa255d419';
-const EMAIL = 'net27.cc@gmail.com';
+const EMAIL = 'about@net27.watch';
 const API = 'https://api.cloudflare.com/client/v4';
 
 let failed = false;

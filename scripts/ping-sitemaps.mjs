@@ -16,7 +16,7 @@
  * lekin Bing aur Yandex ab bhi kaam karte hain.
  */
 
-const SITE_URL = 'https://net-27.cc';
+const SITE_URL = 'https://net27.watch';
 const SITEMAPS = [
   `${SITE_URL}/sitemap.xml`,
   `${SITE_URL}/sitemap-0.xml`,
@@ -33,7 +33,7 @@ async function pingSitemap(url) {
     try {
       const res = await fetch(endpoint, {
         method: 'GET',
-        headers: { 'User-Agent': 'net-27.cc SitemapPinger/1.0' },
+        headers: { 'User-Agent': 'net27.watch SitemapPinger/1.0' },
         signal: AbortSignal.timeout(10_000),
       });
       const engineName = endpoint.includes('bing') ? 'Bing' : 'Yandex';
@@ -52,7 +52,7 @@ async function pingSitemap(url) {
 async function pingIndexNow() {
   const INDEXNOW_KEY = 'e9d6b5a3c2f1e8d7b4a0c5f2e1d8b3a6';
   const payload = {
-    host: 'net-27.cc',
+    host: 'net27.watch',
     key: INDEXNOW_KEY,
     keyLocation: `${SITE_URL}/${INDEXNOW_KEY}.txt`,
     urlList: [

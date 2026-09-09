@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "siteName": "NetMirror",
     "tagline": "Titta på filmer, TV-serier och anime online",
@@ -322,7 +322,7 @@
     "q5": "Hur aktuell är tillgänglighetsinformationen?",
     "a5": "Katalogen uppdateras dagligen från TMDB, och tillgängligheten kommer från JustWatch via TMDB. Tjänsterna ändrar ofta sitt utbud, så varje titelsida länkar vidare så att du kan bekräfta det aktuella erbjudandet.",
     "q6": "Hur kontaktar jag NetMirror?",
-    "a6": "Skriv till net27.cc@gmail.com för support, synpunkter, DMCA-anmälningar eller affärsfrågor. Kontaktsidan listar fler alternativ.",
+    "a6": "Skriv till about@net27.watch för support, synpunkter, DMCA-anmälningar eller affärsfrågor. Kontaktsidan listar fler alternativ.",
     "disclaimer": "NetMirror lagrar, sparar och distribuerar inget media. Vi är en söktjänst som hjälper dig hitta var du lagligt kan se filmer, serier och anime via officiella tjänster. All information, alla bilder och alla varumärken tillhör sina respektive ägare."
   },
   "collection": {

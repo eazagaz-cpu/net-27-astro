@@ -31,14 +31,14 @@ try {
 
   // Check no wrong domains
   if (html.includes('pages.dev')) { console.error('  ERROR: contains pages.dev'); errors++; }
-  if (html.includes('net27.cc/') && !html.includes('net-27.cc')) { console.error('  ERROR: contains net27.cc'); errors++; }
-  if (html.includes('www.net-27.cc')) { console.error('  ERROR: contains www.net-27.cc'); errors++; }
+  if (html.includes('net27.cc/') && !html.includes('net27.watch')) { console.error('  ERROR: contains net27.cc'); errors++; }
+  if (html.includes('www.net27.watch')) { console.error('  ERROR: contains www.net27.watch'); errors++; }
 
   // Check not noindex
   if (html.includes('noindex')) { console.error('  ERROR: page has noindex'); errors++; }
 
   // Check canonical
-  if (html.includes('net-27.cc/sitemap/')) {
+  if (html.includes('net27.watch/sitemap/')) {
     console.log('  OK: canonical correct');
   } else {
     console.error('  ERROR: canonical missing or wrong');

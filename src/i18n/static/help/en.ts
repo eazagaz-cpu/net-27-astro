@@ -1,4 +1,4 @@
-import type { HelpDocs } from '../types';
+﻿import type { HelpDocs } from '../types';
 import { CONTACT_EMAIL } from '../../../lib/constants';
 
 /**
@@ -189,7 +189,7 @@ const en: HelpDocs = {
                 items: [
                   'Check your Android version: **Settings > About Phone > Android Version**.',
                   'If your version is below 6.0, check if a system update is available: **Settings > System > Software Update**.',
-                  'If no update is available, your device may not be supported. Consider using NetMirror through the web browser at **net-27.cc** instead.',
+                  'If no update is available, your device may not be supported. Consider using NetMirror through the web browser at **net27.watch** instead.',
                 ],
               },
               {

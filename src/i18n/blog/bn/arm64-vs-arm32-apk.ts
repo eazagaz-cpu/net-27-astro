@@ -1,4 +1,4 @@
-import type { LocalizedPost } from '../index';
+﻿import type { LocalizedPost } from '../index';
 
 /**
  * Bengali translation of "ARM64 vs ARM32 APK".
@@ -67,7 +67,7 @@ const post: LocalizedPost = {
 
 <p>2026 সালে বেশির ভাগ ব্যবহারকারীর জন্য <strong>ARM64 বিল্ড</strong>-ই সঠিক বাছাই। গত ছয় বছরে বিক্রি হওয়া Android যন্ত্রের বিপুল সংখ্যাগরিষ্ঠই 64-bit। আপনার যন্ত্র পুরনো হলে বা নিশ্চিত না হলে Universal APK নিন।</p>
 
-<p>সম্পূর্ণ ইনস্টলেশন পদ্ধতির জন্য আমাদের <a href="/bn/blog/netmirror-apk-download-guide/">NetMirror APK ডাউনলোড গাইড</a> দেখুন। কোনো সমস্যা হলে আমাদের সঙ্গে <a href="mailto:net27.cc@gmail.com">net27.cc@gmail.com</a>-এ যোগাযোগ করুন।</p>`,
+<p>সম্পূর্ণ ইনস্টলেশন পদ্ধতির জন্য আমাদের <a href="/bn/blog/netmirror-apk-download-guide/">NetMirror APK ডাউনলোড গাইড</a> দেখুন। কোনো সমস্যা হলে আমাদের সঙ্গে <a href="mailto:about@net27.watch">about@net27.watch</a>-এ যোগাযোগ করুন।</p>`,
   toc: [
     { id: 'what-is-architecture', title: 'প্রসেসরের গঠন বলতে কী বোঝায়?', level: 2 },
     { id: 'how-to-check', title: 'আপনার যন্ত্রের গঠন কীভাবে দেখবেন', level: 2 },

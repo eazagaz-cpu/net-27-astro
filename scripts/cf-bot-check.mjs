@@ -1,4 +1,4 @@
-﻿import { readFileSync } from "fs";
+import { readFileSync } from "fs";
 const configPath = ".cf-auth/.wrangler/config/default.toml";
 const content = readFileSync(configPath, "utf8");
 const tokenMatch = content.match(/oauth_token = "([^"]+)"/);
@@ -9,7 +9,7 @@ const ACCOUNT_ID = "34bdd56a73c7dc40d4223f7fa255d419";
 const API = "https://api.cloudflare.com/client/v4";
 
 // Get zones list
-const zonesRes = await fetch(`${API}/zones?name=net-27.cc`, {
+const zonesRes = await fetch(`${API}/zones?name=net27.watch`, {
   headers: { Authorization: `Bearer ${token}` }
 });
 const zones = await zonesRes.json();
@@ -18,7 +18,7 @@ if (!zones.success) {
   process.exit(1);
 }
 const zone = zones.result?.[0];
-if (!zone) { console.log("Zone net-27.cc not found"); process.exit(1); }
+if (!zone) { console.log("Zone net27.watch not found"); process.exit(1); }
 console.log("Zone ID:", zone.id, "| Name:", zone.name, "| Status:", zone.status);
 
 // Check Bot Fight Mode

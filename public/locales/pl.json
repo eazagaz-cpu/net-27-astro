@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "siteName": "NetMirror",
     "tagline": "Oglądaj filmy, seriale i anime online",
@@ -322,7 +322,7 @@
     "q5": "Jak aktualne są informacje o dostępności?",
     "a5": "Katalog odświeżany jest codziennie z TMDB, a dane o dostępności pochodzą z JustWatch za pośrednictwem TMDB. Dostawcy często zmieniają ofertę, dlatego na stronie każdego tytułu znajduje się link do sprawdzenia aktualnego stanu.",
     "q6": "Jak skontaktować się z NetMirror?",
-    "a6": "Napisz na net27.cc@gmail.com w sprawie pomocy, uwag, zgłoszeń DMCA lub kwestii biznesowych. Strona kontaktu podaje dalsze możliwości.",
+    "a6": "Napisz na about@net27.watch w sprawie pomocy, uwag, zgłoszeń DMCA lub kwestii biznesowych. Strona kontaktu podaje dalsze możliwości.",
     "disclaimer": "NetMirror nie hostuje, nie przechowuje ani nie rozpowszechnia żadnych materiałów. Jesteśmy platformą wyszukiwania, która pomaga ustalić, gdzie legalnie obejrzeć filmy, seriale i anime w oficjalnych serwisach. Wszystkie informacje, obrazy i znaki towarowe należą do ich właścicieli."
   },
   "collection": {

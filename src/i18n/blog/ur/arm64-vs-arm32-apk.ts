@@ -1,4 +1,4 @@
-import type { LocalizedPost } from '../index';
+﻿import type { LocalizedPost } from '../index';
 
 /**
  * Urdu translation of "ARM64 vs ARM32 APK".
@@ -67,7 +67,7 @@ const post: LocalizedPost = {
 
 <p>2026 میں زیادہ تر صارفین کے لیے <strong>ARM64 بلڈ</strong> ہی درست انتخاب ہے۔ گزشتہ چھ برسوں میں فروخت ہونے والے Android آلات کی بھاری اکثریت 64-bit ہے۔ اگر آپ کے پاس پرانا آلہ ہے یا یقین نہیں، تو Universal APK لے لیں۔</p>
 
-<p>مکمل انسٹالیشن کے طریقے کے لیے ہماری <a href="/ur/blog/netmirror-apk-download-guide/">NetMirror APK ڈاؤن لوڈ گائیڈ</a> دیکھیں۔ اگر کوئی مسئلہ پیش آئے تو ہم سے <a href="mailto:net27.cc@gmail.com">net27.cc@gmail.com</a> پر رابطہ کریں۔</p>`,
+<p>مکمل انسٹالیشن کے طریقے کے لیے ہماری <a href="/ur/blog/netmirror-apk-download-guide/">NetMirror APK ڈاؤن لوڈ گائیڈ</a> دیکھیں۔ اگر کوئی مسئلہ پیش آئے تو ہم سے <a href="mailto:about@net27.watch">about@net27.watch</a> پر رابطہ کریں۔</p>`,
   toc: [
     { id: 'what-is-architecture', title: 'پروسیسر کی ساخت کیا ہوتی ہے؟', level: 2 },
     { id: 'how-to-check', title: 'اپنے آلے کی ساخت کیسے جانچیں', level: 2 },

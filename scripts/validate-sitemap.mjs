@@ -70,8 +70,8 @@ try {
     errors++;
   }
 
-  if (indexXml.includes('net-27.cc')) {
-    console.error('  ERROR: sitemap-index contains net-27.cc (old domain)');
+  if (indexXml.includes('net27.watch')) {
+    console.error('  ERROR: sitemap-index contains net27.watch (old domain)');
     errors++;
   }
 
@@ -80,8 +80,8 @@ try {
     errors++;
   }
 
-  if (indexXml.includes('www.net-27.cc')) {
-    console.error('  ERROR: sitemap-index contains www.net-27.cc');
+  if (indexXml.includes('www.net27.watch')) {
+    console.error('  ERROR: sitemap-index contains www.net27.watch');
     errors++;
   }
 

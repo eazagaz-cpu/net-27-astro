@@ -1,4 +1,4 @@
-import type { LocalizedPost } from '../index';
+﻿import type { LocalizedPost } from '../index';
 
 /**
  * Hindi translation of "ARM64 vs ARM32 APK".
@@ -62,7 +62,7 @@ const post: LocalizedPost = {
 
 <p>2026 में ज़्यादातर उपयोगकर्ताओं के लिए <strong>ARM64 बिल्ड</strong> सही विकल्प है। पिछले छह साल में बिके अधिकांश Android डिवाइस 64-बिट हैं। अगर आपका डिवाइस पुराना है या आप निश्चित नहीं हैं, तो Universal APK लें।</p>
 
-<p>इंस्टॉलेशन की पूरी प्रक्रिया के लिए हमारी <a href="/blog/netmirror-apk-download-guide/">NetMirror APK डाउनलोड गाइड</a> देखें। किसी भी समस्या पर हमसे <a href="mailto:net27.cc@gmail.com">net27.cc@gmail.com</a> पर संपर्क करें।</p>`,
+<p>इंस्टॉलेशन की पूरी प्रक्रिया के लिए हमारी <a href="/blog/netmirror-apk-download-guide/">NetMirror APK डाउनलोड गाइड</a> देखें। किसी भी समस्या पर हमसे <a href="mailto:about@net27.watch">about@net27.watch</a> पर संपर्क करें।</p>`,
   toc: [
     { id: 'what-is-architecture', title: 'प्रोसेसर आर्किटेक्चर क्या है?', level: 2 },
     { id: 'how-to-check', title: 'अपने डिवाइस का आर्किटेक्चर कैसे जाँचें', level: 2 },

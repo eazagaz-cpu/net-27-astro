@@ -1,4 +1,4 @@
-{
+﻿{
   "common": {
     "siteName": "NetMirror",
     "tagline": "Watch Movies, TV Shows & Anime Online",
@@ -322,7 +322,7 @@
     "q5": "How current is the availability information?",
     "a5": "The catalogue is refreshed daily from TMDB, and availability comes from JustWatch via TMDB. Providers change their catalogues often, so each title page links out for you to confirm the current offer.",
     "q6": "How do I contact NetMirror?",
-    "a6": "Write to net27.cc@gmail.com for support, feedback, DMCA notices or business enquiries. The contact page lists further options.",
+    "a6": "Write to about@net27.watch for support, feedback, DMCA notices or business enquiries. The contact page lists further options.",
     "disclaimer": "NetMirror does not host, store or distribute any media. We are a discovery platform that helps you find where to watch movies, TV shows and anime legally through official streaming services. All information, images and trademarks belong to their respective owners."
   },
   "collection": {
