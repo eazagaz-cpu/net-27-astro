@@ -63,15 +63,15 @@ try {
 try {
   const indexXml = await readFile(indexPath, 'utf-8');
 
-  if (indexXml.includes('net-27.cc/sitemap-0.xml')) {
+  if (indexXml.includes('net27.watch/sitemap-0.xml')) {
     console.log('  OK: sitemap-index references sitemap-0.xml correctly');
   } else {
     console.error('  ERROR: sitemap-index does not reference sitemap-0.xml');
     errors++;
   }
 
-  if (indexXml.includes('net27.cc') && !indexXml.includes('net-27.cc')) {
-    console.error('  ERROR: sitemap-index contains net27.cc (no hyphen)');
+  if (indexXml.includes('net-27.cc')) {
+    console.error('  ERROR: sitemap-index contains net-27.cc (old domain)');
     errors++;
   }
 
@@ -116,15 +116,15 @@ try {
     errors++;
   }
 
-  if (!childXml.includes('https://net-27.cc/')) {
-    console.error('  ERROR: sitemap-0.xml does not contain https://net-27.cc/');
+  if (!childXml.includes('https://net27.watch/')) {
+    console.error('  ERROR: sitemap-0.xml does not contain https://net27.watch/');
     errors++;
   }
 
   const invalidHosts = sitemapUrls.filter((url) => {
     try {
       const parsed = new URL(url);
-      return parsed.origin !== 'https://net-27.cc' || parsed.search || parsed.hash;
+      return parsed.origin !== 'https://net27.watch' || parsed.search || parsed.hash;
     } catch {
       return true;
     }
@@ -195,7 +195,7 @@ try {
 try {
   const robots = await readFile(robotsPath, 'utf-8');
 
-  if (robots.includes('https://net-27.cc/sitemap.xml')) {
+  if (robots.includes('https://net27.watch/sitemap.xml') || robots.includes('https://net27.watch/sitemap-index.xml')) {
     console.log('  OK: robots.txt references sitemap.xml');
   } else {
     console.error('  ERROR: robots.txt does not reference the canonical sitemap.xml');
@@ -207,7 +207,7 @@ try {
     errors++;
   }
 
-  if (robots.includes('www.net-27')) {
+  if (robots.includes('www.net27')) {
     console.error('  ERROR: robots.txt contains www');
     errors++;
   }
@@ -261,7 +261,7 @@ for (const url of sitemapUrls) {
     console.error(`  ERROR: sitemap page has no canonical link: ${url}`);
     errors++;
   } else {
-    const normalizedCanonical = new URL(canonical, 'https://net-27.cc').href;
+    const normalizedCanonical = new URL(canonical, 'https://net27.watch').href;
     const normalizedUrl = new URL(url).href;
     if (normalizedCanonical !== normalizedUrl) {
       console.error(`  ERROR: canonical mismatch: ${url} -> ${canonical}`);
