@@ -9,7 +9,7 @@
  * Cache names are versioned so old caches are cleaned up on activate.
  */
 
-const CACHE_VERSION = 'v2';
+const CACHE_VERSION = 'v3';
 const SHELL_CACHE   = `net27-shell-${CACHE_VERSION}`;
 const ASSET_CACHE   = `net27-assets-${CACHE_VERSION}`;
 

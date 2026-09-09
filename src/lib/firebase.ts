@@ -11,7 +11,7 @@ const FIREBASE_CONFIG = {
   storageBucket: 'net-27-a4cd1.firebasestorage.app',
   messagingSenderId: '334281971333',
   appId: '1:334281971333:web:1a5fcb777687b04b187bec',
-  measurementId: 'G-BEV78WNW13',
+  measurementId: 'G-V9WH90BFHM',
 };
 
 export function getFirebaseApp(): FirebaseApp | null {
