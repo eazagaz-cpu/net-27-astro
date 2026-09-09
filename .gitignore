@@ -50,3 +50,9 @@ net27-security*.json
 *.key
 *.pem
 
+# session logs and chat logs (may contain credentials)
+COMPLETE_CHAT_SESSION_LOG.md
+SESSION_CHECKPOINT.md
+PROJECT_SESSION_HANDOFF.md
+net27-watch-antigravity-master-prompt.md
+
