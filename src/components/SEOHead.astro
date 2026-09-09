@@ -38,7 +38,7 @@ const seo = generateSEO(Astro.props);
 
 const ogImageAlt =
   Astro.props.ogImageAlt ??
-  'NetMirror - Movies, TV Shows, Anime and Hindi Dubbed Discovery';
+  'NET27 Watch — Movie & TV Discovery Platform';
 const ogImageWidth = Astro.props.ogImageWidth ?? 1200;
 const ogImageHeight = Astro.props.ogImageHeight ?? 630;
 
@@ -88,7 +88,7 @@ const otherOgLocales = Astro.props.localized
 <meta property="og:image:alt" content={ogImageAlt} />
 <meta property="og:url" content={seo.canonical} />
 <meta property="og:type" content={seo.ogType} />
-<meta property="og:site_name" content="NetMirror" />
+<meta property="og:site_name" content="NET27 Watch" />
 <meta property="og:locale" content={ogLocale} />
 {otherOgLocales.map(code => <meta property="og:locale:alternate" content={code} />)}
 
@@ -102,6 +102,7 @@ const otherOgLocales = Astro.props.localized
 {/* follow, not nofollow: these pages should stay out of the index while still
     passing crawlers through to the catalogue they link to. */}
 {seo.noindex && <meta name="robots" content="noindex, follow" />}
+{!seo.noindex && <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />}
 
 <!-- PWA / Web App -->
 <link rel="manifest" href="/manifest.json" />
@@ -109,5 +110,5 @@ const otherOgLocales = Astro.props.localized
 <meta name="mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-<meta name="apple-mobile-web-app-title" content="Net27" />
+<meta name="apple-mobile-web-app-title" content="NET27 Watch" />
 <link rel="apple-touch-icon" href="/favicon.svg" />

@@ -1,12 +1,21 @@
 /*
+  # ─── Security Headers ────────────────────────────────────────────────────────
+  # Applied to every response. Worker-generated responses get these through the
+  # _headers mechanism on Cloudflare Pages; Worker code adds them separately for
+  # on-demand routes.
   X-Content-Type-Options: nosniff
-  X-Frame-Options: SAMEORIGIN
-  Strict-Transport-Security: max-age=31536000; includeSubDomains
-  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'self'; form-action 'self'; img-src 'self' data: blob: https:; font-src 'self' data:; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://tpc.googlesyndication.com https://googleads.g.doubleclick.net https://www.googletagservices.com https://adservice.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google; connect-src 'self' https: wss:; frame-src https:; media-src 'self' blob: https:; worker-src 'self' blob:; upgrade-insecure-requests
+  X-Frame-Options: DENY
+  Strict-Transport-Security: max-age=63072000; includeSubDomains; preload
+  Content-Security-Policy: default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; img-src 'self' data: blob: https://image.tmdb.org https://images.justwatch.com https://*.google-analytics.com https://*.googletagmanager.com; font-src 'self' data: https://fonts.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://*.google-analytics.com https://static.cloudflareinsights.com https://pagead2.googlesyndication.com https://tpc.googlesyndication.com https://googleads.g.doubleclick.net https://adservice.google.com https://ep1.adtrafficquality.google https://ep2.adtrafficquality.google; connect-src 'self' https://api.themoviedb.org https://www.googletagmanager.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://stats.g.doubleclick.net https://pagead2.googlesyndication.com https://identitytoolkit.googleapis.com https://securetoken.googleapis.com; frame-src https://www.youtube.com https://www.youtube-nocookie.com; media-src 'self' blob:; worker-src 'self' blob:; upgrade-insecure-requests
   Referrer-Policy: strict-origin-when-cross-origin
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()
+  X-Permitted-Cross-Domain-Policies: none
+  Cross-Origin-Opener-Policy: same-origin
+  Cross-Origin-Resource-Policy: cross-origin
 
 
+# ─── Immutable static assets ─────────────────────────────────────────────────
+# Astro fingerprints these filenames; they can be cached forever.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
 
@@ -16,11 +25,13 @@
 /fallbacks/*
   Cache-Control: public, max-age=31536000, immutable
 
+
+# ─── Images ─────────────────────────────────────────────────────────────────
 /images/*
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800
 
 /favicon.svg
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, max-age=604800
 
 /og-image.png
   Content-Type: image/png
@@ -30,6 +41,8 @@
   Content-Type: image/svg+xml
   Cache-Control: public, max-age=86400
 
+
+# ─── SEO / crawl-critical files ──────────────────────────────────────────────
 /robots.txt
   Content-Type: text/plain; charset=utf-8
   Cache-Control: no-cache
@@ -37,32 +50,34 @@
 
 /sitemap-index.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=3600
   Access-Control-Allow-Origin: *
 
 /sitemap.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=3600
   Access-Control-Allow-Origin: *
 
 /sitemap-0.xml
   Content-Type: application/xml; charset=utf-8
-  Cache-Control: no-cache
+  Cache-Control: public, max-age=3600
   Access-Control-Allow-Origin: *
 
+
+# ─── noindex / private routes ────────────────────────────────────────────────
 # These URLs stay crawlable so search engines can see noindex and remove old
 # query variants from their indexes.
 /player/
   X-Robots-Tag: noindex, nofollow
   Cache-Control: private, no-store, max-age=0
   Referrer-Policy: no-referrer
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), unload=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()
 
 /player/*
   X-Robots-Tag: noindex, nofollow
   Cache-Control: private, no-store, max-age=0
   Referrer-Policy: no-referrer
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=(), unload=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=(), usb=(), serial=()
 
 /watchlist/
   X-Robots-Tag: noindex, nofollow
@@ -80,38 +95,39 @@
   X-Robots-Tag: noindex, follow
   Cache-Control: private, no-store, max-age=0
 
+
+# ─── LLMs.txt ────────────────────────────────────────────────────────────────
 /llms.txt
   Cache-Control: public, max-age=86400
 
-# The search index is fetched the first time a visitor opens search. It is
-# rebuilt on every deploy, so it can be cached hard and revalidated in the
-# background rather than downloaded again each session.
+
+# ─── Search index ─────────────────────────────────────────────────────────────
+# Rebuilt on every deploy; cache with background revalidation.
 /search-index.json
   Content-Type: application/json; charset=utf-8
   Cache-Control: public, max-age=3600, stale-while-revalidate=86400
 
-# AdSense reads ads.txt as plain text and re-crawls it periodically, so it must
-# not be served as anything else or held at the edge.
+
+# ─── AdSense ads.txt ─────────────────────────────────────────────────────────
 /ads.txt
   Content-Type: text/plain; charset=utf-8
   Cache-Control: no-cache
 
-# Yandex Webmaster site verification. Left uncached so Yandex re-checks read a
-# live response rather than an edge copy.
+
+# ─── Webmaster verifications ──────────────────────────────────────────────────
 /yandex_c9591467b7b65148.html
   Content-Type: text/html; charset=utf-8
   Cache-Control: no-cache
 
 
-# IndexNow key — Bing/Yandex/Yahoo instant indexing verification
+# ─── IndexNow key ─────────────────────────────────────────────────────────────
 /e9d6b5a3c2f1e8d7b4a0c5f2e1d8b3a6.txt
   Content-Type: text/plain; charset=utf-8
   Cache-Control: no-cache, no-store
   Access-Control-Allow-Origin: *
 
-/watch/*
-  Referrer-Policy: no-referrer-when-downgrade
 
+# ─── Service Workers ──────────────────────────────────────────────────────────
 # Service worker must never be edge-cached — browsers check it every 24h and
 # a stale SW means users never receive updates.
 /sw.js
@@ -120,7 +136,8 @@
 /firebase-messaging-sw.js
   Cache-Control: no-cache, no-store, must-revalidate
 
-# PWA icons — long cache, versioned by filename if changed
+
+# ─── PWA icons ───────────────────────────────────────────────────────────────
 /icons/*
   Cache-Control: public, max-age=2592000
 

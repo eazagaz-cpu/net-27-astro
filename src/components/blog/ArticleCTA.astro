@@ -1,5 +1,5 @@
 ---
-import { APK_UNIVERSAL_URL } from '../../lib/constants';
+import { TELEGRAM_URL } from '../../lib/constants';
 
 interface Props {
   title?: string;
@@ -10,12 +10,12 @@ interface Props {
   secondaryHref?: string;
 }
 const {
-  title = 'Download NetMirror',
-  description = 'Find where to stream any movie or show. Free for Android.',
-  primaryText = 'Download APK',
-  primaryHref = APK_UNIVERSAL_URL,
+  title = 'Join NET27 Watch Community',
+  description = 'Get updates on new movies, shows and streaming availability. Join our Telegram channel.',
+  primaryText = 'Join Telegram',
+  primaryHref = TELEGRAM_URL,
   secondaryText = 'Learn More',
-  secondaryHref = '/app/download/',
+  secondaryHref = '/about/',
 } = Astro.props;
 ---
 
@@ -23,7 +23,7 @@ const {
   <h3 class="text-lg md:text-xl font-bold text-[var(--color-text-primary)] mb-2">{title}</h3>
   <p class="text-sm text-[var(--color-text-secondary)] mb-5 max-w-md mx-auto">{description}</p>
   <div class="flex flex-wrap items-center justify-center gap-3">
-    <a href={primaryHref} class="btn-primary text-sm px-6 py-2.5 rounded-lg" download>{primaryText}</a>
+    <a href={primaryHref} class="btn-primary text-sm px-6 py-2.5 rounded-lg" target="_blank" rel="noopener noreferrer nofollow">{primaryText}</a>
     <a href={secondaryHref} class="btn-glass text-sm px-6 py-2.5 rounded-lg">{secondaryText}</a>
   </div>
 </div>

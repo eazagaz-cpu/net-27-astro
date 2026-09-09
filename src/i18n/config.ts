@@ -1,5 +1,5 @@
 export const DEFAULT_LANG = 'en' as const;
-export const SITE_DOMAIN = 'https://net-27.cc';
+export const SITE_DOMAIN = 'https://net27.watch';
 
 export const LANGUAGES = {
   en: { name: 'English', nativeName: 'English', dir: 'ltr' as const },

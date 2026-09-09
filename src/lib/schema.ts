@@ -1,5 +1,5 @@
 import { SITE_NAME, SITE_URL } from './seo';
-import { APK_UNIVERSAL_URL, APP_VERSION, CONTACT_EMAIL } from './constants';
+import { CONTACT_EMAIL, TELEGRAM_URL } from './constants';
 
 export function websiteSchema(): object {
   return {
@@ -26,10 +26,10 @@ export function organizationSchema(): object {
     alternateName: 'Net27',
     url: SITE_URL,
     foundingDate: '2024',
-    description: 'NetMirror is a free movie and TV show discovery platform that helps users find where to watch movies, TV shows, and anime legally across Netflix, Prime Video, Disney+, JioHotstar, Crunchyroll, and 30+ streaming platforms worldwide.',
+    description: 'NET27 Watch is an independent movie and TV show discovery platform that helps users find where to watch movies, TV shows, and anime legally across Netflix, Prime Video, Disney+, JioHotstar, Crunchyroll, and 30+ streaming platforms worldwide. Not affiliated with any streaming service.',
     logo: {
       '@type': 'ImageObject',
-      url: `${SITE_URL}/images/logo.png`,
+      url: `${SITE_URL}/og-image.png`,
     },
     contactPoint: {
       '@type': 'ContactPoint',
@@ -39,8 +39,7 @@ export function organizationSchema(): object {
     knowsAbout: ['Movies', 'TV Shows', 'Anime', 'Streaming Platforms', 'Hindi Dubbed Movies', 'Korean Dramas', 'Content Discovery'],
     areaServed: 'Worldwide',
     sameAs: [
-      'https://x.com/netmirror_app',
-      'https://t.me/netmirrorapp',
+      TELEGRAM_URL,
     ],
   };
 }
@@ -205,17 +204,15 @@ export function personSchema(person: {
 export function softwareAppSchema(): object {
   return {
     '@context': 'https://schema.org',
-    '@type': 'SoftwareApplication',
+    '@type': 'WebApplication',
     name: SITE_NAME,
     applicationCategory: 'EntertainmentApplication',
-    operatingSystem: 'Android',
-    softwareVersion: APP_VERSION,
+    operatingSystem: 'Any',
     offers: {
       '@type': 'Offer',
       price: '0',
       priceCurrency: 'USD',
     },
-    downloadUrl: APK_UNIVERSAL_URL,
     publisher: {
       '@type': 'Organization',
       name: SITE_NAME,

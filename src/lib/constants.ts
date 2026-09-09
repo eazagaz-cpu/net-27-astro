@@ -1,13 +1,12 @@
-export const SITE_NAME = 'NetMirror';
-export const SITE_URL = 'https://net-27.cc';
-export const SITE_DESCRIPTION = 'Watch movies, TV shows, and anime. Multi-language audio. 500k+ titles across Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more.';
-export const CONTACT_EMAIL = 'net27.cc@gmail.com';
-export const APP_VERSION = '2.0.10';
+export const SITE_NAME = 'NET27 Watch';
+export const SITE_URL = 'https://net27.watch';
+export const SITE_DESCRIPTION = 'NET27 Watch — Movie & TV discovery. Find where to stream legally on Netflix, Prime Video, JioHotstar, SonyLIV and more. 500,000+ titles with official streaming options.';
+export const CONTACT_EMAIL = 'contact@net27.watch';
+export const APP_VERSION = '2.1.0';
 
-export const APK_UNIVERSAL_URL = 'https://pub-2cb9a63c347a4768a0ff4ae265238229.r2.dev/NetMirror-v2.0.10-universal.apk';
-export const APK_ARM64_URL = 'https://pub-2cb9a63c347a4768a0ff4ae265238229.r2.dev/NetMirror-v2.0.10-arm64-v8a.apk';
-export const APK_ARM32_URL = 'https://pub-2cb9a63c347a4768a0ff4ae265238229.r2.dev/NetMirror-v2.0.10-armeabi-v7a.apk';
-export const TELEGRAM_URL = 'https://t.me/netmirror';
+// APK distribution removed — unverified APK hosting is a safety/phishing risk.
+// If an official app is released through Google Play or a verified store, add its link here.
+export const TELEGRAM_URL = 'https://t.me/net27watch';
 
 export const TMDB_IMAGE_BASE = 'https://image.tmdb.org/t/p';
 export const POSTER_SIZES = { sm: 'w342', md: 'w500', lg: 'w780' } as const;

@@ -582,7 +582,7 @@ async function fetchTrakt() {
       'trakt-api-key': traktKey,
       'trakt-api-version': '2',
       'Accept': 'application/json',
-      'User-Agent': 'Mozilla/5.0 (compatible; NetMirror/1.0)',
+      'User-Agent': 'Mozilla/5.0 (compatible; NET27Watch/2.1)',
     },
     signal: AbortSignal.timeout(12000),
   });

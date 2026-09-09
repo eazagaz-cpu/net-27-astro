@@ -42,3 +42,11 @@ tmp-*.log
 # this project's private Cloudflare login (see scripts/wrangler.mjs) — holds a
 # refresh token, must never be committed
 .cf-auth/
+
+# credentials and service account secrets
+net27-security*.json
+*service_account*.json
+*service-account*.json
+*.key
+*.pem
+

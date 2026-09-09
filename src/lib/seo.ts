@@ -2,7 +2,7 @@ import { SITE_NAME, SITE_URL } from './constants';
 
 export { SITE_NAME, SITE_URL };
 
-export const SITE_DESCRIPTION = 'Watch movies, TV shows, and anime. Multi-language audio. 500k+ titles across Netflix, Prime Video, JioHotstar, SonyLIV, Crunchyroll, and more.';
+export const SITE_DESCRIPTION = 'NET27 Watch — Movie & TV discovery. Find where to stream legally on Netflix, Prime Video, JioHotstar, SonyLIV and more. 500,000+ titles with official streaming options.';
 
 export interface SEOInput {
   title: string;
@@ -131,7 +131,7 @@ export function titleOgImage(
 }
 
 export function generateSEO(input: SEOInput): SEOOutput {
-  const hasBrand = input.title.toLowerCase().includes('netmirror') || input.title.toLowerCase().includes('net mirror');
+  const hasBrand = input.title.toLowerCase().includes('net27') || input.title.toLowerCase().includes('net27 watch');
   const brandSuffix = ` | ${SITE_NAME}`;
   const title = hasBrand
     ? truncateSeoText(input.title, 60)

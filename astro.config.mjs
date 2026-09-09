@@ -52,9 +52,9 @@ const directSitemap = {
       if (!isPublishingBuild) return;
 
       const INDEXNOW_KEY = 'e9d6b5a3c2f1e8d7b4a0c5f2e1d8b3a6';
-      const SITE = 'https://net-27.cc';
+      const SITE = 'https://net27.watch';
       const payload = {
-        host: 'net-27.cc',
+        host: 'net27.watch',
         key: INDEXNOW_KEY,
         keyLocation: `${SITE}/${INDEXNOW_KEY}.txt`,
         urlList: [
@@ -88,7 +88,7 @@ const directSitemap = {
 };
 
 export default defineConfig({
-  site: 'https://net-27.cc',
+  site: 'https://net27.watch',
   output: 'static',
   devToolbar: {
     enabled: false,

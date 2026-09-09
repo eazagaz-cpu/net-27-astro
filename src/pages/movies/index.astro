@@ -21,8 +21,8 @@ const breadcrumbs = [
 ];
 
 const faqs = [
-  { question: 'How do I find movies to watch on Net27?', answer: 'Use our search and filter tools to browse movies by genre, language, year, or streaming platform. Each movie page shows where it is available for legal streaming.' },
-  { question: 'Does Net27 stream movies?', answer: 'No. Net27 is a discovery platform only. We help you find where movies are available on official streaming platforms like Netflix, Prime Video, Disney+, and more.' },
+  { question: 'How do I find movies to watch on NET27 Watch?', answer: 'Use our search and filter tools to browse movies by genre, language, year, or streaming platform. Each movie page shows where it is available for legal streaming.' },
+  { question: 'Does NET27 Watch stream movies?', answer: 'No. NET27 Watch is a discovery platform only. We help you find where movies are available on official streaming platforms like Netflix, Prime Video, Disney+, and more.' },
   { question: 'How often is the movie catalog updated?', answer: 'We regularly update our catalog with new releases, trending titles, and streaming availability changes. Check back frequently for the latest additions.' },
   { question: 'Can I filter movies by genre?', answer: 'Yes! Use the genre chips above the movie grid to filter by Action, Drama, Comedy, Sci-Fi, Horror, Thriller, and many more genres.' },
   { question: 'What movie genres are available?', answer: `We cover ${genres.length} genres including ${genres.slice(0, 6).map(g => g.name).join(', ')}, and more. Each genre has its own dedicated page with curated collections.` },
@@ -33,8 +33,8 @@ const faqs = [
 <BaseLayout>
   <SEOHead
     slot="head"
-    title="Movies — Stream Latest & Popular Films Online"
-    description="Browse the latest movies online. Action, drama, sci-fi, comedy, thriller and more. Find where to stream on Netflix, Prime Video and Disney+."
+    title="Movies — Browse 500,000+ Films | Find Where to Stream Legally"
+    description="Browse movies by genre, language & platform. Find where to stream legally on Netflix, Prime Video, Disney+, JioHotstar and more. Updated daily."
     canonical={`${SITE_URL}/movies/`}
   localized={true}
   />
@@ -119,7 +119,7 @@ const faqs = [
 
       <section class="glass-card rounded-xl p-6">
         <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
-          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> Net27 does not host or distribute copyrighted content. All information is for discovery and informational purposes only. Streaming availability varies by region. Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}.
+          <strong class="text-[var(--color-text-secondary)]">Disclaimer:</strong> NET27 Watch does not host or distribute copyrighted content. All information is for discovery and informational purposes only. Streaming availability varies by region. Last updated: {new Date().toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}.
         </p>
       </section>
     </div>

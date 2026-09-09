@@ -4,7 +4,7 @@ import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import SEOHead from '../components/SEOHead.astro';
 import { SITE_URL } from '../lib/seo';
-import { APK_UNIVERSAL_URL } from '../lib/constants';
+import { TELEGRAM_URL } from '../lib/constants';
 import { getAllRealTitles } from '../lib/realTitles';
 
 const canonicalTitleUrls = Object.fromEntries(
@@ -29,7 +29,7 @@ const canonicalTitleUrls = Object.fromEntries(
   <Footer />
 </BaseLayout>
 
-<script define:vars={{ APK_UNIVERSAL_URL, canonicalTitleUrls }}>
+<script define:vars={{ TELEGRAM_URL, canonicalTitleUrls }}>
   const params = new URLSearchParams(window.location.search);
   const type = params.get('type') || 'movie';
   const id = params.get('id') || '';
@@ -48,7 +48,7 @@ const canonicalTitleUrls = Object.fromEntries(
           root.innerHTML = '<div class="flex items-center justify-center min-h-[60vh] text-center"><div><h2 class="text-2xl font-bold mb-2">Title Not Found</h2><p class="text-zinc-400">Could not load this title.</p><a href="/" class="btn-primary mt-4 inline-flex">Go Home</a></div></div>';
           return;
         }
-        document.title = `${data.title} (${data.year}) | NetMirror`;
+        document.title = `${data.title} (${data.year}) | NET27 Watch`;
 
         const trailerBtn = data.trailerKey ? `<a href="https://www.youtube.com/watch?v=${data.trailerKey}" target="_blank" rel="noopener noreferrer nofollow" class="btn-glass px-5 py-2.5 rounded-lg text-sm">▶ Trailer</a>` : '';
         const castHtml = (data.cast || []).slice(0, 10).map(c =>
@@ -88,7 +88,7 @@ const canonicalTitleUrls = Object.fromEntries(
                 <div class="flex items-center gap-3 flex-wrap">
                   <a href="/player/?type=${type}&id=${id}" class="btn-primary px-6 py-2.5 rounded-lg text-sm">▶ Watch Now</a>
                   ${trailerBtn}
-                  <a href="${APK_UNIVERSAL_URL}" download class="btn-glass px-5 py-2.5 rounded-lg text-sm" rel="noopener noreferrer">⬇ App</a>
+                  <a href="${TELEGRAM_URL}" target="_blank" class="btn-glass px-5 py-2.5 rounded-lg text-sm" rel="noopener noreferrer nofollow">💬 Community</a>
                 </div>
               </div>
             </div>
@@ -97,7 +97,7 @@ const canonicalTitleUrls = Object.fromEntries(
             <div id="enrichment-section"></div>
             ${castHtml ? `<section><h2 class="section-title mb-4">Cast</h2><div class="scroll-rail gap-4">${castHtml}</div></section>` : ''}
             ${recsHtml ? `<section><h2 class="section-title mb-4">More Like This</h2><div class="scroll-rail gap-3">${recsHtml}</div></section>` : ''}
-            <section class="glass-card rounded-xl p-5 text-xs text-zinc-500">NetMirror does not host or stream content. Discovery and availability information only.</section>
+            <section class="glass-card rounded-xl p-5 text-xs text-zinc-500">NET27 Watch does not host or stream content. Discovery and availability information only.</section>
           </div>`;
 
         // Fetch enrichment data (OMDb ratings, Watchmode availability, YouTube trailer, TVmaze episodes)

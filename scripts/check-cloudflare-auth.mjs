@@ -133,4 +133,4 @@ if (localToken) {
 }
 
 console.log(`\n${failed ? '❌ Cloudflare auth needs attention (see above)' : '✅ Cloudflare auth is good — deploys will work'}`);
-process.exit(failed ? 1 : 0);
+process.exitCode = failed ? 1 : 0;

@@ -26,7 +26,7 @@ import { genres } from '../../data/sampleTitles';
 import { breadcrumbSchema, tvSeriesSchema, faqSchema, watchActionSchema } from '../../lib/schema';
 import { SITE_URL, titleSeoHeading, titleSeoDescription, titleOgImage } from '../../lib/seo';
 import { personUrl } from '../../lib/people';
-import { APK_UNIVERSAL_URL } from '../../lib/constants';
+import { TELEGRAM_URL } from '../../lib/constants';
 import WhereToWatch from '../WhereToWatch.astro';
 import RatingsRow from '../RatingsRow.astro';
 import WatchlistButton from '../WatchlistButton.astro';
@@ -276,9 +276,9 @@ const schemaData = [
                 year={title.year}
                 slug={title.slug}
               />
-              <a href={APK_UNIVERSAL_URL} download rel="noopener noreferrer" class="btn-glass px-5 py-2.5 rounded-lg text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/></svg>
-                Download App
+              <a href={TELEGRAM_URL} target="_blank" rel="noopener noreferrer nofollow" class="btn-glass px-5 py-2.5 rounded-lg text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.01 9.456c-.148.66-.537.822-1.088.511l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.23 14.073l-2.974-.93c-.646-.2-.66-.646.136-.958l11.61-4.478c.538-.194 1.01.131.56.54z"/></svg>
+                Join Community
               </a>
             </div>
           </div>

@@ -9,21 +9,18 @@
  * Cache names are versioned so old caches are cleaned up on activate.
  */
 
-const CACHE_VERSION = 'v1';
+const CACHE_VERSION = 'v2';
 const SHELL_CACHE   = `net27-shell-${CACHE_VERSION}`;
 const ASSET_CACHE   = `net27-assets-${CACHE_VERSION}`;
 
 // Precache the offline fallback page
 const OFFLINE_PAGE = '/offline.html';
 
-// Origins we must never intercept (embed providers, APIs, analytics)
+// Origins we must never intercept (APIs, analytics)
 const BYPASS_ORIGINS = [
-  'vidsrc.to', 'vidsrc.me', 'vidsrc.cc', 'vidlink.pro',
-  'autoembed.co', 'multiembed.mov', '2embed.cc', 'superembed.stream',
   'image.tmdb.org', 'api.themoviedb.org',
   'pagead2.googlesyndication.com', 'googletagmanager.com',
-  'firebaseapp.com', 'firebasestorage.googleapis.com',
-  'googleapis.com', 'identitytoolkit.googleapis.com',
+  'googleapis.com', 'firebaseapp.com',
 ];
 
 function shouldBypass(url) {

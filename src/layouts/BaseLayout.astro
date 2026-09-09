@@ -10,17 +10,24 @@ const dir = getDir(lang);
 <!DOCTYPE html>
 <html lang={lang} dir={dir}>
 <head>
+  <!-- Google tag (gtag.js) — immediately after <head> as required by Google -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-BEV78WNW13"></script>
+  <script is:inline>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-BEV78WNW13');
+  </script>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#050509" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-  <link rel="preconnect" href="https://image.tmdb.org" />
-  <link rel="dns-prefetch" href="https://www.2embed.cc" />
-  <link rel="dns-prefetch" href="https://autoembed.co" />
+  <link rel="preconnect" href="https://image.tmdb.org" crossorigin />
   <!-- hreflang is emitted by SEOHead for pages that have localized routes,
        where the cluster resolves to a real equivalent. Pages without one omit
        it rather than pointing at URLs that would 404. -->
-  <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
+  <link rel="sitemap" type="application/xml" href="/sitemap-index.xml" />
   <!-- Bing Webmaster Tools site verification. Must stay even after verifying —
        Bing rechecks it and un-verifies the site if it disappears. -->
   <meta name="msvalidate.01" content="E9FCACCA5615048272A04444381445CF" />
@@ -49,33 +56,19 @@ const dir = getDir(lang);
     })();
   </script>
   <slot name="head" />
-  <!-- Analytics is loaded after real user intent, keeping third-party code out of the critical path. -->
-  <script is:inline>
-    (function(){
-      var loaded=false;
-      function loadAnalytics(){
-        if(loaded)return;
-        loaded=true;
-        window.dataLayer=window.dataLayer||[];
-        window.gtag=function(){window.dataLayer.push(arguments);};
-        window.gtag('js',new Date());
-        window.gtag('config','G-BEV78WNW13',{transport_type:'beacon'});
-        var s=document.createElement('script');
-        s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=G-BEV78WNW13';
-        document.head.appendChild(s);
-      }
-      ['pointerdown','keydown','touchstart'].forEach(function(event){
-        window.addEventListener(event,loadAnalytics,{once:true,passive:true});
-      });
-    })();
-  </script>
-  <!-- Service Worker registration — deferred until after first interaction -->
+  <!-- Service Worker registration — disabled in development, active in production -->
   <script is:inline>
     if ('serviceWorker' in navigator) {
-      window.addEventListener('load', function() {
-        navigator.serviceWorker.register('/sw.js', { scope: '/' })
-          .catch(function() {}); // Silently fail — SW is enhancement only
-      });
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port !== '') {
+        navigator.serviceWorker.getRegistrations().then(function(regs) {
+          for (var r of regs) { r.unregister(); }
+        });
+      } else {
+        window.addEventListener('load', function() {
+          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+            .catch(function() {}); // Silently fail — SW is enhancement only
+        });
+      }
     }
   </script>
 </head>
@@ -85,7 +78,7 @@ const dir = getDir(lang);
   <!-- i18n Client Translation Engine -->
   <script is:inline>
   (function(){
-    var KEY='netmirror_lang';
+    var KEY='net27_lang';
     var lang=localStorage.getItem(KEY)||'en';
     if(lang==='en')return;
     fetch('/locales/'+lang+'.json').then(function(r){return r.json()}).then(function(data){
