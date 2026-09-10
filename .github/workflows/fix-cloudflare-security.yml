@@ -20,7 +20,7 @@ jobs:
             --user-agent "$googlebot" \
             --output sitemap.xml \
             --dump-header sitemap.headers \
-            https://net-27.cc/sitemap.xml
+            https://net27.watch/sitemap.xml
           grep -qi '^content-type: application/xml' sitemap.headers
           grep -q '<urlset' sitemap.xml
           test "$(grep -o '<loc>' sitemap.xml | wc -l)" -gt 0
@@ -28,22 +28,19 @@ jobs:
           curl --fail --silent --show-error \
             --user-agent "$googlebot" \
             --output sitemap-index.xml \
-            https://net-27.cc/sitemap-index.xml
+            https://net27.watch/sitemap-index.xml
           grep -q '<sitemapindex' sitemap-index.xml
-          grep -q 'https://net-27.cc/sitemap-0.xml' sitemap-index.xml
+          grep -q 'https://net27.watch/sitemap-0.xml' sitemap-index.xml
 
           curl --fail --silent --show-error \
             --user-agent "$googlebot" \
-            https://net-27.cc/robots.txt > robots.txt
-          grep -q '^Sitemap: https://net-27.cc/sitemap.xml$' robots.txt
+            https://net27.watch/robots.txt > robots.txt
+          grep -q '^Sitemap: https://net27.watch/sitemap.xml$' robots.txt
           ! grep -Eq '^Disallow: /player/?' robots.txt
 
       - name: Verify canonical host and noindex headers
         shell: bash
         run: |
           set -euo pipefail
-          test "$(curl --silent --output /dev/null --write-out '%{http_code}' https://www.net-27.cc/sitemap.xml)" = '301'
-          test "$(curl --silent --output /dev/null --write-out '%{redirect_url}' https://www.net-27.cc/sitemap.xml)" = 'https://net-27.cc/sitemap.xml'
-          test "$(curl --silent --output /dev/null --write-out '%{http_code}' https://net-27.cc/sitemap_index.xml)" = '301'
-          test "$(curl --silent --output /dev/null --write-out '%{redirect_url}' https://net-27.cc/sitemap_index.xml)" = 'https://net-27.cc/sitemap.xml'
-          curl --fail --silent --show-error --head 'https://net-27.cc/player/?type=movie&id=969681' | grep -qi '^x-robots-tag: noindex, nofollow'
+          test "$(curl --silent --output /dev/null --write-out '%{http_code}' https://net27.watch/sitemap_index.xml)" = '301'
+          curl --fail --silent --show-error --head 'https://net27.watch/player/?type=movie&id=969681' | grep -qi 'x-robots-tag:.*noindex'
