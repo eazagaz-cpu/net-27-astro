@@ -8,6 +8,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import DynamicGrid from '../../components/DynamicGrid.tsx';
 import { breadcrumbSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
+import latestData from '../../data/cache/latest.json';
 
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -24,7 +25,7 @@ const breadcrumbs = [
       <Breadcrumbs items={breadcrumbs} />
       <h1 class="text-3xl md:text-4xl font-bold mb-2">🆕 Latest Releases</h1>
       <p class="text-[var(--color-muted)] mb-8">Newest movies and TV shows released across all streaming platforms.</p>
-      <DynamicGrid client:idle category="latest" title="Latest Releases" />
+      <DynamicGrid client:idle category="latest" title="Latest Releases" initialItems={latestData.items} />
     </div>
   </main>
   <Footer />

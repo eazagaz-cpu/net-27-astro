@@ -8,6 +8,7 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import DynamicGrid from '../../components/DynamicGrid.tsx';
 import { breadcrumbSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
+import trendingData from '../../data/cache/trending.json';
 
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -24,7 +25,7 @@ const breadcrumbs = [
       <Breadcrumbs items={breadcrumbs} />
       <h1 class="text-3xl md:text-4xl font-bold mb-2">🔥 Trending Now</h1>
       <p class="text-[var(--color-muted)] mb-8">Movies and shows everyone is watching this week across all platforms.</p>
-      <DynamicGrid client:idle category="trending" title="Trending" />
+      <DynamicGrid client:idle category="trending" title="Trending" initialItems={trendingData.items} />
     </div>
   </main>
   <Footer />

@@ -12,7 +12,6 @@
   X-Permitted-Cross-Domain-Policies: none
   Cross-Origin-Opener-Policy: same-origin
   Cross-Origin-Resource-Policy: cross-origin
-  Content-Type: text/html; charset=utf-8
 
 
 # ─── Immutable static assets ─────────────────────────────────────────────────

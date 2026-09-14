@@ -47,8 +47,10 @@ for (const file of srcFiles) {
 
   let src, pub;
   try {
-    src = JSON.parse(await readFile(`${SRC}/${file}`, 'utf-8'));
-    pub = JSON.parse(await readFile(`${PUB}/${file}`, 'utf-8'));
+    const srcRaw = (await readFile(`${SRC}/${file}`, 'utf-8')).replace(/^\uFEFF/, '');
+    const pubRaw = (await readFile(`${PUB}/${file}`, 'utf-8')).replace(/^\uFEFF/, '');
+    src = JSON.parse(srcRaw);
+    pub = JSON.parse(pubRaw);
   } catch (e) {
     bad(`${lang}: invalid JSON — ${e.message}`);
     continue;

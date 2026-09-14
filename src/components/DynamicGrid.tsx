@@ -14,6 +14,7 @@ interface GridItem {
 interface Props {
   category: string;
   title: string;
+  initialItems?: GridItem[];
 }
 
 const FALLBACK_GRADIENTS = [
@@ -32,9 +33,20 @@ const CACHE_MODULES = import.meta.glob<{ default: { items?: GridItem[]; results?
   { eager: false }
 );
 
+const ALIAS_MAP: Record<string, string> = {
+  'latest': 'latest-movies',
+  'trending': 'trending',
+  'popular': 'popular-movies',
+  'tv-popular': 'popular-tv',
+  'top-rated': 'top-rated-movies'
+};
+
 async function loadFromStaticCache(category: string): Promise<GridItem[]> {
-  const key = `../data/cache/${category}.json`;
-  const loader = CACHE_MODULES[key];
+  const directKey = `../data/cache/${category}.json`;
+  const aliasTarget = ALIAS_MAP[category];
+  const aliasKey = aliasTarget ? `../data/cache/${aliasTarget}.json` : null;
+
+  const loader = CACHE_MODULES[directKey] || (aliasKey ? CACHE_MODULES[aliasKey] : null);
   if (!loader) return [];
   try {
     const mod = await loader();
@@ -45,12 +57,13 @@ async function loadFromStaticCache(category: string): Promise<GridItem[]> {
   }
 }
 
-export default function DynamicGrid({ category, title }: Props) {
-  const [items, setItems] = useState<GridItem[]>([]);
-  const [loading, setLoading] = useState(true);
+export default function DynamicGrid({ category, title, initialItems }: Props) {
+  const hasInitial = initialItems && initialItems.length > 0;
+  const [items, setItems] = useState<GridItem[]>(initialItems ?? []);
+  const [loading, setLoading] = useState(!hasInitial);
 
   useEffect(() => {
-    setLoading(true);
+    let cancelled = false;
 
     const loadData = async () => {
       // Primary: Cloudflare Worker (production)
@@ -59,7 +72,7 @@ export default function DynamicGrid({ category, title }: Props) {
           `nm:cat:${category}:p3`,
           `/api/tmdb/category?type=${encodeURIComponent(category)}&pages=3`
         );
-        if (data.items && data.items.length > 0) {
+        if (!cancelled && data.items && data.items.length > 0) {
           setItems(data.items);
           setLoading(false);
           return;
@@ -68,11 +81,19 @@ export default function DynamicGrid({ category, title }: Props) {
 
       // Fallback: static build-time cache (dev mode or CF Worker unavailable)
       const cached = await loadFromStaticCache(category);
-      setItems(cached);
-      setLoading(false);
+      if (!cancelled) {
+        if (cached.length > 0) {
+          setItems(cached);
+        }
+        setLoading(false);
+      }
     };
 
     loadData();
+
+    return () => {
+      cancelled = true;
+    };
   }, [category]);
 
 
