@@ -30,8 +30,8 @@ jobs:
             --output sitemap-index.xml \
             https://net27.watch/sitemap-index.xml
           grep -q '<sitemapindex' sitemap-index.xml
-          # Custom sitemaps — net27 uses named sub-sitemaps (not the default sitemap-0.xml)
-          grep -q 'https://net27.watch/sitemap-pages.xml' sitemap-index.xml
+          # Astro generates sitemap-0.xml as the sub-sitemap
+          grep -q 'sitemap-0.xml' sitemap-index.xml
 
           curl --fail --silent --show-error \
             --user-agent "$googlebot" \

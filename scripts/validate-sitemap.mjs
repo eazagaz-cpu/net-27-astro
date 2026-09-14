@@ -30,15 +30,8 @@ console.log('=== Sitemap Validation ===\n');
 
 // Check sitemap files exist
 const indexPath = `${DIST}/sitemap-index.xml`;
-// net27 uses custom named sub-sitemaps (not Astro's default sitemap-0.xml)
-const CUSTOM_SITEMAPS = [
-  'sitemap-pages.xml',
-  'sitemap-movies.xml',
-  'sitemap-shows.xml',
-  'sitemap-categories.xml',
-  'sitemap-people.xml',
-  'sitemap-blog.xml',
-];
+// Astro generates sitemap-0.xml as the sub-sitemap
+const childPath = `${DIST}/sitemap-0.xml`;
 const directPath = `${DIST}/sitemap.xml`;
 const robotsPath = `${DIST}/robots.txt`;
 const headersPath = `${DIST}/_headers`;
@@ -51,19 +44,11 @@ try {
   errors++;
 }
 
-// Validate that at least one custom sub-sitemap exists
-let foundSubSitemap = false;
-for (const sm of CUSTOM_SITEMAPS) {
-  const smPath = `${DIST}/${sm}`;
-  try {
-    await access(smPath);
-    console.log(`  OK: ${sm} exists`);
-    foundSubSitemap = true;
-    break;
-  } catch { /* continue */ }
-}
-if (!foundSubSitemap) {
-  console.error('  ERROR: No custom sub-sitemap found (expected sitemap-pages.xml etc)');
+try {
+  await access(childPath);
+  console.log('  OK: sitemap-0.xml exists');
+} catch {
+  console.error('  ERROR: sitemap-0.xml missing');
   errors++;
 }
 
@@ -79,12 +64,11 @@ try {
 try {
   const indexXml = await readFile(indexPath, 'utf-8');
 
-  // net27 uses custom named sitemaps — check at least one is referenced
-  const hasCustomSitemap = CUSTOM_SITEMAPS.some(sm => indexXml.includes(`net27.watch/${sm}`));
-  if (hasCustomSitemap) {
-    console.log('  OK: sitemap-index references custom sub-sitemaps correctly');
+  // Astro generates sitemap-0.xml as the sub-sitemap referenced in index
+  if (indexXml.includes('sitemap-0.xml')) {
+    console.log('  OK: sitemap-index references sitemap-0.xml correctly');
   } else {
-    console.error('  ERROR: sitemap-index does not reference any known sub-sitemap');
+    console.error('  ERROR: sitemap-index does not reference sitemap-0.xml');
     errors++;
   }
 
