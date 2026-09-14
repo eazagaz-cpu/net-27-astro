@@ -1,7 +1,6 @@
 import { readFileSync } from "fs";
-const configPath = ".cf-auth/.wrangler/config/default.toml";
-const content = readFileSync(configPath, "utf8");
-const tokenMatch = content.match(/oauth_token = "([^"]+)"/);
+const envLocal = readFileSync('.env.local', 'utf8');
+const tokenMatch = envLocal.match(/CLOUDFLARE_API_TOKEN\s*=\s*["']?([^"'\r\n]+)/);
 const token = tokenMatch ? tokenMatch[1] : null;
 if (!token) { console.log("No token found"); process.exit(1); }
 

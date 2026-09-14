@@ -1,40 +1,29 @@
-# www to non-www
+# ============================================================
+# NET-27.CC → NET27.WATCH  |  301 Permanent Redirect
+# All traffic from old domain redirects to new domain.
+# ============================================================
+
+# Root
+https://net-27.cc/ https://net27.watch/ 301
+
+# All pages with path — preserves URL structure
+https://net-27.cc/* https://net27.watch/:splat 301
+
+# www variant
+https://www.net-27.cc/ https://net27.watch/ 301
+https://www.net-27.cc/* https://net27.watch/:splat 301
+
+# HTTP (non-HTTPS) — for Google's crawler which tries http://
+http://net-27.cc/ https://net27.watch/ 301
+http://net-27.cc/* https://net27.watch/:splat 301
+http://www.net-27.cc/ https://net27.watch/ 301
+http://www.net-27.cc/* https://net27.watch/:splat 301
+
+# ============================================================
+# WWW.NET27.WATCH → NET27.WATCH | 301 Permanent Redirect
+# Consolidate www traffic into canonical non-www domain
+# ============================================================
+https://www.net27.watch/ https://net27.watch/ 301
 https://www.net27.watch/* https://net27.watch/:splat 301
-
-# Sitemap aliases
-/sitemap.xml /sitemap-index.xml 301
-/sitemap_index.xml /sitemap-index.xml 301
-
-
-# Legacy redirects
-/home /
-/movie/* /movies/:splat
-/tv/* /shows/:splat
-/series/* /shows/:splat
-/platform/disney/ /platform/disney-plus/ 301
-/platform/apple-tv/ /platform/apple-tv-plus/ 301
-/platform/paramount/ /platform/paramount-plus/ 301
-
-# Retired actor/director/studio/watch and fictional placeholder URLs have no
-# equivalent replacement. Pages must return a real 404 for them instead of a
-# generic-listing redirect, which Google correctly classifies as a soft 404.
-
-# Old country/language/year archive URLs are unchanged (same slugs, now real
-# DynamicGrid data) — no redirect needed there.
-
-# -----------------------------------------------------------------------
-# DMCA / LEGAL TAKEDOWN — Application-layer enforcement only
-#
-# /movies/spider-man-brand-new-day-969681  (Report afd2de4e15d0c7ae)
-# /movies/the-death-of-robin-hood-1284465/ (Report a37e65dce9a83274)
-#   => Excluded from getStaticPaths. Cloudflare Pages returns genuine 404
-#      because no HTML file exists in dist for these slugs.
-#
-# /player?id=1477712&type=movie (Active 451 mitigation)
-#   => Blocked in functions/player.js (Cloudflare Pages Function).
-#      The function inspects query params server-side and returns 404
-#      before any player or embed content is rendered.
-#
-# NOTE: Cloudflare Pages _redirects supports only 301/302/303/307/308.
-# 410 status and query-parameter matching are NOT supported here.
-# All DMCA enforcement is at the application layer.
+http://www.net27.watch/ https://net27.watch/ 301
+http://www.net27.watch/* https://net27.watch/:splat 301
