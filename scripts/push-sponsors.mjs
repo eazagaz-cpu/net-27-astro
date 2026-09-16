@@ -21,6 +21,24 @@
 const SPONSORS = [
   // #1
   {
+    name: 'Bet Rupees',
+    label: 'Bet Rupees',
+    tagline: '💰 Play & Win Big!',
+    url: 'https://betrupe.com/',
+    image: '/links/bet-rupees.png',
+    badge: '🔥 Hot',
+  },
+  // #2
+  {
+    name: 'P999 pk',
+    label: 'P999 PK',
+    tagline: '🎯 Top Rewards!',
+    url: 'https://p999pk.org/',
+    image: '/links/p999-pk.png',
+    badge: '⭐ New',
+  },
+  // #3
+  {
     name: 'pak super game',
     label: 'Pak Super Game',
     tagline: '🎰 Play & Win Big!',

@@ -11,7 +11,9 @@ interface SponsorCard {
 
 // Fallback data — API fail hone par yeh dikhega
 const FALLBACK: SponsorCard[] = [
-  { name: 'pak super game', label: 'Pak Super Game', tagline: '🎰 Play & Win Big!', url: 'https://paksupergame.cc/', image: '/links/pak-super-game.png', badge: '🔥 Hot' },
+  { name: 'Bet Rupees',     label: 'Bet Rupees',    tagline: '💰 Play & Win Big!', url: 'https://betrupe.com/',                  image: '/links/bet-rupees.png', badge: '🔥 Hot' },
+  { name: 'P999 pk',        label: 'P999 PK',       tagline: '🎯 Top Rewards!',    url: 'https://p999pk.org/',                   image: '/links/p999-pk.png',    badge: '⭐ New' },
+  { name: 'pak super game', label: 'Pak Super Game', tagline: '🎰 Play & Win Big!', url: 'https://paksupergame.cc/',           image: '/links/pak-super-game.png', badge: '🔥 Hot' },
   { name: 'XD777',     label: 'XD777 Game', tagline: '🎰 Win Big Today!',  url: 'https://apkgamzu.com.pk/x777-game/',    image: '/links/XD777.png',     badge: '🔥 Hot' },
   { name: 'hh98',      label: 'HH98',       tagline: '🎯 Play & Win!',      url: 'https://hh98.pk/',                      image: '/links/HH98.png',      badge: '⭐ New' },
   { name: 'jj77',      label: 'JJ77',       tagline: '🏆 Big Rewards!',     url: 'https://jj77apk.pk/',                   image: '/links/JJ77.png',      badge: '💥 Hot' },
