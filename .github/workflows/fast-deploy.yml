@@ -57,3 +57,8 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # ── 6. Instant Index Ping — Bing/Yandex/IndexNow (seconds mein index) ────
+      - name: ⚡ Instant Index Ping (Bing + Yandex + IndexNow)
+        run: node scripts/instant-index.mjs default
+        continue-on-error: true   # Indexing fail hone se deploy fail nahi hoga
