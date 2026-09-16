@@ -27,6 +27,7 @@ import StaticRail from '../StaticRail.astro';
 import LazyRail from '../LazyRail.astro';
 import ContinueWatching from '../ContinueWatching.astro';
 import Top10Rail from '../Top10Rail.astro';
+import SponsorRail from '../SponsorRail.astro';
 import SearchBlock from '../SearchBlock.astro';
 import FAQSection from '../FAQSection.astro';
 import { websiteSchema, organizationSchema, softwareAppSchema } from '../../lib/schema';
@@ -160,6 +161,9 @@ const homeFaqs = [
 
     <!-- Continue Watching — client-side localStorage rail -->
     <ContinueWatching />
+
+    <!-- Sponsor / Affiliate Rail — TOP 10 se upar, sequence wise links === -->
+    <SponsorRail />
 
     <!-- Top 10 — directly after hero, no CTA interruption -->
     <Top10Rail mediaType="movie" items={cachedPopularMovies} />

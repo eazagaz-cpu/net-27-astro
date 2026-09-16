@@ -1,0 +1,59 @@
+name: ⚡ Fast Deploy (UI Changes)
+
+# Yeh workflow sirf UI/component changes ke liye hai
+# TMDB data sync nahi hoti — cached data use hoti hai
+# Deploy time: ~3-5 min (vs 15-20 min full deploy)
+#
+# Trigger karna hai to:
+#   GitHub → Actions → "Fast Deploy" → Run workflow
+# Ya phir: git push (automatic)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      # Sirf in files ke change pe fast deploy chale
+      - 'src/components/**'
+      - 'src/pages/**'
+      - 'src/styles/**'
+      - 'src/i18n/**'
+      - 'src/lib/**'
+      - 'src/data/blogPosts/**'
+      - 'public/**'
+      - 'astro.config.mjs'
+      - 'tailwind.config.*'
+  workflow_dispatch:   # Manual trigger — GitHub Actions tab se "Run workflow" button
+
+jobs:
+  fast-deploy:
+    name: Build & Deploy (No Sync)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8    # 8 min max — agar zyada lage to fail ho
+
+    steps:
+      # ── 1. Checkout ──────────────────────────────────────────────────────────
+      - uses: actions/checkout@v4
+
+      # ── 2. Node setup with npm cache ─────────────────────────────────────────
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      # ── 3. Install (cached — usually ~30s) ───────────────────────────────────
+      - name: Install dependencies
+        run: npm ci
+
+      # ── 4. Build — SKIP_SYNC=1 skips movie-sync.mjs ──────────────────────────
+      - name: Build site (fast — no TMDB sync)
+        run: SKIP_SYNC=1 npx astro build
+        env:
+          TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          SKIP_SYNC: '1'
+
+      # ── 5. Deploy to Cloudflare Pages ─────────────────────────────────────────
+      - name: Deploy to Cloudflare Pages
+        run: npx wrangler pages deploy dist --project-name net-27-astro --branch main --commit-dirty=true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

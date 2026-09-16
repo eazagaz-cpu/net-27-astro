@@ -17,6 +17,8 @@
     "cf:login": "node scripts/wrangler.mjs login",
     "cf:check": "node scripts/check-cloudflare-auth.mjs",
     "cf:deploy": "npm run cf:check && astro build && node scripts/wrangler.mjs pages deploy ./dist --project-name net-27-astro --branch main --commit-dirty=true",
+    "build:fast": "cross-env SKIP_SYNC=1 astro build",
+    "deploy:fast": "cross-env SKIP_SYNC=1 astro build && npx wrangler pages deploy ./dist --project-name net-27-astro --branch main --commit-dirty=true",
     "validate:api": "node scripts/validate-api-config.mjs",
     "validate:media": "node scripts/validate-media.mjs",
     "validate:routes": "node scripts/validate-routes.mjs",
@@ -47,6 +49,7 @@
     "@tailwindcss/vite": "^4.3.1",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
+    "cross-env": "^10.1.0",
     "tailwindcss": "^4.3.1",
     "wrangler": "4.120.1"
   }

@@ -16,6 +16,12 @@ const __dirname = dirname(__filename);
 const ROOT = join(__dirname, '..', '..');
 const CACHE_DIR = join(ROOT, 'src', 'data', 'cache');
 
+// ── SKIP_SYNC=1 → fast deploy mode (UI changes only, no TMDB fetch) ──────────
+if (process.env.SKIP_SYNC === '1') {
+  console.log('[movie-sync] SKIP_SYNC=1 — skipping TMDB fetch, using cached data.');
+  process.exit(0);
+}
+
 // ── Load .env (silent if missing — CI uses secrets instead) ─────────────────
 try {
   const raw = readFileSync(join(ROOT, '.env'), 'utf8');

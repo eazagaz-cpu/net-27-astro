@@ -1,0 +1,280 @@
+---
+/**
+ * SponsorRail.astro — Sponsor / Affiliate Links ki dedicated strip
+ * Top 10 Movies se UPAR dikhti hai
+ * Nayi links add karni hain to sirf sponsorCards array mein add karo
+ * Sequence wise — pehle wali pehle, bad wali baad mein
+ */
+
+// === Yahan sequence wise nayi links add karo ===
+const sponsorCards = [
+  {
+    name: 'XD777',
+    label: 'XD777 Game',
+    tagline: '🎰 Win Big Today!',
+    url: 'https://apkgamzu.com.pk/x777-game/',
+    image: '/links/XD777.png',
+    badge: '🔥 Hot',
+  },
+  // Future links yahan add hongi:
+  // {
+  //   name: 'Casino2',
+  //   label: 'Casino 2',
+  //   tagline: 'Play & Win',
+  //   url: 'https://example.com/',
+  //   image: '/links/Casino2.png',
+  //   badge: '⭐ New',
+  // },
+];
+
+if (sponsorCards.length === 0) return;
+---
+
+<section class="sponsor-rail-section" aria-label="Sponsored Links">
+  <div class="sponsor-rail-inner">
+    <div class="sponsor-rail-header">
+      <span class="sponsor-rail-title">
+        <span class="sponsor-icon">🎯</span>
+        Featured Sponsors
+      </span>
+      <span class="sponsor-ad-label">Ads</span>
+    </div>
+
+    <div class="sponsor-rail-scroll">
+      {sponsorCards.map((card) => (
+        <a
+          href={card.url}
+          target="_blank"
+          rel="noopener"
+          class="sponsor-link-card"
+          aria-label={`Sponsored: ${card.label} — ${card.tagline}`}
+          title={card.label}
+        >
+          {/* Animated border ring */}
+          <div class="slc-ring" aria-hidden="true"></div>
+
+          {/* Hot/New badge */}
+          <div class="slc-badge">{card.badge}</div>
+
+          {/* Logo image */}
+          <div class="slc-img-wrap">
+            <img
+              src={card.image}
+              alt={card.name}
+              width="96"
+              height="96"
+              loading="lazy"
+              decoding="async"
+              class="slc-img"
+            />
+          </div>
+
+          {/* Label + tagline */}
+          <div class="slc-info">
+            <span class="slc-name">{card.label}</span>
+            <span class="slc-tagline">{card.tagline}</span>
+          </div>
+
+          {/* CTA button */}
+          <div class="slc-btn">Play Now ▶</div>
+        </a>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  /* === Section wrapper === */
+  .sponsor-rail-section {
+    padding: 0.75rem 0 0.25rem;
+    position: relative;
+  }
+  .sponsor-rail-inner {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 clamp(16px, 2vw, 64px);
+  }
+
+  /* === Header row === */
+  .sponsor-rail-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .sponsor-rail-title {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.85);
+    letter-spacing: 0.01em;
+  }
+  .sponsor-icon { font-size: 1rem; }
+  .sponsor-ad-label {
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.15);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  /* === Scrollable row === */
+  .sponsor-rail-scroll {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .sponsor-rail-scroll::-webkit-scrollbar { display: none; }
+
+  /* === Individual sponsor card === */
+  .sponsor-link-card {
+    position: relative;
+    flex-shrink: 0;
+    width: 160px;
+    height: 220px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 22px 10px 12px;
+    border-radius: 14px;
+    border: 1.5px solid rgba(245, 197, 24, 0.6);
+    background: radial-gradient(ellipse at 50% 0%, #2d1f00 0%, #130d00 55%, #090600 100%);
+    text-decoration: none;
+    overflow: hidden;
+    cursor: pointer;
+    box-shadow:
+      0 0 16px rgba(245, 197, 24, 0.25),
+      inset 0 0 30px rgba(0, 0, 0, 0.5);
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+  .sponsor-link-card:hover {
+    transform: translateY(-6px) scale(1.04);
+    box-shadow:
+      0 0 36px rgba(245, 197, 24, 0.65),
+      0 14px 40px rgba(0, 0, 0, 0.7);
+    border-color: #ffe066;
+  }
+
+  /* Spinning gold ring */
+  .slc-ring {
+    position: absolute;
+    inset: -2px;
+    border-radius: 15px;
+    background: conic-gradient(
+      from 0deg,
+      transparent 0%,
+      transparent 35%,
+      #f5c518 50%,
+      transparent 65%,
+      transparent 100%
+    );
+    animation: slc-spin 3s linear infinite;
+    opacity: 0.45;
+    z-index: 0;
+  }
+  .sponsor-link-card:hover .slc-ring { opacity: 0.8; }
+  @keyframes slc-spin { to { transform: rotate(360deg); } }
+
+  /* Badge */
+  .slc-badge {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: linear-gradient(135deg, #ff4e00, #ec9f05);
+    color: #fff;
+    font-size: 9px;
+    font-weight: 900;
+    padding: 2px 7px;
+    border-radius: 999px;
+    z-index: 3;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow: 0 2px 8px rgba(255,78,0,0.5);
+  }
+
+  /* Image */
+  .slc-img-wrap {
+    position: relative;
+    z-index: 2;
+    width: 96px;
+    height: 96px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .slc-img {
+    width: 96px;
+    height: 96px;
+    object-fit: contain;
+    border-radius: 10px;
+    filter: drop-shadow(0 0 10px rgba(245, 197, 24, 0.55));
+    transition: filter 0.25s ease, transform 0.25s ease;
+  }
+  .sponsor-link-card:hover .slc-img {
+    filter: drop-shadow(0 0 20px rgba(245, 197, 24, 1));
+    transform: scale(1.06);
+  }
+
+  /* Info text */
+  .slc-info {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    text-align: center;
+  }
+  .slc-name {
+    font-size: 12px;
+    font-weight: 800;
+    color: #f5c518;
+    letter-spacing: 0.03em;
+    text-shadow: 0 0 8px rgba(245,197,24,0.5);
+  }
+  .slc-tagline {
+    font-size: 10px;
+    color: rgba(255, 255, 255, 0.65);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 130px;
+  }
+
+  /* CTA button */
+  .slc-btn {
+    position: relative;
+    z-index: 2;
+    margin-top: auto;
+    padding: 5px 14px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, #f5c518, #ff8c00);
+    color: #000;
+    font-size: 10.5px;
+    font-weight: 900;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    box-shadow: 0 0 12px rgba(245, 197, 24, 0.5);
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+  }
+  .sponsor-link-card:hover .slc-btn {
+    box-shadow: 0 0 24px rgba(245, 197, 24, 0.9);
+    transform: scale(1.05);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .sponsor-link-card { transition: none; }
+    .slc-ring { animation: none; }
+    .slc-img, .slc-btn { transition: none; }
+  }
+</style>
