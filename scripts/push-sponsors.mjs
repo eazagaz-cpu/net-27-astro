@@ -118,6 +118,15 @@ const SPONSORS = [
     image: '/links/10win.webp',
     badge: '⭐ New',
   },
+    // New
+  {
+    name: 'Xx555',
+    label: 'Xx555',
+    tagline: '🎰 Play & Win Big!',
+    url: 'https://Xx555.com.pk/',
+    image: '/links/xx555.webp',
+    badge: '🔥 Hot',
+  },
   // ➕ Aage yahan add karo:
   // {
   //   name: 'NewGame',

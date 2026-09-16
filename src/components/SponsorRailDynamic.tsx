@@ -22,6 +22,7 @@ const FALLBACK: SponsorCard[] = [
   { name: '1ppp game', label: '1PPP Game',  tagline: '🌟 Play & Earn!',     url: 'https://1pppp.com.pk/',                 image: '/links/1ppp-game.webp', badge: '🔥 Hot' },
   { name: 'Win786', label: 'Win786', tagline: '🎰 Win Big Today!', url: 'https://786win.pk/', image: '/links/win786.webp', badge: '🔥 Hot' },
   { name: '10win', label: '10win', tagline: '🎰 Play & Win Big!', url: 'https://110win.com.pk/', image: '/links/10win.webp', badge: '⭐ New' },
+  { name: 'Xx555', label: 'Xx555', tagline: '🎰 Play & Win Big!', url: 'https://Xx555.com.pk/', image: '/links/xx555.webp', badge: '🔥 Hot' },
 ];
 
 export default function SponsorRailDynamic() {

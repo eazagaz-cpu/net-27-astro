@@ -33,6 +33,7 @@ User ka setup:
 | **#7** | **M666** | `http://m666game.net/` | `/links/M666.webp` | ⭐ New |
 | **#8** | **M19 game** | `https://betapk.com.pk/bet939-game-2/` | `/links/M19-game.webp` | 💥 Hot |
 | **#9** | **1ppp game** | `https://1pppp.com.pk/` | `/links/1ppp-game.webp` | 🔥 Hot |
+| **#+** | **Xx555** | `https://Xx555.com.pk/` | `/links/xx555.webp` | 🔥 Hot |
 | **#+** | **10win** | `https://110win.com.pk/` | `/links/10win.webp` | ⭐ New |
 | **#+** | **Win786** | `https://786win.pk/` | `/links/win786.webp` | 🔥 Hot |
 
