@@ -17,12 +17,21 @@ const smallPoster = (url: string) => url.replace(/\/t\/p\/(?:w\d+|original)\//, 
 // === Sponsor / Affiliate Links — sequence wise add karo ===
 // slot = jis index ke BAAD sponsor card lagana hai (0-based movie index)
 const sponsorLinks = mediaType === 'movie' ? [
+  // #1 — XD777 (5th movie ke baad)
   {
     name: 'XD777',
     url: 'https://apkgamzu.com.pk/x777-game/',
     image: '/links/XD777.png',
-    slot: 4, // 5th movie ke baad insert hoga
+    slot: 4,
   },
+  // #2 — M666 (9th movie ke baad)
+  {
+    name: 'M666',
+    url: 'http://m666game.net/',
+    image: '/links/M666.png',
+    slot: 8,
+  },
+  // #3... aage yahan add karo
 ] : [];
 ---
 
