@@ -13,6 +13,7 @@ User ka setup:
 - **Goal:** Sponsor / Affiliate links ko homepage par dedicated "Featured Sponsors" rail mein show karna (Top 10 Movies ke upar).
 - **Current Sponsor Count:** 6 links (Sequence-wise ordered).
 - **Rule on Duplicates:** Sponsor links **sirf aur sirf** upar wali dedicated trail (`SponsorRailDynamic.tsx`) mein show honge. `Top10Rail.astro` ke andar koi sponsor card nahi hona chahiye (woh pure movie slider hai).
+- **Auto-Rotation (Option 2):** Har 15 seconds baad cards smoothly rotate hotay hain (1st card shifts to end), with smooth 350ms fade/shift transition. Mouse hover ya touch par auto-rotation pause ho jati hai takay click miss na ho.
 - **Rule on Links:** Sab sponsor links `rel="noopener"` hain (do-follow SEO benefit ke liye — no `nofollow`/`sponsored`).
 - **Images:** `public/links/` folder mein hain, `loading="eager"` aur `fetchPriority="high"` ke sath instant load hoti hain.
 - **Language / Tone:** Roman Urdu / Urdu-English friendly accent ("Bhaijan", polite tone).

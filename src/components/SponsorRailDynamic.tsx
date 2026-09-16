@@ -22,6 +22,8 @@ const FALLBACK: SponsorCard[] = [
 
 export default function SponsorRailDynamic() {
   const [sponsors, setSponsors] = useState<SponsorCard[]>(FALLBACK);
+  const [isPaused, setIsPaused] = useState(false);
+  const [isRotating, setIsRotating] = useState(false);
 
   useEffect(() => {
     fetch('/api/sponsors', { cache: 'no-store' })
@@ -30,19 +32,48 @@ export default function SponsorRailDynamic() {
       .catch(() => {}); // fallback stays on error
   }, []);
 
+  // 🔄 Option 2: Har 15 seconds baad 1st card aakhri ban jayega (Smooth rotation)
+  useEffect(() => {
+    if (isPaused || sponsors.length <= 1) return;
+
+    const interval = setInterval(() => {
+      setIsRotating(true);
+      setTimeout(() => {
+        setSponsors(prev => {
+          if (prev.length <= 1) return prev;
+          const [first, ...rest] = prev;
+          return [...rest, first];
+        });
+        setIsRotating(false);
+      }, 350); // 350ms smooth transition
+    }, 15000); // Har 15 seconds
+
+    return () => clearInterval(interval);
+  }, [isPaused, sponsors.length]);
+
   if (sponsors.length === 0) return null;
 
   return (
-    <section className="sponsor-rail-section" aria-label="Sponsored Links">
+    <section
+      className="sponsor-rail-section"
+      aria-label="Sponsored Links"
+      onMouseEnter={() => setIsPaused(true)}
+      onMouseLeave={() => setIsPaused(false)}
+      onTouchStart={() => setIsPaused(true)}
+      onTouchEnd={() => setIsPaused(false)}
+    >
       <div className="sponsor-rail-inner">
         <div className="sponsor-rail-header">
           <span className="sponsor-rail-title">
             <span className="sponsor-icon">🎯</span>
             Featured Sponsors
+            <span className="rotation-indicator" title={isPaused ? "Paused on hover" : "Auto-rotating every 15s"}>
+              {isPaused ? "⏸️ Paused" : "🔄 Live"}
+            </span>
           </span>
           <span className="sponsor-ad-label">Ads</span>
         </div>
-        <div className="sponsor-rail-scroll">
+        <div className={`sponsor-rail-scroll ${isRotating ? 'is-shifting' : ''}`}>
           {sponsors.map((card) => (
             <a
               key={card.name}
@@ -82,9 +113,11 @@ export default function SponsorRailDynamic() {
         .sponsor-rail-inner { max-width:100%; margin:0 auto; padding:0 clamp(16px,2vw,64px); }
         .sponsor-rail-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
         .sponsor-rail-title { display:flex; align-items:center; gap:6px; font-size:.95rem; font-weight:700; color:rgba(255,255,255,.85); }
+        .rotation-indicator { font-size:10px; font-weight:600; color:rgba(245,197,24,.9); background:rgba(245,197,24,.1); border:1px solid rgba(245,197,24,.3); padding:1px 7px; border-radius:999px; margin-left:6px; transition:all .2s ease; }
         .sponsor-icon { font-size:1rem; }
         .sponsor-ad-label { font-size:9px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:rgba(255,255,255,.3); border:1px solid rgba(255,255,255,.15); padding:1px 6px; border-radius:4px; }
-        .sponsor-rail-scroll { display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; scrollbar-width:none; -ms-overflow-style:none; }
+        .sponsor-rail-scroll { display:flex; gap:12px; overflow-x:auto; padding-bottom:8px; scrollbar-width:none; -ms-overflow-style:none; transition:opacity .35s ease,transform .35s ease; }
+        .sponsor-rail-scroll.is-shifting { opacity:.65; transform:translateX(-12px); }
         .sponsor-rail-scroll::-webkit-scrollbar { display:none; }
         .sponsor-link-card { position:relative; flex-shrink:0; width:160px; height:220px; display:flex; flex-direction:column; align-items:center; justify-content:flex-start; padding:22px 10px 12px; border-radius:14px; border:1.5px solid rgba(245,197,24,.6); background:radial-gradient(ellipse at 50% 0%,#2d1f00 0%,#130d00 55%,#090600 100%); text-decoration:none; overflow:hidden; cursor:pointer; box-shadow:0 0 16px rgba(245,197,24,.25),inset 0 0 30px rgba(0,0,0,.5); transition:transform .25s ease,box-shadow .25s ease,border-color .25s ease; }
         .sponsor-link-card:hover { transform:translateY(-6px) scale(1.04); box-shadow:0 0 36px rgba(245,197,24,.65),0 14px 40px rgba(0,0,0,.7); border-color:#ffe066; }
