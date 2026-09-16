@@ -24,15 +24,15 @@ User ka setup:
 
 | # | Name / Anchor | Target URL | Image Path | Badge |
 |---|---|---|---|---|
-| **#1** | **Bet Rupees** | `https://betrupe.com/` | `/links/bet-rupees.png` | 🔥 Hot |
-| **#2** | **P999 pk** | `https://p999pk.org/` | `/links/p999-pk.png` | ⭐ New |
-| **#3** | **pak super game** | `https://paksupergame.cc/` | `/links/pak-super-game.png` | 🔥 Hot |
-| **#4** | **XD777** | `https://apkgamzu.com.pk/x777-game/` | `/links/XD777.png` | 🔥 Hot |
-| **#5** | **hh98** | `https://hh98.pk/` | `/links/HH98.png` | ⭐ New |
-| **#6** | **jj77** | `https://jj77apk.pk/` | `/links/JJ77.png` | 💥 Hot |
-| **#7** | **M666** | `http://m666game.net/` | `/links/M666.png` | ⭐ New |
-| **#8** | **M19 game** | `https://betapk.com.pk/bet939-game-2/` | `/links/M19-game.png` | 💥 Hot |
-| **#9** | **1ppp game** | `https://1pppp.com.pk/` | `/links/1ppp-game.png` | 🔥 Hot |
+| **#1** | **Bet Rupees** | `https://betrupe.com/` | `/links/bet-rupees.webp` | 🔥 Hot |
+| **#2** | **P999 pk** | `https://p999pk.org/` | `/links/p999-pk.webp` | ⭐ New |
+| **#3** | **pak super game** | `https://paksupergame.cc/` | `/links/pak-super-game.webp` | 🔥 Hot |
+| **#4** | **XD777** | `https://apkgamzu.com.pk/x777-game/` | `/links/XD777.webp` | 🔥 Hot |
+| **#5** | **hh98** | `https://hh98.pk/` | `/links/HH98.webp` | ⭐ New |
+| **#6** | **jj77** | `https://jj77apk.pk/` | `/links/JJ77.webp` | 💥 Hot |
+| **#7** | **M666** | `http://m666game.net/` | `/links/M666.webp` | ⭐ New |
+| **#8** | **M19 game** | `https://betapk.com.pk/bet939-game-2/` | `/links/M19-game.webp` | 💥 Hot |
+| **#9** | **1ppp game** | `https://1pppp.com.pk/` | `/links/1ppp-game.webp` | 🔥 Hot |
 
 ---
 
@@ -46,50 +46,37 @@ Sponsor update ke liye full build ya redeploy ki zaroorat nahi hai:
 3. **Push Script:** `scripts/push-sponsors.mjs`
    - Command: `npm run sponsors:push`
    - `.env` se `CLOUDFLARE_ACCOUNT_ID` aur `CLOUDFLARE_API_TOKEN` use karta hai aur direct KV update kar deta hai.
-4. **Dynamic Component:** `src/components/SponsorRailDynamic.tsx`
+4. **All-In-One Automated Addition & Deploy Script:** `scripts/add-sponsor.mjs`
+   - Command: `npm run sponsors:add` ya `node scripts/add-sponsor.mjs --name ... --label ... --url ... --image ...`
+   - Image ko 90-95% ultra-compressed WebP format mein convert karta hai.
+   - Files ko components aur KV mein add karta hai.
+   - Automatic live deployment in 5-30 seconds!
+5. **Dynamic Component:** `src/components/SponsorRailDynamic.tsx`
    - Client-side React component jo `/api/sponsors` se fetch karta hai.
+   - WebP image load karta hai with `<picture>` tag PNG fallback.
    - Agar API down ho ya offline ho tu built-in `FALLBACK` array display karta hai.
 
 ---
 
-## 4. Workflow: Jab User Naya Link De (Step-by-Step)
+## 4. Workflow: Jab User Naya Link De (Automated & Instant)
 
 User sirf 3 cheezain provide karega:
 1. **Anchor Name** (e.g. "XYZ Game")
 2. **Target URL** (e.g. "https://example.com/")
-3. **Image** (user `c:\Users\ic\Desktop\Websites\net-27.cc\links\` folder mein image drop karega)
+3. **Image** (user `links/` folder mein image drop karega)
 
-### Agent ko kya karna hai:
-1. **Image copy karein:**
-   ```powershell
-   Copy-Item "links\[ImageName].png" "public\links\[ImageName].png" -Force
-   ```
-2. **`scripts/push-sponsors.mjs` edit karein:**
-   `SPONSORS` array mein aage naya item sequence wise add karein:
-   ```javascript
-   {
-     name: 'NewGame',
-     label: 'New Game',
-     tagline: '🎯 Play & Win!',
-     url: 'https://example.com/',
-     image: '/links/NewGame.png',
-     badge: '⭐ New',
-   },
-   ```
-3. **Instant KV Push run karein:**
-   ```powershell
-   npm run sponsors:push
-   ```
-   *(Yeh 5-30 seconds mein live ho jayega bina kisi rebuild ke!)*
-4. **Fallback update karein:**
-   `src/components/SponsorRailDynamic.tsx` ke `FALLBACK` array mein bhi yahi entry add kar dein.
-5. **Git Commit & Push:**
-   ```powershell
-   git add -A
-   git commit -m "feat: [Name] added as #[Number] sponsor"
-   git pull origin main --rebase
-   git push origin main
-   ```
+### Agent ko kya karna hai (Single Automated Command):
+```powershell
+node scripts/add-sponsor.mjs --name "xyz-game" --label "XYZ Game" --url "https://example.com/" --image "XYZ.png" --tagline "🎰 Win Big Today!" --badge "🔥 Hot"
+```
+
+Yeh command automatically:
+1. Sharp se ultra-fast WebP image banata hai (90-95% compression).
+2. `public/links/` mein `.webp` aur `.png` save karta hai.
+3. `scripts/push-sponsors.mjs` mein `.webp` path add karta hai.
+4. `src/components/SponsorRailDynamic.tsx` ke fallback mein add karta hai.
+5. Cloudflare KV ko direct API call se update karta hai (**5-30 seconds mein live!**).
+6. Git add, commit, aur GitHub `main` par push kar deta hai.
 
 ---
 

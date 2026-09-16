@@ -25,7 +25,7 @@ const SPONSORS = [
     label: 'Bet Rupees',
     tagline: '💰 Play & Win Big!',
     url: 'https://betrupe.com/',
-    image: '/links/bet-rupees.png',
+    image: '/links/bet-rupees.webp',
     badge: '🔥 Hot',
   },
   // #2
@@ -34,7 +34,7 @@ const SPONSORS = [
     label: 'P999 PK',
     tagline: '🎯 Top Rewards!',
     url: 'https://p999pk.org/',
-    image: '/links/p999-pk.png',
+    image: '/links/p999-pk.webp',
     badge: '⭐ New',
   },
   // #3
@@ -43,61 +43,61 @@ const SPONSORS = [
     label: 'Pak Super Game',
     tagline: '🎰 Play & Win Big!',
     url: 'https://paksupergame.cc/',
-    image: '/links/pak-super-game.png',
+    image: '/links/pak-super-game.webp',
     badge: '🔥 Hot',
   },
-  // #2
+  // #4
   {
     name: 'XD777',
     label: 'XD777 Game',
     tagline: '🎰 Win Big Today!',
     url: 'https://apkgamzu.com.pk/x777-game/',
-    image: '/links/XD777.png',
+    image: '/links/XD777.webp',
     badge: '🔥 Hot',
   },
-  // #2
+  // #5
   {
     name: 'hh98',
     label: 'HH98',
     tagline: '🎯 Play & Win!',
     url: 'https://hh98.pk/',
-    image: '/links/HH98.png',
+    image: '/links/HH98.webp',
     badge: '⭐ New',
   },
-  // #3
+  // #6
   {
     name: 'jj77',
     label: 'JJ77',
     tagline: '🏆 Big Rewards!',
     url: 'https://jj77apk.pk/',
-    image: '/links/JJ77.png',
+    image: '/links/JJ77.webp',
     badge: '💥 Hot',
   },
-  // #4
+  // #7
   {
     name: 'M666',
     label: 'M666 Game',
     tagline: '🏆 Play & Win Big!',
     url: 'http://m666game.net/',
-    image: '/links/M666.png',
+    image: '/links/M666.webp',
     badge: '⭐ New',
   },
-  // #5
+  // #8
   {
     name: 'M19 game',
     label: 'M19 Game',
     tagline: '🎮 Bet & Win!',
     url: 'https://betapk.com.pk/bet939-game-2/',
-    image: '/links/M19-game.png',
+    image: '/links/M19-game.webp',
     badge: '💥 Hot',
   },
-  // #6
+  // #9
   {
     name: '1ppp game',
     label: '1PPP Game',
     tagline: '🌟 Play & Earn!',
     url: 'https://1pppp.com.pk/',
-    image: '/links/1ppp-game.png',
+    image: '/links/1ppp-game.webp',
     badge: '🔥 Hot',
   },
   // ➕ Aage yahan add karo:
@@ -106,7 +106,7 @@ const SPONSORS = [
   //   label: 'New Game',
   //   tagline: '🎯 Play Now!',
   //   url: 'https://example.com/',
-  //   image: '/links/NewGame.png',
+  //   image: '/links/NewGame.webp',   ← HAMESHA .webp use karo
   //   badge: '⭐ New',
   // },
 ];

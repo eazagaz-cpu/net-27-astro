@@ -32,24 +32,36 @@ Consult these guides before working on related tasks:
 Complete state documented in `SESSION_SPONSORS_STATE.md`.
 
 - **Current Sponsors (9 Total, strictly sequence-wise):**
-  1. Bet Rupees (`https://betrupe.com/`, `/links/bet-rupees.png`)
-  2. P999 pk (`https://p999pk.org/`, `/links/p999-pk.png`)
-  3. pak super game (`https://paksupergame.cc/`, `/links/pak-super-game.png`)
-  4. XD777 (`https://apkgamzu.com.pk/x777-game/`, `/links/XD777.png`)
-  5. hh98 (`https://hh98.pk/`, `/links/HH98.png`)
-  6. jj77 (`https://jj77apk.pk/`, `/links/JJ77.png`)
-  7. M666 (`http://m666game.net/`, `/links/M666.png`)
-  8. M19 game (`https://betapk.com.pk/bet939-game-2/`, `/links/M19-game.png`)
-  9. 1ppp game (`https://1pppp.com.pk/`, `/links/1ppp-game.png`)
+  1. Bet Rupees (`https://betrupe.com/`, `/links/bet-rupees.webp`)
+  2. P999 pk (`https://p999pk.org/`, `/links/p999-pk.webp`)
+  3. pak super game (`https://paksupergame.cc/`, `/links/pak-super-game.webp`)
+  4. XD777 (`https://apkgamzu.com.pk/x777-game/`, `/links/XD777.webp`)
+  5. hh98 (`https://hh98.pk/`, `/links/HH98.webp`)
+  6. jj77 (`https://jj77apk.pk/`, `/links/JJ77.webp`)
+  7. M666 (`http://m666game.net/`, `/links/M666.webp`)
+  8. M19 game (`https://betapk.com.pk/bet939-game-2/`, `/links/M19-game.webp`)
+  9. 1ppp game (`https://1pppp.com.pk/`, `/links/1ppp-game.webp`)
+
+- **Ultra-Fast WebP Image Rule (MANDATORY):**
+  - All sponsor images MUST be optimized to `.webp` (quality: 82, effort: 6) to reduce file sizes by 90-97% (from ~2MB down to ~60-100KB) for instant loading on mobile & desktop.
+  - Keep a `.png` copy in `public/links/` as a fallback inside `<picture>` tag.
+  - Image paths in KV / components MUST always point to `.webp`.
 
 - **Placement Rule:** Sponsor cards MUST ONLY appear in `SponsorRailDynamic.tsx` (above Top 10 Movies rail). They MUST NOT appear inside `Top10Rail.astro` (Top 10 slider is strictly for movies/TV shows only).
 - **SEO Rule:** Links are do-follow (`rel="noopener"`, no `nofollow`/`sponsored`).
-- **Instant Live Rule:** When user gives a new link (Anchor + Target URL + Image in `links/` folder):
-  1. Copy image from `links/` to `public/links/`.
-  2. Add to `SPONSORS` array in `scripts/push-sponsors.mjs`.
-  3. Run `npm run sponsors:push` (Updates Cloudflare KV instantly, live in 5-30s).
-  4. Add to `FALLBACK` array in `src/components/SponsorRailDynamic.tsx`.
-  5. Git commit and push to `main`.
+- **Instant Live & Automatic Deployment Rule:**
+  Jab bhi user chat mein naya link de (Anchor + Target URL + Image in `links/` folder):
+  The agent must immediately execute the automated sponsor script:
+  ```powershell
+  node scripts/add-sponsor.mjs --name "<Slug>" --label "<Display Name>" --url "<Target URL>" --image "<ImageFileName>" --tagline "<Tagline>" --badge "<Badge>"
+  ```
+  This single command automatically:
+  1. Converts image to WebP with 90-95% compression.
+  2. Saves both `.webp` and `.png` in `public/links/`.
+  3. Adds entry to `SPONSORS` in `scripts/push-sponsors.mjs`.
+  4. Adds entry to `FALLBACK` in `src/components/SponsorRailDynamic.tsx`.
+  5. Pushes to Cloudflare KV immediately (live on site in 5-30 seconds).
+  6. Commits and pushes to GitHub `main` so Cloudflare Pages deploys static assets.
 - **Fast Build:** Use `npm run build:fast` (`SKIP_SYNC=1`) to bypass TMDB sync.
 
 
