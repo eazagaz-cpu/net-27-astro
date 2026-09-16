@@ -11,18 +11,19 @@ interface SponsorCard {
 
 // Fallback data — API fail hone par yeh dikhega
 const FALLBACK: SponsorCard[] = [
-  { name: 'Bet Rupees',     label: 'Bet Rupees',    tagline: '💰 Play & Win Big!', url: 'https://betrupe.com/',                  image: '/links/bet-rupees.webp', badge: '🔥 Hot' },
-  { name: 'P999 pk',        label: 'P999 PK',       tagline: '🎯 Top Rewards!',    url: 'https://p999pk.org/',                   image: '/links/p999-pk.webp',    badge: '⭐ New' },
-  { name: 'pak super game', label: 'Pak Super Game', tagline: '🎰 Play & Win Big!', url: 'https://paksupergame.cc/',           image: '/links/pak-super-game.webp', badge: '🔥 Hot' },
-  { name: 'XD777',     label: 'XD777 Game', tagline: '🎰 Win Big Today!',  url: 'https://apkgamzu.com.pk/x777-game/',    image: '/links/XD777.webp',     badge: '🔥 Hot' },
-  { name: 'hh98',      label: 'HH98',       tagline: '🎯 Play & Win!',      url: 'https://hh98.pk/',                      image: '/links/HH98.webp',      badge: '⭐ New' },
-  { name: 'jj77',      label: 'JJ77',       tagline: '🏆 Big Rewards!',     url: 'https://jj77apk.pk/',                   image: '/links/JJ77.webp',      badge: '💥 Hot' },
-  { name: 'M666',      label: 'M666 Game',  tagline: '🏆 Play & Win Big!',  url: 'http://m666game.net/',                  image: '/links/M666.webp',      badge: '⭐ New' },
-  { name: 'M19 game',  label: 'M19 Game',   tagline: '🎮 Bet & Win!',       url: 'https://betapk.com.pk/bet939-game-2/', image: '/links/M19-game.webp',  badge: '💥 Hot' },
-  { name: '1ppp game', label: '1PPP Game',  tagline: '🌟 Play & Earn!',     url: 'https://1pppp.com.pk/',                 image: '/links/1ppp-game.webp', badge: '🔥 Hot' },
-  { name: 'Win786', label: 'Win786', tagline: '🎰 Win Big Today!', url: 'https://786win.pk/', image: '/links/win786.webp', badge: '🔥 Hot' },
-  { name: '10win', label: '10win', tagline: '🎰 Play & Win Big!', url: 'https://110win.com.pk/', image: '/links/10win.webp', badge: '⭐ New' },
-  { name: 'Xx555', label: 'Xx555', tagline: '🎰 Play & Win Big!', url: 'https://Xx555.com.pk/', image: '/links/xx555.webp', badge: '🔥 Hot' },
+  { name: 'XD777',          label: 'XD777 Game',    tagline: '🎰 Win Big Today!',   url: 'https://apksting.com.pk/zentro-win-game/', image: '/links/XD777.webp',         badge: '🔥 Hot' },
+  { name: 'jb-game',        label: 'JB Game',       tagline: '🎮 New Earning Games!', url: 'https://jbgame.pk',                      image: '/links/jb-game.webp',       badge: '⭐ New' },
+  { name: 'Bet Rupees',     label: 'Bet Rupees',    tagline: '💰 Play & Win Big!',  url: 'https://betrupe.com/',                    image: '/links/bet-rupees.webp',    badge: '🔥 Hot' },
+  { name: 'P999 pk',        label: 'P999 PK',       tagline: '🎯 Top Rewards!',     url: 'https://p999pk.org/',                     image: '/links/p999-pk.webp',       badge: '⭐ New' },
+  { name: 'pak super game', label: 'Pak Super Game', tagline: '🎰 Play & Win Big!', url: 'https://paksupergame.cc/',                image: '/links/pak-super-game.webp', badge: '🔥 Hot' },
+  { name: 'hh98',           label: 'HH98',          tagline: '🎯 Play & Win!',      url: 'https://hh98.pk/',                        image: '/links/HH98.webp',          badge: '⭐ New' },
+  { name: 'jj77',           label: 'JJ77',          tagline: '🏆 Big Rewards!',     url: 'https://jj77apk.pk/',                     image: '/links/JJ77.webp',          badge: '💥 Hot' },
+  { name: 'M666',           label: 'M666 Game',     tagline: '🏆 Play & Win Big!',  url: 'http://m666game.net/',                    image: '/links/M666.webp',          badge: '⭐ New' },
+  { name: 'M19 game',       label: 'M19 Game',      tagline: '🎮 Bet & Win!',       url: 'https://betapk.com.pk/bet939-game-2/',    image: '/links/M19-game.webp',      badge: '💥 Hot' },
+  { name: '1ppp game',      label: '1PPP Game',     tagline: '🌟 Play & Earn!',     url: 'https://1pppp.com.pk/',                   image: '/links/1ppp-game.webp',     badge: '🔥 Hot' },
+  { name: 'Win786',         label: 'Win786',        tagline: '🎰 Win Big Today!',   url: 'https://786win.pk/',                      image: '/links/win786.webp',        badge: '🔥 Hot' },
+  { name: '10win',          label: '10win',         tagline: '🎰 Play & Win Big!',  url: 'https://110win.com.pk/',                  image: '/links/10win.webp',         badge: '⭐ New' },
+  { name: 'Xx555',          label: 'Xx555',         tagline: '🎰 Play & Win Big!',  url: 'https://Xx555.com.pk/',                   image: '/links/xx555.webp',         badge: '🔥 Hot' },
 ];
 
 export default function SponsorRailDynamic() {

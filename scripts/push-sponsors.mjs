@@ -19,7 +19,25 @@
 // ✏️  YAHAN SPONSORS EDIT KARO — Sequence wise
 // ═══════════════════════════════════════════════════════
 const SPONSORS = [
-  // #1
+  // #1 — XD777 (updated URL)
+  {
+    name: 'XD777',
+    label: 'XD777 Game',
+    tagline: '🎰 Win Big Today!',
+    url: 'https://apksting.com.pk/zentro-win-game/',
+    image: '/links/XD777.webp',
+    badge: '🔥 Hot',
+  },
+  // #2 — JB Game (New Earning Games)
+  {
+    name: 'jb-game',
+    label: 'JB Game',
+    tagline: '🎮 New Earning Games!',
+    url: 'https://jbgame.pk',
+    image: '/links/jb-game.webp',
+    badge: '⭐ New',
+  },
+  // #3
   {
     name: 'Bet Rupees',
     label: 'Bet Rupees',
@@ -28,7 +46,7 @@ const SPONSORS = [
     image: '/links/bet-rupees.webp',
     badge: '🔥 Hot',
   },
-  // #2
+  // #4
   {
     name: 'P999 pk',
     label: 'P999 PK',
@@ -37,22 +55,13 @@ const SPONSORS = [
     image: '/links/p999-pk.webp',
     badge: '⭐ New',
   },
-  // #3
+  // #5
   {
     name: 'pak super game',
     label: 'Pak Super Game',
     tagline: '🎰 Play & Win Big!',
     url: 'https://paksupergame.cc/',
     image: '/links/pak-super-game.webp',
-    badge: '🔥 Hot',
-  },
-  // #4
-  {
-    name: 'XD777',
-    label: 'XD777 Game',
-    tagline: '🎰 Win Big Today!',
-    url: 'https://apkgamzu.com.pk/x777-game/',
-    image: '/links/XD777.webp',
     badge: '🔥 Hot',
   },
   // #5
