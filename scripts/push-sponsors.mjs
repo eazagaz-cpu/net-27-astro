@@ -109,6 +109,15 @@ const SPONSORS = [
     image: '/links/win786.webp',
     badge: '🔥 Hot',
   },
+    // New
+  {
+    name: '10win',
+    label: '10win',
+    tagline: '🎰 Play & Win Big!',
+    url: 'https://110win.com.pk/',
+    image: '/links/10win.webp',
+    badge: '⭐ New',
+  },
   // ➕ Aage yahan add karo:
   // {
   //   name: 'NewGame',

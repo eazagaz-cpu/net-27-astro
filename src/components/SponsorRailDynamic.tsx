@@ -21,6 +21,7 @@ const FALLBACK: SponsorCard[] = [
   { name: 'M19 game',  label: 'M19 Game',   tagline: '🎮 Bet & Win!',       url: 'https://betapk.com.pk/bet939-game-2/', image: '/links/M19-game.webp',  badge: '💥 Hot' },
   { name: '1ppp game', label: '1PPP Game',  tagline: '🌟 Play & Earn!',     url: 'https://1pppp.com.pk/',                 image: '/links/1ppp-game.webp', badge: '🔥 Hot' },
   { name: 'Win786', label: 'Win786', tagline: '🎰 Win Big Today!', url: 'https://786win.pk/', image: '/links/win786.webp', badge: '🔥 Hot' },
+  { name: '10win', label: '10win', tagline: '🎰 Play & Win Big!', url: 'https://110win.com.pk/', image: '/links/10win.webp', badge: '⭐ New' },
 ];
 
 export default function SponsorRailDynamic() {
