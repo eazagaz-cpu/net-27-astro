@@ -100,6 +100,15 @@ const SPONSORS = [
     image: '/links/1ppp-game.webp',
     badge: '🔥 Hot',
   },
+    // New
+  {
+    name: 'Win786',
+    label: 'Win786',
+    tagline: '🎰 Win Big Today!',
+    url: 'https://786win.pk/',
+    image: '/links/win786.webp',
+    badge: '🔥 Hot',
+  },
   // ➕ Aage yahan add karo:
   // {
   //   name: 'NewGame',
