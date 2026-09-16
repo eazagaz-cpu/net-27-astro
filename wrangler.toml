@@ -1,3 +1,7 @@
 name = "net-27-astro"
 pages_build_output_dir = "./dist"
 compatibility_date = "2026-06-23"
+
+[[kv_namespaces]]
+binding = "SPONSORS"
+id = "1368eb99137f4ea983e4a6c11b4feab8"
