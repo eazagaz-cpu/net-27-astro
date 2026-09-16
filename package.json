@@ -18,6 +18,7 @@
     "cf:check": "node scripts/check-cloudflare-auth.mjs",
     "cf:deploy": "npm run cf:check && astro build && node scripts/wrangler.mjs pages deploy ./dist --project-name net-27-astro --branch main --commit-dirty=true",
     "build:fast": "cross-env SKIP_SYNC=1 astro build",
+    "sponsors:images": "node scripts/convert-sponsor-images.mjs",
     "deploy:fast": "cross-env SKIP_SYNC=1 astro build && npx wrangler pages deploy ./dist --project-name net-27-astro --branch main --commit-dirty=true",
     "index:now": "node scripts/instant-index.mjs",
     "index:all": "node scripts/instant-index.mjs all",
