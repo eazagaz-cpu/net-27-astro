@@ -31,7 +31,7 @@ Consult these guides before working on related tasks:
 
 Complete state documented in `SESSION_SPONSORS_STATE.md`.
 
-- **Current Sponsors (9 Total, strictly sequence-wise):**
+- **Current Sponsors (12 Total, strictly sequence-wise):**
   1. Bet Rupees (`https://betrupe.com/`, `/links/bet-rupees.webp`)
   2. P999 pk (`https://p999pk.org/`, `/links/p999-pk.webp`)
   3. pak super game (`https://paksupergame.cc/`, `/links/pak-super-game.webp`)
@@ -41,6 +41,9 @@ Complete state documented in `SESSION_SPONSORS_STATE.md`.
   7. M666 (`http://m666game.net/`, `/links/M666.webp`)
   8. M19 game (`https://betapk.com.pk/bet939-game-2/`, `/links/M19-game.webp`)
   9. 1ppp game (`https://1pppp.com.pk/`, `/links/1ppp-game.webp`)
+  10. Win786 (`https://786win.pk/`, `/links/win786.webp`)
+  11. 10win (`https://110win.com.pk/`, `/links/10win.webp`)
+  12. Xx555 (`https://Xx555.com.pk/`, `/links/xx555.webp`)
 
 - **Ultra-Fast WebP Image Rule (MANDATORY):**
   - All sponsor images MUST be optimized to `.webp` (quality: 82, effort: 6) to reduce file sizes by 90-97% (from ~2MB down to ~60-100KB) for instant loading on mobile & desktop.
