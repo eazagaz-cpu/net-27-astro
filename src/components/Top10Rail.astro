@@ -13,54 +13,6 @@ if (items.length === 0) return;
 const label = mediaType === 'tv' ? 'TV Shows' : 'Movies';
 const railId = `top10-${mediaType}`;
 const smallPoster = (url: string) => url.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w185/');
-
-// === Sponsor / Affiliate Links — sequence wise add karo ===
-// slot = jis index ke BAAD sponsor card lagana hai (0-based movie index)
-const sponsorLinks = mediaType === 'movie' ? [
-  // #1 — XD777 (5th movie ke baad)
-  {
-    name: 'XD777',
-    url: 'https://apkgamzu.com.pk/x777-game/',
-    image: '/links/XD777.png',
-    slot: 4,
-  },
-  // #2 — HH98 (2nd movie ke baad)
-  {
-    name: 'hh98',
-    url: 'https://hh98.pk/',
-    image: '/links/HH98.png',
-    slot: 1,
-  },
-  // #3 — JJ77 (3rd movie ke baad)
-  {
-    name: 'jj77',
-    url: 'https://jj77apk.pk/',
-    image: '/links/JJ77.png',
-    slot: 2,
-  },
-  // #4 — M666 (7th movie ke baad)
-  {
-    name: 'M666',
-    url: 'http://m666game.net/',
-    image: '/links/M666.png',
-    slot: 6,
-  },
-  // #5 — M19 game (9th movie ke baad)
-  {
-    name: 'M19 game',
-    url: 'https://betapk.com.pk/bet939-game-2/',
-    image: '/links/M19-game.png',
-    slot: 8,
-  },
-  // #6 — 1ppp game (end pe)
-  {
-    name: '1ppp game',
-    url: 'https://1pppp.com.pk/',
-    image: '/links/1ppp-game.png',
-    slot: 9,
-  },
-  // #7... aage yahan add karo
-] : [];
 ---
 
 <section class="rail-section top10-section">
@@ -72,35 +24,18 @@ const sponsorLinks = mediaType === 'movie' ? [
       </button>
       <div id={railId} class="scroll-rail top10-rail">
         {items.map((item, index) => (
-          <>
-            <a href={titleDetailUrl(item)} class="top10-card" aria-label={`Number ${index + 1}: ${item.title}`}>
-              <span class="top10-rank" aria-hidden="true">{index + 1}</span>
-              <img src={smallPoster(item.posterUrl)} alt={`${item.title} poster`} width="120" height="180" loading="lazy" decoding="async" fetchpriority="low" />
-            </a>
-            {sponsorLinks.filter(s => s.slot === index).map(sponsor => (
-              <a
-                href={sponsor.url}
-                target="_blank"
-                rel="noopener"
-                class="top10-sponsor-card"
-                aria-label={`Sponsored: ${sponsor.name}`}
-                title={`Play ${sponsor.name}`}
-              >
-                <div class="sponsor-pulse-ring"></div>
-                <div class="sponsor-badge">🎰 Sponsored</div>
-                <img
-                  src={sponsor.image}
-                  alt={sponsor.name}
-                  width="108"
-                  height="108"
-                  loading="lazy"
-                  decoding="async"
-                  class="sponsor-img"
-                />
-                <div class="sponsor-cta">Play Now →</div>
-              </a>
-            ))}
-          </>
+          <a href={titleDetailUrl(item)} class="top10-card" aria-label={`Number ${index + 1}: ${item.title}`}>
+            <span class="top10-rank" aria-hidden="true">{index + 1}</span>
+            <img
+              src={smallPoster(item.posterUrl)}
+              alt={`${item.title} poster`}
+              width="120"
+              height="180"
+              loading="lazy"
+              decoding="async"
+              fetchpriority="low"
+            />
+          </a>
         ))}
       </div>
       <button class="sr-arrow sr-arrow-right" data-target={railId} data-dir="right" aria-label={`Scroll top 10 ${label} right`}>
@@ -119,89 +54,5 @@ const sponsorLinks = mediaType === 'movie' ? [
   .top10-rank { position: absolute; left: 0; bottom: 9px; width: 94px; color: #050509; -webkit-text-stroke: 3px rgba(255,255,255,.34); font: 900 190px/.75 system-ui,sans-serif; letter-spacing: -8px; user-select: none; }
   .top10-card img { position: relative; z-index: 1; width: 120px; height: 180px; margin-left: auto; border-radius: 8px; object-fit: cover; box-shadow: -4px 2px 16px rgba(0,0,0,.7); transition: transform .25s ease; }
   .top10-card:hover img { transform: scale(1.04); }
-
-  /* === Sponsor Card Styles === */
-  .top10-sponsor-card {
-    position: relative;
-    width: 148px;
-    height: 200px;
-    flex-shrink: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 0;
-    border-radius: 12px;
-    border: 2px solid #f5c518;
-    background: radial-gradient(ellipse at center top, #2d1f00 0%, #140e00 60%, #0a0800 100%);
-    overflow: hidden;
-    cursor: pointer;
-    text-decoration: none;
-    margin: 0 4px;
-    box-shadow: 0 0 20px rgba(245,197,24,0.4), inset 0 0 24px rgba(0,0,0,0.6);
-    transition: transform .25s ease, box-shadow .25s ease;
-  }
-  .top10-sponsor-card:hover {
-    transform: scale(1.07) translateY(-5px);
-    box-shadow: 0 0 40px rgba(245,197,24,0.75), 0 12px 40px rgba(0,0,0,0.7);
-    border-color: #ffe066;
-  }
-  .sponsor-pulse-ring {
-    position: absolute;
-    inset: -3px;
-    border-radius: 14px;
-    background: conic-gradient(from 0deg, transparent 30%, #f5c518 50%, transparent 70%);
-    animation: sponsor-spin 2.5s linear infinite;
-    opacity: 0.5;
-    z-index: 0;
-  }
-  @keyframes sponsor-spin { to { transform: rotate(360deg); } }
-  .sponsor-badge {
-    position: relative;
-    z-index: 2;
-    background: linear-gradient(90deg, #f5c518, #ff8c00);
-    color: #000;
-    font-size: 8.5px;
-    font-weight: 900;
-    letter-spacing: 0.06em;
-    padding: 2px 9px;
-    border-radius: 999px;
-    white-space: nowrap;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-  .sponsor-img {
-    position: relative;
-    z-index: 2;
-    width: 108px;
-    height: 108px;
-    object-fit: contain;
-    border-radius: 12px;
-    filter: drop-shadow(0 0 12px rgba(245,197,24,0.6));
-    transition: filter .25s ease, transform .25s ease;
-  }
-  .top10-sponsor-card:hover .sponsor-img {
-    filter: drop-shadow(0 0 22px rgba(245,197,24,1));
-    transform: scale(1.05);
-  }
-  .sponsor-cta {
-    position: relative;
-    z-index: 2;
-    margin-top: 8px;
-    font-size: 11px;
-    font-weight: 800;
-    color: #f5c518;
-    letter-spacing: 0.05em;
-    text-shadow: 0 0 10px rgba(245,197,24,0.7);
-    transition: color .2s, text-shadow .2s;
-  }
-  .top10-sponsor-card:hover .sponsor-cta {
-    color: #fff;
-    text-shadow: 0 0 14px rgba(255,255,255,0.8);
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .top10-card img, .top10-sponsor-card { transition: none; }
-    .sponsor-pulse-ring { animation: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { .top10-card img { transition: none; } }
 </style>

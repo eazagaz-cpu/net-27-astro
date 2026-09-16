@@ -60,8 +60,9 @@ export default function SponsorRailDynamic() {
                   alt={card.name}
                   width={96}
                   height={96}
-                  loading="lazy"
+                  loading="eager"
                   decoding="async"
+                  fetchPriority="high"
                   className="slc-img"
                 />
               </div>
