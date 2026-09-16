@@ -21,6 +21,15 @@
 const SPONSORS = [
   // #1
   {
+    name: 'pak super game',
+    label: 'Pak Super Game',
+    tagline: '🎰 Play & Win Big!',
+    url: 'https://paksupergame.cc/',
+    image: '/links/pak-super-game.png',
+    badge: '🔥 Hot',
+  },
+  // #2
+  {
     name: 'XD777',
     label: 'XD777 Game',
     tagline: '🎰 Win Big Today!',
@@ -101,7 +110,7 @@ try {
   }
 } catch {}
 
-const KV_NAMESPACE_ID = '1368eb99137f4ea983e4a6c11b4feab8';
+const KV_NAMESPACE_ID = 'aa59493bbbed47c0af878405e12bd8fb';
 const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 

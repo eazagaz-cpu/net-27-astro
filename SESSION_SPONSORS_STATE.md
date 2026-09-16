@@ -23,22 +23,20 @@ User ka setup:
 
 | # | Name / Anchor | Target URL | Image Path | Badge |
 |---|---|---|---|---|
-| **#1** | **XD777** | `https://apkgamzu.com.pk/x777-game/` | `/links/XD777.png` | 🔥 Hot |
-| **#2** | **hh98** | `https://hh98.pk/` | `/links/HH98.png` | ⭐ New |
-| **#3** | **jj77** | `https://jj77apk.pk/` | `/links/JJ77.png` | 💥 Hot |
-| **#4** | **M666** | `http://m666game.net/` | `/links/M666.png` | ⭐ New |
-| **#5** | **M19 game** | `https://betapk.com.pk/bet939-game-2/` | `/links/M19-game.png` | 💥 Hot |
-| **#6** | **1ppp game** | `https://1pppp.com.pk/` | `/links/1ppp-game.png` | 🔥 Hot |
-
-> ⏳ **Pending Next Sponsor:** `pak super game.png` image folder mein aa chuki hai aur `public/links/pak-super-game.png` copy ho chuki hai. User se iska Anchor & Target URL lena hai (e.g. Pak Super Game as #7).
-
+| **#1** | **pak super game** | `https://paksupergame.cc/` | `/links/pak-super-game.png` | 🔥 Hot |
+| **#2** | **XD777** | `https://apkgamzu.com.pk/x777-game/` | `/links/XD777.png` | 🔥 Hot |
+| **#3** | **hh98** | `https://hh98.pk/` | `/links/HH98.png` | ⭐ New |
+| **#4** | **jj77** | `https://jj77apk.pk/` | `/links/JJ77.png` | 💥 Hot |
+| **#5** | **M666** | `http://m666game.net/` | `/links/M666.png` | ⭐ New |
+| **#6** | **M19 game** | `https://betapk.com.pk/bet939-game-2/` | `/links/M19-game.png` | 💥 Hot |
+| **#7** | **1ppp game** | `https://1pppp.com.pk/` | `/links/1ppp-game.png` | 🔥 Hot |
 
 ---
 
 ## 3. Instant Live Architecture (Cloudflare KV + Functions)
 
 Sponsor update ke liye full build ya redeploy ki zaroorat nahi hai:
-1. **Cloudflare KV Namespace:** `SPONSORS` (`1368eb99137f4ea983e4a6c11b4feab8`).
+1. **Cloudflare KV Namespace:** `SPONSORS` (`aa59493bbbed47c0af878405e12bd8fb`).
 2. **Cloudflare Pages Function:** `functions/api/sponsors.js`
    - KV namespace se `/api/sponsors` endpoint par live JSON serve karta hai.
    - Cache-Control: `s-maxage=30, stale-while-revalidate=60` (5-30s update).

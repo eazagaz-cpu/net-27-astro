@@ -31,13 +31,14 @@ Consult these guides before working on related tasks:
 
 Complete state documented in `SESSION_SPONSORS_STATE.md`.
 
-- **Current Sponsors (6 Total, strictly sequence-wise):**
-  1. XD777 (`https://apkgamzu.com.pk/x777-game/`, `/links/XD777.png`)
-  2. hh98 (`https://hh98.pk/`, `/links/HH98.png`)
-  3. jj77 (`https://jj77apk.pk/`, `/links/JJ77.png`)
-  4. M666 (`http://m666game.net/`, `/links/M666.png`)
-  5. M19 game (`https://betapk.com.pk/bet939-game-2/`, `/links/M19-game.png`)
-  6. 1ppp game (`https://1pppp.com.pk/`, `/links/1ppp-game.png`)
+- **Current Sponsors (7 Total, strictly sequence-wise):**
+  1. pak super game (`https://paksupergame.cc/`, `/links/pak-super-game.png`)
+  2. XD777 (`https://apkgamzu.com.pk/x777-game/`, `/links/XD777.png`)
+  3. hh98 (`https://hh98.pk/`, `/links/HH98.png`)
+  4. jj77 (`https://jj77apk.pk/`, `/links/JJ77.png`)
+  5. M666 (`http://m666game.net/`, `/links/M666.png`)
+  6. M19 game (`https://betapk.com.pk/bet939-game-2/`, `/links/M19-game.png`)
+  7. 1ppp game (`https://1pppp.com.pk/`, `/links/1ppp-game.png`)
 
 - **Placement Rule:** Sponsor cards MUST ONLY appear in `SponsorRailDynamic.tsx` (above Top 10 Movies rail). They MUST NOT appear inside `Top10Rail.astro` (Top 10 slider is strictly for movies/TV shows only).
 - **SEO Rule:** Links are do-follow (`rel="noopener"`, no `nofollow`/`sponsored`).
