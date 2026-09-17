@@ -97,7 +97,16 @@ const SPONSORS = [
 // ✏️  TRAIL 2 SPONSORS (Secondary / Earning Games) — Sequence wise
 // ═══════════════════════════════════════════════════════
 const SPONSORS_RAIL_2 = [
-  // #1 — M666 Game
+  // #1 — PKR365 (TOP)
+  {
+    name: 'pkr365',
+    label: 'PKR365',
+    tagline: '🎰 Play & Win Big!',
+    url: 'https://gamesapks.com.pk/786ace-game/',
+    image: '/links/pkr365.webp',
+    badge: '🔥 Hot',
+  },
+  // #2 — M666 Game
   {
     name: 'M666',
     label: 'M666 Game',

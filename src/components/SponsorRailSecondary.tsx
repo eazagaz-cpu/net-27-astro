@@ -12,6 +12,7 @@ interface SponsorCard {
 
 // Fallback data for Trail 2 (Gaming Links)
 const FALLBACK: SponsorCard[] = [
+  { name: 'pkr365',   label: 'PKR365',    tagline: '🎰 Play & Win Big!',  url: 'https://gamesapks.com.pk/786ace-game/',  image: '/links/pkr365.webp',   badge: '🔥 Hot' },
   { name: 'M666',     label: 'M666 Game', tagline: '🏆 Play & Win Big!', url: 'http://m666game.net/',                   image: '/links/M666.webp',     badge: '⭐ New' },
   { name: 'M19 game', label: 'M19 Game',  tagline: '🎮 Bet & Win!',       url: 'https://betapk.com.pk/bet939-game-2/',   image: '/links/M19-game.webp', badge: '💥 Hot' },
   { name: '1ppp game',label: '1PPP Game', tagline: '🌟 Play & Earn!',     url: 'https://1pppp.com.pk/',                  image: '/links/1ppp-game.webp', badge: '🔥 Hot' },

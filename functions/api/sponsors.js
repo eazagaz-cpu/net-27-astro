@@ -52,7 +52,8 @@ function getDefaultSponsors() {
 
 function getDefaultSponsors2() {
   return [
-    { name: 'Win786', label: 'Win786', tagline: '🎰 Win Big Today!',  url: 'https://786win.pk/',     image: '/links/win786.webp', badge: '🔥 Hot' },
+    { name: 'pkr365', label: 'PKR365', tagline: '🎰 Play & Win Big!', url: 'https://gamesapks.com.pk/786ace-game/', image: '/links/pkr365.webp', badge: '🔥 Hot' },
+    { name: 'M666',   label: 'M666 Game', tagline: '🏆 Play & Win Big!', url: 'http://m666game.net/', image: '/links/M666.webp', badge: '⭐ New' },
     { name: '10win',  label: '10win',  tagline: '🎰 Play & Win Big!', url: 'https://110win.com.pk/', image: '/links/10win.webp',  badge: '⭐ New' },
     { name: 'Xx555',  label: 'Xx555',  tagline: '🎰 Play & Win Big!', url: 'https://Xx555.com.pk/', image: '/links/xx555.webp',  badge: '🔥 Hot' },
   ];
