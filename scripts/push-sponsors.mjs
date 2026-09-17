@@ -19,7 +19,16 @@
 // ✏️  YAHAN SPONSORS EDIT KARO — Sequence wise
 // ═══════════════════════════════════════════════════════
 const SPONSORS = [
-  // #1 — XD777 (updated URL)
+  // #1 — Y9999 Game (TOP)
+  {
+    name: 'y999-game',
+    label: 'Y9999 Game',
+    tagline: '🏆 Play & Win Big!',
+    url: 'https://y9999.pk/',
+    image: '/links/y999-game.webp',
+    badge: '🔥 Hot',
+  },
+  // #2 — XD777 (updated URL)
   {
     name: 'XD777',
     label: 'XD777 Game',

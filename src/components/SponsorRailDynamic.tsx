@@ -11,6 +11,7 @@ interface SponsorCard {
 
 // Fallback data — API fail hone par yeh dikhega
 const FALLBACK: SponsorCard[] = [
+  { name: 'y999-game',      label: 'Y9999 Game',    tagline: '🏆 Play & Win Big!',  url: 'https://y9999.pk/',                       image: '/links/y999-game.webp',     badge: '🔥 Hot' },
   { name: 'XD777',          label: 'XD777 Game',    tagline: '🎰 Win Big Today!',   url: 'https://apksting.com.pk/zentro-win-game/', image: '/links/XD777.webp',         badge: '🔥 Hot' },
   { name: 'jb-game',        label: 'JB Game',       tagline: '🎮 New Earning Games!', url: 'https://jbgame.pk',                      image: '/links/jb-game.webp',       badge: '⭐ New' },
   { name: 'Bet Rupees',     label: 'Bet Rupees',    tagline: '💰 Play & Win Big!',  url: 'https://betrupe.com/',                    image: '/links/bet-rupees.webp',    badge: '🔥 Hot' },
