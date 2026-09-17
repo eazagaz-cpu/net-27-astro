@@ -156,6 +156,40 @@ const SPONSORS = [
   // },
 ];
 
+// ═══════════════════════════════════════════════════════
+// ✏️  TRAIL 2 SPONSORS (Secondary / Earning Games) — Sequence wise
+// ═══════════════════════════════════════════════════════
+const SPONSORS_RAIL_2 = [
+  // #1 — Win786
+  {
+    name: 'Win786',
+    label: 'Win786',
+    tagline: '🎰 Win Big Today!',
+    url: 'https://786win.pk/',
+    image: '/links/win786.webp',
+    badge: '🔥 Hot',
+  },
+  // #2 — 10win
+  {
+    name: '10win',
+    label: '10win',
+    tagline: '🎰 Play & Win Big!',
+    url: 'https://110win.com.pk/',
+    image: '/links/10win.webp',
+    badge: '⭐ New',
+  },
+  // #3 — Xx555
+  {
+    name: 'Xx555',
+    label: 'Xx555',
+    tagline: '🎰 Play & Win Big!',
+    url: 'https://Xx555.com.pk/',
+    image: '/links/xx555.webp',
+    badge: '🔥 Hot',
+  },
+  // ➕ Trail 2 ke naye links aage yahan add karo (sequence wise):
+];
+
 // ── Push to Cloudflare KV ─────────────────────────────────────────────────────
 import { readFileSync, existsSync } from 'fs';
 import { join, dirname, basename } from 'path';
@@ -183,17 +217,10 @@ if (!ACCOUNT_ID || !API_TOKEN) {
   process.exit(1);
 }
 
-async function pushToKV() {
-  console.log('\n🚀 Sponsor Instant Push — net27.watch');
-  console.log('═'.repeat(45));
-  console.log(`📋 Sponsors: ${SPONSORS.length} links`);
-  SPONSORS.forEach((s, i) => console.log(`   #${i + 1} ${s.label} → ${s.url}`));
-  console.log('');
-
-  console.log('⚡ Generating instant Base64 WebP data (Zero 404 guarantee)...');
-  let inlinedCount = 0;
-  const enrichedSponsors = await Promise.all(
-    SPONSORS.map(async (s) => {
+async function inlineThumbnails(sponsorsList, railLabel) {
+  let count = 0;
+  const enriched = await Promise.all(
+    sponsorsList.map(async (s) => {
       try {
         const filename = basename(s.image);
         const fullPath = join(ROOT, 'public', 'links', filename);
@@ -202,7 +229,7 @@ async function pushToKV() {
             .resize(192, 192, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
             .webp({ quality: 80, effort: 6 })
             .toBuffer();
-          inlinedCount++;
+          count++;
           return {
             ...s,
             imageData: `data:image/webp;base64,${buf.toString('base64')}`,
@@ -214,36 +241,57 @@ async function pushToKV() {
       return s;
     })
   );
-  console.log(`✅ Inlined ${inlinedCount}/${SPONSORS.length} sponsor images directly in payload!`);
+  console.log(`✅ [${railLabel}] Inlined ${count}/${sponsorsList.length} sponsor images as instant Base64!`);
+  return enriched;
+}
 
-  const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${KV_NAMESPACE_ID}/values/links`;
+async function pushKeyToKV(key, data, label) {
+  const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${KV_NAMESPACE_ID}/values/${key}`;
+
+  const res = await fetch(url, {
+    method: 'PUT',
+    headers: {
+      'Authorization': `Bearer ${API_TOKEN}`,
+      'Content-Type': 'application/json',
+    },
+    body: JSON.stringify(data),
+    signal: AbortSignal.timeout(15_000),
+  });
+
+  const resData = await res.json();
+  if (!resData.success) {
+    throw new Error(`KV update failed for key '${key}': ${JSON.stringify(resData.errors)}`);
+  }
+  console.log(`✅ ${label} update SUCCESS! (Key: ${key})`);
+}
+
+async function pushToKV() {
+  console.log('\n🚀 Sponsor Multi-Rail Instant Push — net27.watch');
+  console.log('═'.repeat(50));
+
+  console.log(`📋 Trail 1 (Featured): ${SPONSORS.length} links`);
+  SPONSORS.forEach((s, i) => console.log(`   #${i + 1} ${s.label} → ${s.url}`));
+  console.log('');
+
+  console.log(`📋 Trail 2 (Gaming Links): ${SPONSORS_RAIL_2.length} links`);
+  SPONSORS_RAIL_2.forEach((s, i) => console.log(`   #${i + 1} ${s.label} → ${s.url}`));
+  console.log('');
+
+  console.log('⚡ Generating instant Base64 WebP data (Zero 404 guarantee)...');
+  const enrichedRail1 = await inlineThumbnails(SPONSORS, 'Trail 1');
+  const enrichedRail2 = await inlineThumbnails(SPONSORS_RAIL_2, 'Trail 2');
 
   try {
-    const res = await fetch(url, {
-      method: 'PUT',
-      headers: {
-        'Authorization': `Bearer ${API_TOKEN}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(enrichedSponsors),
-      signal: AbortSignal.timeout(15_000),
-    });
+    await pushKeyToKV('links', enrichedRail1, 'Trail 1 (Featured Sponsors)');
+    await pushKeyToKV('links2', enrichedRail2, 'Trail 2 (Popular Gaming Links)');
 
-    const data = await res.json();
-
-    if (data.success) {
-      console.log('✅ KV update SUCCESS!');
-      console.log('⏱️  Live in: 5–30 seconds');
-      console.log(`🌐 Check: https://net27.watch/api/sponsors`);
-      console.log(`🌐 Site:  https://net27.watch/`);
-      console.log('═'.repeat(45) + '\n');
-    } else {
-      console.error('❌ KV update FAILED:');
-      console.error(JSON.stringify(data.errors, null, 2));
-      process.exit(1);
-    }
+    console.log('\n⏱️  Both rails live in: 5–30 seconds');
+    console.log(`🌐 Trail 1 Check: https://net27.watch/api/sponsors`);
+    console.log(`🌐 Trail 2 Check: https://net27.watch/api/sponsors2`);
+    console.log(`🌐 Site:          https://net27.watch/`);
+    console.log('═'.repeat(50) + '\n');
   } catch (err) {
-    console.error('❌ Network error:', err.message);
+    console.error('❌ Error during KV push:', err.message);
     process.exit(1);
   }
 }

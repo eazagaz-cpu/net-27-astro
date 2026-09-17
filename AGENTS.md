@@ -143,10 +143,28 @@ node scripts/add-sponsor.mjs --name "<slug>" --label "<Display Name>" --url "<UR
 |---|---|
 | `links/` (root folder) | User ke source images (PNG, JPG) — yahan se read karo |
 | `public/links/` | Processed WebP + PNG files — yahan save karo |
-| `scripts/push-sponsors.mjs` | **Master sponsor list** — yahan se order/sequence control hota hai |
-| `src/components/SponsorRailDynamic.tsx` | React component — FALLBACK array yahan update karo |
-| `functions/api/sponsors.js` | Cloudflare KV endpoint |
-| `scripts/add-sponsor.mjs` | Auto script (sirf END mein add karta hai) |
+| `scripts/push-sponsors.mjs` | **Master sponsor list** — `SPONSORS` (Trail 1) aur `SPONSORS_RAIL_2` (Trail 2) dono yahan se control hote hain |
+| `src/components/SponsorRailDynamic.tsx` | Trail 1 React component (Gold Theme) |
+| `src/components/SponsorRailSecondary.tsx` | Trail 2 React component (Emerald Theme) |
+| `functions/api/sponsors.js` | Cloudflare KV endpoint for Trail 1 (`links`) & `?rail=2` |
+| `functions/api/sponsors2.js` | Cloudflare KV endpoint for Trail 2 (`links2`) |
+
+---
+
+### DUAL TRAIL (RAIL 1 vs RAIL 2) RULES
+
+1. **Trail 1 (Top / Featured Sponsors):**
+   - Theme: Luxury Gold & Obsidian (`SponsorRailDynamic.tsx`)
+   - KV Key: `links` (Endpoint: `/api/sponsors`)
+   - Top VIP sponsors like Y9999, XD777, JB Game, etc. yahan rehte hain.
+
+2. **Trail 2 (Popular Gaming & Earning Links):**
+   - Theme: Vibrant Emerald Neon & Obsidian (`SponsorRailSecondary.tsx`)
+   - KV Key: `links2` (Endpoint: `/api/sponsors2`)
+   - Starts with initial sponsors (Win786, 10win, Xx555). Jab bhi user kahe "2nd trail mein lagao" ya new links aayein, woh `SPONSORS_RAIL_2` mein add honge.
+
+3. **Multi-Push:**
+   - `node scripts/push-sponsors.mjs` dono rails ko ek sath inline Base64 WebP ke sath push karta hai.
 
 ---
 
@@ -154,10 +172,10 @@ node scripts/add-sponsor.mjs --name "<slug>" --label "<Display Name>" --url "<UR
 
 - **Images:** HAMESHA `.webp` use karo (quality:82, effort:6). PNG sirf fallback ke liye.
 - **Zero Broken Image System:** `push-sponsors.mjs` har image ka 192x192 Base64 WebP thumbnail bana kar direct KV payload mein `imageData` ke tor par inline karta hai. Is se user ko 0.0 seconds mein image milti hai — deployment build ka wait nahi karna parta aur kabhi bhi 404 broken image nahi aati!
-- **Fallback Avatar:** Agar koi image network glitch se load na ho, to `SponsorRailDynamic.tsx` mein `onError` handler stylish golden casino avatar render karta hai taake site par kabhi ugly broken icon na dikhe.
+- **Fallback Avatar:** Agar koi image network glitch se load na ho, to `SponsorRailDynamic.tsx` aur `SponsorRailSecondary.tsx` mein `onError` handler stylish casino avatar render karta hai taake site par kabhi ugly broken icon na dikhe.
 - **SEO:** Links `rel="noopener"` — koi `nofollow` / `sponsored` mat lagao.
-- **Placement:** Sponsors sirf `SponsorRailDynamic.tsx` mein. `Top10Rail.astro` mein kabhi nahi.
-- **Live:** KV push karo `node scripts/push-sponsors.mjs` se — 5-30 seconds mein live.
+- **Placement:** Sponsors sirf `SponsorRailDynamic.tsx` aur `SponsorRailSecondary.tsx` mein. `Top10Rail.astro` mein kabhi nahi.
+- **Live:** KV push karo `node scripts/push-sponsors.mjs` se — 5-30 seconds mein dono rails live.
 - **Build:** Fast build ke liye `npm run build:fast` (SKIP_SYNC=1).
 - **Git:** Hamesha PowerShell mein semicolons use karo: `git add -A; git commit -m "..."; git push origin main`
 

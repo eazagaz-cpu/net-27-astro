@@ -28,6 +28,7 @@ import LazyRail from '../LazyRail.astro';
 import ContinueWatching from '../ContinueWatching.astro';
 import Top10Rail from '../Top10Rail.astro';
 import SponsorRailDynamic from '../SponsorRailDynamic.tsx';
+import SponsorRailSecondary from '../SponsorRailSecondary.tsx';
 import SearchBlock from '../SearchBlock.astro';
 import FAQSection from '../FAQSection.astro';
 import { websiteSchema, organizationSchema, softwareAppSchema } from '../../lib/schema';
@@ -162,8 +163,11 @@ const homeFaqs = [
     <!-- Continue Watching — client-side localStorage rail -->
     <ContinueWatching />
 
-    <!-- Sponsor / Affiliate Rail — KV se instant update, no rebuild needed -->
+    <!-- Sponsor / Affiliate Rail 1 (Top / Featured) — KV se instant update -->
     <SponsorRailDynamic client:load />
+
+    <!-- Sponsor / Affiliate Rail 2 (Popular Gaming Links) — KV se instant update -->
+    <SponsorRailSecondary client:load />
 
     <!-- Top 10 — directly after hero, no CTA interruption -->
     <Top10Rail mediaType="movie" items={cachedPopularMovies} />
