@@ -1,117 +1,89 @@
-# NET27 Watch — Sponsor Links & Workflow State
-> **Last Updated:** 2026-09-17 02:13 PKT  
+# NET27 Watch — Sponsor Links & Dual-Rail Workflow State
+> **Last Updated:** 2026-09-17 13:15 PKT  
 > **Repository:** `eazagaz-cpu/net-27-astro` (`c:\Users\ic\Desktop\Websites\net-27.cc`)  
 > **Live Website:** https://net27.watch  
-> **Live Sponsors API:** https://net27.watch/api/sponsors  
+> **Trail 1 API:** https://net27.watch/api/sponsors  
+> **Trail 2 API:** https://net27.watch/api/sponsors2  
 
 ---
 
-## 1. Current Live Sponsors (13 Total — Sequence Wise)
+## 1. Master Active Sponsor Inventory (16 Total — Sequence Wise)
+
+### 🎯 Trail 1: Top / Featured Sponsors (9 Links)
+- **Component:** `src/components/SponsorRailDynamic.tsx`
+- **Theme:** Luxury Gold & Obsidian (`#f5c518`)
+- **Cloudflare KV Key:** `links` (API: `/api/sponsors`)
 
 | # | Label | Target URL | Image (public/links/) | Badge |
 |---|---|---|---|---|
-| **#1** | **XD777 Game** | `https://apksting.com.pk/zentro-win-game/` | `XD777.webp` | 🔥 Hot |
-| **#2** | **JB Game** | `https://jbgame.pk` | `jb-game.webp` | ⭐ New |
-| **#3** | **Bet Rupees** | `https://betrupe.com/` | `bet-rupees.webp` | 🔥 Hot |
-| **#4** | **P999 PK** | `https://p999pk.org/` | `p999-pk.webp` | ⭐ New |
-| **#5** | **Pak Super Game** | `https://paksupergame.cc/` | `pak-super-game.webp` | 🔥 Hot |
-| **#6** | **HH98** | `https://hh98.pk/` | `HH98.webp` | ⭐ New |
-| **#7** | **JJ77** | `https://jj77apk.pk/` | `JJ77.webp` | 💥 Hot |
-| **#8** | **M666 Game** | `http://m666game.net/` | `M666.webp` | ⭐ New |
-| **#9** | **M19 Game** | `https://betapk.com.pk/bet939-game-2/` | `M19-game.webp` | 💥 Hot |
-| **#10** | **1PPP Game** | `https://1pppp.com.pk/` | `1ppp-game.webp` | 🔥 Hot |
-| **#11** | **Win786** | `https://786win.pk/` | `win786.webp` | 🔥 Hot |
-| **#12** | **10win** | `https://110win.com.pk/` | `10win.webp` | ⭐ New |
-| **#13** | **Xx555** | `https://Xx555.com.pk/` | `xx555.webp` | 🔥 Hot |
+| **#1** | **Y9999 Game** | `https://y9999.pk/` | `y999-game.webp` | 🔥 Hot |
+| **#2** | **XD777 Game (Sting)** | `https://apksting.com.pk/zentro-win-game/` | `XD777-new.webp` | 🔥 Hot |
+| **#3** | **XD777 Game (Gamzu)** | `https://apkgamzu.com.pk/x777-game/` | `XD777.webp` | 🔥 Hot |
+| **#4** | **JB Game** | `https://jbgame.pk` | `jb-game.webp` | ⭐ New |
+| **#5** | **Bet Rupees** | `https://betrupe.com/` | `bet-rupees.webp` | 🔥 Hot |
+| **#6** | **P999 PK** | `https://p999pk.org/` | `p999-pk.webp` | ⭐ New |
+| **#7** | **Pak Super Game** | `https://paksupergame.cc/` | `pak-super-game.webp` | 🔥 Hot |
+| **#8** | **HH98** | `https://hh98.pk/` | `HH98.webp` | ⭐ New |
+| **#9** | **JJ77** | `https://jj77apk.pk/` | `JJ77.webp` | 💥 Hot |
+
+---
+
+### 💎 Trail 2: Popular Gaming Links (7 Links)
+- **Component:** `src/components/SponsorRailSecondary.tsx`
+- **Theme:** Vibrant Emerald Neon & Obsidian (`#10b981`, `#003322`)
+- **Cloudflare KV Key:** `links2` (API: `/api/sponsors2`)
+
+| # | Label | Target URL | Image (public/links/) | Badge |
+|---|---|---|---|---|
+| **#1** | **PKR365** | `https://gamesapks.com.pk/786ace-game/` | `pkr365.webp` | 🔥 Hot |
+| **#2** | **M666 Game** | `http://m666game.net/` | `M666.webp` | ⭐ New |
+| **#3** | **M19 Game** | `https://betapk.com.pk/bet939-game-2/` | `M19-game.webp` | 💥 Hot |
+| **#4** | **1PPP Game** | `https://1pppp.com.pk/` | `1ppp-game.webp` | 🔥 Hot |
+| **#5** | **Win786** | `https://786win.pk/` | `win786.webp` | 🔥 Hot |
+| **#6** | **10win** | `https://110win.com.pk/` | `10win.webp` | ⭐ New |
+| **#7** | **Xx555** | `https://Xx555.com.pk/` | `xx555.webp` | 🔥 Hot |
 
 ---
 
 ## 2. Source Images — `links/` Folder (Root)
 
-Yeh folder user ke original source images ka hai. Jab bhi naya sponsor aata hai, image pehle yahan hoti hai:
-
 | Filename | Corresponding Sponsor |
 |---|---|
-| `XD 777.png` | XD777 Game (#1) |
-| `New Earning Games.png` | JB Game (#2) |
-| `Bet Rupees.png` | Bet Rupees (#3) |
-| `P999 pk.png` | P999 PK (#4) |
-| `pak super game.png` | Pak Super Game (#5) |
-| `HH98.png` | HH98 (#6) |
-| `JJ77.png` | JJ77 (#7) |
-| `M666.png` | M666 Game (#8) |
-| `M19 game.png` | M19 Game (#9) |
-| `1ppp game.png` | 1PPP Game (#10) |
-| `WIN 786.png` | Win786 (#11) |
-| `10win.png` | 10win (#12) |
-| `Xx555.png` | Xx555 (#13) |
-
-**Agent Rule:** Naya sponsor milne par `list_dir` se `links/` check karo → naam se match karo → convert to WebP → deploy.
-
----
-
-## 3. Architecture (Cloudflare KV + Pages)
-
-| Component | Details |
-|---|---|
-| **KV Namespace** | `SPONSORS` (`aa59493bbbed47c0af878405e12bd8fb`) |
-| **KV Key** | `links` |
-| **API Endpoint** | `https://net27.watch/api/sponsors` |
-| **Push Script** | `node scripts/push-sponsors.mjs` |
-| **Live Delay** | 5–30 seconds after KV push |
-| **Static Images** | Cloudflare Pages deploy karta hai (`public/links/`) |
-| **Cache** | `s-maxage=30, stale-while-revalidate=60` |
+| `Y999 Game.png` | Y9999 Game (Trail 1 #1) |
+| `XD 777.png` | XD777 Game - Sting (Trail 1 #2) |
+| `XD777.png` | XD777 Game - Gamzu (Trail 1 #3) |
+| `New Earning Games.png` | JB Game (Trail 1 #4) |
+| `Bet Rupees.png` | Bet Rupees (Trail 1 #5) |
+| `P999 pk.png` | P999 PK (Trail 1 #6) |
+| `pak super game.png` | Pak Super Game (Trail 1 #7) |
+| `HH98.png` | HH98 (Trail 1 #8) |
+| `JJ77.png` | JJ77 (Trail 1 #9) |
+| `Pkr365.png` | PKR365 (Trail 2 #1) |
+| `M666.png` | M666 Game (Trail 2 #2) |
+| `M19 game.png` | M19 Game (Trail 2 #3) |
+| `1ppp game.png` | 1PPP Game (Trail 2 #4) |
+| `WIN 786.png` | Win786 (Trail 2 #5) |
+| `10win.png` | 10win (Trail 2 #6) |
+| `Xx555.png` | Xx555 (Trail 2 #7) |
 
 ---
 
-## 4. Workflow — Naya Sponsor Add Karna
+## 3. Architecture & Zero-Broken-Image Protection
 
-### User sirf yeh deta hai:
-1. Naam (e.g. "ABC Game")
-2. URL (e.g. `https://abcgame.pk/`)
-3. Position (optional — nahi bola to last mein)
-4. Image → **khud `links/` folder mein hogi** (agent khud dhundhega)
-
-### Agent ka complete workflow:
-
-```powershell
-# 1. Image dhundho aur WebP banao
-node -e "const s=require('sharp');s('links/ABC Game.png').webp({quality:82,effort:6}).toFile('public/links/abc-game.webp',(e,i)=>console.log(i||e))"
-
-# 2. PNG copy
-Copy-Item "links\ABC Game.png" "public\links\abc-game.png" -Force
-
-# 3. push-sponsors.mjs mein sahi position par add karo (manually edit)
-# 4. SponsorRailDynamic.tsx FALLBACK mein add karo
-
-# 5. KV push (instant live!)
-node scripts/push-sponsors.mjs
-
-# 6. Git commit + push
-git add -A; git commit -m "feat(sponsor): add ABC Game"; git push origin main
-```
+1. **Zero Broken Image System:**
+   - `scripts/push-sponsors.mjs` generates 192x192 WebP thumbnails and embeds them directly as Base64 Data URIs (`imageData`) into the KV payload for BOTH trails.
+   - Images render in 0.0 seconds with zero HTTP requests. Users never see 404 errors during build/deployment windows.
+2. **Fallback Avatars:**
+   - Both React components (`SponsorRailDynamic.tsx` and `SponsorRailSecondary.tsx`) feature an `onError` event handler rendering an on-theme glowing casino icon instead of a broken browser icon.
+3. **Unique Keys:**
+   - Render keys use `${card.name}-${card.url}` so same-anchor links (like both XD777 links) never collide in React.
+4. **Instant Push:**
+   - Command: `node scripts/push-sponsors.mjs` updates both KV keys (`links` and `links2`) simultaneously in 5–30 seconds.
 
 ---
 
-## 5. Key Files
+## 4. Key Developer Rules
 
-| File | Purpose |
-|---|---|
-| `links/` | Source images (user ke originals) |
-| `public/links/` | Processed WebP + PNG (deployed via Pages) |
-| `scripts/push-sponsors.mjs` | Master sponsor order + KV push |
-| `src/components/SponsorRailDynamic.tsx` | React component with FALLBACK array |
-| `scripts/add-sponsor.mjs` | Auto-script (end mein add karta hai) |
-| `functions/api/sponsors.js` | Cloudflare Pages Function |
-| `AGENTS.md` | Complete agent instructions |
-| `SESSION_SPONSORS_STATE.md` | Yeh file — current state |
-
----
-
-## 6. Fast Build & Deploy
-
-```powershell
-npm run build:fast        # Fast build (TMDB skip)
-node scripts/push-sponsors.mjs   # Sirf KV update (instant)
-git add -A; git commit -m "..."; git push origin main
-```
+- **NEVER Overwrite Same Anchors:** Two links with the same display name (e.g. "XD777") are separate campaigns. Both must be retained.
+- **Auto Image Search:** Always search `links/` root folder first with fuzzy matching. Never ask user where the image is.
+- **Fast Build:** `npm run build:fast` (`SKIP_SYNC=1`) bypasses heavy TMDB sync.
