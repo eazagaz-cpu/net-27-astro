@@ -82,7 +82,7 @@ const SPONSORS = [
     image: '/links/HH98.webp',
     badge: '⭐ New',
   },
-  // #6
+  // #7
   {
     name: 'jj77',
     label: 'JJ77',
@@ -91,7 +91,13 @@ const SPONSORS = [
     image: '/links/JJ77.webp',
     badge: '💥 Hot',
   },
-  // #7
+];
+
+// ═══════════════════════════════════════════════════════
+// ✏️  TRAIL 2 SPONSORS (Secondary / Earning Games) — Sequence wise
+// ═══════════════════════════════════════════════════════
+const SPONSORS_RAIL_2 = [
+  // #1 — M666 Game
   {
     name: 'M666',
     label: 'M666 Game',
@@ -100,7 +106,7 @@ const SPONSORS = [
     image: '/links/M666.webp',
     badge: '⭐ New',
   },
-  // #8
+  // #2 — M19 Game
   {
     name: 'M19 game',
     label: 'M19 Game',
@@ -109,7 +115,7 @@ const SPONSORS = [
     image: '/links/M19-game.webp',
     badge: '💥 Hot',
   },
-  // #9
+  // #3 — 1PPP Game
   {
     name: '1ppp game',
     label: '1PPP Game',
@@ -118,7 +124,7 @@ const SPONSORS = [
     image: '/links/1ppp-game.webp',
     badge: '🔥 Hot',
   },
-    // New
+  // #4 — Win786
   {
     name: 'Win786',
     label: 'Win786',
@@ -127,7 +133,7 @@ const SPONSORS = [
     image: '/links/win786.webp',
     badge: '🔥 Hot',
   },
-    // New
+  // #5 — 10win
   {
     name: '10win',
     label: '10win',
@@ -136,7 +142,7 @@ const SPONSORS = [
     image: '/links/10win.webp',
     badge: '⭐ New',
   },
-    // New
+  // #6 — Xx555
   {
     name: 'Xx555',
     label: 'Xx555',
@@ -145,49 +151,7 @@ const SPONSORS = [
     image: '/links/xx555.webp',
     badge: '🔥 Hot',
   },
-  // ➕ Aage yahan add karo:
-  // {
-  //   name: 'NewGame',
-  //   label: 'New Game',
-  //   tagline: '🎯 Play Now!',
-  //   url: 'https://example.com/',
-  //   image: '/links/NewGame.webp',   ← HAMESHA .webp use karo
-  //   badge: '⭐ New',
-  // },
-];
-
-// ═══════════════════════════════════════════════════════
-// ✏️  TRAIL 2 SPONSORS (Secondary / Earning Games) — Sequence wise
-// ═══════════════════════════════════════════════════════
-const SPONSORS_RAIL_2 = [
-  // #1 — Win786
-  {
-    name: 'Win786',
-    label: 'Win786',
-    tagline: '🎰 Win Big Today!',
-    url: 'https://786win.pk/',
-    image: '/links/win786.webp',
-    badge: '🔥 Hot',
-  },
-  // #2 — 10win
-  {
-    name: '10win',
-    label: '10win',
-    tagline: '🎰 Play & Win Big!',
-    url: 'https://110win.com.pk/',
-    image: '/links/10win.webp',
-    badge: '⭐ New',
-  },
-  // #3 — Xx555
-  {
-    name: 'Xx555',
-    label: 'Xx555',
-    tagline: '🎰 Play & Win Big!',
-    url: 'https://Xx555.com.pk/',
-    image: '/links/xx555.webp',
-    badge: '🔥 Hot',
-  },
-  // ➕ Trail 2 ke naye links aage yahan add karo (sequence wise):
+  // ➕ Trail 2 ke naye links aage yahan add hote rahenge (sequence wise):
 ];
 
 // ── Push to Cloudflare KV ─────────────────────────────────────────────────────

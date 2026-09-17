@@ -10,11 +10,14 @@ interface SponsorCard {
   badge: string;
 }
 
-// Fallback data for Trail 2 (Old/Initial sponsors)
+// Fallback data for Trail 2 (Gaming Links)
 const FALLBACK: SponsorCard[] = [
-  { name: 'Win786', label: 'Win786', tagline: '🎰 Win Big Today!',  url: 'https://786win.pk/',     image: '/links/win786.webp', badge: '🔥 Hot' },
-  { name: '10win',  label: '10win',  tagline: '🎰 Play & Win Big!', url: 'https://110win.com.pk/', image: '/links/10win.webp',  badge: '⭐ New' },
-  { name: 'Xx555',  label: 'Xx555',  tagline: '🎰 Play & Win Big!', url: 'https://Xx555.com.pk/', image: '/links/xx555.webp',  badge: '🔥 Hot' },
+  { name: 'M666',     label: 'M666 Game', tagline: '🏆 Play & Win Big!', url: 'http://m666game.net/',                   image: '/links/M666.webp',     badge: '⭐ New' },
+  { name: 'M19 game', label: 'M19 Game',  tagline: '🎮 Bet & Win!',       url: 'https://betapk.com.pk/bet939-game-2/',   image: '/links/M19-game.webp', badge: '💥 Hot' },
+  { name: '1ppp game',label: '1PPP Game', tagline: '🌟 Play & Earn!',     url: 'https://1pppp.com.pk/',                  image: '/links/1ppp-game.webp', badge: '🔥 Hot' },
+  { name: 'Win786',   label: 'Win786',    tagline: '🎰 Win Big Today!',   url: 'https://786win.pk/',                     image: '/links/win786.webp',    badge: '🔥 Hot' },
+  { name: '10win',    label: '10win',     tagline: '🎰 Play & Win Big!',  url: 'https://110win.com.pk/',                 image: '/links/10win.webp',     badge: '⭐ New' },
+  { name: 'Xx555',    label: 'Xx555',     tagline: '🎰 Play & Win Big!',  url: 'https://Xx555.com.pk/',                  image: '/links/xx555.webp',     badge: '🔥 Hot' },
 ];
 
 export default function SponsorRailSecondary() {
