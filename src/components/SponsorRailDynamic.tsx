@@ -13,7 +13,8 @@ interface SponsorCard {
 // Fallback data — API fail hone par yeh dikhega
 const FALLBACK: SponsorCard[] = [
   { name: 'y999-game',      label: 'Y9999 Game',    tagline: '🏆 Play & Win Big!',  url: 'https://y9999.pk/',                       image: '/links/y999-game.webp',     badge: '🔥 Hot' },
-  { name: 'XD777',          label: 'XD777 Game',    tagline: '🎰 Win Big Today!',   url: 'https://apksting.com.pk/zentro-win-game/', image: '/links/XD777.webp',         badge: '🔥 Hot' },
+  { name: 'xd777-sting',    label: 'XD777 Game',    tagline: '🎰 Win Big Today!',   url: 'https://apksting.com.pk/zentro-win-game/', image: '/links/XD777-new.webp',     badge: '🔥 Hot' },
+  { name: 'xd777-gamzu',    label: 'XD777 Game',    tagline: '🎰 Win Big Today!',   url: 'https://apkgamzu.com.pk/x777-game/',      image: '/links/XD777.webp',         badge: '🔥 Hot' },
   { name: 'jb-game',        label: 'JB Game',       tagline: '🎮 New Earning Games!', url: 'https://jbgame.pk',                      image: '/links/jb-game.webp',       badge: '⭐ New' },
   { name: 'Bet Rupees',     label: 'Bet Rupees',    tagline: '💰 Play & Win Big!',  url: 'https://betrupe.com/',                    image: '/links/bet-rupees.webp',    badge: '🔥 Hot' },
   { name: 'P999 pk',        label: 'P999 PK',       tagline: '🎯 Top Rewards!',     url: 'https://p999pk.org/',                     image: '/links/p999-pk.webp',       badge: '⭐ New' },
@@ -77,45 +78,48 @@ export default function SponsorRailDynamic() {
           <span className="sponsor-ad-label">Ads</span>
         </div>
         <div className={`sponsor-rail-scroll ${isRotating ? 'is-shifting' : ''}`}>
-          {sponsors.map((card) => (
-            <a
-              key={card.name}
-              href={card.url}
-              target="_blank"
-              rel="noopener"
-              className="sponsor-link-card"
-              aria-label={`Sponsored: ${card.label} — ${card.tagline}`}
-              title={card.label}
-            >
-              <div className="slc-ring" aria-hidden="true" />
-              <div className="slc-badge">{card.badge}</div>
-              <div className="slc-img-wrap">
-                {failedImages[card.name] ? (
-                  <div className="slc-fallback-avatar" aria-hidden="true">
-                    <span className="slc-fallback-icon">🎰</span>
-                    <span className="slc-fallback-text">{card.label.slice(0, 7)}</span>
-                  </div>
-                ) : (
-                  <img
-                    src={card.imageData || card.image}
-                    alt={card.label}
-                    width={96}
-                    height={96}
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority="high"
-                    className="slc-img"
-                    onError={() => setFailedImages((prev) => ({ ...prev, [card.name]: true }))}
-                  />
-                )}
-              </div>
+          {sponsors.map((card) => {
+            const cardKey = `${card.name}-${card.url}`;
+            return (
+              <a
+                key={cardKey}
+                href={card.url}
+                target="_blank"
+                rel="noopener"
+                className="sponsor-link-card"
+                aria-label={`Sponsored: ${card.label} — ${card.tagline}`}
+                title={card.label}
+              >
+                <div className="slc-ring" aria-hidden="true" />
+                <div className="slc-badge">{card.badge}</div>
+                <div className="slc-img-wrap">
+                  {failedImages[cardKey] ? (
+                    <div className="slc-fallback-avatar" aria-hidden="true">
+                      <span className="slc-fallback-icon">🎰</span>
+                      <span className="slc-fallback-text">{card.label.slice(0, 7)}</span>
+                    </div>
+                  ) : (
+                    <img
+                      src={card.imageData || card.image}
+                      alt={card.label}
+                      width={96}
+                      height={96}
+                      loading="eager"
+                      decoding="async"
+                      fetchPriority="high"
+                      className="slc-img"
+                      onError={() => setFailedImages((prev) => ({ ...prev, [cardKey]: true }))}
+                    />
+                  )}
+                </div>
               <div className="slc-info">
                 <span className="slc-name">{card.label}</span>
                 <span className="slc-tagline">{card.tagline}</span>
               </div>
               <div className="slc-btn">Play Now ▶</div>
             </a>
-          ))}
+          );
+        })}
         </div>
       </div>
 

@@ -28,12 +28,21 @@ const SPONSORS = [
     image: '/links/y999-game.webp',
     badge: '🔥 Hot',
   },
-  // #2 — XD777 (updated URL)
+  // #2 — XD777 (Link 1: Apksting)
   {
-    name: 'XD777',
+    name: 'xd777-sting',
     label: 'XD777 Game',
     tagline: '🎰 Win Big Today!',
     url: 'https://apksting.com.pk/zentro-win-game/',
+    image: '/links/XD777-new.webp',
+    badge: '🔥 Hot',
+  },
+  // #3 — XD777 (Link 2: Apkgamzu)
+  {
+    name: 'xd777-gamzu',
+    label: 'XD777 Game',
+    tagline: '🎰 Win Big Today!',
+    url: 'https://apkgamzu.com.pk/x777-game/',
     image: '/links/XD777.webp',
     badge: '🔥 Hot',
   },

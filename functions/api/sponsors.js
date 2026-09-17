@@ -41,7 +41,10 @@ export async function onRequest(context) {
 // Default sponsors — KV mein data nahi hone par yeh show honge
 function getDefaultSponsors() {
   return [
-    { name: 'XD777',    label: 'XD777 Game', tagline: '🎰 Win Big Today!',   url: 'https://apkgamzu.com.pk/x777-game/',      image: '/links/XD777.png',     badge: '🔥 Hot' },
+    { name: 'y999-game',   label: 'Y9999 Game', tagline: '🏆 Play & Win Big!', url: 'https://y9999.pk/', image: '/links/y999-game.webp', badge: '🔥 Hot' },
+    { name: 'xd777-sting', label: 'XD777 Game', tagline: '🎰 Win Big Today!', url: 'https://apksting.com.pk/zentro-win-game/', image: '/links/XD777-new.webp', badge: '🔥 Hot' },
+    { name: 'xd777-gamzu', label: 'XD777 Game', tagline: '🎰 Win Big Today!', url: 'https://apkgamzu.com.pk/x777-game/', image: '/links/XD777.webp', badge: '🔥 Hot' },
+    { name: 'jb-game',     label: 'JB Game', tagline: '🎮 New Earning Games!', url: 'https://jbgame.pk', image: '/links/jb-game.webp', badge: '⭐ New' },
     { name: 'hh98',     label: 'HH98',       tagline: '🎯 Play & Win!',       url: 'https://hh98.pk/',                        image: '/links/HH98.png',      badge: '⭐ New' },
     { name: 'jj77',     label: 'JJ77',       tagline: '🏆 Big Rewards!',      url: 'https://jj77apk.pk/',                     image: '/links/JJ77.png',      badge: '💥 Hot' },
     { name: 'M666',     label: 'M666 Game',  tagline: '🏆 Play & Win Big!',   url: 'http://m666game.net/',                    image: '/links/M666.png',      badge: '⭐ New' },

@@ -79,45 +79,48 @@ export default function SponsorRailSecondary() {
           <span className="sponsor-badge-label-2">Games</span>
         </div>
         <div className={`sponsor-rail-2-scroll ${isRotating ? 'is-shifting' : ''}`}>
-          {sponsors.map((card) => (
-            <a
-              key={card.name}
-              href={card.url}
-              target="_blank"
-              rel="noopener"
-              className="sponsor-link-2-card"
-              aria-label={`Sponsored: ${card.label} — ${card.tagline}`}
-              title={card.label}
-            >
-              <div className="slc2-ring" aria-hidden="true" />
-              <div className="slc2-badge">{card.badge}</div>
-              <div className="slc2-img-wrap">
-                {failedImages[card.name] ? (
-                  <div className="slc2-fallback-avatar" aria-hidden="true">
-                    <span className="slc2-fallback-icon">🎮</span>
-                    <span className="slc2-fallback-text">{card.label.slice(0, 7)}</span>
-                  </div>
-                ) : (
-                  <img
-                    src={card.imageData || card.image}
-                    alt={card.label}
-                    width={96}
-                    height={96}
-                    loading="eager"
-                    decoding="async"
-                    fetchPriority="high"
-                    className="slc2-img"
-                    onError={() => setFailedImages((prev) => ({ ...prev, [card.name]: true }))}
-                  />
-                )}
-              </div>
-              <div className="slc2-info">
-                <span className="slc2-name">{card.label}</span>
-                <span className="slc2-tagline">{card.tagline}</span>
-              </div>
-              <div className="slc2-btn">Play Now ▶</div>
-            </a>
-          ))}
+          {sponsors.map((card) => {
+            const cardKey = `${card.name}-${card.url}`;
+            return (
+              <a
+                key={cardKey}
+                href={card.url}
+                target="_blank"
+                rel="noopener"
+                className="sponsor-link-2-card"
+                aria-label={`Sponsored: ${card.label} — ${card.tagline}`}
+                title={card.label}
+              >
+                <div className="slc2-ring" aria-hidden="true" />
+                <div className="slc2-badge">{card.badge}</div>
+                <div className="slc2-img-wrap">
+                  {failedImages[cardKey] ? (
+                    <div className="slc2-fallback-avatar" aria-hidden="true">
+                      <span className="slc2-fallback-icon">🎮</span>
+                      <span className="slc2-fallback-text">{card.label.slice(0, 7)}</span>
+                    </div>
+                  ) : (
+                    <img
+                      src={card.imageData || card.image}
+                      alt={card.label}
+                      width={96}
+                      height={96}
+                      loading="eager"
+                      decoding="async"
+                      fetchPriority="high"
+                      className="slc2-img"
+                      onError={() => setFailedImages((prev) => ({ ...prev, [cardKey]: true }))}
+                    />
+                  )}
+                </div>
+                <div className="slc2-info">
+                  <span className="slc2-name">{card.label}</span>
+                  <span className="slc2-tagline">{card.tagline}</span>
+                </div>
+                <div className="slc2-btn">Play Now ▶</div>
+              </a>
+            );
+          })}
         </div>
       </div>
 

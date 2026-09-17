@@ -82,7 +82,12 @@ Hamesha `scripts/push-sponsors.mjs` padho to see current sequence. Phir user ke 
 | "#2 pr" | #2 position par |
 | kuch nahi bola | end mein add karo (last position) |
 | "hata do" | us sponsor ko remove karo |
-| "URL update karo" | sirf URL change karo, position same rakho |
+| "URL update karo" | sirf tab jab user explicitly kahe "update karo", warna NEVER overwrite! |
+
+> ⚠️ **CRITICAL RULE — SAME ANCHOR (NAME) WITH DIFFERENT URL:**
+> Agar user same naam (jaise "XD777") ka naya link de, to purane link ko **KABHI BHI EXCLUDE YA OVERWRITE NAHI KARNA!**
+> Har URL ek alag client/campaign hai. Dono links site par rehte hain.
+> Unhe unique `name` keys do (e.g. `xd777-sting`, `xd777-gamzu` ya `name-1`, `name-2`), taake React aur KV mein collision na ho.
 
 ---
 
