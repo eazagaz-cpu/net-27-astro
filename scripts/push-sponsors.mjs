@@ -157,9 +157,10 @@ const SPONSORS = [
 ];
 
 // ── Push to Cloudflare KV ─────────────────────────────────────────────────────
-import { readFileSync } from 'fs';
-import { join, dirname } from 'path';
+import { readFileSync, existsSync } from 'fs';
+import { join, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
+import sharp from 'sharp';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -189,6 +190,32 @@ async function pushToKV() {
   SPONSORS.forEach((s, i) => console.log(`   #${i + 1} ${s.label} → ${s.url}`));
   console.log('');
 
+  console.log('⚡ Generating instant Base64 WebP data (Zero 404 guarantee)...');
+  let inlinedCount = 0;
+  const enrichedSponsors = await Promise.all(
+    SPONSORS.map(async (s) => {
+      try {
+        const filename = basename(s.image);
+        const fullPath = join(ROOT, 'public', 'links', filename);
+        if (existsSync(fullPath)) {
+          const buf = await sharp(fullPath)
+            .resize(192, 192, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
+            .webp({ quality: 80, effort: 6 })
+            .toBuffer();
+          inlinedCount++;
+          return {
+            ...s,
+            imageData: `data:image/webp;base64,${buf.toString('base64')}`,
+          };
+        }
+      } catch (err) {
+        console.warn(`⚠️ Warning: could not inline image for ${s.name}: ${err.message}`);
+      }
+      return s;
+    })
+  );
+  console.log(`✅ Inlined ${inlinedCount}/${SPONSORS.length} sponsor images directly in payload!`);
+
   const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${KV_NAMESPACE_ID}/values/links`;
 
   try {
@@ -198,7 +225,7 @@ async function pushToKV() {
         'Authorization': `Bearer ${API_TOKEN}`,
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(SPONSORS),
+      body: JSON.stringify(enrichedSponsors),
       signal: AbortSignal.timeout(15_000),
     });
 

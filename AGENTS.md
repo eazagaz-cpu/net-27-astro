@@ -153,6 +153,8 @@ node scripts/add-sponsor.mjs --name "<slug>" --label "<Display Name>" --url "<UR
 ### STEP 6 — RULES (KABHI MAT TODNA)
 
 - **Images:** HAMESHA `.webp` use karo (quality:82, effort:6). PNG sirf fallback ke liye.
+- **Zero Broken Image System:** `push-sponsors.mjs` har image ka 192x192 Base64 WebP thumbnail bana kar direct KV payload mein `imageData` ke tor par inline karta hai. Is se user ko 0.0 seconds mein image milti hai — deployment build ka wait nahi karna parta aur kabhi bhi 404 broken image nahi aati!
+- **Fallback Avatar:** Agar koi image network glitch se load na ho, to `SponsorRailDynamic.tsx` mein `onError` handler stylish golden casino avatar render karta hai taake site par kabhi ugly broken icon na dikhe.
 - **SEO:** Links `rel="noopener"` — koi `nofollow` / `sponsored` mat lagao.
 - **Placement:** Sponsors sirf `SponsorRailDynamic.tsx` mein. `Top10Rail.astro` mein kabhi nahi.
 - **Live:** KV push karo `node scripts/push-sponsors.mjs` se — 5-30 seconds mein live.

@@ -6,6 +6,7 @@ interface SponsorCard {
   tagline: string;
   url: string;
   image: string;
+  imageData?: string;
   badge: string;
 }
 
@@ -31,6 +32,7 @@ export default function SponsorRailDynamic() {
   const [sponsors, setSponsors] = useState<SponsorCard[]>(FALLBACK);
   const [isPaused, setIsPaused] = useState(false);
   const [isRotating, setIsRotating] = useState(false);
+  const [failedImages, setFailedImages] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     fetch('/api/sponsors', { cache: 'no-store' })
@@ -94,19 +96,24 @@ export default function SponsorRailDynamic() {
               <div className="slc-ring" aria-hidden="true" />
               <div className="slc-badge">{card.badge}</div>
               <div className="slc-img-wrap">
-                <picture>
-                  <source srcSet={card.image} type="image/webp" />
+                {failedImages[card.name] ? (
+                  <div className="slc-fallback-avatar" aria-hidden="true">
+                    <span className="slc-fallback-icon">🎰</span>
+                    <span className="slc-fallback-text">{card.label.slice(0, 7)}</span>
+                  </div>
+                ) : (
                   <img
-                    src={card.image.replace('.webp', '.png')}
-                    alt={card.name}
+                    src={card.imageData || card.image}
+                    alt={card.label}
                     width={96}
                     height={96}
                     loading="eager"
                     decoding="async"
                     fetchPriority="high"
                     className="slc-img"
+                    onError={() => setFailedImages((prev) => ({ ...prev, [card.name]: true }))}
                   />
-                </picture>
+                )}
               </div>
               <div className="slc-info">
                 <span className="slc-name">{card.label}</span>
@@ -138,6 +145,9 @@ export default function SponsorRailDynamic() {
         .slc-img-wrap { position:relative; z-index:2; width:96px; height:96px; margin-bottom:10px; display:flex; align-items:center; justify-content:center; }
         .slc-img { width:96px; height:96px; object-fit:contain; border-radius:10px; filter:drop-shadow(0 0 10px rgba(245,197,24,.55)); transition:filter .25s ease,transform .25s ease; }
         .sponsor-link-card:hover .slc-img { filter:drop-shadow(0 0 20px rgba(245,197,24,1)); transform:scale(1.06); }
+        .slc-fallback-avatar { width:96px; height:96px; border-radius:12px; background:radial-gradient(circle at 50% 30%,#3d2800 0%,#1a1100 100%); border:1.5px solid rgba(245,197,24,.6); display:flex; flex-direction:column; align-items:center; justify-content:center; gap:4px; box-shadow:0 0 16px rgba(245,197,24,.3); }
+        .slc-fallback-icon { font-size:2rem; filter:drop-shadow(0 0 8px rgba(245,197,24,.8)); }
+        .slc-fallback-text { font-size:10px; font-weight:800; color:#f5c518; letter-spacing:.05em; text-transform:uppercase; text-shadow:0 0 6px rgba(245,197,24,.5); }
         .slc-info { position:relative; z-index:2; display:flex; flex-direction:column; align-items:center; gap:3px; text-align:center; }
         .slc-name { font-size:12px; font-weight:800; color:#f5c518; letter-spacing:.03em; text-shadow:0 0 8px rgba(245,197,24,.5); }
         .slc-tagline { font-size:10px; color:rgba(255,255,255,.65); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:130px; }
