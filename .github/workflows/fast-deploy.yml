@@ -58,7 +58,17 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      # ── 6. Instant Index Ping — Bing/Yandex/IndexNow (seconds mein index) ────
+      # ── 6. 🎰 Sponsor KV Auto-Push (PERMANENT FIX — har deploy ke baad links live!) ───
+      # Yeh step ensure karta hai ke casino links KABHI gayab na hon.
+      # Deploy ke baad KV automatically refresh hota hai — manual push ki zaroorat nahi.
+      - name: 🎰 Push Sponsor Links to Cloudflare KV
+        run: node scripts/push-sponsors.mjs
+        continue-on-error: true   # Agar KV fail ho to deploy fail nahi hoga
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # ── 7. Instant Index Ping — Bing/Yandex/IndexNow (seconds mein index) ────
       - name: ⚡ Instant Index Ping (Bing + Yandex + IndexNow)
         run: node scripts/instant-index.mjs default
         continue-on-error: true   # Indexing fail hone se deploy fail nahi hoga

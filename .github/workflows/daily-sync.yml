@@ -59,7 +59,17 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      # ── 7. Commit updated cache back to repo (for local dev use) ─────────
+      # ── 7. 🎰 Sponsor KV Auto-Push (PERMANENT FIX — links kabhi gayab nahi hongi!) ──
+      # Daily sync har 6 ghante deploy karta hai — yeh step ensure karta hai ke
+      # casino links bhi KV mein updated rahein. KABHI REMOVE NAHI KARNA!
+      - name: 🎰 Push Sponsor Links to Cloudflare KV
+        run: node scripts/push-sponsors.mjs
+        continue-on-error: true   # KV fail hone se deploy fail nahi hoga
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # ── 8. Commit updated cache back to repo (for local dev use) ─────────
       - name: Commit updated cache
         run: |
           git config user.name "github-actions[bot]"
