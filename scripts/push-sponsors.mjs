@@ -169,6 +169,15 @@ const SPONSORS_RAIL_2 = [
     image: '/links/xx555.webp',
     badge: '🔥 Hot',
   },
+  // #8 — 666c
+  {
+    name: '666c',
+    label: '666C Games',
+    tagline: '🎮 Play & Win Big!',
+    url: 'https://666cgames.pk',
+    image: '/links/666c.webp',
+    badge: '🔥 Hot',
+  },
   // ➕ Trail 2 ke naye links aage yahan add hote rahenge (sequence wise):
 ];
 

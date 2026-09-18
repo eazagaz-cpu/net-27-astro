@@ -19,6 +19,7 @@ const FALLBACK: SponsorCard[] = [
   { name: 'win786',   label: 'Win786',    tagline: 'Win Big Today!',  url: 'https://786win.pk/',                   image: '/links/win786.webp',    badge: '🔥 Hot' },
   { name: '10win',    label: '10win',     tagline: 'Play & Win Big!', url: 'https://110win.com.pk/',               image: '/links/10win.webp',     badge: '🆕 New' },
   { name: 'xx555',    label: 'Xx555',     tagline: 'Play & Win Big!', url: 'https://Xx555.com.pk/',                image: '/links/xx555.webp',     badge: '🔥 Hot' },
+  { name: '666c',     label: '666C Games',tagline: 'Play & Win Big!', url: 'https://666cgames.pk',                 image: '/links/666c.webp',      badge: '🔥 Hot' },
 ];
 
 export default function SponsorRailSecondary() {
