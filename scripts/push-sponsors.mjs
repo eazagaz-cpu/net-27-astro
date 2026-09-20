@@ -182,7 +182,7 @@ const SPONSORS_RAIL_2 = [
 ];
 
 // ── Push to Cloudflare KV ─────────────────────────────────────────────────────
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
@@ -276,6 +276,9 @@ async function pushToKV() {
     await pushKeyToKV('links', enrichedRail1, 'Trail 1 (Featured Sponsors)');
     await pushKeyToKV('links2', enrichedRail2, 'Trail 2 (Popular Gaming Links)');
 
+    console.log('⚡ Syncing Cloudflare Pages functions hardcoded fallbacks...');
+    updateFunctionFallbacks(enrichedRail1, enrichedRail2);
+
     console.log('\n⏱️  Both rails live in: 5–30 seconds');
     console.log(`🌐 Trail 1 Check: https://net27.watch/api/sponsors`);
     console.log(`🌐 Trail 2 Check: https://net27.watch/api/sponsors2`);
@@ -285,6 +288,115 @@ async function pushToKV() {
     console.error('❌ Error during KV push:', err.message);
     process.exit(1);
   }
+}
+
+function toJsArray(sponsors) {
+  return sponsors.map(s => {
+    const parts = [
+      `name: ${JSON.stringify(s.name)}`,
+      `label: ${JSON.stringify(s.label)}`,
+      `tagline: ${JSON.stringify(s.tagline)}`,
+      `url: ${JSON.stringify(s.url)}`,
+      `image: ${JSON.stringify(s.image)}`,
+      s.imageData ? `imageData: ${JSON.stringify(s.imageData)}` : null,
+      `badge: ${JSON.stringify(s.badge)}`,
+    ].filter(Boolean);
+    return `    { ${parts.join(', ')} }`;
+  }).join(',\n');
+}
+
+function updateFunctionFallbacks(t1, t2) {
+  const sponsorsJsContent = `/**
+ * functions/api/sponsors.js
+ * Cloudflare Pages Function — KV se sponsor links serve karta hai
+ *
+ * GET /api/sponsors        → Trail 1 (Featured Sponsors - Gold Theme)
+ * GET /api/sponsors?rail=2 → Trail 2 (Gaming Links - Emerald Theme)
+ *
+ * AUTO-SYNCED by: scripts/push-sponsors.mjs
+ * Last updated: ${new Date().toISOString()}
+ */
+
+export async function onRequest(context) {
+  const { env } = context;
+  try {
+    const url = new URL(context.request.url);
+    const isRail2 = url.searchParams.get('rail') === '2';
+    const key = isRail2 ? 'links2' : 'links';
+    const raw = await env.SPONSORS.get(key, { type: 'json' });
+    const sponsors = raw || (isRail2 ? getDefaultSponsors2() : getDefaultSponsors());
+    return new Response(JSON.stringify(sponsors), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=30, s-maxage=30',
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
+  } catch (err) {
+    const url = new URL(context.request.url);
+    const isRail2 = url.searchParams.get('rail') === '2';
+    return new Response(JSON.stringify(isRail2 ? getDefaultSponsors2() : getDefaultSponsors()), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' },
+    });
+  }
+}
+
+function getDefaultSponsors() {
+  return [
+${toJsArray(t1)}
+  ];
+}
+
+function getDefaultSponsors2() {
+  return [
+${toJsArray(t2)}
+  ];
+}
+`;
+
+  const sponsors2JsContent = `/**
+ * functions/api/sponsors2.js
+ * Cloudflare Pages Function — KV se Trail 2 sponsor links serve karta hai
+ *
+ * GET /api/sponsors2 → Trail 2 (Gaming Links - Emerald Theme)
+ *
+ * AUTO-SYNCED by: scripts/push-sponsors.mjs
+ * Last updated: ${new Date().toISOString()}
+ */
+
+export async function onRequest(context) {
+  const { env } = context;
+  try {
+    const raw = await env.SPONSORS.get('links2', { type: 'json' });
+    const sponsors = raw || getDefaultSponsors2();
+    return new Response(JSON.stringify(sponsors), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=30, s-maxage=30',
+        'Access-Control-Allow-Origin': '*',
+      },
+    });
+  } catch (err) {
+    return new Response(JSON.stringify(getDefaultSponsors2()), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' },
+    });
+  }
+}
+
+function getDefaultSponsors2() {
+  return [
+${toJsArray(t2)}
+  ];
+}
+`;
+
+  writeFileSync(join(ROOT, 'functions', 'api', 'sponsors.js'), sponsorsJsContent, 'utf8');
+  writeFileSync(join(ROOT, 'functions', 'api', 'sponsors2.js'), sponsors2JsContent, 'utf8');
+  console.log('✅ Auto-synced functions/api/sponsors.js & sponsors2.js with inline Base64 fallbacks!');
 }
 
 pushToKV();

@@ -107,16 +107,21 @@ Copy-Item "links\ImageName.png" "public\links\slug.png" -Force
 
 # Step 3c: push-sponsors.mjs mein manually add karo (correct position par)
 # Step 3d: SponsorRailDynamic.tsx FALLBACK mein add karo
-# Step 3e: KV push karo
-node scripts/push-sponsors.mjs
+# Step 3e: Ek hi command mein sab kuch live + git push:
+npm run sponsors:deploy
 
-# Step 3f: Git commit + push
-git add -A; git commit -m "feat(sponsor): add <Name>"; git push origin main
+# YA step-by-step:
+# Step 3e: KV push + Cloudflare function fallbacks auto-sync
+npm run sponsors:push
+
+# Step 3f: Bulletproof safe git push (account lock + auto-rebase + push)
+npm run push:safe "feat(sponsor): add <Name>"
 ```
 
 **YA agar add-sponsor.mjs script use karo (end mein add hota hai):**
 ```powershell
 node scripts/add-sponsor.mjs --name "<slug>" --label "<Display Name>" --url "<URL>" --image "<filename.png>" --tagline "<tagline>" --badge "<badge>"
+npm run sponsors:deploy
 ```
 **NOTE:** add-sponsor.mjs sirf END mein add karta hai. Agar top/specific position chahiye to manually `push-sponsors.mjs` edit karo.
 
@@ -188,12 +193,13 @@ node scripts/add-sponsor.mjs --name "<slug>" --label "<Display Name>" --url "<UR
 
 - **Images:** HAMESHA `.webp` use karo (quality:82, effort:6). PNG sirf fallback ke liye.
 - **Zero Broken Image System:** `push-sponsors.mjs` har image ka 192x192 Base64 WebP thumbnail bana kar direct KV payload mein `imageData` ke tor par inline karta hai. Is se user ko 0.0 seconds mein image milti hai — deployment build ka wait nahi karna parta aur kabhi bhi 404 broken image nahi aati!
+- **Auto-Sync Function Fallbacks:** `push-sponsors.mjs` chalate hi `functions/api/sponsors.js` aur `functions/api/sponsors2.js` dono automatically inline Base64 ke saath update ho jate hain.
+- **Client-Side Mount:** `HomePage.astro` mein `<SponsorRailDynamic client:only="react" />` aur `<SponsorRailSecondary client:only="react" />` hamesha `client:only="react"` ke saath mount hone chahiye — kabhi SSR hydration mismatch ya jsxDEV crash nahi hoga.
 - **Fallback Avatar:** Agar koi image network glitch se load na ho, to `SponsorRailDynamic.tsx` aur `SponsorRailSecondary.tsx` mein `onError` handler stylish casino avatar render karta hai taake site par kabhi ugly broken icon na dikhe.
 - **SEO:** Links `rel="noopener"` — koi `nofollow` / `sponsored` mat lagao.
 - **Placement:** Sponsors sirf `SponsorRailDynamic.tsx` aur `SponsorRailSecondary.tsx` mein. `Top10Rail.astro` mein kabhi nahi.
-- **Live:** KV push karo `node scripts/push-sponsors.mjs` se — 5-30 seconds mein dono rails live.
-- **Build:** Fast build ke liye `npm run build:fast` (SKIP_SYNC=1).
-- **Git:** Hamesha PowerShell mein semicolons use karo: `git add -A; git commit -m "..."; git push origin main`
+- **Live:** KV push karo `npm run sponsors:push` se — 5-30 seconds mein dono rails live.
+- **Bulletproof Safe Push:** Git push ke liye hamesha `npm run push:safe` (`node scripts/safe-push.mjs`) use karo. Yeh hamesha `eazagaz-cpu` account lock karta hai aur remote cache refreshes ko auto-rebase karta hai.
 
 ---
 
@@ -214,14 +220,15 @@ Agar user in cheezein deta hai to samjho woh naya **sponsor** dena chahta hai:
 ### STEP 8 — FAST BUILD & DEPLOY
 
 ```powershell
-# Fast build (TMDB skip)
+# Single-command update & deploy (KV + Git push):
+npm run sponsors:deploy
+
+# Ya alag alag:
+npm run sponsors:push   # 5-30 seconds mein live
+npm run push:safe       # Safe rebase and git push
+
+# Fast build (TMDB skip) agar local verify karna ho:
 npm run build:fast
-
-# Sponsors sirf push (no build needed)
-node scripts/push-sponsors.mjs
-
-# Git push (PowerShell syntax)
-git add -A; git commit -m "feat: ..."; git push origin main
 ```
 
 ---

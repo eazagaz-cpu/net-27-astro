@@ -26,6 +26,8 @@
     "sponsors:push": "node scripts/push-sponsors.mjs",
     "sponsors:add": "node scripts/add-sponsor.mjs",
     "sponsors:rebuild": "node scripts/_build_hardcoded_sponsors.mjs",
+    "sponsors:deploy": "node scripts/push-sponsors.mjs && node scripts/safe-push.mjs",
+    "push:safe": "node scripts/safe-push.mjs",
     "validate:api": "node scripts/validate-api-config.mjs",
     "validate:media": "node scripts/validate-media.mjs",
     "validate:routes": "node scripts/validate-routes.mjs",
