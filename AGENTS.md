@@ -122,23 +122,34 @@ node scripts/add-sponsor.mjs --name "<slug>" --label "<Display Name>" --url "<UR
 
 ---
 
-### STEP 4 — CURRENT SPONSORS (13 Total — Always verify with push-sponsors.mjs)
+### STEP 4 — CURRENT SPONSORS (17 Total — Always verify with push-sponsors.mjs)
 
-| # | Label | URL | Image (public/links/) |
-|---|---|---|---|
-| 1 | XD777 Game | `https://apksting.com.pk/zentro-win-game/` | `XD777.webp` |
-| 2 | JB Game | `https://jbgame.pk` | `jb-game.webp` |
-| 3 | Bet Rupees | `https://betrupe.com/` | `bet-rupees.webp` |
-| 4 | P999 PK | `https://p999pk.org/` | `p999-pk.webp` |
-| 5 | Pak Super Game | `https://paksupergame.cc/` | `pak-super-game.webp` |
-| 6 | HH98 | `https://hh98.pk/` | `HH98.webp` |
-| 7 | JJ77 | `https://jj77apk.pk/` | `JJ77.webp` |
-| 8 | M666 Game | `http://m666game.net/` | `M666.webp` |
-| 9 | M19 Game | `https://betapk.com.pk/bet939-game-2/` | `M19-game.webp` |
-| 10 | 1PPP Game | `https://1pppp.com.pk/` | `1ppp-game.webp` |
-| 11 | Win786 | `https://786win.pk/` | `win786.webp` |
-| 12 | 10win | `https://110win.com.pk/` | `10win.webp` |
-| 13 | Xx555 | `https://Xx555.com.pk/` | `xx555.webp` |
+#### 🎯 Trail 1: Featured Sponsors (9 Links) — KV Key: `links`
+
+| # | Name Key | Label | URL | Image (public/links/) |
+|---|---|---|---|---|
+| 1 | `y999-game` | Y9999 Game | `https://y9999.pk/` | `y999-game.webp` |
+| 2 | `xd777-sting` | XD777 Game | `https://apksting.com.pk/zentro-win-game/` | `XD777-new.webp` |
+| 3 | `xd777-gamzu` | XD777 Game | `https://apkgamzu.com.pk/x777-game/` | `XD777.webp` |
+| 4 | `jb-game` | JB Game | `https://jbgame.pk` | `jb-game.webp` |
+| 5 | `Bet Rupees` | Bet Rupees | `https://betrupe.com/` | `bet-rupees.webp` |
+| 6 | `P999 pk` | P999 PK | `https://p999pk.org/` | `p999-pk.webp` |
+| 7 | `pak super game` | Pak Super Game | `https://paksupergame.cc/` | `pak-super-game.webp` |
+| 8 | `hh98` | HH98 | `https://hh98.pk/` | `HH98.webp` |
+| 9 | `jj77` | JJ77 | `https://jj77apk.pk/` | `JJ77.webp` |
+
+#### 💎 Trail 2: Popular Gaming Links (8 Links) — KV Key: `links2`
+
+| # | Name Key | Label | URL | Image (public/links/) |
+|---|---|---|---|---|
+| 1 | `pkr365` | PKR365 | `https://gamesapks.com.pk/786ace-game/` | `pkr365.webp` |
+| 2 | `M666` | M666 Game | `http://m666game.net/` | `M666.webp` |
+| 3 | `M19 game` | M19 Game | `https://betapk.com.pk/bet939-game-2/` | `M19-game.webp` |
+| 4 | `1ppp game` | 1PPP Game | `https://1pppp.com.pk/` | `1ppp-game.webp` |
+| 5 | `Win786` | Win786 | `https://786win.pk/` | `win786.webp` |
+| 6 | `10win` | 10win | `https://110win.com.pk/` | `10win.webp` |
+| 7 | `Xx555` | Xx555 | `https://Xx555.com.pk/` | `xx555.webp` |
+| 8 | `666c` | 666C Games | `https://666cgames.pk` | `666c.webp` |
 
 ---
 
