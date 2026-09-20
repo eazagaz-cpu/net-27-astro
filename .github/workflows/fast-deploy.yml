@@ -2,7 +2,7 @@ name: ⚡ Fast Deploy (UI Changes)
 
 # Yeh workflow sirf UI/component changes ke liye hai
 # TMDB data sync nahi hoti — cached data use hoti hai
-# Deploy time: ~3-5 min (vs 15-20 min full deploy)
+# Deploy time: ~3-7 min (vs 15-20 min full deploy)
 #
 # Trigger karna hai to:
 #   GitHub → Actions → "Fast Deploy" → Run workflow
@@ -22,13 +22,15 @@ on:
       - 'public/**'
       - 'astro.config.mjs'
       - 'tailwind.config.*'
+      - 'functions/**'
+      - 'scripts/**'
   workflow_dispatch:   # Manual trigger — GitHub Actions tab se "Run workflow" button
 
 jobs:
   fast-deploy:
     name: Build & Deploy (No Sync)
     runs-on: ubuntu-latest
-    timeout-minutes: 8    # 8 min max — agar zyada lage to fail ho
+    timeout-minutes: 15    # 15 min — previously 8 min caused KV push to be skipped on slow builds!
 
     steps:
       # ── 1. Checkout ──────────────────────────────────────────────────────────
@@ -44,31 +46,41 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # ── 4. Build — SKIP_SYNC=1 skips movie-sync.mjs ──────────────────────────
+      # ── 4. 🎰 KV Push FIRST — Deploy se PEHLE! (ROOT CAUSE FIX) ─────────────
+      # CRITICAL: KV push deploy se PEHLE hota hai.
+      # Pehle deploy hota tha, phir KV push — agar build timeout se fail hota to
+      # KV kabhi update nahi hoti thi aur links gayab ho jate the.
+      # Ab: KV hamesha update hoga chahe deploy fail ho ya na ho!
+      - name: 🎰 Push Sponsor Links to Cloudflare KV (BEFORE DEPLOY)
+        run: node scripts/push-sponsors.mjs
+        continue-on-error: true   # KV fail hone se build fail nahi hoga
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+      # ── 5. Build — SKIP_SYNC=1 skips movie-sync.mjs ──────────────────────────
       - name: Build site (fast — no TMDB sync)
         run: SKIP_SYNC=1 npx astro build
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           SKIP_SYNC: '1'
 
-      # ── 5. Deploy to Cloudflare Pages ─────────────────────────────────────────
+      # ── 6. Deploy to Cloudflare Pages ─────────────────────────────────────────
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy dist --project-name net-27-astro --branch main --commit-dirty=true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      # ── 6. 🎰 Sponsor KV Auto-Push (PERMANENT FIX — har deploy ke baad links live!) ───
-      # Yeh step ensure karta hai ke casino links KABHI gayab na hon.
-      # Deploy ke baad KV automatically refresh hota hai — manual push ki zaroorat nahi.
-      - name: 🎰 Push Sponsor Links to Cloudflare KV
+      # ── 7. 🎰 KV Push AGAIN after deploy (double guarantee) ──────────────────
+      - name: 🎰 KV Re-Verify after Deploy
         run: node scripts/push-sponsors.mjs
-        continue-on-error: true   # Agar KV fail ho to deploy fail nahi hoga
+        continue-on-error: true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      # ── 7. Instant Index Ping — Bing/Yandex/IndexNow (seconds mein index) ────
+      # ── 8. Instant Index Ping — Bing/Yandex/IndexNow (seconds mein index) ────
       - name: ⚡ Instant Index Ping (Bing + Yandex + IndexNow)
         run: node scripts/instant-index.mjs default
         continue-on-error: true   # Indexing fail hone se deploy fail nahi hoga

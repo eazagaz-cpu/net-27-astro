@@ -25,6 +25,7 @@
     "index:blog": "node scripts/instant-index.mjs blog",
     "sponsors:push": "node scripts/push-sponsors.mjs",
     "sponsors:add": "node scripts/add-sponsor.mjs",
+    "sponsors:rebuild": "node scripts/_build_hardcoded_sponsors.mjs",
     "validate:api": "node scripts/validate-api-config.mjs",
     "validate:media": "node scripts/validate-media.mjs",
     "validate:routes": "node scripts/validate-routes.mjs",
