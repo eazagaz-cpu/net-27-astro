@@ -164,10 +164,10 @@ const homeFaqs = [
     <ContinueWatching />
 
     <!-- Sponsor / Affiliate Rail 1 (Top / Featured) — KV se instant update -->
-    <SponsorRailDynamic client:load />
+    <SponsorRailDynamic client:only="react" />
 
     <!-- Sponsor / Affiliate Rail 2 (Popular Gaming Links) — KV se instant update -->
-    <SponsorRailSecondary client:load />
+    <SponsorRailSecondary client:only="react" />
 
     <!-- Top 10 — directly after hero, no CTA interruption -->
     <Top10Rail mediaType="movie" items={cachedPopularMovies} />
