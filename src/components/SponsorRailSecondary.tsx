@@ -12,6 +12,7 @@ interface SponsorCard {
 
 // Fallback data for Trail 2 — API fail hone par bhi yeh HAMESHA dikhega
 const FALLBACK: SponsorCard[] = [
+  { name: '12th-class-result', label: '12th Class Result', tagline: 'Check Online Now!', url: 'https://12thclassresult.com.pk/', image: '/links/12th-class-result.webp', badge: '🔥 Hot' },
   { name: 'pkr365',    label: 'PKR365',    tagline: 'Play & Win Big!', url: 'https://gamesapks.com.pk/786ace-game/', image: '/links/pkr365.webp',    badge: '🔥 Hot' },
   { name: 'm666',     label: 'M666 Game', tagline: 'Play & Win Big!', url: 'http://m666game.net/',                  image: '/links/M666.webp',      badge: '🆕 New' },
   { name: 'm19-game', label: 'M19 Game',  tagline: 'Bet & Win!',      url: 'https://betapk.com.pk/bet939-game-2/', image: '/links/M19-game.webp',  badge: '💎 Hot' },

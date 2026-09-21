@@ -19,7 +19,16 @@
 // ✏️  YAHAN SPONSORS EDIT KARO — Sequence wise
 // ═══════════════════════════════════════════════════════
 const SPONSORS = [
-  // #1 — Y9999 Game (TOP)
+  // #1 — 12th Class Result Check (TOP)
+  {
+    name: '12th-class-result-check',
+    label: '12th Class Result Check',
+    tagline: '📢 Check Result Online!',
+    url: 'https://9thclassresult.org.pk/',
+    image: '/links/12th-class-result-check.webp',
+    badge: '🔥 Hot',
+  },
+  // #2 — Y9999 Game
   {
     name: 'y999-game',
     label: 'Y9999 Game',
@@ -106,7 +115,16 @@ const SPONSORS = [
 // ✏️  TRAIL 2 SPONSORS (Secondary / Earning Games) — Sequence wise
 // ═══════════════════════════════════════════════════════
 const SPONSORS_RAIL_2 = [
-  // #1 — PKR365 (TOP)
+  // #1 — 12th Class Result (TOP)
+  {
+    name: '12th-class-result',
+    label: '12th Class Result',
+    tagline: '🎓 Check Online Now!',
+    url: 'https://12thclassresult.com.pk/',
+    image: '/links/12th-class-result.webp',
+    badge: '🔥 Hot',
+  },
+  // #2 — PKR365
   {
     name: 'pkr365',
     label: 'PKR365',
