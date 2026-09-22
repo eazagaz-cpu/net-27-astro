@@ -254,24 +254,34 @@ async function inlineThumbnails(sponsorsList, railLabel) {
   return enriched;
 }
 
-async function pushKeyToKV(key, data, label) {
+async function pushKeyToKV(key, data, label, retries = 3) {
   const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${KV_NAMESPACE_ID}/values/${key}`;
 
-  const res = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      'Authorization': `Bearer ${API_TOKEN}`,
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(data),
-    signal: AbortSignal.timeout(15_000),
-  });
+  for (let attempt = 1; attempt <= retries; attempt++) {
+    try {
+      const res = await fetch(url, {
+        method: 'PUT',
+        headers: {
+          'Authorization': `Bearer ${API_TOKEN}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+        signal: AbortSignal.timeout(60_000),
+      });
 
-  const resData = await res.json();
-  if (!resData.success) {
-    throw new Error(`KV update failed for key '${key}': ${JSON.stringify(resData.errors)}`);
+      const resData = await res.json();
+      if (!resData.success) {
+        throw new Error(`KV update failed for key '${key}': ${JSON.stringify(resData.errors)}`);
+      }
+      console.log(`✅ ${label} update SUCCESS! (Key: ${key})`);
+      return;
+    } catch (err) {
+      console.warn(`⚠️ Attempt ${attempt}/${retries} failed for ${key}: ${err.message}`);
+      if (attempt === retries) throw err;
+      console.log(`🔄 Retrying in ${attempt * 5}s...`);
+      await new Promise(r => setTimeout(r, attempt * 5000));
+    }
   }
-  console.log(`✅ ${label} update SUCCESS! (Key: ${key})`);
 }
 
 async function pushToKV() {

@@ -48,6 +48,7 @@ jobs:
         run: npx astro build
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       - name: Validate indexing output
         run: npm run validate:indexing
@@ -65,8 +66,10 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
       # ── 7. Deploy dist/ to Cloudflare Pages ──────────────────────────────
+      # PERMANENT FIX: --account-id explicitly pass karna ZAROORI hai
+      # Wrangler bina is ke purana cached account use karta hai → Authentication error!
       - name: Deploy to Cloudflare Pages
-        run: npx wrangler pages deploy dist --project-name net-27-astro --branch main --commit-dirty=true
+        run: npx wrangler pages deploy dist --project-name net-27-astro --branch main --commit-dirty=true --account-id ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
