@@ -1,55 +1,61 @@
 /**
  * scripts/_build_hardcoded_sponsors.mjs
+ * ═══════════════════════════════════════════════════════
+ * Generates functions/api/sponsors.js, sponsors2.js & link-health.js with inline Base64.
+ *
+ * ⚠️  DATA SOURCE: src/data/sponsor-links.json (canonical)
+ *     Hardcoded lists removed — canonical JSON se read hota hai.
+ *
  * Run: node scripts/_build_hardcoded_sponsors.mjs
- * Generates functions/api/sponsors.js with inline Base64 images baked in.
- * Isse GitHub fail hone par bhi images kabhi nahi tooteingi.
+ * OR:  npm run sponsors:rebuild
+ *
+ * Note: npm run sponsors:push already does this + KV update.
+ * Use this only when you want to rebuild functions/ WITHOUT KV push.
  */
+
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { createHash } from 'crypto';
 import sharp from 'sharp';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 
-const TRAIL1 = [
-  { name: 'y999-game',       label: 'Y9999 Game',     tagline: '🎮 Play & Win Big!',    url: 'https://y9999.pk/',                        image: '/links/y999-game.webp',      imageFile: 'y999-game.webp',      badge: '🔥 Hot' },
-  { name: 'xd777-sting',     label: 'XD777 Game',     tagline: '💰 Win Big Today!',      url: 'https://apksting.com.pk/zentro-win-game/', image: '/links/XD777-new.webp',      imageFile: 'XD777-new.webp',      badge: '🔥 Hot' },
-  { name: 'xd777-gamzu',     label: 'XD777 Game',     tagline: '💰 Win Big Today!',      url: 'https://apkgamzu.com.pk/x777-game/',       image: '/links/XD777.webp',          imageFile: 'XD777.webp',          badge: '🔥 Hot' },
-  { name: 'jb-game',         label: 'JB Game',        tagline: '🎮 New Earning Games!',  url: 'https://jbgame.pk',                        image: '/links/jb-game.webp',        imageFile: 'jb-game.webp',        badge: '🆕 New' },
-  { name: 'Bet Rupees',      label: 'Bet Rupees',     tagline: '🎯 Play & Win Big!',     url: 'https://betrupe.com/',                     image: '/links/bet-rupees.webp',     imageFile: 'bet-rupees.webp',     badge: '🔥 Hot' },
-  { name: 'P999 pk',         label: 'P999 PK',        tagline: '🏆 Top Rewards!',        url: 'https://p999pk.org/',                      image: '/links/p999-pk.webp',        imageFile: 'p999-pk.webp',        badge: '🆕 New' },
-  { name: 'pak super game',  label: 'Pak Super Game', tagline: '💎 Play & Win Big!',     url: 'https://paksupergame.cc/',                 image: '/links/pak-super-game.webp', imageFile: 'pak-super-game.webp', badge: '🔥 Hot' },
-  { name: 'hh98',            label: 'HH98',           tagline: '🏆 Play & Win!',         url: 'https://hh98.pk/',                         image: '/links/HH98.webp',           imageFile: 'HH98.webp',           badge: '🆕 New' },
-  { name: 'jj77',            label: 'JJ77',           tagline: '🎮 Big Rewards!',        url: 'https://jj77apk.pk/',                      image: '/links/JJ77.webp',           imageFile: 'JJ77.webp',           badge: '💎 Hot' },
-];
+// ── Load canonical manifest ────────────────────────────────────────────────
+const MANIFEST_PATH = join(ROOT, 'src', 'data', 'sponsor-links.json');
 
-const TRAIL2 = [
-  { name: 'pkr365',      label: 'PKR365',      tagline: '💎 Play & Win Big!', url: 'https://gamesapks.com.pk/786ace-game/', image: '/links/pkr365.webp',    imageFile: 'pkr365.webp',    badge: '🔥 Hot' },
-  { name: 'M666',        label: 'M666 Game',   tagline: '🎮 Play & Win Big!', url: 'http://m666game.net/',                  image: '/links/M666.webp',      imageFile: 'M666.webp',      badge: '🆕 New' },
-  { name: 'M19 game',    label: 'M19 Game',    tagline: '🎯 Bet & Win!',      url: 'https://betapk.com.pk/bet939-game-2/', image: '/links/M19-game.webp',  imageFile: 'M19-game.webp',  badge: '💎 Hot' },
-  { name: '1ppp game',   label: '1PPP Game',   tagline: '🎮 Play & Earn!',    url: 'https://1pppp.com.pk/',                image: '/links/1ppp-game.webp', imageFile: '1ppp-game.webp', badge: '🔥 Hot' },
-  { name: 'Win786',      label: 'Win786',      tagline: '💰 Win Big Today!',  url: 'https://786win.pk/',                   image: '/links/win786.webp',    imageFile: 'win786.webp',    badge: '🔥 Hot' },
-  { name: '10win',       label: '10win',       tagline: '💎 Play & Win Big!', url: 'https://110win.com.pk/',               image: '/links/10win.webp',     imageFile: '10win.webp',     badge: '🆕 New' },
-  { name: 'Xx555',       label: 'Xx555',       tagline: '💎 Play & Win Big!', url: 'https://Xx555.com.pk/',                image: '/links/xx555.webp',     imageFile: 'xx555.webp',     badge: '🔥 Hot' },
-  { name: '666c',        label: '666C Games',  tagline: '🎯 Play & Win Big!', url: 'https://666cgames.pk',                 image: '/links/666c.webp',      imageFile: '666c.webp',      badge: '🔥 Hot' },
-];
+if (!existsSync(MANIFEST_PATH)) {
+  console.error('❌ FATAL: src/data/sponsor-links.json not found!');
+  process.exit(1);
+}
 
+const manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8'));
+const TRAIL1 = manifest.trail1.filter(s => s.enabled !== false);
+const TRAIL2 = manifest.trail2.filter(s => s.enabled !== false);
+
+const manifestHash = createHash('sha256')
+  .update(JSON.stringify({ trail1: manifest.trail1, trail2: manifest.trail2 }))
+  .digest('hex')
+  .substring(0, 16);
+
+// ── Inline Base64 images ───────────────────────────────────────────────────
 async function inlineBase64(sponsors) {
   return Promise.all(sponsors.map(async (s) => {
-    const fp = join(ROOT, 'public', 'links', s.imageFile);
+    const imageFile = s.imageFile || s.image.split('/').pop();
+    const fp = join(ROOT, 'public', 'links', imageFile);
     let imageData = '';
     if (existsSync(fp)) {
       const buf = await sharp(fp)
         .resize(192, 192, { fit: 'contain', background: { r: 0, g: 0, b: 0, alpha: 0 } })
-        .webp({ quality: 75, effort: 6 })
+        .webp({ quality: 80, effort: 6 })
         .toBuffer();
       imageData = `data:image/webp;base64,${buf.toString('base64')}`;
-      console.log(`  ✅ ${s.name} (${buf.length}b)`);
+      console.log(`  ✅ ${s.id} (${buf.length}b)`);
     } else {
-      console.warn(`  ⚠️  MISSING: ${s.imageFile}`);
+      console.warn(`  ⚠️  MISSING image: ${imageFile}`);
     }
-    return { ...s, imageData };
+    return { name: s.id, label: s.label, tagline: s.tagline, url: s.url, image: s.image, imageData, badge: s.badge };
   }));
 }
 
@@ -70,46 +76,47 @@ function toJsArray(sponsors) {
 
 async function main() {
   console.log('\n⚡ Building hardcoded sponsors with inline Base64...');
+  console.log(`📋 Source: src/data/sponsor-links.json`);
+  console.log(`📋 Version: ${manifest.manifestVersion} | Hash: ${manifestHash}`);
   console.log('Trail 1:');
   const t1 = await inlineBase64(TRAIL1);
   console.log('Trail 2:');
   const t2 = await inlineBase64(TRAIL2);
 
-  const output = `/**
- * functions/api/sponsors.js
- * Cloudflare Pages Function — KV se sponsor links serve karta hai
- *
- * GET /api/sponsors      → Trail 1 (Featured Sponsors - Gold Theme)
- * GET /api/sponsors?rail=2 → Trail 2 (Gaming Links - Emerald Theme)
- *
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * NUCLEAR FALLBACK SYSTEM (4-Layer Shield):
- *   Layer 1: KV mein live data (push-sponsors.mjs se update hota hai)
- *   Layer 2: getDefaultSponsors() — hardcoded list WITH inline Base64
- *            (GitHub fail hone par bhi images toot nahi sakti!)
- *   Layer 3: SponsorRailDynamic.tsx FALLBACK array
- *   Layer 4: onError avatar (🎰 badge)
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * AUTO-GENERATED by: node scripts/_build_hardcoded_sponsors.mjs
- * Last updated: ${new Date().toISOString()}
- * DO NOT EDIT MANUALLY — Run the script to regenerate.
- * ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
- * Cache: 30s — KV update ke 30s baad sab users ko naya data milega
+  const now = new Date().toISOString();
+
+  // 1. functions/api/sponsors.js
+  const sponsorsJs = `/**
+ * functions/api/sponsors.js — AUTO-GENERATED
+ * Source: src/data/sponsor-links.json (canonical)
+ * Generated by: scripts/_build_hardcoded_sponsors.mjs
+ * Manifest Version: ${manifest.manifestVersion}
+ * Manifest Hash: ${manifestHash}
+ * Last updated: ${now}
+ * DO NOT EDIT MANUALLY
  */
+
+const MANIFEST_VERSION = '${manifest.manifestVersion}';
+const MANIFEST_HASH = '${manifestHash}';
+const EXPECTED_TRAIL1 = ${manifest.expectedCounts.trail1};
+const EXPECTED_TRAIL2 = ${manifest.expectedCounts.trail2};
 
 export async function onRequest(context) {
   const { env } = context;
+  const url = new URL(context.request.url);
 
   try {
-    const url = new URL(context.request.url);
     const isRail2 = url.searchParams.get('rail') === '2';
     const key = isRail2 ? 'links2' : 'links';
-
-    // KV se sponsor data fetch karo
     const raw = await env.SPONSORS.get(key, { type: 'json' });
 
-    // Agar KV mein kuch nahi — hardcoded list use karo (WITH inline Base64!)
-    const sponsors = raw || (isRail2 ? getDefaultSponsors2() : getDefaultSponsors());
+    const minExpected = isRail2 ? EXPECTED_TRAIL2 : EXPECTED_TRAIL1;
+    const isKvValid = Array.isArray(raw) && raw.length >= minExpected;
+    const sponsors = isKvValid
+      ? raw
+      : (isRail2 ? getDefaultSponsors2() : getDefaultSponsors());
+
+    const kvSource = isKvValid ? 'kv' : 'fallback-safe';
 
     return new Response(JSON.stringify(sponsors), {
       status: 200,
@@ -117,33 +124,33 @@ export async function onRequest(context) {
         'Content-Type': 'application/json',
         'Cache-Control': 'public, max-age=30, s-maxage=30',
         'Access-Control-Allow-Origin': '*',
+        'X-Link-Count': String(sponsors.length),
+        'X-Link-Source': kvSource,
+        'X-Manifest-Version': MANIFEST_VERSION,
+        'X-Manifest-Hash': MANIFEST_HASH,
       },
     });
   } catch (err) {
-    // KV binding missing ya error — hardcoded list serve karo (WITH inline Base64!)
-    const url = new URL(context.request.url);
     const isRail2 = url.searchParams.get('rail') === '2';
     return new Response(JSON.stringify(isRail2 ? getDefaultSponsors2() : getDefaultSponsors()), {
       status: 200,
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        'Access-Control-Allow-Origin': '*',
+        'X-Link-Source': 'fallback-error',
+        'X-Manifest-Version': MANIFEST_VERSION,
+      },
     });
   }
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// TRAIL 1 — Featured Sponsors (Gold Theme) — 9 Links
-// imageData = inline Base64 WebP (192x192) — ZERO HTTP requests, ZERO 404s
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function getDefaultSponsors() {
   return [
 ${toJsArray(t1)}
   ];
 }
 
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-// TRAIL 2 — Popular Gaming Links (Emerald Theme) — 8 Links
-// imageData = inline Base64 WebP (192x192) — ZERO HTTP requests, ZERO 404s
-// ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 function getDefaultSponsors2() {
   return [
 ${toJsArray(t2)}
@@ -151,11 +158,189 @@ ${toJsArray(t2)}
 }
 `;
 
-  const outPath = join(ROOT, 'functions', 'api', 'sponsors.js');
-  writeFileSync(outPath, output, 'utf8');
-  console.log(`\n✅ Generated: functions/api/sponsors.js`);
-  console.log(`   Trail 1: ${t1.length} sponsors`);
-  console.log(`   Trail 2: ${t2.length} sponsors`);
+  // 2. functions/api/sponsors2.js
+  const sponsors2Js = `/**
+ * functions/api/sponsors2.js — AUTO-GENERATED
+ * Source: src/data/sponsor-links.json (canonical)
+ * Generated by: scripts/_build_hardcoded_sponsors.mjs
+ * Manifest Version: ${manifest.manifestVersion}
+ * Last updated: ${now}
+ */
+
+const EXPECTED_TRAIL2 = ${manifest.expectedCounts.trail2};
+
+export async function onRequest(context) {
+  const { env } = context;
+  try {
+    const raw = await env.SPONSORS.get('links2', { type: 'json' });
+    const isKvValid = Array.isArray(raw) && raw.length >= EXPECTED_TRAIL2;
+    const sponsors = isKvValid ? raw : getDefaultSponsors2();
+    const source = isKvValid ? 'kv' : 'fallback-safe';
+    return new Response(JSON.stringify(sponsors), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=30, s-maxage=30',
+        'Access-Control-Allow-Origin': '*',
+        'X-Link-Count': String(sponsors.length),
+        'X-Link-Source': source,
+        'X-Manifest-Version': '${manifest.manifestVersion}',
+      },
+    });
+  } catch (err) {
+    return new Response(JSON.stringify(getDefaultSponsors2()), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        'Access-Control-Allow-Origin': '*',
+        'X-Link-Source': 'fallback-error',
+      },
+    });
+  }
+}
+
+function getDefaultSponsors2() {
+  return [
+${toJsArray(t2)}
+  ];
+}
+`;
+
+  // 3. functions/api/link-health.js
+  const linkHealthJs = `/**
+ * functions/api/link-health.js — AUTO-GENERATED
+ * Source: src/data/sponsor-links.json (canonical)
+ * Generated by: scripts/_build_hardcoded_sponsors.mjs
+ * Manifest Version: ${manifest.manifestVersion}
+ * Manifest Hash: ${manifestHash}
+ * Last updated: ${now}
+ */
+
+const MANIFEST_VERSION = '${manifest.manifestVersion}';
+const MANIFEST_HASH = '${manifestHash}';
+const EXPECTED_TRAIL1 = ${manifest.expectedCounts.trail1};
+const EXPECTED_TRAIL2 = ${manifest.expectedCounts.trail2};
+const REQUIRED_TRAIL1_IDS = ['12th-class-result-check', 'y999-game', 'xd777-sting', 'xd777-gamzu', 'jb-game', 'bet-rupees'];
+const REQUIRED_TRAIL2_IDS = ['12th-class-result', 'pkr365', 'm666', 'win786'];
+
+export async function onRequest(context) {
+  const { request, env } = context;
+  const url = new URL(request.url);
+
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    });
+  }
+
+  let t1Data = null;
+  let t2Data = null;
+  let source = 'kv';
+  let missingCritical = [];
+
+  try {
+    if (env.SPONSORS) {
+      t1Data = await env.SPONSORS.get('links', { type: 'json' });
+      t2Data = await env.SPONSORS.get('links2', { type: 'json' });
+    }
+  } catch (err) {
+    source = 'fallback-error';
+  }
+
+  const isT1KvValid = Array.isArray(t1Data) && t1Data.length >= EXPECTED_TRAIL1;
+  const isT2KvValid = Array.isArray(t2Data) && t2Data.length >= EXPECTED_TRAIL2;
+
+  const t1Count = Array.isArray(t1Data) ? t1Data.length : 0;
+  const t2Count = Array.isArray(t2Data) ? t2Data.length : 0;
+
+  if (!isT1KvValid || !isT2KvValid) {
+    source = 'fallback';
+  }
+
+  if (Array.isArray(t1Data)) {
+    const liveIds1 = t1Data.map(s => s.name || s.id);
+    REQUIRED_TRAIL1_IDS.forEach(id => {
+      if (!liveIds1.includes(id)) missingCritical.push(\`trail1:\${id}\`);
+    });
+  } else {
+    missingCritical.push('trail1:all_kv_missing');
+  }
+
+  if (Array.isArray(t2Data)) {
+    const liveIds2 = t2Data.map(s => s.name || s.id);
+    REQUIRED_TRAIL2_IDS.forEach(id => {
+      if (!liveIds2.includes(id)) missingCritical.push(\`trail2:\${id}\`);
+    });
+  } else {
+    missingCritical.push('trail2:all_kv_missing');
+  }
+
+  const isHealthy = isT1KvValid && isT2KvValid && missingCritical.length === 0;
+
+  let healed = false;
+  const shouldHeal = (request.method === 'POST' || url.searchParams.get('heal') === '1' || url.searchParams.get('recover') === '1');
+  if (shouldHeal && env.SPONSORS && env.SPONSORS.put) {
+    try {
+      const res1 = await fetch(new URL('/api/sponsors', request.url));
+      const res2 = await fetch(new URL('/api/sponsors2', request.url));
+      if (res1.ok && res2.ok) {
+        const fresh1 = await res1.json();
+        const fresh2 = await res2.json();
+        if (Array.isArray(fresh1) && fresh1.length >= EXPECTED_TRAIL1) {
+          await env.SPONSORS.put('links', JSON.stringify(fresh1));
+        }
+        if (Array.isArray(fresh2) && fresh2.length >= EXPECTED_TRAIL2) {
+          await env.SPONSORS.put('links2', JSON.stringify(fresh2));
+        }
+        healed = true;
+      }
+    } catch (_) {}
+  }
+
+  const responsePayload = {
+    status: isHealthy ? 'healthy' : 'degraded',
+    manifestVersion: MANIFEST_VERSION,
+    manifestHash: MANIFEST_HASH,
+    expectedCounts: {
+      trail1: EXPECTED_TRAIL1,
+      trail2: EXPECTED_TRAIL2,
+      total: EXPECTED_TRAIL1 + EXPECTED_TRAIL2,
+    },
+    activeCounts: {
+      trail1: t1Count,
+      trail2: t2Count,
+      total: t1Count + t2Count,
+    },
+    trail1Healthy: isT1KvValid,
+    trail2Healthy: isT2KvValid,
+    source,
+    missingCritical,
+    healed,
+    checkedAt: new Date().toISOString(),
+  };
+
+  return new Response(JSON.stringify(responsePayload, null, 2), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Access-Control-Allow-Origin': '*',
+      'X-Link-Status': isHealthy ? 'healthy' : 'degraded',
+    },
+  });
+}
+`;
+
+  writeFileSync(join(ROOT, 'functions', 'api', 'sponsors.js'), sponsorsJs, 'utf8');
+  writeFileSync(join(ROOT, 'functions', 'api', 'sponsors2.js'), sponsors2Js, 'utf8');
+  writeFileSync(join(ROOT, 'functions', 'api', 'link-health.js'), linkHealthJs, 'utf8');
+  console.log(`\n✅ Generated functions/api/sponsors.js, sponsors2.js & link-health.js`);
+  console.log(`   Trail 1: ${t1.length} sponsors | Trail 2: ${t2.length} sponsors`);
   console.log('   All images hardcoded as inline Base64 ✅\n');
 }
 

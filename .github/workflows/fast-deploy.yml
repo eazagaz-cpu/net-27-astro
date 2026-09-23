@@ -18,7 +18,7 @@ on:
       - 'src/styles/**'
       - 'src/i18n/**'
       - 'src/lib/**'
-      - 'src/data/blogPosts/**'
+      - 'src/data/**'
       - 'public/**'
       - 'astro.config.mjs'
       - 'tailwind.config.*'
@@ -26,18 +26,25 @@ on:
       - 'scripts/**'
   workflow_dispatch:   # Manual trigger — GitHub Actions tab se "Run workflow" button
 
+# ── Concurrency Protection ────────────────────────────────────────────────────
+# Agar purana deploy chal raha ho aur naya push aaye, purana cancel ho jaata hai.
+# Yeh race condition se bacha ta hai (old deploy overwriting new data).
+concurrency:
+  group: production-deploy
+  cancel-in-progress: true
+
 jobs:
   fast-deploy:
     name: Build & Deploy (No Sync)
     runs-on: ubuntu-latest
-    timeout-minutes: 15    # 15 min — previously 8 min caused KV push to be skipped on slow builds!
+    timeout-minutes: 20
 
     steps:
       # ── 1. Checkout ──────────────────────────────────────────────────────────
       - uses: actions/checkout@v4
         with:
-          persist-credentials: true
           fetch-depth: 1
+          persist-credentials: false
 
       # ── 2. Node setup with npm cache ─────────────────────────────────────────
       - uses: actions/setup-node@v4
@@ -49,41 +56,51 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      # ── 4. 🎰 KV Push FIRST — Deploy se PEHLE! (ROOT CAUSE FIX) ─────────────
+      # ── 4. 🔍 INTEGRITY GATE — Verify canonical sponsor-links.json ───────────
+      # CRITICAL: Deploy block hoga agar sponsor data invalid ho.
+      # Yeh ensure karta hai ke KABHI BHAI broken/incomplete links deploy na ho.
+      - name: 🔍 Verify Sponsor Links Integrity
+        run: node scripts/verify-links.mjs
+
+      # ── 5. 🎰 KV Push FIRST — Deploy se PEHLE! ───────────────────────────────
       # CRITICAL: KV push deploy se PEHLE hota hai.
-      # Pehle deploy hota tha, phir KV push — agar build timeout se fail hota to
-      # KV kabhi update nahi hoti thi aur links gayab ho jate the.
-      # Ab: KV hamesha update hoga chahe deploy fail ho ya na ho!
+      # Empty overwrite protection: push-sponsors.mjs kabhi empty array push nahi karta.
+      # Read-back verification: push ke baad KV se read karke count verify hota hai.
       - name: 🎰 Push Sponsor Links to Cloudflare KV (BEFORE DEPLOY)
         run: node scripts/push-sponsors.mjs
-        continue-on-error: true   # KV fail hone se build fail nahi hoga
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      # ── 5. Build — SKIP_SYNC=1 skips movie-sync.mjs ──────────────────────────
+      # ── 6. Build — SKIP_SYNC=1 skips movie-sync.mjs ──────────────────────────
       - name: Build site (fast — no TMDB sync)
         run: SKIP_SYNC=1 npx astro build
         env:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           SKIP_SYNC: '1'
 
-      # ── 6. Deploy to Cloudflare Pages ─────────────────────────────────────────
+      # ── 7. Deploy to Cloudflare Pages ─────────────────────────────────────────
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy dist --project-name net-27-astro --branch main --commit-dirty=true
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      # ── 7. 🎰 KV Push AGAIN after deploy (double guarantee) ──────────────────
-      - name: 🎰 KV Re-Verify after Deploy
-        run: node scripts/push-sponsors.mjs
-        continue-on-error: true
+      # ── 8. 🌐 Post-Deploy Production Verification ─────────────────────────────
+      # Deploy ke baad production se live data check karta hai.
+      # Non-blocking: agar production check fail ho to deploy PASS rahega
+      # (kyunki Cloudflare propagation time lagta hai).
+      # Agar fail ho, email/notification aayega for investigation.
+      - name: 🌐 Post-Deploy Production Verification
+        run: |
+          echo "Waiting 30s for Cloudflare propagation..."
+          sleep 30
+          node scripts/verify-production.mjs
+        continue-on-error: true   # Propagation delay ho sakti hai — non-blocking
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
 
-      # ── 8. Instant Index Ping — Bing/Yandex/IndexNow (seconds mein index) ────
+      # ── 9. Instant Index Ping — Bing/Yandex/IndexNow (seconds mein index) ────
       - name: ⚡ Instant Index Ping (Bing + Yandex + IndexNow)
         run: node scripts/instant-index.mjs default
         continue-on-error: true   # Indexing fail hone se deploy fail nahi hoga

@@ -5,210 +5,55 @@
  * KV mein data push karo → 5-30 seconds mein live!
  * ═══════════════════════════════════════════════════════
  *
- * Usage:
- *   npm run sponsors:push
+ * ⚠️  DATA SOURCE: src/data/sponsor-links.json
+ *     Is file ko DIRECTLY edit karo — yahan kuch hardcode mat karo!
+ *
+ * Usage: npm run sponsors:push
  *
  * Nayi link add karni ho:
- *   1. Neeche SPONSORS array mein add karo
- *   2. Image /public/links/ mein dalo
- *   3. npm run sponsors:push chalao
- *   4. 5-30 seconds mein live! ✅
+ *   1. src/data/sponsor-links.json mein add karo
+ *   2. npm run verify:links  ← integrity check
+ *   3. npm run sponsors:push ← KV + functions sync
+ *   4. npm run push:safe     ← git push
+ *   5. 5-30 seconds mein live! ✅
  */
 
-// ═══════════════════════════════════════════════════════
-// ✏️  YAHAN SPONSORS EDIT KARO — Sequence wise
-// ═══════════════════════════════════════════════════════
-const SPONSORS = [
-  // #1 — 12th Class Result Check (TOP)
-  {
-    name: '12th-class-result-check',
-    label: '12th Class Result Check',
-    tagline: '📢 Check Result Online!',
-    url: 'https://9thclassresult.org.pk/',
-    image: '/links/12th-class-result-check.webp',
-    badge: '🔥 Hot',
-  },
-  // #2 — Y9999 Game
-  {
-    name: 'y999-game',
-    label: 'Y9999 Game',
-    tagline: '🏆 Play & Win Big!',
-    url: 'https://y9999.pk/',
-    image: '/links/y999-game.webp',
-    badge: '🔥 Hot',
-  },
-  // #2 — XD777 (Link 1: Apksting)
-  {
-    name: 'xd777-sting',
-    label: 'XD777 Game',
-    tagline: '🎰 Win Big Today!',
-    url: 'https://apksting.com.pk/zentro-win-game/',
-    image: '/links/XD777-new.webp',
-    badge: '🔥 Hot',
-  },
-  // #3 — XD777 (Link 2: Apkgamzu)
-  {
-    name: 'xd777-gamzu',
-    label: 'XD777 Game',
-    tagline: '🎰 Win Big Today!',
-    url: 'https://apkgamzu.com.pk/x777-game/',
-    image: '/links/XD777.webp',
-    badge: '🔥 Hot',
-  },
-  // #2 — JB Game (New Earning Games)
-  {
-    name: 'jb-game',
-    label: 'JB Game',
-    tagline: '🎮 New Earning Games!',
-    url: 'https://jbgame.pk',
-    image: '/links/jb-game.webp',
-    badge: '⭐ New',
-  },
-  // #3
-  {
-    name: 'Bet Rupees',
-    label: 'Bet Rupees',
-    tagline: '💰 Play & Win Big!',
-    url: 'https://betrupe.com/',
-    image: '/links/bet-rupees.webp',
-    badge: '🔥 Hot',
-  },
-  // #4
-  {
-    name: 'P999 pk',
-    label: 'P999 PK',
-    tagline: '🎯 Top Rewards!',
-    url: 'https://p999pk.org/',
-    image: '/links/p999-pk.webp',
-    badge: '⭐ New',
-  },
-  // #5
-  {
-    name: 'pak super game',
-    label: 'Pak Super Game',
-    tagline: '🎰 Play & Win Big!',
-    url: 'https://paksupergame.cc/',
-    image: '/links/pak-super-game.webp',
-    badge: '🔥 Hot',
-  },
-  // #5
-  {
-    name: 'hh98',
-    label: 'HH98',
-    tagline: '🎯 Play & Win!',
-    url: 'https://hh98.pk/',
-    image: '/links/HH98.webp',
-    badge: '⭐ New',
-  },
-  // #7
-  {
-    name: 'jj77',
-    label: 'JJ77',
-    tagline: '🏆 Big Rewards!',
-    url: 'https://jj77apk.pk/',
-    image: '/links/JJ77.webp',
-    badge: '💥 Hot',
-  },
-];
-
-// ═══════════════════════════════════════════════════════
-// ✏️  TRAIL 2 SPONSORS (Secondary / Earning Games) — Sequence wise
-// ═══════════════════════════════════════════════════════
-const SPONSORS_RAIL_2 = [
-  // #1 — 12th Class Result (TOP)
-  {
-    name: '12th-class-result',
-    label: '12th Class Result',
-    tagline: '🎓 Check Online Now!',
-    url: 'https://12thclassresult.com.pk/',
-    image: '/links/12th-class-result.webp',
-    badge: '🔥 Hot',
-  },
-  // #2 — PKR365
-  {
-    name: 'pkr365',
-    label: 'PKR365',
-    tagline: '🎰 Play & Win Big!',
-    url: 'https://gamesapks.com.pk/786ace-game/',
-    image: '/links/pkr365.webp',
-    badge: '🔥 Hot',
-  },
-  // #2 — M666 Game
-  {
-    name: 'M666',
-    label: 'M666 Game',
-    tagline: '🏆 Play & Win Big!',
-    url: 'http://m666game.net/',
-    image: '/links/M666.webp',
-    badge: '⭐ New',
-  },
-  // #2 — M19 Game
-  {
-    name: 'M19 game',
-    label: 'M19 Game',
-    tagline: '🎮 Bet & Win!',
-    url: 'https://betapk.com.pk/bet939-game-2/',
-    image: '/links/M19-game.webp',
-    badge: '💥 Hot',
-  },
-  // #3 — 1PPP Game
-  {
-    name: '1ppp game',
-    label: '1PPP Game',
-    tagline: '🌟 Play & Earn!',
-    url: 'https://1pppp.com.pk/',
-    image: '/links/1ppp-game.webp',
-    badge: '🔥 Hot',
-  },
-  // #4 — Win786
-  {
-    name: 'Win786',
-    label: 'Win786',
-    tagline: '🎰 Win Big Today!',
-    url: 'https://786win.pk/',
-    image: '/links/win786.webp',
-    badge: '🔥 Hot',
-  },
-  // #5 — 10win
-  {
-    name: '10win',
-    label: '10win',
-    tagline: '🎰 Play & Win Big!',
-    url: 'https://110win.com.pk/',
-    image: '/links/10win.webp',
-    badge: '⭐ New',
-  },
-  // #6 — Xx555
-  {
-    name: 'Xx555',
-    label: 'Xx555',
-    tagline: '🎰 Play & Win Big!',
-    url: 'https://Xx555.com.pk/',
-    image: '/links/xx555.webp',
-    badge: '🔥 Hot',
-  },
-  // #8 — 666c
-  {
-    name: '666c',
-    label: '666C Games',
-    tagline: '🎮 Play & Win Big!',
-    url: 'https://666cgames.pk',
-    image: '/links/666c.webp',
-    badge: '🔥 Hot',
-  },
-  // ➕ Trail 2 ke naye links aage yahan add hote rahenge (sequence wise):
-];
-
-// ── Push to Cloudflare KV ─────────────────────────────────────────────────────
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
+import { createHash } from 'crypto';
 import sharp from 'sharp';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 
-// .env se credentials load karo (gitignore mein hai — safe)
+// ── Load canonical manifest ────────────────────────────────────────────────
+const MANIFEST_PATH = join(ROOT, 'src', 'data', 'sponsor-links.json');
+
+if (!existsSync(MANIFEST_PATH)) {
+  console.error('❌ FATAL: src/data/sponsor-links.json not found!');
+  console.error('   Run: npm run verify:links to diagnose.');
+  process.exit(1);
+}
+
+let manifest;
+try {
+  manifest = JSON.parse(readFileSync(MANIFEST_PATH, 'utf8'));
+} catch (e) {
+  console.error(`❌ FATAL: Invalid JSON in sponsor-links.json: ${e.message}`);
+  process.exit(1);
+}
+
+// Filter only enabled sponsors
+const SPONSORS = manifest.trail1.filter(s => s.enabled !== false);
+const SPONSORS_RAIL_2 = manifest.trail2.filter(s => s.enabled !== false);
+
+if (SPONSORS.length === 0 || SPONSORS_RAIL_2.length === 0) {
+  console.error('❌ FATAL: Empty sponsor list detected! Aborting to protect production KV.');
+  process.exit(1);
+}
+
+// ── Load credentials ───────────────────────────────────────────────────────
 try {
   const env = readFileSync(join(ROOT, '.env'), 'utf8');
   for (const line of env.split('\n')) {
@@ -226,12 +71,19 @@ if (!ACCOUNT_ID || !API_TOKEN) {
   process.exit(1);
 }
 
+// ── Compute manifest hash ──────────────────────────────────────────────────
+const manifestHash = createHash('sha256')
+  .update(JSON.stringify({ trail1: manifest.trail1, trail2: manifest.trail2 }))
+  .digest('hex')
+  .substring(0, 16);
+
+// ── Inline Base64 thumbnails ───────────────────────────────────────────────
 async function inlineThumbnails(sponsorsList, railLabel) {
   let count = 0;
   const enriched = await Promise.all(
     sponsorsList.map(async (s) => {
       try {
-        const filename = basename(s.image);
+        const filename = s.imageFile || basename(s.image);
         const fullPath = join(ROOT, 'public', 'links', filename);
         if (existsSync(fullPath)) {
           const buf = await sharp(fullPath)
@@ -240,22 +92,68 @@ async function inlineThumbnails(sponsorsList, railLabel) {
             .toBuffer();
           count++;
           return {
-            ...s,
+            name: s.id,       // use id as name for consistency
+            label: s.label,
+            tagline: s.tagline,
+            url: s.url,
+            image: s.image,
             imageData: `data:image/webp;base64,${buf.toString('base64')}`,
+            badge: s.badge,
           };
         }
       } catch (err) {
-        console.warn(`⚠️ Warning: could not inline image for ${s.name}: ${err.message}`);
+        console.warn(`⚠️ Warning: could not inline image for ${s.id}: ${err.message}`);
       }
-      return s;
+      return {
+        name: s.id,
+        label: s.label,
+        tagline: s.tagline,
+        url: s.url,
+        image: s.image,
+        badge: s.badge,
+      };
     })
   );
   console.log(`✅ [${railLabel}] Inlined ${count}/${sponsorsList.length} sponsor images as instant Base64!`);
   return enriched;
 }
 
+// ── Push to KV with read-back verification & last-known-good backup ────────
 async function pushKeyToKV(key, data, label, retries = 3) {
+  // ── Empty overwrite protection ──────────────────────────────────────────
+  if (!Array.isArray(data) || data.length === 0) {
+    console.error(`❌ ABORT: Refusing to push empty array to KV key '${key}'. This would wipe production links!`);
+    process.exit(1);
+  }
+
   const url = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${KV_NAMESPACE_ID}/values/${key}`;
+  const backupKey = `${key}_backup`;
+  const backupUrl = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${KV_NAMESPACE_ID}/values/${backupKey}`;
+
+  // ── Step 0: Backup last-known-good version before overwrite ─────────────
+  try {
+    const existingRes = await fetch(url, {
+      headers: { 'Authorization': `Bearer ${API_TOKEN}` },
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (existingRes.ok) {
+      const existingData = await existingRes.json();
+      if (Array.isArray(existingData) && existingData.length > 0) {
+        await fetch(backupUrl, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${API_TOKEN}`,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(existingData),
+          signal: AbortSignal.timeout(15_000),
+        });
+        console.log(`📦 [Last-Known-Good] Backed up ${existingData.length} existing items to '${backupKey}'`);
+      }
+    }
+  } catch (backupErr) {
+    console.warn(`⚠️ Warning: could not create backup copy of '${key}': ${backupErr.message}`);
+  }
 
   for (let attempt = 1; attempt <= retries; attempt++) {
     try {
@@ -274,6 +172,26 @@ async function pushKeyToKV(key, data, label, retries = 3) {
         throw new Error(`KV update failed for key '${key}': ${JSON.stringify(resData.errors)}`);
       }
       console.log(`✅ ${label} update SUCCESS! (Key: ${key})`);
+
+      // ── Read-back verification (with propagation delay) ─────────────────
+      await new Promise(r => setTimeout(r, 2000)); // 2s propagation wait
+      const readUrl = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${KV_NAMESPACE_ID}/values/${key}`;
+      const readRes = await fetch(readUrl, {
+        headers: { 'Authorization': `Bearer ${API_TOKEN}` },
+        signal: AbortSignal.timeout(15_000),
+      });
+
+      if (readRes.ok) {
+        const readData = await readRes.json();
+        if (Array.isArray(readData) && readData.length === data.length) {
+          console.log(`✅ ${label} read-back verified! (${readData.length} links in KV)`);
+        } else {
+          console.warn(`⚠️ ${label} read-back mismatch: expected ${data.length}, got ${Array.isArray(readData) ? readData.length : 'non-array'}`);
+        }
+      } else {
+        console.warn(`⚠️ ${label} read-back check failed (HTTP ${readRes.status}) — KV may still propagate`);
+      }
+
       return;
     } catch (err) {
       console.warn(`⚠️ Attempt ${attempt}/${retries} failed for ${key}: ${err.message}`);
@@ -284,14 +202,345 @@ async function pushKeyToKV(key, data, label, retries = 3) {
   }
 }
 
+// ── Sync function fallbacks (auto-generated from canonical JSON) ──────────
+function toJsArray(sponsors) {
+  return sponsors.map(s => {
+    const parts = [
+      `name: ${JSON.stringify(s.name)}`,
+      `label: ${JSON.stringify(s.label)}`,
+      `tagline: ${JSON.stringify(s.tagline)}`,
+      `url: ${JSON.stringify(s.url)}`,
+      `image: ${JSON.stringify(s.image)}`,
+      s.imageData ? `imageData: ${JSON.stringify(s.imageData)}` : null,
+      `badge: ${JSON.stringify(s.badge)}`,
+    ].filter(Boolean);
+    return `    { ${parts.join(', ')} }`;
+  }).join(',\n');
+}
+
+function updateFunctionFallbacks(t1, t2) {
+  const now = new Date().toISOString();
+  const expectedT1 = manifest.expectedCounts.trail1;
+  const expectedT2 = manifest.expectedCounts.trail2;
+
+  const sponsorsJsContent = `/**
+ * functions/api/sponsors.js
+ * Cloudflare Pages Function — KV se sponsor links serve karta hai
+ *
+ * GET /api/sponsors        → Trail 1 (Featured Sponsors - Gold Theme)
+ * GET /api/sponsors?rail=2 → Trail 2 (Gaming Links - Emerald Theme)
+ * GET /api/link-health     → Health diagnostic (non-sensitive)
+ *
+ * AUTO-SYNCED by: scripts/push-sponsors.mjs — DO NOT EDIT MANUALLY
+ * Source: src/data/sponsor-links.json (canonical)
+ * Manifest Version: ${manifest.manifestVersion}
+ * Manifest Hash: ${manifestHash}
+ * Last updated: ${now}
+ *
+ * Layer 2 Fallback: If KV unavailable, hardcoded Base64 data is served.
+ * Layer 1 (KV): Updated by npm run sponsors:push
+ */
+
+const MANIFEST_VERSION = '${manifest.manifestVersion}';
+const MANIFEST_HASH = '${manifestHash}';
+const EXPECTED_TRAIL1 = ${expectedT1};
+const EXPECTED_TRAIL2 = ${expectedT2};
+
+export async function onRequest(context) {
+  const { env } = context;
+  const url = new URL(context.request.url);
+
+  // ── Health diagnostic endpoint ──────────────────────────────────────────
+  if (url.pathname === '/api/link-health') {
+    let t1Count = 0, t2Count = 0, source = 'unknown';
+    try {
+      const raw1 = await env.SPONSORS.get('links', { type: 'json' });
+      const raw2 = await env.SPONSORS.get('links2', { type: 'json' });
+      t1Count = Array.isArray(raw1) ? raw1.length : getDefaultSponsors().length;
+      t2Count = Array.isArray(raw2) ? raw2.length : getDefaultSponsors2().length;
+      source = Array.isArray(raw1) && raw1.length > 0 ? 'kv' : 'fallback';
+    } catch {
+      source = 'fallback';
+      t1Count = getDefaultSponsors().length;
+      t2Count = getDefaultSponsors2().length;
+    }
+    return new Response(JSON.stringify({
+      status: 'ok',
+      manifestVersion: MANIFEST_VERSION,
+      manifestHash: MANIFEST_HASH,
+      trail1Count: t1Count,
+      trail2Count: t2Count,
+      expectedTrail1: EXPECTED_TRAIL1,
+      expectedTrail2: EXPECTED_TRAIL2,
+      trail1Healthy: t1Count >= EXPECTED_TRAIL1,
+      trail2Healthy: t2Count >= EXPECTED_TRAIL2,
+      source,
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache', 'Access-Control-Allow-Origin': '*' },
+    });
+  }
+
+  // ── Normal sponsor data ─────────────────────────────────────────────────
+  try {
+    const isRail2 = url.searchParams.get('rail') === '2';
+    const key = isRail2 ? 'links2' : 'links';
+    const raw = await env.SPONSORS.get(key, { type: 'json' });
+
+    // Validate KV data before serving (NEVER serve empty or partial array from KV)
+    const minExpected = isRail2 ? EXPECTED_TRAIL2 : EXPECTED_TRAIL1;
+    const isKvValid = Array.isArray(raw) && raw.length >= minExpected;
+    const sponsors = isKvValid
+      ? raw
+      : (isRail2 ? getDefaultSponsors2() : getDefaultSponsors());
+
+    const kvSource = isKvValid ? 'kv' : 'fallback-safe';
+
+    return new Response(JSON.stringify(sponsors), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=30, s-maxage=30',
+        'Access-Control-Allow-Origin': '*',
+        'X-Link-Count': String(sponsors.length),
+        'X-Link-Source': kvSource,
+        'X-Manifest-Version': MANIFEST_VERSION,
+        'X-Manifest-Hash': MANIFEST_HASH,
+      },
+    });
+  } catch (err) {
+    // KV binding missing/error — serve hardcoded Base64 fallback
+    const isRail2 = url.searchParams.get('rail') === '2';
+    return new Response(JSON.stringify(isRail2 ? getDefaultSponsors2() : getDefaultSponsors()), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        'Access-Control-Allow-Origin': '*',
+        'X-Link-Source': 'fallback-error',
+        'X-Manifest-Version': MANIFEST_VERSION,
+      },
+    });
+  }
+}
+
+// ── TRAIL 1 FALLBACK (hardcoded Base64 — auto-generated from canonical JSON) ──
+function getDefaultSponsors() {
+  return [
+${toJsArray(t1)}
+  ];
+}
+
+// ── TRAIL 2 FALLBACK (hardcoded Base64 — auto-generated from canonical JSON) ──
+function getDefaultSponsors2() {
+  return [
+${toJsArray(t2)}
+  ];
+}
+`;
+
+  const sponsors2JsContent = `/**
+ * functions/api/sponsors2.js
+ * Cloudflare Pages Function — KV se Trail 2 sponsor links serve karta hai
+ *
+ * GET /api/sponsors2 → Trail 2 (Gaming Links - Emerald Theme)
+ *
+ * AUTO-SYNCED by: scripts/push-sponsors.mjs — DO NOT EDIT MANUALLY
+ * Source: src/data/sponsor-links.json (canonical)
+ * Manifest Version: ${manifest.manifestVersion}
+ * Last updated: ${now}
+ */
+
+const EXPECTED_TRAIL2 = ${expectedT2};
+
+export async function onRequest(context) {
+  const { env } = context;
+  try {
+    const raw = await env.SPONSORS.get('links2', { type: 'json' });
+    const isKvValid = Array.isArray(raw) && raw.length >= EXPECTED_TRAIL2;
+    const sponsors = isKvValid ? raw : getDefaultSponsors2();
+    const source = isKvValid ? 'kv' : 'fallback-safe';
+    return new Response(JSON.stringify(sponsors), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'public, max-age=30, s-maxage=30',
+        'Access-Control-Allow-Origin': '*',
+        'X-Link-Count': String(sponsors.length),
+        'X-Link-Source': source,
+        'X-Manifest-Version': '${manifest.manifestVersion}',
+      },
+    });
+  } catch (err) {
+    return new Response(JSON.stringify(getDefaultSponsors2()), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+        'Cache-Control': 'no-cache',
+        'Access-Control-Allow-Origin': '*',
+        'X-Link-Source': 'fallback-error',
+      },
+    });
+  }
+}
+
+function getDefaultSponsors2() {
+  return [
+${toJsArray(t2)}
+  ];
+}
+`;
+
+  const linkHealthJsContent = `/**
+ * functions/api/link-health.js
+ * Cloudflare Pages Function — Link Health & Diagnostics
+ *
+ * GET  /api/link-health        → Non-sensitive diagnostic stats
+ * POST /api/link-health        → Drift auto-recovery (self-heals KV from bundled fallback)
+ * GET  /api/link-health?heal=1 → Self-heal trigger via browser/GET
+ *
+ * AUTO-SYNCED by: scripts/push-sponsors.mjs — DO NOT EDIT MANUALLY
+ * Source: src/data/sponsor-links.json (canonical)
+ * Manifest Version: ${manifest.manifestVersion}
+ * Manifest Hash: ${manifestHash}
+ * Last updated: ${now}
+ */
+
+const MANIFEST_VERSION = '${manifest.manifestVersion}';
+const MANIFEST_HASH = '${manifestHash}';
+const EXPECTED_TRAIL1 = ${expectedT1};
+const EXPECTED_TRAIL2 = ${expectedT2};
+const REQUIRED_TRAIL1_IDS = ['12th-class-result-check', 'y999-game', 'xd777-sting', 'xd777-gamzu', 'jb-game', 'bet-rupees'];
+const REQUIRED_TRAIL2_IDS = ['12th-class-result', 'pkr365', 'm666', 'win786'];
+
+export async function onRequest(context) {
+  const { request, env } = context;
+  const url = new URL(request.url);
+
+  if (request.method === 'OPTIONS') {
+    return new Response(null, {
+      headers: {
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
+        'Access-Control-Allow-Headers': 'Content-Type',
+      },
+    });
+  }
+
+  let t1Data = null;
+  let t2Data = null;
+  let source = 'kv';
+  let missingCritical = [];
+
+  try {
+    if (env.SPONSORS) {
+      t1Data = await env.SPONSORS.get('links', { type: 'json' });
+      t2Data = await env.SPONSORS.get('links2', { type: 'json' });
+    }
+  } catch (err) {
+    source = 'fallback-error';
+  }
+
+  const isT1KvValid = Array.isArray(t1Data) && t1Data.length >= EXPECTED_TRAIL1;
+  const isT2KvValid = Array.isArray(t2Data) && t2Data.length >= EXPECTED_TRAIL2;
+
+  const t1Count = Array.isArray(t1Data) ? t1Data.length : 0;
+  const t2Count = Array.isArray(t2Data) ? t2Data.length : 0;
+
+  if (!isT1KvValid || !isT2KvValid) {
+    source = 'fallback';
+  }
+
+  if (Array.isArray(t1Data)) {
+    const liveIds1 = t1Data.map(s => s.name || s.id);
+    REQUIRED_TRAIL1_IDS.forEach(id => {
+      if (!liveIds1.includes(id)) missingCritical.push(\`trail1:\${id}\`);
+    });
+  } else {
+    missingCritical.push('trail1:all_kv_missing');
+  }
+
+  if (Array.isArray(t2Data)) {
+    const liveIds2 = t2Data.map(s => s.name || s.id);
+    REQUIRED_TRAIL2_IDS.forEach(id => {
+      if (!liveIds2.includes(id)) missingCritical.push(\`trail2:\${id}\`);
+    });
+  } else {
+    missingCritical.push('trail2:all_kv_missing');
+  }
+
+  const isHealthy = isT1KvValid && isT2KvValid && missingCritical.length === 0;
+
+  let healed = false;
+  const shouldHeal = (request.method === 'POST' || url.searchParams.get('heal') === '1' || url.searchParams.get('recover') === '1');
+  if (shouldHeal && env.SPONSORS && env.SPONSORS.put) {
+    try {
+      const res1 = await fetch(new URL('/api/sponsors', request.url));
+      const res2 = await fetch(new URL('/api/sponsors2', request.url));
+      if (res1.ok && res2.ok) {
+        const fresh1 = await res1.json();
+        const fresh2 = await res2.json();
+        if (Array.isArray(fresh1) && fresh1.length >= EXPECTED_TRAIL1) {
+          await env.SPONSORS.put('links', JSON.stringify(fresh1));
+        }
+        if (Array.isArray(fresh2) && fresh2.length >= EXPECTED_TRAIL2) {
+          await env.SPONSORS.put('links2', JSON.stringify(fresh2));
+        }
+        healed = true;
+      }
+    } catch (_) {}
+  }
+
+  const responsePayload = {
+    status: isHealthy ? 'healthy' : 'degraded',
+    manifestVersion: MANIFEST_VERSION,
+    manifestHash: MANIFEST_HASH,
+    expectedCounts: {
+      trail1: EXPECTED_TRAIL1,
+      trail2: EXPECTED_TRAIL2,
+      total: EXPECTED_TRAIL1 + EXPECTED_TRAIL2,
+    },
+    activeCounts: {
+      trail1: t1Count,
+      trail2: t2Count,
+      total: t1Count + t2Count,
+    },
+    trail1Healthy: isT1KvValid,
+    trail2Healthy: isT2KvValid,
+    source,
+    missingCritical,
+    healed,
+    checkedAt: new Date().toISOString(),
+  };
+
+  return new Response(JSON.stringify(responsePayload, null, 2), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+      'Cache-Control': 'no-cache, no-store, must-revalidate',
+      'Access-Control-Allow-Origin': '*',
+      'X-Link-Status': isHealthy ? 'healthy' : 'degraded',
+    },
+  });
+}
+`;
+
+  writeFileSync(join(ROOT, 'functions', 'api', 'sponsors.js'), sponsorsJsContent, 'utf8');
+  writeFileSync(join(ROOT, 'functions', 'api', 'sponsors2.js'), sponsors2JsContent, 'utf8');
+  writeFileSync(join(ROOT, 'functions', 'api', 'link-health.js'), linkHealthJsContent, 'utf8');
+  console.log('✅ Auto-synced functions/api/sponsors.js, sponsors2.js & link-health.js with inline Base64 fallbacks!');
+  console.log(`   Manifest Hash: ${manifestHash} | Version: ${manifest.manifestVersion}`);
+}
+
+// ── Main ───────────────────────────────────────────────────────────────────
 async function pushToKV() {
   console.log('\n🚀 Sponsor Multi-Rail Instant Push — net27.watch');
   console.log('═'.repeat(50));
-
+  console.log(`📋 Source: src/data/sponsor-links.json`);
+  console.log(`📋 Version: ${manifest.manifestVersion} | Hash: ${manifestHash}`);
   console.log(`📋 Trail 1 (Featured): ${SPONSORS.length} links`);
   SPONSORS.forEach((s, i) => console.log(`   #${i + 1} ${s.label} → ${s.url}`));
   console.log('');
-
   console.log(`📋 Trail 2 (Gaming Links): ${SPONSORS_RAIL_2.length} links`);
   SPONSORS_RAIL_2.forEach((s, i) => console.log(`   #${i + 1} ${s.label} → ${s.url}`));
   console.log('');
@@ -310,121 +559,13 @@ async function pushToKV() {
     console.log('\n⏱️  Both rails live in: 5–30 seconds');
     console.log(`🌐 Trail 1 Check: https://net27.watch/api/sponsors`);
     console.log(`🌐 Trail 2 Check: https://net27.watch/api/sponsors2`);
+    console.log(`🌐 Health Check:  https://net27.watch/api/link-health`);
     console.log(`🌐 Site:          https://net27.watch/`);
     console.log('═'.repeat(50) + '\n');
   } catch (err) {
     console.error('❌ Error during KV push:', err.message);
     process.exit(1);
   }
-}
-
-function toJsArray(sponsors) {
-  return sponsors.map(s => {
-    const parts = [
-      `name: ${JSON.stringify(s.name)}`,
-      `label: ${JSON.stringify(s.label)}`,
-      `tagline: ${JSON.stringify(s.tagline)}`,
-      `url: ${JSON.stringify(s.url)}`,
-      `image: ${JSON.stringify(s.image)}`,
-      s.imageData ? `imageData: ${JSON.stringify(s.imageData)}` : null,
-      `badge: ${JSON.stringify(s.badge)}`,
-    ].filter(Boolean);
-    return `    { ${parts.join(', ')} }`;
-  }).join(',\n');
-}
-
-function updateFunctionFallbacks(t1, t2) {
-  const sponsorsJsContent = `/**
- * functions/api/sponsors.js
- * Cloudflare Pages Function — KV se sponsor links serve karta hai
- *
- * GET /api/sponsors        → Trail 1 (Featured Sponsors - Gold Theme)
- * GET /api/sponsors?rail=2 → Trail 2 (Gaming Links - Emerald Theme)
- *
- * AUTO-SYNCED by: scripts/push-sponsors.mjs
- * Last updated: ${new Date().toISOString()}
- */
-
-export async function onRequest(context) {
-  const { env } = context;
-  try {
-    const url = new URL(context.request.url);
-    const isRail2 = url.searchParams.get('rail') === '2';
-    const key = isRail2 ? 'links2' : 'links';
-    const raw = await env.SPONSORS.get(key, { type: 'json' });
-    const sponsors = raw || (isRail2 ? getDefaultSponsors2() : getDefaultSponsors());
-    return new Response(JSON.stringify(sponsors), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=30, s-maxage=30',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
-  } catch (err) {
-    const url = new URL(context.request.url);
-    const isRail2 = url.searchParams.get('rail') === '2';
-    return new Response(JSON.stringify(isRail2 ? getDefaultSponsors2() : getDefaultSponsors()), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' },
-    });
-  }
-}
-
-function getDefaultSponsors() {
-  return [
-${toJsArray(t1)}
-  ];
-}
-
-function getDefaultSponsors2() {
-  return [
-${toJsArray(t2)}
-  ];
-}
-`;
-
-  const sponsors2JsContent = `/**
- * functions/api/sponsors2.js
- * Cloudflare Pages Function — KV se Trail 2 sponsor links serve karta hai
- *
- * GET /api/sponsors2 → Trail 2 (Gaming Links - Emerald Theme)
- *
- * AUTO-SYNCED by: scripts/push-sponsors.mjs
- * Last updated: ${new Date().toISOString()}
- */
-
-export async function onRequest(context) {
-  const { env } = context;
-  try {
-    const raw = await env.SPONSORS.get('links2', { type: 'json' });
-    const sponsors = raw || getDefaultSponsors2();
-    return new Response(JSON.stringify(sponsors), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-        'Cache-Control': 'public, max-age=30, s-maxage=30',
-        'Access-Control-Allow-Origin': '*',
-      },
-    });
-  } catch (err) {
-    return new Response(JSON.stringify(getDefaultSponsors2()), {
-      status: 200,
-      headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-cache' },
-    });
-  }
-}
-
-function getDefaultSponsors2() {
-  return [
-${toJsArray(t2)}
-  ];
-}
-`;
-
-  writeFileSync(join(ROOT, 'functions', 'api', 'sponsors.js'), sponsorsJsContent, 'utf8');
-  writeFileSync(join(ROOT, 'functions', 'api', 'sponsors2.js'), sponsors2JsContent, 'utf8');
-  console.log('✅ Auto-synced functions/api/sponsors.js & sponsors2.js with inline Base64 fallbacks!');
 }
 
 pushToKV();

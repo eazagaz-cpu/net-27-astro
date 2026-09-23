@@ -1,0 +1,223 @@
+{
+  "_comment": "CANONICAL SOURCE OF TRUTH — DO NOT DUPLICATE THIS DATA ELSEWHERE. Har script, component, aur function is file se READ kare.",
+  "manifestVersion": "2026-09-24-01",
+  "generatedAt": "2026-09-24T02:11:00.000Z",
+  "expectedCounts": {
+    "trail1": 10,
+    "trail2": 9,
+    "total": 19
+  },
+  "trail1": [
+    {
+      "id": "12th-class-result-check",
+      "label": "12th Class Result Check",
+      "tagline": "📢 Check Result Online!",
+      "url": "https://9thclassresult.org.pk/",
+      "image": "/links/12th-class-result-check.webp",
+      "imageFile": "12th-class-result-check.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 1
+    },
+    {
+      "id": "y999-game",
+      "label": "Y9999 Game",
+      "tagline": "🏆 Play & Win Big!",
+      "url": "https://y9999.pk/",
+      "image": "/links/y999-game.webp",
+      "imageFile": "y999-game.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 2
+    },
+    {
+      "id": "xd777-sting",
+      "label": "XD777 Game",
+      "tagline": "🎰 Win Big Today!",
+      "url": "https://apksting.com.pk/zentro-win-game/",
+      "image": "/links/XD777-new.webp",
+      "imageFile": "XD777-new.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 3
+    },
+    {
+      "id": "xd777-gamzu",
+      "label": "XD777 Game",
+      "tagline": "🎰 Win Big Today!",
+      "url": "https://apkgamzu.com.pk/x777-game/",
+      "image": "/links/XD777.webp",
+      "imageFile": "XD777.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 4
+    },
+    {
+      "id": "jb-game",
+      "label": "JB Game",
+      "tagline": "🎮 New Earning Games!",
+      "url": "https://jbgame.pk",
+      "image": "/links/jb-game.webp",
+      "imageFile": "jb-game.webp",
+      "badge": "⭐ New",
+      "enabled": true,
+      "priority": 5
+    },
+    {
+      "id": "bet-rupees",
+      "label": "Bet Rupees",
+      "tagline": "💰 Play & Win Big!",
+      "url": "https://betrupe.com/",
+      "image": "/links/bet-rupees.webp",
+      "imageFile": "bet-rupees.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 6
+    },
+    {
+      "id": "p999-pk",
+      "label": "P999 PK",
+      "tagline": "🎯 Top Rewards!",
+      "url": "https://p999pk.org/",
+      "image": "/links/p999-pk.webp",
+      "imageFile": "p999-pk.webp",
+      "badge": "⭐ New",
+      "enabled": true,
+      "priority": 7
+    },
+    {
+      "id": "pak-super-game",
+      "label": "Pak Super Game",
+      "tagline": "🎰 Play & Win Big!",
+      "url": "https://paksupergame.cc/",
+      "image": "/links/pak-super-game.webp",
+      "imageFile": "pak-super-game.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 8
+    },
+    {
+      "id": "hh98",
+      "label": "HH98",
+      "tagline": "🎯 Play & Win!",
+      "url": "https://hh98.pk/",
+      "image": "/links/HH98.webp",
+      "imageFile": "HH98.webp",
+      "badge": "⭐ New",
+      "enabled": true,
+      "priority": 9
+    },
+    {
+      "id": "jj77",
+      "label": "JJ77",
+      "tagline": "🏆 Big Rewards!",
+      "url": "https://jj77apk.pk/",
+      "image": "/links/JJ77.webp",
+      "imageFile": "JJ77.webp",
+      "badge": "💥 Hot",
+      "enabled": true,
+      "priority": 10
+    }
+  ],
+  "trail2": [
+    {
+      "id": "12th-class-result",
+      "label": "12th Class Result",
+      "tagline": "🎓 Check Online Now!",
+      "url": "https://12thclassresult.com.pk/",
+      "image": "/links/12th-class-result.webp",
+      "imageFile": "12th-class-result.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 1
+    },
+    {
+      "id": "pkr365",
+      "label": "PKR365",
+      "tagline": "🎰 Play & Win Big!",
+      "url": "https://gamesapks.com.pk/786ace-game/",
+      "image": "/links/pkr365.webp",
+      "imageFile": "pkr365.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 2
+    },
+    {
+      "id": "m666",
+      "label": "M666 Game",
+      "tagline": "🏆 Play & Win Big!",
+      "url": "http://m666game.net/",
+      "image": "/links/M666.webp",
+      "imageFile": "M666.webp",
+      "badge": "⭐ New",
+      "enabled": true,
+      "priority": 3
+    },
+    {
+      "id": "m19-game",
+      "label": "M19 Game",
+      "tagline": "🎮 Bet & Win!",
+      "url": "https://betapk.com.pk/bet939-game-2/",
+      "image": "/links/M19-game.webp",
+      "imageFile": "M19-game.webp",
+      "badge": "💥 Hot",
+      "enabled": true,
+      "priority": 4
+    },
+    {
+      "id": "1ppp-game",
+      "label": "1PPP Game",
+      "tagline": "🌟 Play & Earn!",
+      "url": "https://1pppp.com.pk/",
+      "image": "/links/1ppp-game.webp",
+      "imageFile": "1ppp-game.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 5
+    },
+    {
+      "id": "win786",
+      "label": "Win786",
+      "tagline": "🎰 Win Big Today!",
+      "url": "https://786win.pk/",
+      "image": "/links/win786.webp",
+      "imageFile": "win786.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 6
+    },
+    {
+      "id": "10win",
+      "label": "10win",
+      "tagline": "🎰 Play & Win Big!",
+      "url": "https://110win.com.pk/",
+      "image": "/links/10win.webp",
+      "imageFile": "10win.webp",
+      "badge": "⭐ New",
+      "enabled": true,
+      "priority": 7
+    },
+    {
+      "id": "xx555",
+      "label": "Xx555",
+      "tagline": "🎰 Play & Win Big!",
+      "url": "https://Xx555.com.pk/",
+      "image": "/links/xx555.webp",
+      "imageFile": "xx555.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 8
+    },
+    {
+      "id": "666c",
+      "label": "666C Games",
+      "tagline": "🎮 Play & Win Big!",
+      "url": "https://666cgames.pk",
+      "image": "/links/666c.webp",
+      "imageFile": "666c.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 9
+    }
+  ]
+}
