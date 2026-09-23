@@ -163,12 +163,6 @@ const homeFaqs = [
     <!-- Continue Watching — client-side localStorage rail -->
     <ContinueWatching />
 
-    <!-- Sponsor / Affiliate Rail 1 (Top / Featured) — KV se instant update -->
-    <SponsorRailDynamic client:only="react" />
-
-    <!-- Sponsor / Affiliate Rail 2 (Popular Gaming Links) — KV se instant update -->
-    <SponsorRailSecondary client:only="react" />
-
     <!-- Top 10 — directly after hero, no CTA interruption -->
     <Top10Rail mediaType="movie" items={cachedPopularMovies} />
     <Top10Rail mediaType="tv" items={cachedPopularTv} />
@@ -266,6 +260,12 @@ const homeFaqs = [
         </div>
       </div>
     </section>
+
+    <!-- Sponsor / Affiliate Rail 1 (Top / Featured) — KV se instant update -->
+    <SponsorRailDynamic client:only="react" />
+
+    <!-- Sponsor / Affiliate Rail 2 (Popular Gaming Links) — KV se instant update -->
+    <SponsorRailSecondary client:only="react" />
   </main>
 
   <Footer />
