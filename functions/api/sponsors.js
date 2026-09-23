@@ -6,7 +6,7 @@
  * GET /api/sponsors?rail=2 → Trail 2 (Gaming Links - Emerald Theme)
  *
  * AUTO-SYNCED by: scripts/push-sponsors.mjs
- * Last updated: 2026-09-22T17:22:35.474Z
+ * Last updated: 2026-09-23T20:34:50.125Z
  */
 
 export async function onRequest(context) {
