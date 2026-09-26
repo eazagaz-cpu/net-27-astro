@@ -166,16 +166,18 @@ const homeFaqs = [
     <!-- Sponsor rails — MUST stay above the Top 10 rails (owner's decision,
          2026-09-26). At the page bottom (bbef911) they sat below ~9,500px of
          content and were reported as "links gone". verify-links.mjs blocks a
-         deploy if they move below Top10Rail again. The min-height reserves
-         their space: they render client-side, and without it the Top 10 rails
-         would jump down when they appear (CLS). -->
+         deploy if they move below Top10Rail again.
+         client:idle, never client:only: the links are rendered into the HTML
+         from src/data/sponsor-links.json at build time, so they show even if
+         the script is slow, fails or is blocked; hydration then swaps in the
+         live KV list. verify-dist-links.mjs checks the built HTML. -->
     <div class="sponsor-rail-slot" style="min-height:280px">
       <!-- Rail 1 (Featured) — KV se instant update -->
-      <SponsorRailDynamic client:only="react" />
+      <SponsorRailDynamic client:idle />
     </div>
     <div class="sponsor-rail-slot" style="min-height:280px">
       <!-- Rail 2 (Popular Gaming Links) — KV se instant update -->
-      <SponsorRailSecondary client:only="react" />
+      <SponsorRailSecondary client:idle />
     </div>
 
     <!-- Top 10 — directly after hero, no CTA interruption -->

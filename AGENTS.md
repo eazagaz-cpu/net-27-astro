@@ -121,8 +121,11 @@ URL badalna ho (sirf jab user kahe "update karo"): purana `sponsors:remove`, nay
 ### BAAQI RULES
 
 - **SEO:** `rel="noopener"` — `nofollow` / `sponsored` mat lagao.
-- **Placement:** rails sirf `HomePage.astro` mein `<SponsorRailDynamic client:only="react" />` aur
-  `<SponsorRailSecondary client:only="react" />` — yeh lines hatana deploy block kar deta hai.
+- **Placement:** rails sirf `HomePage.astro` mein `<SponsorRailDynamic client:idle />` aur
+  `<SponsorRailSecondary client:idle />` — yeh lines hatana deploy block kar deta hai.
+  **`client:only` KABHI mat karo:** `client:idle` se links build ke waqt HTML mein aa jate hain
+  (JS fail/slow/ad-blocker ho tab bhi dikhte hain, aur Google ko bhi milte hain). `verify-links`
+  `client:only` par deploy rok deta hai.
   **Jagah: "Top 10 Movies Today" (`<Top10Rail>`) se UPAR, ContinueWatching ke baad** — user ka
   faisla (2026-09-26). Page ke neeche le jane par (bbef911) links "gayab" samjhe gaye; ab
   `verify-links` rails ko `<Top10Rail>` se neeche hone par deploy rok deta hai. Inhein neeche/footer

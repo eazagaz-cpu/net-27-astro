@@ -112,6 +112,16 @@ The rules that stop links vanishing:
   without a `removed` record, when HomePage.astro stops mounting a rail, or
   when a rail moves below `<Top10Rail>`. The owner wants the rails above the
   Top 10 rails; at the page bottom they were reported as "gone" twice.
+- The rails are **server-rendered** (`client:idle`, never `client:only`), so
+  every link is a plain `<a>` in the homepage HTML even when the script is
+  slow, fails, or is blocked. `verify-dist-links.mjs` (postbuild, and in CI
+  between build and deploy) fails when any link is missing from a built
+  homepage or sits below Top 10.
+- [.github/workflows/sponsor-watchdog.yml](.github/workflows/sponsor-watchdog.yml)
+  checks the live site hourly (`scripts/sponsor-watchdog.mjs`). If an API or
+  KV is short, it re-pushes KV from the manifest. If the HTML is wrong, or the
+  heal does not work, the run fails and GitHub emails the owner. A
+  "Sponsor Links Watchdog" failure email is therefore a real outage.
   `push-sponsors.mjs` does the same against KV before writing, and refuses a
   local push of a manifest that is not yet on GitHub. When a guard fails, fix
   the manifest. Never weaken the guard.

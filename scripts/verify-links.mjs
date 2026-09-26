@@ -150,9 +150,11 @@ async function main() {
   // An unrelated layout edit deleting a rail looks exactly like "links gone".
   const home = readFileSync(join(ROOT, 'src', 'components', 'pages', 'HomePage.astro'), 'utf8');
   for (const rail of ['SponsorRailDynamic', 'SponsorRailSecondary']) {
-    check(`HomePage.astro mounts <${rail} client:only="react" />`,
-      new RegExp(`<${rail}\\s+client:only=["']react["']`).test(home),
-      `src/components/pages/HomePage.astro no longer renders <${rail} client:only="react" /> — the rail would disappear from the site`);
+    // Server-rendered (client:idle/load), never client:only: the links must be
+    // in the HTML itself, so a slow, failed or blocked script cannot hide them.
+    check(`HomePage.astro server-renders <${rail} client:idle />`,
+      new RegExp(`<${rail}\\s+client:(idle|load|visible)\\b`).test(home),
+      `src/components/pages/HomePage.astro must render <${rail} client:idle /> — missing, or client:only (which leaves the links out of the HTML)`);
     // Owner's decision (2026-09-26): rails sit ABOVE the Top 10 rails. Moved
     // to the page bottom once (bbef911) and were reported as "gone".
     const railAt = home.search(new RegExp(`<${rail}\\s`));

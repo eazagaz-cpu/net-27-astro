@@ -73,6 +73,10 @@ jobs:
       - name: Validate indexing output
         run: npm run validate:indexing
 
+      # Every sponsor link must be in the built homepage HTML, above Top 10.
+      - name: 🎰 Verify sponsor links in built HTML
+        run: node scripts/verify-dist-links.mjs
+
       # ── 7. 🎰 KV Push FIRST — Deploy se PEHLE! ───────────────────────────
       # CRITICAL: KV push deploy se PEHLE hota hai.
       # push-sponsors.mjs: empty overwrite protection + read-back verification.

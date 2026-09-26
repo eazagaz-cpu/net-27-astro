@@ -88,6 +88,10 @@ jobs:
           TMDB_API_KEY: ${{ secrets.TMDB_API_KEY }}
           SKIP_SYNC: '1'
 
+      # ── 6b. Every sponsor link must be in the built homepage HTML ──────────
+      - name: 🎰 Verify sponsor links in built HTML
+        run: node scripts/verify-dist-links.mjs
+
       # ── 7. Deploy to Cloudflare Pages ─────────────────────────────────────────
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy dist --project-name net-27-astro --branch main --commit-dirty=true
