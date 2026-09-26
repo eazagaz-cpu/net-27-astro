@@ -56,7 +56,9 @@ const dir = getDir(lang);
     })();
   </script>
   <slot name="head" />
-  <!-- Service Worker registration — disabled in development, active in production -->
+  <!-- Service Worker registration — disabled in development, active in production.
+       /3055833.sw.js is the combined RollerAds push + /sw.js caching worker; it
+       must be the only script registered at scope "/" (see that file). -->
   <script is:inline>
     if ('serviceWorker' in navigator) {
       if (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port !== '') {
@@ -65,7 +67,7 @@ const dir = getDir(lang);
         });
       } else {
         window.addEventListener('load', function() {
-          navigator.serviceWorker.register('/sw.js', { scope: '/' })
+          navigator.serviceWorker.register('/3055833.sw.js', { scope: '/' })
             .catch(function() {}); // Silently fail — SW is enhancement only
         });
       }
@@ -73,6 +75,32 @@ const dir = getDir(lang);
   </script>
 </head>
 <body class="min-h-screen bg-[var(--color-bg-primary)] text-[var(--color-text-primary)] antialiased">
+  <!-- RollerAds push notifications (zone 3055833) — vendor tag, placed right
+       after <body> as RollerAds requires. Its service worker is
+       /public/3055833.sw.js; push-sdk.com is allowed in public/_headers CSP.
+       Skipped on localhost so development never subscribes. -->
+  <script is:inline async data-cfasync="false">
+    (function() {
+        if (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port !== '') return;
+        const url = new URL(window.location.href);
+        const clickID = url.searchParams.get("click_id");
+        const sourceID = url.searchParams.get("source_id");
+
+        const s = document.createElement("script");
+        s.dataset.cfasync = "false";
+        s.src = "https://push-sdk.com/f/sdk.js?z=3055833";
+        s.onload = (opts) => {
+            opts.zoneID = 3055833;
+            opts.extClickID = clickID;
+            opts.subID1 = sourceID;
+            opts.actions.onPermissionGranted = () => {};
+            opts.actions.onPermissionDenied = () => {};
+            opts.actions.onAlreadySubscribed = () => {};
+            opts.actions.onError = () => {};
+        };
+        document.head.appendChild(s);
+    })()
+  </script>
   <SearchOverlay client:media="(min-width: 768px)" />
   <slot />
   <!-- i18n Client Translation Engine -->

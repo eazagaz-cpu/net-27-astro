@@ -32,9 +32,11 @@ export async function requestPushPermission(uid: string): Promise<string | null>
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') return null;
 
-    // Register the FCM SW
+    // Register the FCM SW on Firebase's own default scope. Scope "/" belongs
+    // to /3055833.sw.js (RollerAds push + site caching); registering here at
+    // "/" would replace it and break push delivery for both.
     const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
-      scope: '/',
+      scope: '/firebase-cloud-messaging-push-scope',
     });
 
     const { getFirebaseApp } = await import('./firebase');
