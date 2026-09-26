@@ -153,6 +153,13 @@ async function main() {
     check(`HomePage.astro mounts <${rail} client:only="react" />`,
       new RegExp(`<${rail}\\s+client:only=["']react["']`).test(home),
       `src/components/pages/HomePage.astro no longer renders <${rail} client:only="react" /> — the rail would disappear from the site`);
+    // Owner's decision (2026-09-26): rails sit ABOVE the Top 10 rails. Moved
+    // to the page bottom once (bbef911) and were reported as "gone".
+    const railAt = home.search(new RegExp(`<${rail}\\s`));
+    const top10At = home.indexOf('<Top10Rail');
+    check(`HomePage.astro places <${rail}> above <Top10Rail>`,
+      railAt !== -1 && top10At !== -1 && railAt < top10At,
+      `<${rail}> must come before <Top10Rail> in HomePage.astro — below it, visitors do not see the links`);
   }
 
   // ── Check 11: Components derive their fallback from the manifest ─────────

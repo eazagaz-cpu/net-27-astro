@@ -123,7 +123,10 @@ URL badalna ho (sirf jab user kahe "update karo"): purana `sponsors:remove`, nay
 - **SEO:** `rel="noopener"` — `nofollow` / `sponsored` mat lagao.
 - **Placement:** rails sirf `HomePage.astro` mein `<SponsorRailDynamic client:only="react" />` aur
   `<SponsorRailSecondary client:only="react" />` — yeh lines hatana deploy block kar deta hai.
-  `Top10Rail.astro` mein kabhi nahi.
+  **Jagah: "Top 10 Movies Today" (`<Top10Rail>`) se UPAR, ContinueWatching ke baad** — user ka
+  faisla (2026-09-26). Page ke neeche le jane par (bbef911) links "gayab" samjhe gaye; ab
+  `verify-links` rails ko `<Top10Rail>` se neeche hone par deploy rok deta hai. Inhein neeche/footer
+  mein mat le jao. `Top10Rail.astro` ke andar kabhi nahi.
 - **Images:** `push-sponsors.mjs` har image ka 192px Base64 thumbnail KV payload mein inline karta hai;
   broken image par component casino-avatar fallback dikhata hai.
 - Health check: https://net27.watch/api/link-health

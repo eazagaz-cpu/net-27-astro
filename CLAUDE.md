@@ -109,7 +109,9 @@ The rules that stop links vanishing:
   `npm run sponsors:deploy`.
 - Guards: `verify-links.mjs` (CI, `prebuild`, `sponsors:deploy`) blocks the
   deploy when a link that is live on net27.watch is missing from the manifest
-  without a `removed` record, or when HomePage.astro stops mounting a rail.
+  without a `removed` record, when HomePage.astro stops mounting a rail, or
+  when a rail moves below `<Top10Rail>`. The owner wants the rails above the
+  Top 10 rails; at the page bottom they were reported as "gone" twice.
   `push-sponsors.mjs` does the same against KV before writing, and refuses a
   local push of a manifest that is not yet on GitHub. When a guard fails, fix
   the manifest. Never weaken the guard.
