@@ -48,15 +48,21 @@ only changes the `default` profile and cannot reach this one.
 
 Precedence details that matter:
 
-- `CLOUDFLARE_API_TOKEN` in the environment **outranks** the profile. Never
-  set one machine-wide. Wrangler also loads `.env.local` by itself, and the
-  token there (same account; `push-sponsors.mjs` needs it) is what `wrangler`
-  actually uses at the repo root. The profile is what it uses everywhere else
-  in the tree.
-- For the same reason, wrangler refuses `auth create` and `auth activate` while
-  that token is loaded. Run them from outside the repo root:
-  `npm run cf:login` (re-create the profile) does that for you, and
-  `npm run cf -- auth activate net27` re-binds the repo.
+- **No Cloudflare token is kept on disk locally** (since 2026-09-27). `.env`
+  and `.env.local` hold no `CLOUDFLARE_API_TOKEN`: every old token was deleted
+  after the stale repo incident, and the only API token left ("Edit Cloudflare
+  Workers", created 2026-09-26) lives solely in this repo's GitHub secret.
+  Locally, wrangler uses the `net27` profile, and `push-sponsors.mjs` borrows a
+  short-lived OAuth token from it (`wrangler auth token`). Do not paste a token
+  back into `.env*`. Wrangler loads those files itself, and a token there
+  outranks the profile. The same applies to any machine-wide
+  `CLOUDFLARE_API_TOKEN`. A few older one-off scripts (`cf-bot-check`,
+  `add-domain-redirect`, `fix-*-redirect`) still expect an env token; they now
+  need one passed explicitly for that run.
+- Wrangler refuses `auth create` and `auth activate` while an env token is
+  loaded. `npm run cf:login` (re-create the profile) and
+  `npm run cf -- auth activate net27` (re-bind the repo) run from `scripts/` to
+  avoid that.
 - `CLOUDFLARE_ACCOUNT_ID` in the environment outranks everything. A user-level
   one pointing at another account (`364bc935…`) was removed on 2026-09-25.
 - `account_id` **cannot** go in `wrangler.toml`: Pages config rejects it

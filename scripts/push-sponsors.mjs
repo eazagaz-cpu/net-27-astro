@@ -71,8 +71,18 @@ for (const file of ['.env.local', '.env']) {
 
 const KV_NAMESPACE_ID = 'aa59493bbbed47c0af878405e12bd8fb';
 const { cloudflareAccountId: ACCOUNT_ID } = JSON.parse(readFileSync(join(ROOT, '.project-identity.json'), 'utf8'));
-const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
 const IS_CI = process.env.GITHUB_ACTIONS === 'true';
+// CI passes CLOUDFLARE_API_TOKEN (GitHub secret). Locally no token is kept on
+// disk any more: borrow a short-lived OAuth token from this directory's
+// wrangler profile "net27" (see CLAUDE.md → Cloudflare).
+const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN || (IS_CI ? undefined : (() => {
+  const env = { ...process.env };
+  delete env.XDG_CONFIG_HOME;
+  const r = spawnSync(process.execPath,
+    [join(ROOT, 'node_modules', 'wrangler', 'bin', 'wrangler.js'), 'auth', 'token', '--json'],
+    { cwd: join(ROOT, 'scripts'), encoding: 'utf8', env });
+  try { return JSON.parse(r.stdout).token; } catch { return undefined; }
+})());
 // --no-kv: only regenerate functions/api/sponsors*.js from the manifest, so
 // they can be committed in sync (Cloudflare's Git build deploys the committed
 // copies). Touches nothing remote.
@@ -83,7 +93,9 @@ if (!NO_KV && process.env.CLOUDFLARE_ACCOUNT_ID && process.env.CLOUDFLARE_ACCOUN
   process.exit(1);
 }
 if (!NO_KV && !API_TOKEN) {
-  console.error('❌ CLOUDFLARE_API_TOKEN nahi mila (.env.local ya CI secret)!');
+  console.error(IS_CI
+    ? '❌ CLOUDFLARE_API_TOKEN secret nahi mila!'
+    : '❌ Cloudflare login nahi mila — wrangler profile "net27" chahiye: npm run cf:login (net27.cc@gmail.com), phir npm run auth:check');
   process.exit(1);
 }
 
