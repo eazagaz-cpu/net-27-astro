@@ -8,14 +8,14 @@
  *
  * AUTO-SYNCED by: scripts/push-sponsors.mjs — DO NOT EDIT MANUALLY
  * Source: src/data/sponsor-links.json (canonical)
- * Manifest Version: 2026-09-24-01
- * Manifest Hash: 8e4956ba6353d9f0
- * Last updated: 2026-09-23T21:28:51.991Z
+ * Manifest Version: 2026-09-26-01
+ * Manifest Hash: fe83f8b565a2f862
+ * Last updated: 2026-09-26T09:26:08.399Z
  */
 
-const MANIFEST_VERSION = '2026-09-24-01';
-const MANIFEST_HASH = '8e4956ba6353d9f0';
-const EXPECTED_TRAIL1 = 10;
+const MANIFEST_VERSION = '2026-09-26-01';
+const MANIFEST_HASH = 'fe83f8b565a2f862';
+const EXPECTED_TRAIL1 = 11;
 const EXPECTED_TRAIL2 = 9;
 const REQUIRED_TRAIL1_IDS = ['12th-class-result-check', 'y999-game', 'xd777-sting', 'xd777-gamzu', 'jb-game', 'bet-rupees'];
 const REQUIRED_TRAIL2_IDS = ['12th-class-result', 'pkr365', 'm666', 'win786'];

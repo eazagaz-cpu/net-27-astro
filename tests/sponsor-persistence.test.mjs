@@ -74,25 +74,31 @@ async function runTests() {
 
   assert(`Trail 1 count matches expected (${t1.length} == ${manifest.expectedCounts.trail1})`, t1.length === manifest.expectedCounts.trail1);
   assert(`Trail 2 count matches expected (${t2.length} == ${manifest.expectedCounts.trail2})`, t2.length === manifest.expectedCounts.trail2);
-  assert('Trail 1 has at least 9 links', t1.length >= 9);
-  assert('Trail 2 has at least 8 links', t2.length >= 8);
+  assert('Trail 1 is not empty', t1.length >= 1);
+  assert('Trail 2 is not empty', t2.length >= 1);
   assert(`Total count is ${manifest.expectedCounts.total}`, t1.length + t2.length === manifest.expectedCounts.total);
 
-  // ── Test 3: Critical IDs ──────────────────────────────────────────────────
-  console.log('\n[Suite 3: Critical Sponsor IDs]');
-  const criticalTrail1 = ['12th-class-result-check', 'y999-game', 'xd777-sting', 'xd777-gamzu', 'jb-game', 'bet-rupees'];
-  const criticalTrail2 = ['12th-class-result', 'pkr365', 'm666', 'win786'];
-
+  // ── Test 3: No-silent-removal guard ───────────────────────────────────────
+  // Replaces the old hardcoded "critical IDs" list: ANY live link is protected.
+  console.log('\n[Suite 3: No-Silent-Removal Guard]');
+  const { silentRemovals, normUrl } = await import('../scripts/lib/sponsor-guard.mjs');
   const t1Ids = t1.map(s => s.id);
   const t2Ids = t2.map(s => s.id);
+  const liveNow = [...t1, ...t2].map(s => ({ name: s.id, url: s.url }));
 
-  criticalTrail1.forEach(id => {
-    assert(`Trail 1 contains critical ID: ${id}`, t1Ids.includes(id));
-  });
-
-  criticalTrail2.forEach(id => {
-    assert(`Trail 2 contains critical ID: ${id}`, t2Ids.includes(id));
-  });
+  assert('Current manifest keeps every link it serves', silentRemovals(liveNow, manifest).length === 0);
+  const dropped = { ...manifest, trail1: manifest.trail1.slice(1) };
+  assert('Dropping a live link without a record is caught',
+    silentRemovals(liveNow, dropped).length === 1);
+  const tombstoned = { ...dropped, removed: [{ url: manifest.trail1[0].url, removedOn: '2026-09-26' }] };
+  assert('Dropping a live link WITH a removed record is allowed',
+    silentRemovals(liveNow, tombstoned).length === 0);
+  const kvOnly = [...liveNow, { name: 'uncommitted', url: 'https://example.pk/new' }];
+  assert('A KV-only link (never committed) blocks the overwrite',
+    silentRemovals(kvOnly, manifest).length === 1);
+  assert('URL matching ignores scheme, www, case and trailing slash',
+    normUrl('HTTPS://www.Xx555.com.pk/') === normUrl('http://xx555.com.pk'));
+  assert('Every removed entry is well-formed', (manifest.removed ?? []).every(r => r.url && r.removedOn));
 
   // ── Test 4: Duplicate and Empty Validation Logic ─────────────────────────
   console.log('\n[Suite 4: Negative Validations & Tamper Detection]');

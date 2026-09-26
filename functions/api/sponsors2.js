@@ -6,8 +6,8 @@
  *
  * AUTO-SYNCED by: scripts/push-sponsors.mjs — DO NOT EDIT MANUALLY
  * Source: src/data/sponsor-links.json (canonical)
- * Manifest Version: 2026-09-24-01
- * Last updated: 2026-09-23T21:28:51.991Z
+ * Manifest Version: 2026-09-26-01
+ * Last updated: 2026-09-26T09:26:08.399Z
  */
 
 const EXPECTED_TRAIL2 = 9;
@@ -27,7 +27,7 @@ export async function onRequest(context) {
         'Access-Control-Allow-Origin': '*',
         'X-Link-Count': String(sponsors.length),
         'X-Link-Source': source,
-        'X-Manifest-Version': '2026-09-24-01',
+        'X-Manifest-Version': '2026-09-26-01',
       },
     });
   } catch (err) {

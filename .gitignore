@@ -25,10 +25,7 @@ Thumbs.db
 
 # editors
 .idea/
-.vscode/*
-# Tracked so the wrangler credential isolation survives a fresh clone. Git
-# cannot re-include a file whose parent directory is excluded, hence the /*.
-!.vscode/settings.json
+.vscode/
 *.swp
 *.swo
 
@@ -40,7 +37,8 @@ tmp-*.log
 .wrangler/
 
 # this project's private Cloudflare login (see scripts/wrangler.mjs) — holds a
-# refresh token, must never be committed
+# refresh token, must never be committed. Retired in favour of the "net27"
+# wrangler auth profile; the folder may still hold old logs.
 .cf-auth/
 
 # credentials and service account secrets

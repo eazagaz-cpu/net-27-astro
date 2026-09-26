@@ -16,18 +16,22 @@ import { readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { createHash } from 'crypto';
+import { silentRemovals, explain, normUrl } from './lib/sponsor-guard.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
 const MANIFEST_PATH = join(ROOT, 'src', 'data', 'sponsor-links.json');
+const LIVE_SITE = 'https://net27.watch';
 
 // ── Required minimum counts ────────────────────────────────────────────────
-const MIN_TRAIL1 = 9;   // At least 9 Trail 1 links required
-const MIN_TRAIL2 = 8;   // At least 8 Trail 2 links required
+// Only "never empty". A floor like 9 blocked legitimate removals; accidental
+// ones are caught by the live-link check below instead.
+const MIN_TRAIL1 = 1;
+const MIN_TRAIL2 = 1;
 
-// ── Required critical IDs that MUST always be present ─────────────────────
-const REQUIRED_TRAIL1_IDS = ['y999-game', 'xd777-sting', 'xd777-gamzu', 'jb-game', 'bet-rupees'];
-const REQUIRED_TRAIL2_IDS = ['pkr365', 'm666', 'win786'];
+// Which links must stay is no longer a hardcoded ID list here (one more copy
+// of the data to drift). The rule is: nothing that is LIVE may leave the
+// manifest unless it is recorded under `removed` — see lib/sponsor-guard.mjs.
 
 let passed = 0;
 let failed = 0;
@@ -44,7 +48,7 @@ function check(name, condition, errorMsg) {
   }
 }
 
-function main() {
+async function main() {
   console.log('\n🔍 Sponsor Links Integrity Verification');
   console.log('═'.repeat(50));
   console.log(`📄 Manifest: ${MANIFEST_PATH}\n`);
@@ -131,25 +135,33 @@ function main() {
     `Sponsors with empty ID found!`
   );
 
-  // ── Check 9: Required critical IDs present in Trail 1 ────────────────────
-  const t1Ids = t1.map(s => s.id);
-  REQUIRED_TRAIL1_IDS.forEach(reqId => {
-    check(
-      `Required Trail 1 ID present: ${reqId}`,
-      t1Ids.includes(reqId),
-      `Critical sponsor '${reqId}' is missing from Trail 1!`
-    );
-  });
+  // ── Check 9: `removed` tombstones are well-formed and not contradictory ──
+  const removed = manifest.removed ?? [];
+  check('removed is an array', Array.isArray(removed), '`removed` must be an array of { url, removedOn, reason }');
+  const liveUrls = new Set([...t1, ...t2].map(s => normUrl(s.url)));
+  const badTombstones = removed.filter(r => !r?.url || !r?.removedOn);
+  check('Every removed entry has url + removedOn', badTombstones.length === 0,
+    `removed entries missing url/removedOn: ${JSON.stringify(badTombstones)}`);
+  const contradictions = removed.filter(r => liveUrls.has(normUrl(r.url)));
+  check('No link is both active and removed', contradictions.length === 0,
+    `Listed as active AND removed: ${contradictions.map(r => r.url).join(', ')} — delete the removed entry to keep it`);
 
-  // ── Check 10: Required critical IDs present in Trail 2 ───────────────────
-  const t2Ids = t2.map(s => s.id);
-  REQUIRED_TRAIL2_IDS.forEach(reqId => {
-    check(
-      `Required Trail 2 ID present: ${reqId}`,
-      t2Ids.includes(reqId),
-      `Critical sponsor '${reqId}' is missing from Trail 2!`
-    );
-  });
+  // ── Check 10: The homepage still mounts both rails ───────────────────────
+  // An unrelated layout edit deleting a rail looks exactly like "links gone".
+  const home = readFileSync(join(ROOT, 'src', 'components', 'pages', 'HomePage.astro'), 'utf8');
+  for (const rail of ['SponsorRailDynamic', 'SponsorRailSecondary']) {
+    check(`HomePage.astro mounts <${rail} client:only="react" />`,
+      new RegExp(`<${rail}\\s+client:only=["']react["']`).test(home),
+      `src/components/pages/HomePage.astro no longer renders <${rail} client:only="react" /> — the rail would disappear from the site`);
+  }
+
+  // ── Check 11: Components derive their fallback from the manifest ─────────
+  for (const f of ['SponsorRailDynamic.tsx', 'SponsorRailSecondary.tsx']) {
+    const src = readFileSync(join(ROOT, 'src', 'components', f), 'utf8');
+    check(`${f} reads its fallback from sponsor-links.json`,
+      src.includes('data/sponsor-links.json') && !/https?:\/\/[^'"`\s]+\.(pk|cc|net|com|org)/i.test(src),
+      `${f} hardcodes sponsor URLs — it must build FALLBACK from src/data/sponsor-links.json`);
+  }
 
   // ── Check 11: All sponsors have required fields ───────────────────────────
   [...manifest.trail1, ...manifest.trail2].forEach(s => {
@@ -160,6 +172,28 @@ function main() {
       `Sponsor '${s.id}' missing fields: ${missing.join(', ')}`
     );
   });
+
+  // ── Check 12: Nothing live on net27.watch is dropped silently ────────────
+  // Runs in CI before any KV write or deploy, and locally before commits.
+  for (const [path, label] of [['/api/sponsors', 'Trail 1'], ['/api/sponsors2', 'Trail 2']]) {
+    let live = null;
+    try {
+      const res = await fetch(`${LIVE_SITE}${path}?verify=${Date.now()}`, {
+        headers: { 'User-Agent': 'net27-verify-links' },
+        signal: AbortSignal.timeout(15_000),
+      });
+      if (res.ok) live = await res.json();
+    } catch {}
+    if (!Array.isArray(live)) {
+      // Site down or unreachable: nothing to compare against, and a deploy
+      // may be what fixes it. push-sponsors.mjs still guards KV directly.
+      console.warn(`  ⚠️  ${label}: could not read ${LIVE_SITE}${path} — live comparison skipped`);
+      continue;
+    }
+    const lost = silentRemovals(live, manifest);
+    check(`${label}: all ${live.length} live links are kept or explicitly removed`, lost.length === 0,
+      explain(lost, `${LIVE_SITE}${path}`));
+  }
 
   // ── Compute manifest hash ─────────────────────────────────────────────────
   const hash = createHash('sha256')
@@ -184,11 +218,11 @@ function reportAndExit(manifest, hash, t1Count, t2Count) {
     console.error('\n❌ VERIFICATION FAILED — Deploy blocked!');
     errors.forEach(e => console.error(`   → ${e}`));
     console.error('\n💡 Fix sponsor-links.json and re-run: npm run verify:links\n');
-    process.exit(1);
+    process.exitCode = 1;
   } else {
     console.log('\n✅ ALL CHECKS PASSED — Safe to deploy!');
-    console.log(`🚀 Run: npm run sponsors:push && npm run push:safe\n`);
-    process.exit(0);
+    console.log(`🚀 Run: npm run sponsors:deploy\n`);
+    process.exitCode = 0;
   }
 }
 

@@ -1,34 +1,47 @@
 /**
- * wrangler.mjs — runs wrangler against THIS project's own credential store.
+ * wrangler.mjs — runs this project's wrangler pinned to the net27 account.
  *
- * Wrangler keeps its OAuth login in one machine-wide location, shared by every
- * repo, so `wrangler login` in another project silently repoints this one at a
- * different account and deploys start failing with "Failed to automatically
- * retrieve account IDs".
+ * Authentication comes from the wrangler auth profile "net27", bound to this
+ * directory with `wrangler auth activate` (stored in wrangler's global config,
+ * outside the repo). A token in .env.local, which wrangler loads by itself,
+ * outranks that profile; both belong to the same account.
  *
- * Wrangler resolves that location through XDG_CONFIG_HOME, so pointing it at a
- * folder inside the project gives this repo a private login that nothing
- * outside it can touch. Everything here goes through this wrapper for that
- * reason — calling `wrangler` directly falls back to the shared store.
+ * What this wrapper adds is the account pin: wrangler reads the account from
+ * CLOUDFLARE_ACCOUNT_ID ahead of anything else, and an inherited value from
+ * another project would send commands to the wrong account. Run
+ * `npm run auth:check` to verify the whole chain.
  *
  * Usage: node scripts/wrangler.mjs <any wrangler args>
  */
 import { spawn } from 'child_process';
+import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
-const env = { ...process.env, XDG_CONFIG_HOME: join(ROOT, '.cf-auth') };
+const { cloudflareAccountId } = JSON.parse(readFileSync(join(ROOT, '.project-identity.json'), 'utf-8'));
 
-// This repo uses a private OAuth login. A stale machine-level token can outrank
-// that login and break Pages deploys, so keep wrapper calls scoped to OAuth.
+const env = { ...process.env, CLOUDFLARE_ACCOUNT_ID: cloudflareAccountId };
+// A machine-level token belongs to whichever project set it and would outrank
+// this directory's profile. .env.local is unaffected: wrangler loads it itself.
 delete env.CLOUDFLARE_API_TOKEN;
 delete env.CF_API_TOKEN;
-env.CLOUDFLARE_ACCOUNT_ID = '34bdd56a73c7dc40d4223f7fa255d419';
+// Hides the profile store; an old .vscode setting pointed it at .cf-auth/.
+delete env.XDG_CONFIG_HOME;
 
-const child = spawn('npx', ['wrangler', ...process.argv.slice(2)], {
+const args = process.argv.slice(2);
+let cwd = ROOT;
+if (args[0] === 'auth') {
+  // Wrangler loads .env.local from the working directory and refuses to
+  // manage profiles while it holds a token, so run from a folder without one
+  // and bind the repo itself rather than that folder.
+  cwd = join(ROOT, 'scripts');
+  if (['activate', 'deactivate'].includes(args[1]) && args.length === (args[1] === 'activate' ? 3 : 2)) args.push(ROOT);
+}
+
+const child = spawn(process.execPath, [join(ROOT, 'node_modules', 'wrangler', 'bin', 'wrangler.js'), ...args], {
   stdio: 'inherit',
-  shell: true,
+  cwd,
   env,
 });
 

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import manifest from '../data/sponsor-links.json';
 
 interface SponsorCard {
   name: string;
@@ -10,19 +11,11 @@ interface SponsorCard {
   badge: string;
 }
 
-// Fallback data — API fail hone par bhi yeh HAMESHA dikhega
-const FALLBACK: SponsorCard[] = [
-  { name: '12th-class-result-check', label: '12th Class Result Check', tagline: 'Check Result Online!', url: 'https://9thclassresult.org.pk/', image: '/links/12th-class-result-check.webp', badge: '🔥 Hot' },
-  { name: 'y999-game',      label: 'Y9999 Game',     tagline: 'Play & Win Big!',    url: 'https://y9999.pk/',                        image: '/links/y999-game.webp',      badge: '🔥 Hot' },
-  { name: 'xd777-sting',   label: 'XD777 Game',     tagline: 'Win Big Today!',     url: 'https://apksting.com.pk/zentro-win-game/', image: '/links/XD777-new.webp',      badge: '🔥 Hot' },
-  { name: 'xd777-gamzu',   label: 'XD777 Game',     tagline: 'Win Big Today!',     url: 'https://apkgamzu.com.pk/x777-game/',       image: '/links/XD777.webp',          badge: '🔥 Hot' },
-  { name: 'jb-game',       label: 'JB Game',        tagline: 'New Earning Games!', url: 'https://jbgame.pk',                        image: '/links/jb-game.webp',        badge: '🆕 New' },
-  { name: 'bet-rupees',    label: 'Bet Rupees',     tagline: 'Bet & Earn!',        url: 'https://betrupe.com/',                     image: '/links/bet-rupees.webp',     badge: '🔥 Hot' },
-  { name: 'p999-pk',       label: 'P999 PK',        tagline: 'Top Rewards!',       url: 'https://p999pk.org/',                      image: '/links/p999-pk.webp',        badge: '🆕 New' },
-  { name: 'pak-super-game',label: 'Pak Super Game', tagline: 'Play & Win Big!',    url: 'https://paksupergame.cc/',                 image: '/links/pak-super-game.webp', badge: '🔥 Hot' },
-  { name: 'hh98',          label: 'HH98',           tagline: 'Play & Win!',        url: 'https://hh98.pk/',                         image: '/links/HH98.webp',           badge: '🆕 New' },
-  { name: 'jj77',          label: 'JJ77',           tagline: 'Big Rewards!',       url: 'https://jj77apk.pk/',                      image: '/links/JJ77.webp',           badge: '💎 Hot' },
-];
+// Fallback — API fail hone par bhi yeh HAMESHA dikhega. Built from
+// src/data/sponsor-links.json at build time: never hardcode links here.
+const FALLBACK: SponsorCard[] = manifest.trail1
+  .filter((s) => s.enabled !== false)
+  .map((s) => ({ name: s.id, label: s.label, tagline: s.tagline, url: s.url, image: s.image, badge: s.badge }));
 
 export default function SponsorRailDynamic() {
   const [sponsors, setSponsors] = useState<SponsorCard[]>(FALLBACK);

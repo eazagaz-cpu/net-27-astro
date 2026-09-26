@@ -1,11 +1,11 @@
 {
-  "_comment": "CANONICAL SOURCE OF TRUTH — DO NOT DUPLICATE THIS DATA ELSEWHERE. Har script, component, aur function is file se READ kare.",
-  "manifestVersion": "2026-09-24-01",
-  "generatedAt": "2026-09-24T02:11:00.000Z",
+  "_comment": "CANONICAL SOURCE OF TRUTH - the ONLY list of sponsor links. Components, Pages Functions and KV are all generated from it. Add: npm run sponsors:add. Remove (only when the user asks): npm run sponsors:remove, which records the link under removed. Deleting an entry by hand is blocked by CI while the link is live. Then: npm run sponsors:deploy.",
+  "manifestVersion": "2026-09-26-01",
+  "generatedAt": "2026-09-26T09:26:08.399Z",
   "expectedCounts": {
-    "trail1": 10,
+    "trail1": 11,
     "trail2": 9,
-    "total": 19
+    "total": 20
   },
   "trail1": [
     {
@@ -117,6 +117,17 @@
       "badge": "💥 Hot",
       "enabled": true,
       "priority": 10
+    },
+    {
+      "id": "net-mirror",
+      "label": "Net Mirror",
+      "tagline": "🎬 Watch Movies & Shows!",
+      "url": "https://net-mirror.pro/",
+      "image": "/links/net-mirror.webp",
+      "imageFile": "net-mirror.webp",
+      "badge": "🔥 Hot",
+      "enabled": true,
+      "priority": 11
     }
   ],
   "trail2": [
@@ -219,5 +230,6 @@
       "enabled": true,
       "priority": 9
     }
-  ]
+  ],
+  "removed": []
 }

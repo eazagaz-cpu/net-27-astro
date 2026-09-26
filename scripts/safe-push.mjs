@@ -37,11 +37,9 @@ async function main() {
   run('git config --local user.email "eazagaz-cpu@users.noreply.github.com"');
   console.log('✅ Local repo locked to account: eazagaz-cpu');
 
-  // 2. Ensure gh CLI active account is eazagaz-cpu
-  const ghSwitch = run('gh auth switch --user eazagaz-cpu');
-  if (ghSwitch.ok) {
-    console.log('✅ gh CLI active account verified: eazagaz-cpu');
-  }
+  // 2. No `gh auth switch` here: it flips the machine-wide active account for
+  //    every other project. Pushes authenticate as eazagaz-cpu through the
+  //    repo-local credential helper instead (see "GitHub auth" in CLAUDE.md).
 
   // 3. Stage & Commit if uncommitted changes exist
   const statusRes = run('git status --porcelain');

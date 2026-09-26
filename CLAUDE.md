@@ -8,42 +8,111 @@ astro dev --background
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
+## Auth safety rule (all agents)
+
+Before any of these, **always run `npm run auth:check`** and read its result:
+
+- `git push`
+- a GitHub Actions workflow change
+- a Cloudflare deploy (Pages or Worker)
+- a DNS change
+- a KV / D1 / R2 mutation (this includes `npm run sponsors:push`)
+
+If the preflight fails, **do not repair it by switching accounts**, whether with
+`gh auth switch`, `wrangler login`, `wrangler auth activate`, or by editing
+tokens or account IDs. Report the exact mismatch it printed and stop. Never
+deploy to an account that was guessed.
+
+Every expected identity lives in [.project-identity.json](.project-identity.json)
+(no secrets). The npm scripts that push, deploy or write KV already run the
+preflight first; the CI workflows run `node scripts/preflight-auth.mjs --ci`
+before any KV write or deploy.
+
+This machine has **three** Cloudflare accounts and **three** GitHub accounts,
+and both CLIs keep one machine-wide "active" identity that any other repo can
+flip. That is why each identity is pinned to this directory, as below.
+
 ## Cloudflare
 
 The site is a Cloudflare Pages project, `net-27-astro`, on the **net27.cc@gmail.com**
-account (`34bdd56a73c7dc40d4223f7fa255d419`). Pushing to `main` triggers the
-production build automatically — direct `wrangler pages deploy` is only for
-bypassing CI.
+account (`34bdd56a73c7dc40d4223f7fa255d419`), serving **net27.watch** (old
+domain: net-27.cc). Pushing to `main` triggers the production build
+automatically. A direct `wrangler pages deploy` is only for bypassing CI.
 
-Run this before trusting any wrangler command:
+Local auth is the wrangler auth profile **`net27`**, bound to this directory
+with `wrangler auth activate`. Profiles and bindings live in wrangler's global
+store (`%APPDATA%\xdg.config\.wrangler\`), outside the repo. Any tool that runs
+wrangler from this folder, including VS Code, Codex, Claude and AntiGravity,
+gets the net27 login without extra setup. `wrangler login` in another repo
+only changes the `default` profile and cannot reach this one.
+
+Precedence details that matter:
+
+- `CLOUDFLARE_API_TOKEN` in the environment **outranks** the profile. Never
+  set one machine-wide. Wrangler also loads `.env.local` by itself, and the
+  token there (same account; `push-sponsors.mjs` needs it) is what `wrangler`
+  actually uses at the repo root. The profile is what it uses everywhere else
+  in the tree.
+- For the same reason, wrangler refuses `auth create` and `auth activate` while
+  that token is loaded. Run them from outside the repo root:
+  `npm run cf:login` (re-create the profile) does that for you, and
+  `npm run cf -- auth activate net27` re-binds the repo.
+- `CLOUDFLARE_ACCOUNT_ID` in the environment outranks everything. A user-level
+  one pointing at another account (`364bc935…`) was removed on 2026-09-25.
+- `account_id` **cannot** go in `wrangler.toml`: Pages config rejects it
+  ("does not support account_id") and every deploy would fail. It stays a
+  comment there.
+- `XDG_CONFIG_HOME` hides the profile store. The old `.cf-auth/` +
+  `.vscode/settings.json` setup that used it is retired.
+
+`npm run cf -- <args>` runs the project's wrangler with the account pinned.
+`npm run cf:check` is an alias of `auth:check`.
+
+A token can report `status: active` while still lacking the permissions that
+matter (the token that broke deploys did exactly that), so the preflight calls
+the real Pages endpoint instead of trusting a status field.
+
+## GitHub auth
+
+The repo is `eazagaz-cpu/net-27-astro`. gh stores all three GitHub logins in
+the Windows keyring, and its global git helper (`gh auth setup-git`) only
+serves the **active** account, so pushes used to depend on which project last
+ran `gh auth switch`. `.git/config` therefore has a repo-local helper that
+always asks the keyring for `eazagaz-cpu`'s token. It stores a command, never
+a token:
 
 ```
-npm run cf:check
+git config --local --unset-all credential.https://github.com.helper
+git config --local --add credential.https://github.com.helper ''
+git config --local --add credential.https://github.com.helper '!f() { test "$1" = get || exit 0; t=$("/c/Program Files/GitHub CLI/gh.exe" auth token --user eazagaz-cpu 2>/dev/null) || exit 0; echo username=eazagaz-cpu; echo "password=$t"; }; f'
 ```
 
-Auth must be **project-scoped**, never the bare machine-wide login. Wrangler
-stores its OAuth login once per machine and shares it across every project, so
-running `wrangler login` in some other repo silently repoints this one at a
-different account; the next command then fails with `Failed to automatically
-retrieve account IDs`. This machine has a second Cloudflare account, so that is
-a live hazard, not a hypothetical.
+Plain `gh` commands (PRs, runs, secrets) still act as the active account; the
+preflight warns when that is not `eazagaz-cpu`. Never disable TLS
+verification (`http.sslVerify false`, `GIT_SSL_NO_VERIFY`,
+`NODE_TLS_REJECT_UNAUTHORIZED=0`); the preflight fails on all three.
 
-Two setups avoid it, and `cf:check` accepts either:
+## Sponsor links (the homepage casino/app rails)
 
-- **Private login** (`npm run cf:login`) — wrangler resolves its config
-  directory through `XDG_CONFIG_HOME`, and [scripts/wrangler.mjs](scripts/wrangler.mjs)
-  points that at `.cf-auth/` inside the repo. Every `cf:*` script goes through
-  that wrapper. **Calling `wrangler` directly bypasses it** and falls back to the
-  shared store — use `npm run cf -- <args>` instead.
-- **API token** in `.env.local` as `CLOUDFLARE_API_TOKEN`, which wrangler loads
-  automatically and which outranks the shared login. Mint it at
-  https://dash.cloudflare.com/profile/api-tokens with the **Cloudflare Pages**
-  template plus *Account · Account Settings · Read*.
+Full workflow: the "SPONSOR LINKS SYSTEM" section of [AGENTS.md](AGENTS.md).
+The rules that stop links vanishing:
 
-Note that a token can report `status: active` while still lacking the
-permissions that matter — the token that broke deploys did exactly that — which
-is why `cf:check` calls the real Pages endpoint instead of trusting a status
-field.
+- **[src/data/sponsor-links.json](src/data/sponsor-links.json) is the only list.**
+  `functions/api/sponsors*.js`, `link-health.js`, the components' fallbacks and
+  KV are all generated from it. Never edit those by hand, and never write KV
+  directly. CI rewrites KV from the *committed* manifest four times a day, so
+  anything that is not in the manifest on GitHub disappears within hours. That
+  single fact is why links "kept disappearing" 10-12 times before 2026-09-25.
+- Add: `npm run sponsors:add -- --url … --label … --image …`. Remove, only when
+  the user explicitly asks: `npm run sponsors:remove -- --url …`. That records
+  the link under `removed` rather than deleting it. Then run
+  `npm run sponsors:deploy`.
+- Guards: `verify-links.mjs` (CI, `prebuild`, `sponsors:deploy`) blocks the
+  deploy when a link that is live on net27.watch is missing from the manifest
+  without a `removed` record, or when HomePage.astro stops mounting a rail.
+  `push-sponsors.mjs` does the same against KV before writing, and refuses a
+  local push of a manifest that is not yet on GitHub. When a guard fails, fix
+  the manifest. Never weaken the guard.
 
 ### A `_headers` change needs a cache purge
 

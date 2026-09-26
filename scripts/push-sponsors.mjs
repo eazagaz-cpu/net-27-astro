@@ -8,21 +8,25 @@
  * ⚠️  DATA SOURCE: src/data/sponsor-links.json
  *     Is file ko DIRECTLY edit karo — yahan kuch hardcode mat karo!
  *
- * Usage: npm run sponsors:push
+ * Usage: npm run sponsors:deploy   (commit + push, PHIR KV)
  *
- * Nayi link add karni ho:
- *   1. src/data/sponsor-links.json mein add karo
- *   2. npm run verify:links  ← integrity check
- *   3. npm run sponsors:push ← KV + functions sync
- *   4. npm run push:safe     ← git push
- *   5. 5-30 seconds mein live! ✅
+ * Nayi link:   npm run sponsors:add -- --url <url> --label <naam> --image <file> [--trail 2] [--position 1]
+ * Link hatana: npm run sponsors:remove -- --url <url>   (sirf jab user khud kahe)
+ * Phir:        npm run sponsors:deploy
+ *
+ * Guards (in ko bypass mat karo):
+ *   - Local se sirf woh manifest push hota hai jo GitHub par already hai.
+ *   - Jo link KV mein live hai magar manifest mein nahi (aur `removed` mein
+ *     bhi nahi), us par script ruk jata hai — KV overwrite nahi hota.
  */
 
 import { readFileSync, writeFileSync, existsSync } from 'fs';
 import { join, dirname, basename } from 'path';
 import { fileURLToPath } from 'url';
 import { createHash } from 'crypto';
+import { spawnSync } from 'child_process';
 import sharp from 'sharp';
+import { silentRemovals, explain } from './lib/sponsor-guard.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -54,21 +58,50 @@ if (SPONSORS.length === 0 || SPONSORS_RAIL_2.length === 0) {
 }
 
 // ── Load credentials ───────────────────────────────────────────────────────
-try {
-  const env = readFileSync(join(ROOT, '.env'), 'utf8');
-  for (const line of env.split('\n')) {
-    const [k, ...v] = line.split('=');
-    if (k && v.length) process.env[k.trim()] = v.join('=').trim();
-  }
-} catch {}
+// CI passes them as env vars; locally they live in .env.local (the old code
+// only read .env, which does not exist here, so local pushes always failed).
+for (const file of ['.env.local', '.env']) {
+  try {
+    for (const line of readFileSync(join(ROOT, file), 'utf8').split(/\r?\n/)) {
+      const m = line.match(/^\s*([A-Z0-9_]+)\s*=\s*(.*)$/);
+      if (m && process.env[m[1]] === undefined) process.env[m[1]] = m[2].trim().replace(/^["']|["']$/g, '');
+    }
+  } catch {}
+}
 
 const KV_NAMESPACE_ID = 'aa59493bbbed47c0af878405e12bd8fb';
-const ACCOUNT_ID = process.env.CLOUDFLARE_ACCOUNT_ID;
+const { cloudflareAccountId: ACCOUNT_ID } = JSON.parse(readFileSync(join(ROOT, '.project-identity.json'), 'utf8'));
 const API_TOKEN = process.env.CLOUDFLARE_API_TOKEN;
+const IS_CI = process.env.GITHUB_ACTIONS === 'true';
+// --no-kv: only regenerate functions/api/sponsors*.js from the manifest, so
+// they can be committed in sync (Cloudflare's Git build deploys the committed
+// copies). Touches nothing remote.
+const NO_KV = process.argv.includes('--no-kv');
 
-if (!ACCOUNT_ID || !API_TOKEN) {
-  console.error('❌ .env mein CLOUDFLARE_ACCOUNT_ID ya CLOUDFLARE_API_TOKEN nahi mila!');
+if (!NO_KV && process.env.CLOUDFLARE_ACCOUNT_ID && process.env.CLOUDFLARE_ACCOUNT_ID !== ACCOUNT_ID) {
+  console.error(`❌ CLOUDFLARE_ACCOUNT_ID is ${process.env.CLOUDFLARE_ACCOUNT_ID}, but .project-identity.json says ${ACCOUNT_ID}. Run npm run auth:check.`);
   process.exit(1);
+}
+if (!NO_KV && !API_TOKEN) {
+  console.error('❌ CLOUDFLARE_API_TOKEN nahi mila (.env.local ya CI secret)!');
+  process.exit(1);
+}
+
+// ── Local pushes only from a manifest that is already on GitHub ────────────
+// CI rewrites KV from the COMMITTED manifest 4× a day. A local push of an
+// uncommitted or unpushed manifest goes live for a few hours and is then
+// wiped — the exact "links keep disappearing" pattern. So refuse it.
+if (!IS_CI && !NO_KV) {
+  const git = (args) => spawnSync('git', args, { cwd: ROOT, encoding: 'utf8' });
+  git(['fetch', '--quiet', 'origin', 'main']);
+  const dirty = git(['diff', '--quiet', 'HEAD', '--', 'src/data/sponsor-links.json']).status !== 0;
+  const unpushed = git(['diff', '--quiet', 'origin/main', '--', 'src/data/sponsor-links.json']).status !== 0;
+  if (dirty || unpushed) {
+    console.error(`❌ src/data/sponsor-links.json is ${dirty ? 'not committed' : 'committed but not pushed'}.`);
+    console.error('   CI would overwrite KV with the GitHub version within ~6 hours and these links would vanish.');
+    console.error('   Use: npm run sponsors:deploy   (commits + pushes first, then updates KV)');
+    process.exit(1);
+  }
 }
 
 // ── Compute manifest hash ──────────────────────────────────────────────────
@@ -219,7 +252,9 @@ function toJsArray(sponsors) {
 }
 
 function updateFunctionFallbacks(t1, t2) {
-  const now = new Date().toISOString();
+  // The manifest's own timestamp, not the clock: identical input must give
+  // identical files, or every push leaves the tree dirty for no reason.
+  const now = manifest.generatedAt;
   const expectedT1 = manifest.expectedCounts.trail1;
   const expectedT2 = manifest.expectedCounts.trail2;
 
@@ -548,6 +583,36 @@ async function pushToKV() {
   console.log('⚡ Generating instant Base64 WebP data (Zero 404 guarantee)...');
   const enrichedRail1 = await inlineThumbnails(SPONSORS, 'Trail 1');
   const enrichedRail2 = await inlineThumbnails(SPONSORS_RAIL_2, 'Trail 2');
+
+  if (NO_KV) {
+    updateFunctionFallbacks(enrichedRail1, enrichedRail2);
+    console.log('ℹ️  --no-kv: functions regenerated, KV untouched.\n');
+    return;
+  }
+
+  // ── No-silent-removal guard: check BOTH keys before writing EITHER ───────
+  const base = `https://api.cloudflare.com/client/v4/accounts/${ACCOUNT_ID}/storage/kv/namespaces/${KV_NAMESPACE_ID}/values`;
+  for (const key of ['links', 'links2']) {
+    let res;
+    try {
+      res = await fetch(`${base}/${key}`, { headers: { Authorization: `Bearer ${API_TOKEN}` }, signal: AbortSignal.timeout(15_000) });
+    } catch (e) {
+      console.error(`❌ Could not read KV '${key}' (${e.message}) — refusing to overwrite what I cannot see.`);
+      process.exit(1);
+    }
+    if (res.status === 404) continue; // key never written yet
+    if (!res.ok) {
+      console.error(`❌ Could not read KV '${key}' (HTTP ${res.status}) — refusing to overwrite what I cannot see.`);
+      process.exit(1);
+    }
+    const live = await res.json().catch(() => null);
+    const lost = silentRemovals(live, manifest);
+    if (lost.length) {
+      console.error('\n' + explain(lost, `KV '${key}'`));
+      process.exit(1);
+    }
+  }
+  console.log('🛡️  Guard: every live KV link is in the manifest (or explicitly removed) — safe to write.');
 
   try {
     await pushKeyToKV('links', enrichedRail1, 'Trail 1 (Featured Sponsors)');

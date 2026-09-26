@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import manifest from '../data/sponsor-links.json';
 
 interface SponsorCard {
   name: string;
@@ -10,18 +11,11 @@ interface SponsorCard {
   badge: string;
 }
 
-// Fallback data for Trail 2 — API fail hone par bhi yeh HAMESHA dikhega
-const FALLBACK: SponsorCard[] = [
-  { name: '12th-class-result', label: '12th Class Result', tagline: 'Check Online Now!', url: 'https://12thclassresult.com.pk/', image: '/links/12th-class-result.webp', badge: '🔥 Hot' },
-  { name: 'pkr365',    label: 'PKR365',    tagline: 'Play & Win Big!', url: 'https://gamesapks.com.pk/786ace-game/', image: '/links/pkr365.webp',    badge: '🔥 Hot' },
-  { name: 'm666',     label: 'M666 Game', tagline: 'Play & Win Big!', url: 'http://m666game.net/',                  image: '/links/M666.webp',      badge: '🆕 New' },
-  { name: 'm19-game', label: 'M19 Game',  tagline: 'Bet & Win!',      url: 'https://betapk.com.pk/bet939-game-2/', image: '/links/M19-game.webp',  badge: '💎 Hot' },
-  { name: '1ppp-game',label: '1PPP Game', tagline: 'Play & Earn!',    url: 'https://1pppp.com.pk/',                image: '/links/1ppp-game.webp', badge: '🔥 Hot' },
-  { name: 'win786',   label: 'Win786',    tagline: 'Win Big Today!',  url: 'https://786win.pk/',                   image: '/links/win786.webp',    badge: '🔥 Hot' },
-  { name: '10win',    label: '10win',     tagline: 'Play & Win Big!', url: 'https://110win.com.pk/',               image: '/links/10win.webp',     badge: '🆕 New' },
-  { name: 'xx555',    label: 'Xx555',     tagline: 'Play & Win Big!', url: 'https://Xx555.com.pk/',                image: '/links/xx555.webp',     badge: '🔥 Hot' },
-  { name: '666c',     label: '666C Games',tagline: 'Play & Win Big!', url: 'https://666cgames.pk',                 image: '/links/666c.webp',      badge: '🔥 Hot' },
-];
+// Fallback for Trail 2 — API fail hone par bhi yeh HAMESHA dikhega. Built from
+// src/data/sponsor-links.json at build time: never hardcode links here.
+const FALLBACK: SponsorCard[] = manifest.trail2
+  .filter((s) => s.enabled !== false)
+  .map((s) => ({ name: s.id, label: s.label, tagline: s.tagline, url: s.url, image: s.image, badge: s.badge }));
 
 export default function SponsorRailSecondary() {
   const [sponsors, setSponsors] = useState<SponsorCard[]>(FALLBACK);

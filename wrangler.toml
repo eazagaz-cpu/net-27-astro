@@ -1,6 +1,10 @@
 name = "net-27-astro"
 pages_build_output_dir = "./dist"
 compatibility_date = "2026-06-23"
+# Cloudflare account: 34bdd56a73c7dc40d4223f7fa255d419 (net27.cc@gmail.com).
+# Deliberately a comment: Pages config rejects `account_id` and every deploy
+# would fail. The account is pinned by .project-identity.json, enforced by
+# `npm run auth:check`, scripts/wrangler.mjs and the CI preflight step.
 
 [[kv_namespaces]]
 binding = "SPONSORS"

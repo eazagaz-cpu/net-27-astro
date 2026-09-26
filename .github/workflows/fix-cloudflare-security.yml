@@ -9,6 +9,7 @@ jobs:
   check-indexing:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions: {}
     steps:
       - name: Verify canonical sitemap and robots
         shell: bash
@@ -44,4 +45,6 @@ jobs:
         run: |
           set -euo pipefail
           test "$(curl --silent --output /dev/null --write-out '%{http_code}' https://net27.watch/sitemap_index.xml)" = '301'
-          curl --fail --silent --show-error --head 'https://net27.watch/player/?type=movie&id=969681' | grep -qi 'x-robots-tag:.*noindex'
+          # No title ID here: IDs get DMCA-blocked over time (functions/player.js
+          # answers those with 404), which is how 969681 broke this check.
+          curl --fail --silent --show-error --head 'https://net27.watch/player/' | grep -qi 'x-robots-tag:.*noindex'

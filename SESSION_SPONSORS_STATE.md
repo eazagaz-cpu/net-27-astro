@@ -1,3 +1,7 @@
+> ⚠️ **OUTDATED SNAPSHOT — do not use as a sponsor list.** The only list is
+> `src/data/sponsor-links.json`; workflow in AGENTS.md ("SPONSOR LINKS SYSTEM").
+> Restoring or adding links from this file is how links went missing before.
+
 # NET27 Watch — Sponsor Links & Dual-Rail Workflow State
 > **Last Updated:** 2026-09-24 02:30 PKT  
 > **Repository:** `eazagaz-cpu/net-27-astro` (`c:\Users\ic\Desktop\Websites\net-27.cc`)  

@@ -1,0 +1,14 @@
+{
+  "project": "net-27",
+  "domain": "net27.watch",
+  "legacyDomains": ["net-27.cc", "www.net-27.cc"],
+  "githubOwner": "eazagaz-cpu",
+  "githubRepo": "net-27-astro",
+  "githubRemote": "https://github.com/eazagaz-cpu/net-27-astro.git",
+  "cloudflareEmail": "net27.cc@gmail.com",
+  "cloudflareAccountId": "34bdd56a73c7dc40d4223f7fa255d419",
+  "cloudflareProfile": "net27",
+  "cloudflareProject": "net-27-astro",
+  "cloudflareWorker": null,
+  "productionBranch": "main"
+}
