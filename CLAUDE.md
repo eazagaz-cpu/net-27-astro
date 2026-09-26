@@ -172,6 +172,15 @@ Production is reached two ways, and both must stay green:
    4× daily on cron, refreshes the TMDB cache, builds, and deploys with
    `wrangler pages deploy` using `secrets.CLOUDFLARE_API_TOKEN`.
 
+**There must be no third.** The old private repo `eazagaz-cpu/net27.watch`
+(created 2026-09-07, stale code, no sponsor rails, no `/api` functions) had
+the same `daily-sync.yml` and the same Cloudflare secrets. It deployed into
+`net-27-astro` four times a day, a few minutes after this repo's run, and
+replaced the live site with its old build. That is what kept making the
+sponsor links "disappear". Its workflows must stay **disabled**. If the
+watchdog ever reports wrong HTML, list the Pages deployments first and look
+for an `ad_hoc` deploy whose commit is not in this repo.
+
 The second one is easy to forget, because its failures arrive as GitHub emails
 that read like Cloudflare build failures. It sat broken for four days — sixteen
 consecutive runs — after wrangler was pinned to 4.120.1, which requires Node 22

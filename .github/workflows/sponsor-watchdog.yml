@@ -20,9 +20,10 @@ concurrency:
 jobs:
   watch:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
       contents: read
+      actions: write   # redeploy via fast-deploy.yml when the live HTML is wrong
 
     steps:
       - uses: actions/checkout@v4
@@ -68,9 +69,27 @@ jobs:
           sleep 40
           node scripts/sponsor-watchdog.mjs
 
-      # ── Not self-healable: fail loudly so the owner gets an email ──────────
-      - name: ❌ Homepage HTML is missing sponsor links
+      # ── Wrong HTML → something else was deployed over ours: redeploy ───────
+      # Seen 2026-09-26: the old private repo eazagaz-cpu/net27.watch still
+      # ran its own "Auto Sync & Deploy" into the same Pages project and
+      # replaced this site with a build that has no rails and no /api. This
+      # redeploys our main, then checks again; if that fails too, the run
+      # fails and the owner gets the email.
+      - name: 🩹 Redeploy this repo's main (HTML wrong)
         if: steps.check.outputs.code == '1'
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
-          echo "::error::Sponsor links are missing from the live homepage HTML (or sit below Top 10). A deploy is needed — see the Check live site step."
+          echo "::warning::Live homepage is missing sponsor links — another build was deployed over ours (check other repos deploying to net-27-astro). Redeploying main."
+          gh workflow run fast-deploy.yml --ref main -R "$GITHUB_REPOSITORY"
+          sleep 15
+          id=$(gh run list -R "$GITHUB_REPOSITORY" --workflow fast-deploy.yml -L 1 --json databaseId --jq '.[0].databaseId')
+          gh run watch "$id" -R "$GITHUB_REPOSITORY" --exit-status
+          sleep 60
+          node scripts/sponsor-watchdog.mjs
+
+      - name: ❌ Still broken after redeploy
+        if: failure()
+        run: |
+          echo "::error::Sponsor links are still missing from net27.watch after the automatic redeploy. See the steps above."
           exit 1
