@@ -11,6 +11,11 @@ import { breadcrumbSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 import { CONTACT_EMAIL } from '../../lib/constants';
 
+// Search Console, Sep 2026: "hindi dubbed movies" is the biggest non-brand
+// query (pos ~16, page 2). Searchers add the year, so the title leads with the
+// exact phrase plus the current year. Build-time year: the site rebuilds 4×/day.
+const YEAR = new Date().getFullYear();
+
 const breadcrumbs = [
   { label: 'Home', href: '/' },
   { label: 'Genres', href: '/' },
@@ -29,8 +34,8 @@ const faqs = [
 <BaseLayout>
   <SEOHead
     slot="head"
-    title="Hindi Dubbed Movies & Shows — Watch Online"
-    description="Browse Hindi dubbed movies and shows. Hollywood, South Indian, and anime titles available in Hindi audio."
+    title={`Latest Hindi Dubbed Movies ${YEAR} — Watch Online`}
+    description={`Latest Hindi dubbed movies & shows of ${YEAR}: Hollywood, South Indian (Tamil, Telugu), K-dramas and anime in Hindi audio. Updated daily.`}
     canonical={`${SITE_URL}/genre/hindi-dubbed/`}
   />
   <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs)]} />
@@ -44,7 +49,7 @@ const faqs = [
       <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-24 pb-10">
         <Breadcrumbs items={breadcrumbs} />
         <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
-          <span class="gradient-text">Hindi Dubbed</span> Movies & Shows
+          Latest <span class="gradient-text">Hindi Dubbed</span> Movies & Shows ({YEAR})
         </h1>
         <p class="mt-4 text-[var(--color-text-secondary)] text-lg max-w-3xl">
           Discover a wide collection of Hindi dubbed movies and shows on NetMirror. From Hollywood action films and South Indian blockbusters to Korean dramas and popular anime series, enjoy your favorite content in Hindi audio.

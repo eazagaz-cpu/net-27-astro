@@ -1,11 +1,29 @@
 import { SITE_NAME, SITE_URL } from './seo';
 import { CONTACT_EMAIL, TELEGRAM_URL } from './constants';
 
+/**
+ * The names people actually type for this site, from Search Console (Sep 2026):
+ * "net27" 3.9k impressions, "net27.cc" 2.8k (the old domain was net-27.cc),
+ * "net 27", "net27watch", "netmirror 27". Google uses WebSite.alternateName
+ * when choosing the site name shown in results.
+ */
+const SITE_ALTERNATE_NAMES = ['Net27', 'NET27', 'Net 27', 'Net27 Watch', 'net27.watch', 'net-27.cc', 'NetMirror 27'];
+
+/** Official profiles, the same ones linked in Footer.astro. */
+const SOCIAL_PROFILES = [
+  'https://x.com/netmirror27',
+  'https://www.instagram.com/net27.cc/',
+  'https://www.tiktok.com/@net27cc',
+  'https://www.youtube.com/@NetCc-u1h',
+  'https://www.pinterest.com/net27cc/',
+];
+
 export function websiteSchema(): object {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
     name: SITE_NAME,
+    alternateName: SITE_ALTERNATE_NAMES,
     url: SITE_URL,
     potentialAction: {
       '@type': 'SearchAction',
@@ -23,7 +41,7 @@ export function organizationSchema(): object {
     '@context': 'https://schema.org',
     '@type': 'Organization',
     name: SITE_NAME,
-    alternateName: 'Net27',
+    alternateName: SITE_ALTERNATE_NAMES,
     url: SITE_URL,
     foundingDate: '2024',
     description: 'NET27 Watch is an independent movie and TV show discovery platform that helps users find where to watch movies, TV shows, and anime legally across Netflix, Prime Video, Disney+, JioHotstar, Crunchyroll, and 30+ streaming platforms worldwide. Not affiliated with any streaming service.',
@@ -40,6 +58,7 @@ export function organizationSchema(): object {
     areaServed: 'Worldwide',
     sameAs: [
       TELEGRAM_URL,
+      ...SOCIAL_PROFILES,
     ],
   };
 }

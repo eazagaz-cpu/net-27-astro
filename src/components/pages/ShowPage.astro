@@ -23,7 +23,7 @@ import Breadcrumbs from '../Breadcrumbs.astro';
 import FAQSection from '../FAQSection.astro';
 import { getRealTitlesByType, getRelatedRealTitles } from '../../lib/realTitles';
 import { genres } from '../../data/sampleTitles';
-import { breadcrumbSchema, tvSeriesSchema, faqSchema, watchActionSchema } from '../../lib/schema';
+import { breadcrumbSchema, tvSeriesSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL, titleSeoHeading, titleSeoDescription, titleOgImage } from '../../lib/seo';
 import { personUrl } from '../../lib/people';
 import { TELEGRAM_URL } from '../../lib/constants';
@@ -102,7 +102,6 @@ const posterGradients = [
 const posterGradient = posterGradients[title.title.length % posterGradients.length];
 
 const playerUrl = `/player/?type=tv&id=${title.tmdbId}`;
-const watchUrl = `${SITE_URL}${playerUrl}`;
 
 // Share previews use this show's own backdrop rather than the generic site card.
 const og = titleOgImage(title.backdropUrl, title.title);
@@ -116,7 +115,6 @@ const schemaData = [
     genre: title.genres,
     number_of_seasons: title.seasons,
   }),
-  watchActionSchema(watchUrl, title.title, 'TVSeries'),
   breadcrumbSchema(breadcrumbs),
   faqSchema(faqs),
 ];

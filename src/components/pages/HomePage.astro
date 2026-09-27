@@ -78,6 +78,11 @@ const homeFaqs = [
   <Header />
 
   <main>
+    {/* The homepage had no H1 heading at all. It carries the brand people
+        search for ("net27", "NET27 Watch"); visually hidden so the hero keeps
+        the top of the page, but read by search engines and screen readers. */}
+    <h1 class="sr-only">{t(tr, 'seo.homeTitle')}</h1>
+
     <!-- Safety & Independence Notice — visible immediately, prevents phishing confusion -->
     <div id="safety-ticker" style="background:linear-gradient(90deg,#0d1117,#0d2235,#0d1117);border-bottom:1px solid rgba(59,130,246,0.3);padding:7px 0;overflow:hidden;position:relative;z-index:10">
       <div style="display:flex;align-items:center;gap:0;width:max-content;animation:tickerScroll 32s linear infinite" aria-label="Independence notice">
