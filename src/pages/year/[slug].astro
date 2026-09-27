@@ -1,5 +1,6 @@
 ---
 import type { GetStaticPaths } from 'astro';
+import { gridInitialItems } from '../../lib/gridItems';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
@@ -64,7 +65,7 @@ const faqs = [
     <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-12 space-y-16">
 
       <section>
-        <DynamicGrid client:idle category={year.slug} title={String(year.year)} />
+        <DynamicGrid client:idle category={year.slug} title={String(year.year)} initialItems={gridInitialItems(year.slug)} />
       </section>
 
       <section>

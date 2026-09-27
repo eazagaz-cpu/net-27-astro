@@ -8,6 +8,7 @@
  * grid data, so a localized visitor never lands on English copy.
  */
 import Header from '../Header.astro';
+import { gridInitialItems } from '../../lib/gridItems';
 import Footer from '../Footer.astro';
 import SEOHead from '../SEOHead.astro';
 import Schema from '../Schema.astro';
@@ -94,7 +95,7 @@ const collectionSchema = {
 
   <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-12 space-y-16">
     <section>
-      <DynamicGrid client:idle category={config.category} title={heading} />
+      <DynamicGrid client:idle category={config.category} title={heading} initialItems={gridInitialItems(config.category)} />
     </section>
 
     <section>

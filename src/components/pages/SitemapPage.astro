@@ -17,6 +17,8 @@ import { SITE_URL } from '../../lib/seo';
 import { SITE_NAME } from '../../lib/constants';
 import { getAllRealTitles } from '../../lib/realTitles';
 import { loadTranslations, t } from '../../i18n';
+import { blogIndexPath } from '../../i18n/blog';
+import { TRANSLATED_LANGS } from '../../i18n/static';
 import { getLocalizedPath } from '../../i18n/utils';
 import type { Lang } from '../../i18n/config';
 
@@ -75,6 +77,13 @@ const sitemapSchema = {
   url: canonical,
   inLanguage: lang,
 };
+// The blog index and the about/contact/app pages exist in a locale only when
+// translated; elsewhere those links go to the English page instead of a 404.
+const DOC_PAGES = new Set(['/about/', '/contact/', '/app/download/']);
+const linkHref = (href: string): string =>
+  href === '/blog/' ? blogIndexPath(lang)
+    : DOC_PAGES.has(href) && !TRANSLATED_LANGS.includes(lang) ? href
+    : L(href);
 ---
 
 <SEOHead
@@ -100,7 +109,7 @@ const sitemapSchema = {
         <h2 class="text-lg font-bold mb-4">{t(tr, 'pages.sitemapMain')}</h2>
         <ul class="space-y-2">
           {hubLinks.map(link => (
-            <li><a href={L(link.href)} class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{link.label}</a></li>
+            <li><a href={linkHref(link.href)} class="text-sm text-[var(--color-text-secondary)] hover:text-[var(--color-primary)]">{link.label}</a></li>
           ))}
         </ul>
       </section>

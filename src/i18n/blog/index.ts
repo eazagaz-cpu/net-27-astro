@@ -59,6 +59,16 @@ export function translatedSlugs(lang: Lang): string[] {
   return [...(byLang.get(lang)?.keys() ?? [])];
 }
 
+/**
+ * The blog index for `lang`: its own when that locale has translated articles
+ * (the only case [lang]/blog/index.astro builds one), otherwise the English
+ * index. Linking `/<lang>/blog/` unconditionally sent ~600 nav links in eight
+ * locales to pages that were never built.
+ */
+export function blogIndexPath(lang: Lang): string {
+  return lang !== DEFAULT_LANG && translatedSlugs(lang).length > 0 ? `/${lang}/blog/` : '/blog/';
+}
+
 /** Non-default locales that have this article, for its hreflang cluster. */
 export function localesWithPost(slug: string): Lang[] {
   return [...byLang.entries()].filter(([, posts]) => posts.has(slug)).map(([lang]) => lang);

@@ -101,9 +101,8 @@ export default function SponsorRailSecondary() {
                       alt={card.label}
                       width={96}
                       height={96}
-                      loading="eager"
+                      loading="lazy"
                       decoding="async"
-                      fetchPriority="high"
                       className="slc2-img"
                       onError={() => setFailedImages((prev) => ({ ...prev, [cardKey]: true }))}
                     />

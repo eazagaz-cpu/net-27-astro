@@ -1,6 +1,7 @@
 ---
 import { loadTranslations, t } from '../i18n';
 import { getLangFromUrl, getLocalizedPath } from '../i18n/utils';
+import { blogIndexPath } from '../i18n/blog';
 
 // Rendered server-side so a localized route arrives already translated. The
 // client swap still runs for visitors who pick a language without navigating.
@@ -31,7 +32,7 @@ const navLinks = [
   { label: t(tr, 'nav.anime'), href: L('/anime/'), key: 'nav.anime' },
   { label: t(tr, 'nav.trending'), href: L('/trending/'), key: 'nav.trending' },
   { label: t(tr, 'nav.latest'), href: L('/latest/'), key: 'nav.latest' },
-  { label: t(tr, 'nav.blog'), href: L('/blog/'), key: 'nav.blog' },
+  { label: t(tr, 'nav.blog'), href: blogIndexPath(lang), key: 'nav.blog' },
 ];
 
 const currentPath = Astro.url.pathname;

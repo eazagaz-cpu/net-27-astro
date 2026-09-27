@@ -7,6 +7,7 @@
  */
 import { loadTranslations, t } from '../../i18n';
 import { getLocalizedPath } from '../../i18n/utils';
+import { blogIndexPath, getLocalizedPost } from '../../i18n/blog';
 import { DEFAULT_LANG, type Lang } from '../../i18n/config';
 
 interface Props {
@@ -240,11 +241,11 @@ const homeFaqs = [
         <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold" data-t="home.blogHeading">{t(tr, 'home.blogHeading')}</h2>
-            <a href={L("/blog/")} class="text-sm text-[#ff6479] hover:underline">View all articles →</a>
+            <a href={blogIndexPath(lang)} class="text-sm text-[#ff6479] hover:underline">View all articles →</a>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {latestPosts.map(post => (
-              <a href={L(`/blog/${post.slug}/`)} class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)]/40 transition-all group">
+              <a href={lang !== DEFAULT_LANG && getLocalizedPost(lang, post.slug) ? L(`/blog/${post.slug}/`) : `/blog/${post.slug}/`} class="glass-card rounded-xl p-5 hover:border-[var(--color-primary)]/40 transition-all group">
                 <span class="text-xs font-medium text-[#ff6479] uppercase tracking-wider">{post.category}</span>
                 <h3 class="mt-2 text-base font-semibold text-[var(--color-text-primary)] group-hover:text-[var(--color-primary)] transition-colors line-clamp-2">{post.title}</h3>
                 <p class="mt-2 text-sm text-[var(--color-text-muted)] line-clamp-2">{post.excerpt}</p>

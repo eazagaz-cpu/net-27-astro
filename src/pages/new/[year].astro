@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import { gridInitialItems } from '../../lib/gridItems';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import SEOHead from '../../components/SEOHead.astro';
@@ -82,7 +83,7 @@ const faqs = [
     <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] py-10 space-y-10">
 
       <section>
-        <DynamicGrid client:idle category={categoryKey} title={`Best of ${year}`} />
+        <DynamicGrid client:idle category={categoryKey} title={`Best of ${year}`} initialItems={gridInitialItems(categoryKey)} />
       </section>
 
       <FAQSection faqs={faqs} />

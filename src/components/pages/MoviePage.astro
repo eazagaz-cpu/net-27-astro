@@ -30,6 +30,7 @@ import { TELEGRAM_URL } from '../../lib/constants';
 import WhereToWatch from '../WhereToWatch.astro';
 import RatingsRow from '../RatingsRow.astro';
 import WatchlistButton from '../WatchlistButton.astro';
+import { years } from '../../data/entities';
 import UserReviews from '../UserReviews.tsx';
 
 
@@ -119,6 +120,8 @@ const schemaData = [
   breadcrumbSchema(breadcrumbs),
   faqSchema(faqs),
 ];
+// Only years that have a /year/ page (src/data/entities); others get plain text.
+const YEAR_PAGES = new Set(years.map(y => y.year));
 ---
 
 <SEOHead
@@ -293,7 +296,7 @@ const schemaData = [
             <tbody>
               <tr class="border-b border-[var(--color-border)]">
                 <td class="px-5 py-3 text-[var(--color-text-muted)] w-40">Release Date</td>
-                <td class="px-5 py-3">{title.releaseDate || title.year} &middot; {title.year >= 2010 ? <a href={`/year/${title.year}/`} class="text-[var(--color-primary)] hover:underline">{title.year}</a> : <span>{title.year || 'Unknown'}</span>}</td>
+                <td class="px-5 py-3">{title.releaseDate || title.year} &middot; {YEAR_PAGES.has(title.year) ? <a href={`/year/${title.year}/`} class="text-[var(--color-primary)] hover:underline">{title.year}</a> : <span>{title.year || 'Unknown'}</span>}</td>
               </tr>
               {title.runtime && (
                 <tr class="border-b border-[var(--color-border)]">

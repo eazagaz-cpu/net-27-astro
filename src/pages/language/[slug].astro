@@ -1,5 +1,6 @@
 ---
 import type { GetStaticPaths } from 'astro';
+import { gridInitialItems } from '../../lib/gridItems';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
@@ -48,6 +49,11 @@ const faqs = [
   { question: `Do you have ${language.name} subtitled content?`, answer: `Many titles in our ${language.name} collection are available with subtitles on their respective streaming platforms. Check the specific streaming service for subtitle and dubbing options.` },
   { question: `Is ${language.name} content available globally?`, answer: `Availability varies by region and streaming platform. Some ${language.name} titles may be region-locked on certain platforms. We recommend checking your local streaming service for current availability.` },
 ];
+
+// Build-time cache names differ from language slugs (see src/data/cache/).
+const LANGUAGE_CACHE: Record<string, string> = {
+  hindi: 'bollywood', korean: 'korean-drama', turkish: 'turkish-drama', english: 'hollywood',
+};
 ---
 
 <BaseLayout>
@@ -84,7 +90,7 @@ const faqs = [
 
       <section>
         <h2 class="section-title mb-6">All {language.name} Titles</h2>
-        <DynamicGrid client:idle category={`lang-${language.slug}`} title={language.name} />
+        <DynamicGrid client:idle category={`lang-${language.slug}`} title={language.name} initialItems={gridInitialItems(LANGUAGE_CACHE[language.slug] ?? language.slug)} />
       </section>
 
       <section>

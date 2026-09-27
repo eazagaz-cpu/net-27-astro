@@ -9,6 +9,17 @@ interface GridItem {
   rating: number;
   posterUrl: string;
   backdropUrl?: string;
+  /** Title page slug, set server-side by lib/gridItems.ts when the title has a page. */
+  slug?: string;
+}
+
+/**
+ * Indexable title page when there is one; the noindex /detail/ route otherwise.
+ * Linking /detail/ for everything meant the hubs passed nothing to title pages.
+ */
+function cardHref(item: GridItem): string {
+  if (item.slug) return `/${item.type === 'movie' ? 'movies' : 'shows'}/${item.slug}/`;
+  return `/detail/?type=${item.type}&id=${item.id}`;
 }
 
 interface Props {
@@ -62,6 +73,14 @@ export default function DynamicGrid({ category, title, initialItems }: Props) {
   const [items, setItems] = useState<GridItem[]>(initialItems ?? []);
   const [loading, setLoading] = useState(!hasInitial);
 
+  // The live API does not know slugs, so carry over the ones the server
+  // rendered; refreshed items keep linking to their title pages.
+  const knownSlugs = new Map(
+    (initialItems ?? []).filter(i => i.slug).map(i => [`${i.type}-${i.id}`, i.slug as string])
+  );
+  const withKnownSlugs = (list: GridItem[]): GridItem[] =>
+    list.map(i => (i.slug ? i : { ...i, slug: knownSlugs.get(`${i.type}-${i.id}`) }));
+
   useEffect(() => {
     let cancelled = false;
 
@@ -73,7 +92,7 @@ export default function DynamicGrid({ category, title, initialItems }: Props) {
           `/api/tmdb/category?type=${encodeURIComponent(category)}&pages=3`
         );
         if (!cancelled && data.items && data.items.length > 0) {
-          setItems(data.items);
+          setItems(withKnownSlugs(data.items));
           setLoading(false);
           return;
         }
@@ -83,7 +102,7 @@ export default function DynamicGrid({ category, title, initialItems }: Props) {
       const cached = await loadFromStaticCache(category);
       if (!cancelled) {
         if (cached.length > 0) {
-          setItems(cached);
+          setItems(withKnownSlugs(cached));
         }
         setLoading(false);
       }
@@ -127,7 +146,7 @@ export default function DynamicGrid({ category, title, initialItems }: Props) {
       </p>
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4">
         {items.map(item => {
-          const href = `/detail/?type=${item.type}&id=${item.id}`;
+          const href = cardHref(item);
           const grad = FALLBACK_GRADIENTS[item.id % FALLBACK_GRADIENTS.length];
           return (
             <a key={item.id} href={href} className="title-card group block" style={{ textDecoration: 'none', color: 'inherit' }}>
