@@ -16,6 +16,8 @@ interface CardTitle {
   poster?: string;
   posterUrl?: string;
   quality?: string;
+  /** Set on titles kept after leaving the live catalogue (see movie-sync.mjs). */
+  retainedSince?: string;
 }
 
 interface Props {
@@ -27,7 +29,9 @@ interface Props {
 const { title, lang } = Astro.props;
 
 const basePath = title.type === 'movie' ? `/movies/${title.slug}/` : `/shows/${title.slug}/`;
-const href = lang ? getLocalizedPath(basePath, lang) : basePath;
+// Retained titles only have the English page, so their cards link there from
+// every locale instead of to a localized URL that was never built.
+const href = lang && !title.retainedSince ? getLocalizedPath(basePath, lang) : basePath;
 const posterUrl = title.posterUrl || getPosterUrl(title.poster || '');
 
 const displayGenres = title.genres.slice(0, 2);

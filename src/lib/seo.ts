@@ -50,7 +50,12 @@ interface TitleSeoInput {
   watch?: { region: string; stream: { name: string }[]; free: { name: string }[]; rent: { name: string }[] } | null;
   /** Set when another title shares this name and year, to keep titles distinct. */
   disambiguator?: string | number;
+  /** Billed cast names, lead first. */
+  cast?: string[];
 }
+
+/** Snippet budget; generateSEO cuts anything longer with "…". */
+const DESCRIPTION_BUDGET = 145;
 
 /**
  * Search titles for a movie or show page.
@@ -62,10 +67,25 @@ interface TitleSeoInput {
 export function titleSeoHeading(input: TitleSeoInput): string {
   const suffix = input.disambiguator ? ` [${input.disambiguator}]` : '';
   const base = `${input.name} (${input.year})${suffix}`;
-  const qualifier = ' — Where to Watch';
-  // Long names would otherwise be cut mid-qualifier ("… — Where to…"), which
-  // reads as a broken title. Dropping it whole is tidier than truncating it.
-  return base.length + qualifier.length <= TITLE_BUDGET ? `${base}${qualifier}` : base;
+  // Search Console (Sep 2026): title pages averaged 3.5% CTR, and the queries
+  // reaching them add "watch", "online", "streaming". The longest qualifier
+  // that fits wins. Long names would otherwise be cut mid-qualifier
+  // ("… — Where to…"), which reads as a broken title, so a qualifier that does
+  // not fit is dropped whole rather than truncated.
+  const qualifier = [' — Where to Watch Online', ' — Where to Watch']
+    .find(q => base.length + q.length <= TITLE_BUDGET);
+  return qualifier ? `${base}${qualifier}` : base;
+}
+
+/** "Starring A & B." when it fits after `text` within the snippet budget. */
+function withStarring(text: string, cast: string[] | undefined): string {
+  const names = (cast ?? []).filter(Boolean);
+  for (const n of [2, 1]) {
+    if (names.length < n) continue;
+    const line = `${text} Starring ${names.slice(0, n).join(' & ')}.`;
+    if (line.length <= DESCRIPTION_BUDGET) return line;
+  }
+  return text;
 }
 
 /**
@@ -77,16 +97,22 @@ export function titleSeoHeading(input: TitleSeoInput): string {
  * synopsis rather than claiming a title is streaming somewhere.
  */
 export function titleSeoDescription(input: TitleSeoInput): string {
-  const { name, year, overview, watch } = input;
+  const { name, year, overview, watch, cast } = input;
   const region = watch ? (REGION_NAMES[watch.region] ?? watch.region) : '';
 
+  // Named leads make each snippet specific to its film, and match the
+  // "<title> cast" searches; they replace the generic tail when there is room.
   if (watch) {
     const streaming = [...watch.stream, ...watch.free].map(p => p.name);
     if (streaming.length > 0) {
-      return `Where to watch ${name} (${year}) in ${region} — streaming on ${streaming.slice(0, 3).join(', ')}. Cast, ratings and official availability.`;
+      const lead = `Where to watch ${name} (${year}) in ${region} — streaming on ${streaming.slice(0, 3).join(', ')}.`;
+      const starred = withStarring(lead, cast);
+      return starred !== lead ? starred : `${lead} Cast, ratings and official availability.`;
     }
     if (watch.rent.length > 0) {
-      return `Where to watch ${name} (${year}) in ${region} — available to rent on ${watch.rent.slice(0, 2).map(p => p.name).join(', ')}. Cast, ratings and availability.`;
+      const lead = `Where to watch ${name} (${year}) in ${region} — available to rent on ${watch.rent.slice(0, 2).map(p => p.name).join(', ')}.`;
+      const starred = withStarring(lead, cast);
+      return starred !== lead ? starred : `${lead} Cast, ratings and availability.`;
     }
   }
 

@@ -12,7 +12,9 @@ import { ROUTED_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
 
 export const getStaticPaths = (() => {
   const titles = getRealTitlesByType('movie')
-    .filter(title => !isDmcaDenied(title.slug, title.tmdbId));
+    .filter(title => !isDmcaDenied(title.slug, title.tmdbId))
+    // Retained titles keep only their English page (see movie-sync.mjs).
+    .filter(title => !title.retainedSince);
   return ROUTED_LANGS
     .filter(code => code !== DEFAULT_LANG)
     .flatMap(lang => titles.map(title => ({

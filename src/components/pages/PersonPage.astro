@@ -59,6 +59,13 @@ const creditLine = acted.length > 0 && directed.length > 0
     ? t(tr, 'people.directorCredits', { directed: directed.length })
     : t(tr, 'people.castCredits', { acted: acted.length });
 
+// Search Console (Sep 2026): "shatru (actor)" reached /person/shatru/ at ~11
+// with 141 impressions and no clicks. People search "<name> (actor)" and
+// "<name> movies", so the English title carries both when it fits the
+// 46-character budget left after the " | NET27 Watch" suffix.
+const richTitle = `${person.name} (${roleLabel}) — Movies & TV Shows`;
+const seoTitle = lang === 'en' && richTitle.length <= 46 ? richTitle : `${person.name} — ${roleLabel}`;
+
 const personSchema = {
   '@context': 'https://schema.org',
   '@type': 'Person',
@@ -72,7 +79,7 @@ const personSchema = {
 
 <SEOHead
   slot="head"
-  title={`${person.name} — ${roleLabel}`}
+  title={seoTitle}
   description={`${summary} ${creditLine}`}
   canonical={canonical}
   localized={true}

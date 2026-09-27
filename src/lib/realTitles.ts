@@ -77,6 +77,11 @@ export interface RealTitle {
   releaseDate: string;
   status: string;
   seasons?: number;
+  /**
+   * Date the title left the live catalogue. It keeps its English page (so an
+   * indexed URL does not turn into a 404) but gets no localized copies.
+   */
+  retainedSince?: string;
   episodes?: number;
   relatedIds: string[];
   /** null when TMDB lists no official availability in any covered region. */
@@ -121,17 +126,28 @@ export function getRealTitleBySlug(slug: string): RealTitle | undefined {
 }
 
 /** Related titles resolved from TMDB "similar" results, limited to ones we actually have a page for. */
-export function getRelatedRealTitles(title: RealTitle, limit = 6): RealTitle[] {
+/**
+ * 12 rather than 6: related titles are the main path between title pages, and
+ * Search Console showed 9 of 10 sampled title pages still unknown to Google.
+ */
+export function getRelatedRealTitles(title: RealTitle, limit = 12): RealTitle[] {
   const related = title.relatedIds
     .map(id => BY_ID.get(id))
     .filter((t): t is RealTitle => !!t);
   if (related.length >= limit) return related.slice(0, limit);
 
   // Fall back to same-genre titles if TMDB similar-results don't overlap our set.
+  // Each page starts at its own point in the genre list (stable per title).
+  // Starting everyone at the top meant every page linked the same few popular
+  // titles and the rest of the catalogue got no internal links at all.
   const sameType = ALL_TITLES.filter(t => t.id !== title.id && t.type === title.type);
   const sameGenre = sameType.filter(t => t.genres.some(g => title.genres.includes(g)));
+  const offset = sameGenre.length
+    ? [...String(title.id)].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7) % sameGenre.length
+    : 0;
+  const rotated = [...sameGenre.slice(offset), ...sameGenre.slice(0, offset)];
   const seen = new Set(related.map(t => t.id));
-  for (const t of sameGenre) {
+  for (const t of rotated) {
     if (related.length >= limit) break;
     if (seen.has(t.id)) continue;
     seen.add(t.id);

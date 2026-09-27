@@ -48,6 +48,7 @@ const seoInput = {
   overview: title.overview,
   watch: title.watch,
   disambiguator: hasDuplicateTitle ? title.tmdbId : undefined,
+  cast: title.cast.map(c => c.name),
 };
 // Tier C: a page with no synopsis, no cast and no availability has nothing
 // for a searcher, so it stays reachable but out of the index rather than
@@ -126,7 +127,7 @@ const schemaData = [
     description={seoDescription}
     canonical={`${SITE_URL}${L(`/movies/${title.slug}/`)}`}
     noindex={isThin}
-    localized={true}
+    localized={!title.retainedSince}
     ogType="video.movie"
     ogImage={og.ogImage}
     ogImageWidth={og.ogImageWidth}

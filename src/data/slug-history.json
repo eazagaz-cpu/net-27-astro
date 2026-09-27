@@ -1,0 +1,55 @@
+{
+ "_comment": "Earlier slugs of catalogue titles (TMDB renamed them). Build turns each into a 301 to the current URL. Maintained by src/scripts/movie-sync.mjs; seeded from git history 2026-09-28.",
+ "slugs": {
+  "movie-1036081": [
+   "khalifa-1036081",
+   "khalifa-part-1-1036081"
+  ],
+  "movie-1213243": [
+   "toxic-1213243"
+  ],
+  "movie-1447853": [
+   "don-t-look-back-in-anger-1447853"
+  ],
+  "movie-1514682": [
+   "above-and-below-1514682"
+  ],
+  "movie-1588472": [
+   "law-order-1588472"
+  ],
+  "movie-1599192": [
+   "kein-freund-kein-helfer-lorenz-die-einzelf-lle-1599192"
+  ],
+  "movie-1645164": [
+   "serpenti-1645164"
+  ],
+  "movie-1653208": [
+   "the-great-grand-superhero-1653208"
+  ],
+  "movie-1685882": [
+   "modha-rathiri-1685882"
+  ],
+  "movie-1693400": [
+   "ghost-2-big-to-rig-1693400"
+  ],
+  "movie-51739": [
+   "the-secret-world-of-arrietty-51739"
+  ],
+  "tv-283123": [
+   "eshref-ruya-283123"
+  ],
+  "tv-284753": [
+   "operation-safed-sagar-the-highest-air-force-mission-284753"
+  ],
+  "tv-302382": [
+   "pamaal-ruined-destroyed-302382"
+  ],
+  "tv-306118": [
+   "arafta-306118",
+   "bound-by-fate-306118"
+  ],
+  "tv-65555": [
+   "kara-sevda-65555"
+  ]
+ }
+}

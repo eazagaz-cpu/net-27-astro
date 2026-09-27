@@ -668,11 +668,66 @@ const CATEGORIES = [
 // titles is not silently truncated, while still bounding a runaway build.
 const MAX_DETAIL_TITLES = 1000;
 
+// ── Retained titles ─────────────────────────────────────────────────────────
+// The categories are trending/popular lists, so every sync some titles fall
+// out: 94 dropped between 2026-09-25 and 09-27. Each drop deleted a page that
+// Google may already have indexed (/movies/serpenti-1645164/ had 250
+// impressions), turned it into a 404, and threw away its ranking. A title that
+// leaves the lists now keeps its page, with the details last fetched, marked
+// `retainedSince`. Retained titles get the English page only (no localized
+// copies, to bound build size) and expire after RETAIN_DAYS; beyond RETAIN_MAX
+// the longest-retained go first. A title that comes back is live again. This
+// also covers a live title whose detail fetch failed this run.
+const RETAIN_DAYS = 180;
+const RETAIN_MAX = 1500;
+
+// When TMDB retitles something ("Serpenti" → "Snake") its slug, and so its URL,
+// changes and the indexed URL starts returning 404. Every earlier slug is kept
+// in src/data/slug-history.json; astro.config.mjs turns each into a 301.
+const SLUG_HISTORY = join(__dirname, '..', 'data', 'slug-history.json');
+
+function recordSlugChanges(previous, fresh) {
+  let file = { slugs: {} };
+  try { file = JSON.parse(readFileSync(SLUG_HISTORY, 'utf8')); } catch { /* first run */ }
+  const before = new Map(previous.filter(t => t?.id && t.slug).map(t => [t.id, t.slug]));
+  let added = 0;
+  for (const t of fresh) {
+    const old = before.get(t.id);
+    if (!old || old === t.slug) continue;
+    const list = new Set(file.slugs[t.id] ?? []);
+    if (!list.has(old)) { list.add(old); added++; }
+    list.delete(t.slug); // renamed back: the current slug must not redirect
+    file.slugs[t.id] = [...list].sort();
+  }
+  if (added) {
+    writeFileSync(SLUG_HISTORY, JSON.stringify(file, null, 1) + '\n', 'utf8');
+    console.log(`[movie-sync] Recorded ${added} renamed slug(s) for 301 redirects.`);
+  }
+}
+
+function withRetainedTitles(fresh) {
+  let previous = [];
+  try {
+    previous = JSON.parse(readFileSync(join(CACHE_DIR, 'titles.json'), 'utf8')).items ?? [];
+  } catch { /* first run */ }
+  recordSlugChanges(previous, fresh);
+  const live = new Set(fresh.map(t => t.id));
+  const today = new Date().toISOString().slice(0, 10);
+  const cutoff = new Date(Date.now() - RETAIN_DAYS * 864e5).toISOString().slice(0, 10);
+  const retained = previous
+    .filter(t => t && t.id && !live.has(t.id))
+    .map(t => ({ ...t, retainedSince: t.retainedSince ?? today }))
+    .filter(t => t.retainedSince >= cutoff)
+    .sort((a, b) => b.retainedSince.localeCompare(a.retainedSince))
+    .slice(0, RETAIN_MAX);
+  return [...fresh.map(({ retainedSince, ...t }) => t), ...retained];
+}
+
 // Rebuilding the index from the titles already on disk takes a second, against
 // nine minutes for a full sync — worth having when only its shape changed.
 if (process.argv.includes('--index-only')) {
   const { items } = JSON.parse(readFileSync(join(CACHE_DIR, 'titles.json'), 'utf8'));
-  writeSearchIndex(items);
+  writeSearchIndex(items.filter(t => !t.retainedSince));
   process.exit(0);
 }
 
@@ -742,13 +797,16 @@ async function main() {
 
   await enrichWithOmdb(titles);
 
+  const catalogue = withRetainedTitles(titles);
   writeFileSync(
     join(CACHE_DIR, 'titles.json'),
-    JSON.stringify({ fetchedAt: new Date().toISOString(), count: titles.length, items: titles }),
+    JSON.stringify({ fetchedAt: new Date().toISOString(), count: catalogue.length, items: catalogue }),
     'utf8'
   );
-  console.log(`[movie-sync] Wrote titles.json — ${titles.length} titles (${detailFail} failed).`);
+  console.log(`[movie-sync] Wrote titles.json — ${titles.length} live + ${catalogue.length - titles.length} retained titles (${detailFail} failed).`);
 
+  // Live titles only: client search builds localized links, and retained
+  // titles have no localized pages.
   writeSearchIndex(titles);
 
   const elapsed = ((Date.now() - t0) / 1000).toFixed(1);
