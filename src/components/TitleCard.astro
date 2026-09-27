@@ -1,7 +1,7 @@
 ---
 import { getPosterUrl } from '../lib/media';
 import { getLocalizedPath } from '../i18n/utils';
-import type { Lang } from '../i18n/config';
+import { DETAIL_PAGE_LANGS, type Lang } from '../i18n/config';
 
 // Structural shape shared by both the legacy `Title` (lib/types.ts, poster as
 // a TMDB relative path) and the real `RealTitle` (lib/realTitles.ts, posterUrl
@@ -29,9 +29,12 @@ interface Props {
 const { title, lang } = Astro.props;
 
 const basePath = title.type === 'movie' ? `/movies/${title.slug}/` : `/shows/${title.slug}/`;
-// Retained titles only have the English page, so their cards link there from
-// every locale instead of to a localized URL that was never built.
-const href = lang && !title.retainedSince ? getLocalizedPath(basePath, lang) : basePath;
+// Retained titles, and locales without detail pages (DETAIL_PAGE_LANGS), only
+// have the English page, so those cards link there instead of to a localized
+// URL that was never built (or only redirects).
+const href = lang && !title.retainedSince && DETAIL_PAGE_LANGS.includes(lang)
+  ? getLocalizedPath(basePath, lang)
+  : basePath;
 const posterUrl = title.posterUrl || getPosterUrl(title.poster || '');
 
 const displayGenres = title.genres.slice(0, 2);

@@ -8,14 +8,15 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 import MoviePage from '../../../components/pages/MoviePage.astro';
 import { getRealTitlesByType, type RealTitle } from '../../../lib/realTitles';
 import { isDmcaDenied } from '../../../lib/dmcaDenyList';
-import { ROUTED_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+import { DETAIL_PAGE_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
 
 export const getStaticPaths = (() => {
   const titles = getRealTitlesByType('movie')
     .filter(title => !isDmcaDenied(title.slug, title.tmdbId))
     // Retained titles keep only their English page (see movie-sync.mjs).
     .filter(title => !title.retainedSince);
-  return ROUTED_LANGS
+  // Only locales with detail pages; the rest 301 to English (public/_redirects).
+  return DETAIL_PAGE_LANGS
     .filter(code => code !== DEFAULT_LANG)
     .flatMap(lang => titles.map(title => ({
       params: { lang, slug: title.slug },

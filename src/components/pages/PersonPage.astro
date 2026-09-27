@@ -17,7 +17,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 import { loadTranslations, t } from '../../i18n';
 import { getLocalizedPath } from '../../i18n/utils';
-import type { Lang } from '../../i18n/config';
+import { DETAIL_PAGE_LANGS, type Lang } from '../../i18n/config';
 
 interface Props {
   person: Person;
@@ -83,6 +83,7 @@ const personSchema = {
   description={`${summary} ${creditLine}`}
   canonical={canonical}
   localized={true}
+  localesWithPage={DETAIL_PAGE_LANGS}
 />
 <Schema slot="head" schema={[personSchema, breadcrumbSchema(breadcrumbs)]} />
 

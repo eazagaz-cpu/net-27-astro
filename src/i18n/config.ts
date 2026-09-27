@@ -51,6 +51,20 @@ export const ROUTED_LANGS: Lang[] = [
   'ru', 'fr', 'de', 'tr',
 ];
 
+/**
+ * Locales that get per-title and per-person pages. The other routed locales
+ * keep their hubs (home, genre, platform, year…) and 301 their title/person
+ * URLs to the English page (public/_redirects).
+ *
+ * Search Console, 28 days to 2026-09-24: those eight locales took under 20
+ * clicks each, yet their ~10,000 title and ~3,600 person pages were most of
+ * the build. Keeping title pages from dying (retained titles, 2026-09-28)
+ * pushed the output to ~27,900 files, past Cloudflare Pages' 20,000-file
+ * limit and the builder's memory ceiling noted below. Trimming them brings it
+ * to ~11,000 with headroom.
+ */
+export const DETAIL_PAGE_LANGS: Lang[] = ['en', 'hi', 'ur', 'bn'];
+
 // The measured ceiling, after three attempts at it.
 //
 //   12 locales · 15,937 pages · builds

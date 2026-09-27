@@ -34,3 +34,60 @@ http://www.net27.watch/* https://net27.watch/:splat 301
 # Checked daily by .github/workflows/fix-cloudflare-security.yml
 # ============================================================
 /sitemap_index.xml /sitemap-index.xml 301
+
+
+# ============================================================
+# TITLE / PERSON PAGES OF LOCALES WITHOUT DETAIL PAGES → ENGLISH
+# Only en/hi/ur/bn build per-title and per-person pages
+# (DETAIL_PAGE_LANGS in src/i18n/config.ts). These eight locales keep
+# their hubs (/fr/, /fr/movies/, /fr/genre/…); their old detail URLs
+# 301 to the English page. :slug never matches the empty index path.
+# ============================================================
+/tr/movies/:slug/ /movies/:slug/ 301
+/tr/movies/:slug /movies/:slug/ 301
+/tr/shows/:slug/ /shows/:slug/ 301
+/tr/shows/:slug /shows/:slug/ 301
+/tr/person/:slug/ /person/:slug/ 301
+/tr/person/:slug /person/:slug/ 301
+/ru/movies/:slug/ /movies/:slug/ 301
+/ru/movies/:slug /movies/:slug/ 301
+/ru/shows/:slug/ /shows/:slug/ 301
+/ru/shows/:slug /shows/:slug/ 301
+/ru/person/:slug/ /person/:slug/ 301
+/ru/person/:slug /person/:slug/ 301
+/pt/movies/:slug/ /movies/:slug/ 301
+/pt/movies/:slug /movies/:slug/ 301
+/pt/shows/:slug/ /shows/:slug/ 301
+/pt/shows/:slug /shows/:slug/ 301
+/pt/person/:slug/ /person/:slug/ 301
+/pt/person/:slug /person/:slug/ 301
+/id/movies/:slug/ /movies/:slug/ 301
+/id/movies/:slug /movies/:slug/ 301
+/id/shows/:slug/ /shows/:slug/ 301
+/id/shows/:slug /shows/:slug/ 301
+/id/person/:slug/ /person/:slug/ 301
+/id/person/:slug /person/:slug/ 301
+/fr/movies/:slug/ /movies/:slug/ 301
+/fr/movies/:slug /movies/:slug/ 301
+/fr/shows/:slug/ /shows/:slug/ 301
+/fr/shows/:slug /shows/:slug/ 301
+/fr/person/:slug/ /person/:slug/ 301
+/fr/person/:slug /person/:slug/ 301
+/es/movies/:slug/ /movies/:slug/ 301
+/es/movies/:slug /movies/:slug/ 301
+/es/shows/:slug/ /shows/:slug/ 301
+/es/shows/:slug /shows/:slug/ 301
+/es/person/:slug/ /person/:slug/ 301
+/es/person/:slug /person/:slug/ 301
+/de/movies/:slug/ /movies/:slug/ 301
+/de/movies/:slug /movies/:slug/ 301
+/de/shows/:slug/ /shows/:slug/ 301
+/de/shows/:slug /shows/:slug/ 301
+/de/person/:slug/ /person/:slug/ 301
+/de/person/:slug /person/:slug/ 301
+/ar/movies/:slug/ /movies/:slug/ 301
+/ar/movies/:slug /movies/:slug/ 301
+/ar/shows/:slug/ /shows/:slug/ 301
+/ar/shows/:slug /shows/:slug/ 301
+/ar/person/:slug/ /person/:slug/ 301
+/ar/person/:slug /person/:slug/ 301

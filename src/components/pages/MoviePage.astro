@@ -8,7 +8,7 @@
 import type { RealTitle } from '../../lib/realTitles';
 import { loadTranslations, t } from '../../i18n';
 import { getLocalizedPath } from '../../i18n/utils';
-import type { Lang } from '../../i18n/config';
+import { DETAIL_PAGE_LANGS, type Lang } from '../../i18n/config';
 
 interface Props {
   title: RealTitle;
@@ -128,6 +128,7 @@ const schemaData = [
     canonical={`${SITE_URL}${L(`/movies/${title.slug}/`)}`}
     noindex={isThin}
     localized={!title.retainedSince}
+    localesWithPage={DETAIL_PAGE_LANGS}
     ogType="video.movie"
     ogImage={og.ogImage}
     ogImageWidth={og.ogImageWidth}

@@ -197,6 +197,31 @@ Because that workflow holds a Cloudflare API token as a GitHub secret, **do not
 delete API tokens without checking what uses them** — deploys survive losing the
 Git integration's token but not that one.
 
+### Build size budget: 20,000 files, hard
+
+Cloudflare Pages rejects a deployment over **20,000 files** on this plan
+(`wrangler pages deploy` → "Pages only supports up to 20,000 files"), and its
+builder dies from memory well before that (see the next section). On
+2026-09-28 the output reached ~27,900 files and both deploy paths failed.
+Now it is ~11,100. Check `find dist -type f | wc -l` after changes that add
+pages, and keep it well under 20,000.
+
+What decides the count:
+
+- **Titles** (`src/data/cache/titles.json`): live titles plus **retained**
+  ones. A title that drops out of the trending lists keeps its English page
+  for 180 days (max 1,500) instead of turning into a 404. See
+  `withRetainedTitles` in `src/scripts/movie-sync.mjs`. Renamed titles get a
+  301 from `src/data/slug-history.json`, emitted at build by
+  `appendSlugRedirects` in `astro.config.mjs`.
+- **Locales with detail pages** (`DETAIL_PAGE_LANGS` in `src/i18n/config.ts`):
+  only en/hi/ur/bn build per-title and per-person pages. The other routed
+  locales keep their hubs and 301 their detail URLs to English
+  (`public/_redirects`). Adding a locale there multiplies every title and
+  person page, so measure first.
+- **People**: anyone with 3+ credits across all titles, retained included, gets
+  a page in each detail locale.
+
 ### A silently truncated build is out of memory, not a timeout
 
 Astro renders every page into memory. When a Pages build log stops mid-render

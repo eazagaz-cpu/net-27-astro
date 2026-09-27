@@ -7,12 +7,13 @@ import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 import ShowPage from '../../../components/pages/ShowPage.astro';
 import { getRealTitlesByType, type RealTitle } from '../../../lib/realTitles';
-import { ROUTED_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
+import { DETAIL_PAGE_LANGS, DEFAULT_LANG, type Lang } from '../../../i18n/config';
 
 export const getStaticPaths = (() => {
   // Retained titles keep only their English page (see movie-sync.mjs).
   const titles = getRealTitlesByType('show').filter(title => !title.retainedSince);
-  return ROUTED_LANGS
+  // Only locales with detail pages; the rest 301 to English (public/_redirects).
+  return DETAIL_PAGE_LANGS
     .filter(code => code !== DEFAULT_LANG)
     .flatMap(lang => titles.map(title => ({
       params: { lang, slug: title.slug },
