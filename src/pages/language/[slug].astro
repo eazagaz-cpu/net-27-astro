@@ -90,7 +90,7 @@ const LANGUAGE_CACHE: Record<string, string> = {
 
       <section>
         <h2 class="section-title mb-6">All {language.name} Titles</h2>
-        <DynamicGrid client:idle category={`lang-${language.slug}`} title={language.name} initialItems={gridInitialItems(LANGUAGE_CACHE[language.slug] ?? language.slug)} />
+        <DynamicGrid client:idle category={`lang-${language.slug}`} title={language.name} initialItems={gridInitialItems(LANGUAGE_CACHE[language.slug] ?? language.slug, { language: language.slug })} />
       </section>
 
       <section>

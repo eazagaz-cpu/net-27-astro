@@ -52,10 +52,20 @@ interface TitleSeoInput {
   disambiguator?: string | number;
   /** Billed cast names, lead first. */
   cast?: string[];
+  /** TMDB original language code, e.g. "ta". */
+  originalLanguage?: string;
 }
 
 /** Snippet budget; generateSEO cuts anything longer with "…". */
 const DESCRIPTION_BUDGET = 145;
+
+/**
+ * Indian-language titles. Search Console (Sep 2026): the audience is 70% India,
+ * where the question is "which OTT platform" ("meesaya murukku 2 ott platform",
+ * 183 impressions at ~7), so these titles use the OTT wording.
+ */
+const OTT_LANGS = new Set(['hi', 'ta', 'te', 'ml', 'kn', 'bn', 'mr', 'pa', 'gu']);
+const isOttTitle = (input: { originalLanguage?: string }) => OTT_LANGS.has(input.originalLanguage ?? '');
 
 /**
  * Search titles for a movie or show page.
@@ -72,7 +82,10 @@ export function titleSeoHeading(input: TitleSeoInput): string {
   // that fits wins. Long names would otherwise be cut mid-qualifier
   // ("… — Where to…"), which reads as a broken title, so a qualifier that does
   // not fit is dropped whole rather than truncated.
-  const qualifier = [' — Where to Watch Online', ' — Where to Watch']
+  const qualifier = [
+    ...(isOttTitle(input) ? [' — OTT Platform & Where to Watch', ' — OTT & Where to Watch'] : []),
+    ' — Where to Watch Online', ' — Where to Watch',
+  ]
     .find(q => base.length + q.length <= TITLE_BUDGET);
   return qualifier ? `${base}${qualifier}` : base;
 }
@@ -105,7 +118,9 @@ export function titleSeoDescription(input: TitleSeoInput): string {
   if (watch) {
     const streaming = [...watch.stream, ...watch.free].map(p => p.name);
     if (streaming.length > 0) {
-      const lead = `Where to watch ${name} (${year}) in ${region} — streaming on ${streaming.slice(0, 3).join(', ')}.`;
+      const lead = isOttTitle(input)
+        ? `Which OTT platform has ${name} (${year})? Streaming on ${streaming.slice(0, 3).join(', ')} in ${region}.`
+        : `Where to watch ${name} (${year}) in ${region} — streaming on ${streaming.slice(0, 3).join(', ')}.`;
       const starred = withStarring(lead, cast);
       return starred !== lead ? starred : `${lead} Cast, ratings and official availability.`;
     }

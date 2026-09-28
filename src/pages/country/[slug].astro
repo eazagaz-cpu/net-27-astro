@@ -1,4 +1,5 @@
 ---
+import { gridInitialItems } from '../../lib/gridItems';
 import type { GetStaticPaths } from 'astro';
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Header from '../../components/Header.astro';
@@ -68,7 +69,7 @@ const faqs = [
 
       <!-- Titles Grid -->
       <section>
-        <DynamicGrid client:idle category={`country-${country.slug}`} title={country.name} />
+        <DynamicGrid client:idle category={`country-${country.slug}`} title={country.name} initialItems={gridInitialItems(`country-${country.slug}`, { country: country.slug })} />
       </section>
 
       <!-- FAQs -->
