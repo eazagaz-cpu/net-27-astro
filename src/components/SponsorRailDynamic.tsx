@@ -15,7 +15,12 @@ interface SponsorCard {
 // src/data/sponsor-links.json at build time: never hardcode links here.
 const FALLBACK: SponsorCard[] = manifest.trail1
   .filter((s) => s.enabled !== false)
-  .map((s) => ({ name: s.id, label: s.label, tagline: s.tagline, url: s.url, image: s.image, badge: s.badge }));
+  .map((s) => ({
+    name: s.id, label: s.label, tagline: s.tagline, url: s.url, badge: s.badge,
+    // 192px thumbnail (scripts/sponsor-thumbs.mjs), not the full logo: the full
+    // files were ~2 MB for 20 logos shown at 96px, competing with the hero on mobile.
+    image: `/links/thumbs/${s.imageFile ?? s.image.split("/").pop()}`,
+  }));
 
 export default function SponsorRailDynamic() {
   const [sponsors, setSponsors] = useState<SponsorCard[]>(FALLBACK);

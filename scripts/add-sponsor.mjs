@@ -19,6 +19,7 @@ import { existsSync, readdirSync, copyFileSync } from 'fs';
 import { join, extname, basename } from 'path';
 import sharp from 'sharp';
 import { ROOT, loadManifest, saveManifest, normUrl, parseArgs } from './lib/sponsor-guard.mjs';
+import { makeSponsorThumbs } from './sponsor-thumbs.mjs';
 
 const a = parseArgs();
 a.id ??= a.name; // old flag name
@@ -77,6 +78,7 @@ const pos = a.position ? Math.min(Math.max(parseInt(a.position, 10) || 1, 1), tr
 trail.splice(pos - 1, 0, entry);
 m.removed = (m.removed ?? []).filter((r) => normUrl(r.url) !== normUrl(a.url)); // re-adding a removed link
 saveManifest(m);
+await makeSponsorThumbs(); // the rails render public/links/thumbs/<file>, checked by verify-links
 
 console.log(`✅ ${a.label} added to ${trailKey === 'trail1' ? 'Trail 1 (Featured)' : 'Trail 2 (Gaming)'} at #${pos} as "${id}"`);
 console.log(`   ${m.expectedCounts.trail1} + ${m.expectedCounts.trail2} links · manifest ${m.manifestVersion}`);

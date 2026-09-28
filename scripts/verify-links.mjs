@@ -182,6 +182,13 @@ async function main() {
     );
   });
 
+  // ── Check 11b: Every enabled link has its rail thumbnail ─────────────────
+  // The rails render public/links/thumbs/<file> (scripts/sponsor-thumbs.mjs).
+  const noThumb = [...t1, ...t2].filter(s =>
+    !existsSync(join(ROOT, 'public', 'links', 'thumbs', s.imageFile || s.image.split('/').pop())));
+  check('Every link has its 192px rail thumbnail', noThumb.length === 0,
+    `Missing thumbnails for: ${noThumb.map(s => s.id).join(', ')} — run: node scripts/sponsor-thumbs.mjs`);
+
   // ── Check 12: Nothing live on net27.watch is dropped silently ────────────
   // Runs in CI before any KV write or deploy, and locally before commits.
   for (const [path, label] of [['/api/sponsors', 'Trail 1'], ['/api/sponsors2', 'Trail 2']]) {

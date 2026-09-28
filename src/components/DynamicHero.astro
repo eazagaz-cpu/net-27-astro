@@ -159,6 +159,14 @@ const heroData = slides.map((slide) => ({
     };
     dots.forEach((dot, index) => dot.addEventListener('click', () => { show(index); restart(); }));
     document.addEventListener('visibilitychange', () => document.hidden ? window.clearInterval(timer) : restart());
-    restart();
+    // Rotate only once the first backdrop has arrived. On slow mobile
+    // connections the 6 s timer swapped the slide before that image loaded, so
+    // it never painted and the LCP became the next slide's image (9.7 s in
+    // Lighthouse, 2026-09-28).
+    if (!bg || (bg.complete && bg.naturalWidth > 0)) restart();
+    else {
+      bg.addEventListener('load', restart, { once: true });
+      bg.addEventListener('error', restart, { once: true });
+    }
   }
 </script>
