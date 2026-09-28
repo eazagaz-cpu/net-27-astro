@@ -132,6 +132,27 @@ The rules that stop links vanishing:
   local push of a manifest that is not yet on GitHub. When a guard fails, fix
   the manifest. Never weaken the guard.
 
+## Ads (Adsterra, RollerAds) — never remove
+
+The owner reported Adsterra tags "removing themselves" several times. None was
+ever committed here; they were added outside git, or on the old net27.watch
+repo, and the next deploy wiped them. Now:
+
+- **[src/data/ads.json](src/data/ads.json)** holds every key, script URL and
+  CSP host. BaseLayout builds the Adsterra loader from it (banner slots via
+  `AdsterraBanner.astro`: 2 on the homepage, 1 on title pages, 1 above every
+  footer; Social Bar site-wide after the first interaction). No ads on
+  `/player/`.
+- **`scripts/verify-ads.mjs`** (postbuild, CI between build and deploy, local
+  deploy scripts) fails when a tag or slot is missing from the built pages, or
+  when the site-wide CSP in `public/_headers` does not allow every Adsterra
+  host. A tag that is present but blocked by CSP is as good as gone.
+- The hourly watchdog checks the same on the live site and redeploys `main`
+  when it fails.
+- Never remove an ad tag, slot or CSP host to make something else pass. To
+  change a key or add a rotated Adsterra host, edit ads.json **and**
+  `public/_headers`.
+
 ### A `_headers` change needs a cache purge
 
 Editing [public/_headers](public/_headers) alone does **not** reach visitors on

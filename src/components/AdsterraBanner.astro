@@ -1,0 +1,47 @@
+---
+/**
+ * AdsterraBanner — a reserved 300×250 slot for the Adsterra banner.
+ *
+ * The slot is empty in the HTML; the loader at the end of BaseLayout fills it
+ * with the ad only when it scrolls near the viewport, so ads never compete
+ * with the hero image or delay the first render. Each ad runs in its own
+ * iframe because Adsterra's tag reads a single global `atOptions`, so two
+ * banners in one document would overwrite each other. The height is reserved
+ * up front so nothing shifts when the ad arrives (CLS).
+ *
+ * Renders nothing on /player/ (the loader skips that route too), so the footer
+ * slot does not leave an empty box there.
+ */
+const onPlayer = Astro.url.pathname.startsWith('/player');
+---
+{!onPlayer && (
+  <div class="adsterra-slot" data-adsterra-banner aria-label="Advertisement">
+    <span class="adsterra-label">Advertisement</span>
+  </div>
+)}
+
+<style>
+  .adsterra-slot {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: 272px; /* 250 ad + label */
+    margin: 1.5rem auto;
+  }
+  .adsterra-label {
+    font-size: 10px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.3);
+    margin-bottom: 6px;
+  }
+  .adsterra-slot :global(iframe) {
+    display: block;
+    width: 300px;
+    height: 250px;
+    border: 0;
+    overflow: hidden;
+  }
+</style>

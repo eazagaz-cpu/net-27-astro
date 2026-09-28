@@ -92,6 +92,9 @@ jobs:
       - name: 🎰 Verify sponsor links in built HTML
         run: node scripts/verify-dist-links.mjs
 
+      - name: 📢 Verify ad tags (Adsterra, RollerAds) and their CSP
+        run: node scripts/verify-ads.mjs
+
       # ── 7. Deploy to Cloudflare Pages ─────────────────────────────────────────
       - name: Deploy to Cloudflare Pages
         run: npx wrangler pages deploy dist --project-name net-27-astro --branch main --commit-dirty=true

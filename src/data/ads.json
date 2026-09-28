@@ -1,0 +1,23 @@
+{
+  "_comment": "Ad tags that must stay on the site. BaseLayout builds the Adsterra loader from this file; scripts/verify-ads.mjs (postbuild + CI) and the hourly watchdog fail when a tag is missing from the built or live pages, or when a host is missing from the CSP in public/_headers. Change keys or hosts here, never by deleting code. Adsterra rotates hosts: a blank slot usually means a new host to add to cspHosts AND to public/_headers.",
+  "adsterra": {
+    "bannerKey": "57ddb9d71d5fe0fbf95f3e2bb117a457",
+    "bannerScript": "https://evilletting.com/57ddb9d71d5fe0fbf95f3e2bb117a457/invoke.js",
+    "socialBarScript": "https://evilletting.com/ae/3e/f3/ae3ef3a93fc439131da2a4b11a19357c.js",
+    "cspHosts": [
+      "https://evilletting.com",
+      "https://zoologyfibre.com",
+      "https://kettledroopingcontinuation.com",
+      "https://realizationnewestfangs.com",
+      "https://mamshirt.com",
+      "https://portalfluently.com",
+      "https://holdbitter.com",
+      "https://protrafficinspector.com"
+    ]
+  },
+  "rollerads": {
+    "zoneId": 3055833,
+    "sdkScript": "https://push-sdk.com/f/sdk.js?z=3055833",
+    "serviceWorker": "3055833.sw.js"
+  }
+}

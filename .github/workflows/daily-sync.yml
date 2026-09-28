@@ -77,6 +77,9 @@ jobs:
       - name: 🎰 Verify sponsor links in built HTML
         run: node scripts/verify-dist-links.mjs
 
+      - name: 📢 Verify ad tags (Adsterra, RollerAds) and their CSP
+        run: node scripts/verify-ads.mjs
+
       # ── 7. 🎰 KV Push FIRST — Deploy se PEHLE! ───────────────────────────
       # CRITICAL: KV push deploy se PEHLE hota hai.
       # push-sponsors.mjs: empty overwrite protection + read-back verification.

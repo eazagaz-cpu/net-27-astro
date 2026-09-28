@@ -2,6 +2,9 @@
 import '../styles/global.css';
 import { getLangFromUrl, getDir } from '../i18n/utils';
 import SearchOverlay from '../components/SearchOverlay.tsx';
+import ads from '../data/ads.json';
+
+const adsterra = ads.adsterra;
 
 const lang = getLangFromUrl(Astro.url);
 const dir = getDir(lang);
@@ -250,6 +253,48 @@ const dir = getDir(lang);
         }
       }
     }
+  })();
+  </script>
+
+  <!-- Adsterra: 300×250 banners (AdsterraBanner.astro slots) and the Social
+       Bar. Loaded after the page, never on /player/ or localhost:
+       - banners fill only when their slot nears the viewport, each in its own
+         iframe (the tag reads one global `atOptions`);
+       - the Social Bar loads on the first interaction, or after 6 s.
+       Keys and hosts live in src/data/ads.json; scripts/verify-ads.mjs and the
+       hourly watchdog fail when this tag or its CSP hosts go missing.
+       Adsterra rotates hosts, so a blank slot usually means a new host. -->
+  <script is:inline define:vars={{ adsterra }}>
+  (function(){
+    var p=location.pathname, h=location.hostname;
+    if(/^\/player/.test(p)||h==='localhost'||h==='127.0.0.1'||location.port!=='')return;
+    var KEY=adsterra.bannerKey;
+    var BANNER_SRC=adsterra.bannerScript;
+    var SOCIAL_BAR=adsterra.socialBarScript;
+    function fill(slot){
+      if(slot.getAttribute('data-filled'))return;
+      slot.setAttribute('data-filled','1');
+      var f=document.createElement('iframe');
+      f.width='300';f.height='250';f.title='Advertisement';f.setAttribute('scrolling','no');
+      f.srcdoc='<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style></head><body>'
+        +'<script>atOptions={"key":"'+KEY+'","format":"iframe","height":250,"width":300,"params":{}};<\/script>'
+        +'<script src="'+BANNER_SRC+'"><\/script></body></html>';
+      slot.appendChild(f);
+    }
+    var slots=document.querySelectorAll('[data-adsterra-banner]');
+    if('IntersectionObserver' in window){
+      var io=new IntersectionObserver(function(entries){
+        entries.forEach(function(e){if(e.isIntersecting){fill(e.target);io.unobserve(e.target);}});
+      },{rootMargin:'300px 0px'});
+      slots.forEach(function(s){io.observe(s);});
+    }else{slots.forEach(fill);}
+    var social=false;
+    function loadSocial(){
+      if(social)return;social=true;
+      var s=document.createElement('script');s.src=SOCIAL_BAR;s.async=true;document.body.appendChild(s);
+    }
+    ['pointerdown','keydown','touchstart','scroll'].forEach(function(ev){window.addEventListener(ev,loadSocial,{once:true,passive:true});});
+    setTimeout(loadSocial,6000);
   })();
   </script>
 

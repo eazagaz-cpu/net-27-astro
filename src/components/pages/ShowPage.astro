@@ -1,4 +1,5 @@
 ---
+import AdsterraBanner from '../AdsterraBanner.astro';
 /**
  * ShowPage.astro — the body of a TV show detail page, in one locale.
  *
@@ -428,6 +429,9 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
       <UserReviews client:only="react" tmdbId={title.tmdbId} titleName={title.title} />
 
       <!-- Related Titles -->
+      <!-- Adsterra banner: after the details, before related titles -->
+      <AdsterraBanner />
+
       {related.length > 0 && (
         <section>
           <h2 class="section-title mb-6" data-t="sections.youMightAlsoLike">{t(tr, 'sections.youMightAlsoLike')}</h2>
