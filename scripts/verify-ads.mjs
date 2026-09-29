@@ -36,6 +36,12 @@ export function adTagProblems(html, where, { expectSlot = true } = {}) {
   return out;
 }
 
+/** The policy in a page's <meta http-equiv="Content-Security-Policy"> tag ('' when absent). */
+export function metaCsp(html) {
+  const m = html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)"/i);
+  return m ? m[1].replace(/&#39;/g, "'").replace(/&amp;/g, '&') : '';
+}
+
 /** Hosts from ads.json missing from one CSP directive of the site-wide policy. */
 export function cspProblems(csp, where) {
   const out = [];
@@ -61,10 +67,16 @@ if (process.argv[1] && process.argv[1].endsWith('verify-ads.mjs')) {
   if (slug) problems.push(...adTagProblems(readFileSync(join(movieDir, slug, 'index.html'), 'utf8'), `/movies/${slug}/`));
   else problems.push('no built movie page to check');
 
-  // The site-wide policy is the first CSP in _headers (the "/*" rule).
+  // The resource policy is a <meta> tag (src/lib/csp.ts), not a header.
+  problems.push(...cspProblems(metaCsp(homeHtml), 'homepage <meta> CSP'));
+
+  // Cloudflare Pages silently drops any _headers value over 2,000 characters;
+  // a CSP that long left the whole site with no policy on 2026-09-29.
   const headers = readFileSync(join(ROOT, 'public', '_headers'), 'utf8');
-  const csp = (headers.match(/^\s*Content-Security-Policy:\s*(.*)$/m) || [])[1] || '';
-  problems.push(...cspProblems(csp, 'public/_headers'));
+  headers.split(/\r?\n/).forEach((line, i) => {
+    const value = line.match(/^\s+[A-Za-z-]+:\s*(.*)$/)?.[1] ?? '';
+    if (value.length > 2000) problems.push(`public/_headers line ${i + 1}: value is ${value.length} chars; Cloudflare drops values over 2,000`);
+  });
 
   need(homeHtml.includes(rollerads.sdkScript), 'homepage: RollerAds SDK tag missing');
   need(existsSync(join(DIST, rollerads.serviceWorker)), `dist/${rollerads.serviceWorker} missing (RollerAds service worker)`);

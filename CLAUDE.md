@@ -145,13 +145,22 @@ repo, and the next deploy wiped them. Now:
   `/player/`.
 - **`scripts/verify-ads.mjs`** (postbuild, CI between build and deploy, local
   deploy scripts) fails when a tag or slot is missing from the built pages, or
-  when the site-wide CSP in `public/_headers` does not allow every Adsterra
-  host. A tag that is present but blocked by CSP is as good as gone.
+  when the site CSP does not allow every Adsterra host, or when any
+  `public/_headers` value exceeds 2,000 characters. A tag that is present but
+  blocked by CSP is as good as gone.
 - The hourly watchdog checks the same on the live site and redeploys `main`
   when it fails.
 - Never remove an ad tag, slot or CSP host to make something else pass. To
-  change a key or add a rotated Adsterra host, edit ads.json **and**
-  `public/_headers`.
+  change a key or add a rotated Adsterra host, edit ads.json only.
+
+**The CSP is a `<meta>` tag, not a header.** Cloudflare Pages silently drops
+any `_headers` value over 2,000 characters. Adding the Adsterra hosts took the
+policy to ~2,900, and on 2026-09-29 every page was served with no CSP at all.
+The resource policy now lives in [src/lib/csp.ts](src/lib/csp.ts). BaseLayout
+emits it first in `<head>`, and it reads the Adsterra hosts from ads.json.
+`public/_headers` keeps only header-only rules (`frame-ancestors` and a few
+others), and /player/ keeps its own header policy. `validate:csp`,
+`verify-ads` and the watchdog all read the meta tag.
 
 ### A `_headers` change needs a cache purge
 

@@ -149,5 +149,5 @@ URL de, to woh naya sponsor hai — upar wala "NAYA LINK ADD KARNA" flow chalao.
 
 - Saari keys/hosts sirf `src/data/ads.json` mein. Loader `src/layouts/BaseLayout.astro` mein, banner slots `AdsterraBanner.astro` se.
 - `scripts/verify-ads.mjs` deploy rok deta hai agar ad code, slot, ya `public/_headers` CSP mein Adsterra host missing ho. Watchdog har ghante live check karta hai.
-- Kisi aur cheez ko "pass" karwane ke liye ad tag / slot / CSP host kabhi mat hatao. Naya Adsterra host aaye to `ads.json` **aur** `public/_headers` dono mein add karo.
+- Kisi aur cheez ko "pass" karwane ke liye ad tag / slot / CSP host kabhi mat hatao. Naya Adsterra host aaye to sirf `ads.json` mein add karo. CSP ab `src/lib/csp.ts` ka `<meta>` tag hai jo ads.json se hosts leta hai. `_headers` mein lambi CSP mat daalo: Cloudflare 2,000 characters se lambi value chupke se hata deta hai.
 - `/player/` par ads nahi lagte.

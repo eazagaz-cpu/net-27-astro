@@ -14,11 +14,15 @@ import { join } from 'path';
 const DIST = 'dist';
 let errors = 0;
 
-/** Reads the site-wide script-src from _headers. */
+/**
+ * Reads the site-wide script-src. The resource policy is a <meta> tag from
+ * src/lib/csp.ts (Cloudflare drops _headers values over 2,000 characters), so
+ * it is read from the built homepage.
+ */
 async function scriptSrc() {
-  const headers = await readFile(join(DIST, '_headers'), 'utf-8');
-  const csp = headers.match(/Content-Security-Policy:\s*(.+)/)?.[1];
-  if (!csp) throw new Error('no Content-Security-Policy in dist/_headers');
+  const html = await readFile(join(DIST, 'index.html'), 'utf-8');
+  const csp = html.match(/<meta http-equiv="Content-Security-Policy" content="([^"]+)"/)?.[1]?.replace(/&#39;/g, "'");
+  if (!csp) throw new Error('no <meta> Content-Security-Policy in dist/index.html');
   const directive = csp.split(';').map(s => s.trim()).find(s => s.startsWith('script-src'));
   if (!directive) throw new Error('no script-src directive');
   return directive.replace('script-src', '').trim().split(/\s+/);

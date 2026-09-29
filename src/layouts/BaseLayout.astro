@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { getLangFromUrl, getDir } from '../i18n/utils';
 import SearchOverlay from '../components/SearchOverlay.tsx';
 import ads from '../data/ads.json';
+import { SITE_CSP } from '../lib/csp';
 
 const adsterra = ads.adsterra;
 
@@ -13,6 +14,10 @@ const dir = getDir(lang);
 <!DOCTYPE html>
 <html lang={lang} dir={dir}>
 <head>
+  <!-- Site CSP (src/lib/csp.ts). First in <head> so it covers every script
+       below. Lives here, not in _headers, because Cloudflare drops header
+       values over 2,000 characters. -->
+  <meta http-equiv="Content-Security-Policy" content={SITE_CSP} />
   <!-- Google tag (gtag.js) — immediately after <head> as required by Google -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-V9WH90BFHM"></script>
   <script is:inline>

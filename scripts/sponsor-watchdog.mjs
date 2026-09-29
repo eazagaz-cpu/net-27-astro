@@ -12,7 +12,7 @@
  *   1  the homepage HTML itself is wrong — needs a deploy / a human
  */
 import { loadManifest, normUrl } from './lib/sponsor-guard.mjs';
-import { adTagProblems, cspProblems } from './verify-ads.mjs';
+import { adTagProblems, cspProblems, metaCsp } from './verify-ads.mjs';
 
 const SITE = process.env.SITE ?? 'https://net27.watch';
 const GRACE_MIN = 45; // a manifest edited this recently may still be deploying
@@ -73,8 +73,8 @@ try {
   // Ad tags (src/data/ads.json): present in the page, and allowed by the CSP
   // the page is actually served with. Either missing = ads silently gone.
   const adIssues = adTagProblems(html, 'live homepage');
-  const res = await fetch(`${SITE}/?watchdog-csp=${Date.now()}`, { method: 'HEAD', signal: AbortSignal.timeout(20_000) });
-  adIssues.push(...cspProblems(res.headers.get('content-security-policy') || '', 'live CSP'));
+  // The resource CSP is the page's <meta> tag (src/lib/csp.ts).
+  adIssues.push(...cspProblems(metaCsp(html), 'live <meta> CSP'));
   if (adIssues.length) { htmlBad = true; adIssues.forEach(p => console.error(`❌ ${p}`)); }
   else console.log('✅ ads: Adsterra banner + Social Bar tags live, CSP allows their hosts');
 } catch (e) { htmlBad = true; console.error(`❌ homepage: ${e.message}`); }
