@@ -276,15 +276,25 @@ const dir = getDir(lang);
     var KEY=adsterra.bannerKey;
     var BANNER_SRC=adsterra.bannerScript;
     var SOCIAL_BAR=adsterra.socialBarScript;
+    // Each banner's tag is inserted into its own slot, one at a time: the tag
+    // reads the global atOptions and places its ad next to document.currentScript.
+    // (A srcdoc iframe per slot does not work: live test 2026-09-30 — the tag
+    // loaded but never rendered an ad from an about:srcdoc document.)
+    var queue=[],busy=false;
+    function next(){
+      if(busy||!queue.length)return;
+      busy=true;
+      var slot=queue.shift();
+      window.atOptions={'key':KEY,'format':'iframe','height':250,'width':300,'params':{}};
+      var s=document.createElement('script');
+      s.src=BANNER_SRC;
+      s.onload=s.onerror=function(){busy=false;setTimeout(next,100);};
+      slot.appendChild(s);
+    }
     function fill(slot){
       if(slot.getAttribute('data-filled'))return;
       slot.setAttribute('data-filled','1');
-      var f=document.createElement('iframe');
-      f.width='300';f.height='250';f.title='Advertisement';f.setAttribute('scrolling','no');
-      f.srcdoc='<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style></head><body>'
-        +'<script>atOptions={"key":"'+KEY+'","format":"iframe","height":250,"width":300,"params":{}};<\/script>'
-        +'<script src="'+BANNER_SRC+'"><\/script></body></html>';
-      slot.appendChild(f);
+      queue.push(slot);next();
     }
     var slots=document.querySelectorAll('[data-adsterra-banner]');
     if('IntersectionObserver' in window){
