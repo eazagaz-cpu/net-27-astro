@@ -53,6 +53,7 @@ const seoInput = {
   disambiguator: hasDuplicateTitle ? title.tmdbId : undefined,
   cast: title.cast.map(c => c.name),
   originalLanguage: title.originalLanguage,
+  releaseDate: title.releaseDate,
 };
 // Tier C: a page with no synopsis, no cast and no availability has nothing
 // for a searcher, so it stays reachable but out of the index rather than

@@ -25,7 +25,7 @@ import FAQSection from '../FAQSection.astro';
 import { getRealTitlesByType, getRelatedRealTitles } from '../../lib/realTitles';
 import { genres } from '../../data/sampleTitles';
 import { breadcrumbSchema, movieSchema, faqSchema } from '../../lib/schema';
-import { SITE_URL, titleSeoHeading, titleSeoDescription, titleOgImage } from '../../lib/seo';
+import { SITE_URL, titleSeoHeading, titleSeoDescription, titleOgImage, ottPending } from '../../lib/seo';
 import { personUrl } from '../../lib/people';
 import { TELEGRAM_URL } from '../../lib/constants';
 import WhereToWatch from '../WhereToWatch.astro';
@@ -52,6 +52,7 @@ const seoInput = {
   disambiguator: hasDuplicateTitle ? title.tmdbId : undefined,
   cast: title.cast.map(c => c.name),
   originalLanguage: title.originalLanguage,
+  releaseDate: title.releaseDate,
 };
 // Tier C: a page with no synopsis, no cast and no availability has nothing
 // for a searcher, so it stays reachable but out of the index rather than
@@ -70,7 +71,14 @@ const breadcrumbs = [
 
 const titleGenres = genres.filter(g => title.genres.includes(g.name));
 
+// Out (or due) in theatres, not streaming yet: answer the OTT question directly.
+const ott = ottPending(seoInput);
+
 const faqs = [
+  ...(ott ? [
+    { question: `Which OTT platform will stream ${title.title}?`, answer: `No OTT or streaming platform has announced ${title.title} yet. It ${ott.released ? 'released' : 'releases'} in theatres on ${ott.dateText}. This page updates as soon as an official platform lists it.` },
+    { question: `What is the ${title.title} OTT release date?`, answer: `The OTT release date of ${title.title} has not been announced. Indian films often reach streaming a few weeks after their theatrical release (${ott.dateText}); check back here for the official platform and date.` },
+  ] : []),
   { question: `Where can I watch ${title.title}?`, answer: `Check the "Available Now" section on this page for official streaming platforms carrying ${title.title} in your region.` },
   { question: `What is ${title.title} about?`, answer: title.overview },
   ...(title.cast.length > 0 ? [{ question: `Who stars in ${title.title}?`, answer: `The cast of ${title.title} includes ${title.cast.slice(0, 5).map(c => c.role ? `${c.name} as ${c.role}` : c.name).join(', ')}.` }] : []),
@@ -264,6 +272,20 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
       <!-- Official availability, above the fold-adjacent content because it is
            the question most visitors arrive with. -->
       <WhereToWatch watch={title.watch} titleName={title.title} lang={lang} />
+
+      {ott && (
+        <section>
+          <h2 class="section-title mb-4">{title.title} OTT Release</h2>
+          <div class="glass-card rounded-xl p-5 text-[var(--color-text-secondary)] leading-relaxed">
+            <p>
+              {ott.released
+                ? `${title.title} released in theatres on ${ott.dateText}.`
+                : `${title.title} releases in theatres on ${ott.dateText}.`}
+              {` No OTT or streaming platform has been announced yet. When an official platform lists it, it will appear in "Available Now" on this page.`}
+            </p>
+          </div>
+        </section>
+      )}
 
       <!-- Cast Section -->
       {title.cast.length > 0 && (

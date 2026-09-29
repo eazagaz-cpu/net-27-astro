@@ -54,6 +54,30 @@ interface TitleSeoInput {
   cast?: string[];
   /** TMDB original language code, e.g. "ta". */
   originalLanguage?: string;
+  /** Theatrical/primary release date, YYYY-MM-DD. */
+  releaseDate?: string;
+}
+
+const fmtDate = (iso: string) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' });
+
+/**
+ * An Indian-language title that is out (or due) in theatres but not yet
+ * streaming anywhere we know of. Search Console, week to 2026-09-29: "dorothy
+ * movie ott" 2,682 impressions at 6.3, "… ott release date" 943 at 7.6 with a
+ * 0.5% CTR — the page never answered the question. Build-time dates; the site
+ * rebuilds several times a day, and the answer changes as soon as the sync
+ * finds a streaming provider.
+ */
+export function ottPending(input: { originalLanguage?: string; releaseDate?: string; watch?: TitleSeoInput['watch'] }):
+  { released: boolean; dateText: string } | null {
+  if (!isOttTitle(input) || !input.releaseDate) return null;
+  if (input.watch && (input.watch.stream.length || input.watch.free.length)) return null;
+  const released = Date.parse(`${input.releaseDate}T00:00:00Z`);
+  if (Number.isNaN(released)) return null;
+  const ageDays = (Date.now() - released) / 864e5;
+  if (ageDays > 180 || ageDays < -120) return null;
+  return { released: ageDays >= 0, dateText: fmtDate(input.releaseDate) };
 }
 
 /** Snippet budget; generateSEO cuts anything longer with "…". */
@@ -129,6 +153,14 @@ export function titleSeoDescription(input: TitleSeoInput): string {
       const starred = withStarring(lead, cast);
       return starred !== lead ? starred : `${lead} Cast, ratings and availability.`;
     }
+  }
+
+  const pending = ottPending(input);
+  if (pending) {
+    const lead = pending.released
+      ? `${name} (${year}) OTT release: no streaming platform announced yet. In theatres since ${pending.dateText}.`
+      : `${name} (${year}) releases in theatres on ${pending.dateText}; OTT platform not announced yet.`;
+    return withStarring(lead, cast);
   }
 
   const synopsis = overview ? ` ${overview}` : '';
