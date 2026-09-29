@@ -1,0 +1,146 @@
+name: 🛡️ DMCA Watcher
+
+# Every 6 hours: scan the site's Gmail for DMCA / copyright / abuse notices.
+#   - notice names a net27.watch URL → block that title (deny list, player,
+#     sitemap), commit, redeploy, and open a GitHub issue saying what was removed
+#   - notice with no URL of ours → GitHub issue asking for a manual look
+#   - Gmail secrets not set → ONE open issue saying so (no hourly failure mail);
+#     the old version skipped silently and showed green, so it never ran once
+#   - Gmail rejects the credentials → the run fails and GitHub emails the owner
+#
+# The repo is public: dmca/queue.json and dmca/audit-log.json hold only the
+# sender's domain, date, report ID and URLs — never an address or subject.
+# Setup (once, locally): npm run dmca:setup -- --client <client_secret.json>
+
+on:
+  schedule:
+    - cron: '41 */6 * * *'
+  workflow_dispatch:
+    inputs:
+      days_back:
+        description: 'Scan the last N days'
+        required: false
+        default: '30'
+
+concurrency:
+  group: dmca-watch
+  cancel-in-progress: false
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write   # commit the deny list
+      issues: write     # tell the owner what happened
+      actions: write    # redeploy via fast-deploy.yml
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Gmail access configured?
+        id: creds
+        env:
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+        run: |
+          if [ -n "$GMAIL_CLIENT_ID" ] && [ -n "$GMAIL_CLIENT_SECRET" ] && [ -n "$GMAIL_REFRESH_TOKEN" ]; then
+            echo "ok=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "ok=false" >> "$GITHUB_OUTPUT"
+            echo "::warning::DMCA watcher is NOT running: Gmail secrets are missing. Run npm run dmca:setup locally."
+          fi
+
+      - name: Not set up → keep one open issue
+        if: steps.creds.outputs.ok == 'false'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          title="DMCA watcher is not set up (Gmail secrets missing)"
+          if [ -z "$(gh issue list --state open --search "in:title \"$title\"" --json number --jq '.[].number')" ]; then
+            gh issue create --title "$title" --body "The DMCA watcher cannot read the inbox, so DMCA notices are **not** being detected.
+
+          Fix, on the dev machine: \`npm run dmca:setup -- --client <client_secret.json>\` (see the DMCA section in CLAUDE.md).
+          This issue closes itself on the first run after the secrets are set."
+          fi
+
+      - name: Set up → close the setup issue
+        if: steps.creds.outputs.ok == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          for n in $(gh issue list --state open --search 'in:title "DMCA watcher is not set up"' --json number --jq '.[].number'); do
+            gh issue close "$n" --comment "Gmail access works now; the watcher is running."
+          done
+
+      - name: Scan Gmail
+        id: scan
+        if: steps.creds.outputs.ok == 'true'
+        env:
+          GMAIL_CLIENT_ID: ${{ secrets.GMAIL_CLIENT_ID }}
+          GMAIL_CLIENT_SECRET: ${{ secrets.GMAIL_CLIENT_SECRET }}
+          GMAIL_REFRESH_TOKEN: ${{ secrets.GMAIL_REFRESH_TOKEN }}
+        run: node scripts/dmca-watcher.mjs --days=${{ github.event.inputs.days_back || '30' }}
+
+      - name: Block the reported titles
+        id: remove
+        if: steps.scan.outputs.new_auto > 0
+        run: |
+          set +e
+          node scripts/dmca-auto-remove.mjs
+          code=$?
+          set -e
+          if [ $code -eq 10 ]; then echo "removed=true" >> "$GITHUB_OUTPUT"
+          elif [ $code -ne 0 ]; then exit $code; fi
+
+      - name: Commit and push
+        id: push
+        if: steps.scan.outputs.new_auto > 0 || steps.scan.outputs.new_manual > 0
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add dmca/queue.json
+          [ -f dmca/audit-log.json ] && git add dmca/audit-log.json
+          git add src/lib/dmcaDenyList.ts functions/player.js astro.config.mjs
+          git diff --staged --quiet && { echo "Nothing to commit"; exit 0; }
+          # No [skip ci]: this push is also what makes Cloudflare's Git build redeploy.
+          git commit -m "security: DMCA auto-removal (dmca-watch)"
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main && git push origin HEAD:main && { echo "pushed=true" >> "$GITHUB_OUTPUT"; exit 0; }
+            sleep $((i * 10))
+          done
+          echo "::error::Could not push the DMCA removal"; exit 1
+
+      # A GITHUB_TOKEN push starts no workflows, so start the Actions deploy too.
+      - name: Redeploy
+        if: steps.remove.outputs.removed == 'true' && steps.push.outputs.pushed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run fast-deploy.yml --ref main
+
+      - name: Issue — titles removed
+        if: steps.remove.outputs.removed == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create --title "DMCA: $(grep -c '^- ' dmca/removed.md) title(s) removed automatically" --body "A DMCA/abuse notice named these URLs. They now 404, are gone from the sitemap, and the player refuses them:
+
+          $(cat dmca/removed.md)
+
+          Redeploy started. Record: \`dmca/audit-log.json\`. If a notice still needs a reply (e.g. Cloudflare asks for confirmation), answer it from Gmail."
+
+      - name: Issue — notice needs a look
+        if: steps.scan.outputs.new_manual > 0
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh issue create --title "DMCA: ${{ steps.scan.outputs.new_manual }} notice(s) need a manual look" --body "The watcher found DMCA/abuse email that names no net27.watch URL it can act on, so nothing was removed.
+
+          Open Gmail and search for \`DMCA OR copyright OR takedown\`. Dates and sender domains are in \`dmca/queue.json\` → \`manualReview\`."

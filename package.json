@@ -26,6 +26,8 @@
     "index:now": "node scripts/instant-index.mjs",
     "index:all": "node scripts/instant-index.mjs all",
     "index:blog": "node scripts/instant-index.mjs blog",
+    "dmca:setup": "npm run auth:check && node scripts/dmca-gmail-auth.mjs",
+    "dmca:scan": "node scripts/dmca-watcher.mjs --dry-run",
     "sponsors:push": "npm run auth:check && node scripts/push-sponsors.mjs",
     "sponsors:add": "node scripts/add-sponsor.mjs",
     "sponsors:remove": "node scripts/remove-sponsor.mjs",

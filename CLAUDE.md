@@ -162,6 +162,32 @@ emits it first in `<head>`, and it reads the Adsterra hosts from ads.json.
 others), and /player/ keeps its own header policy. `validate:csp`,
 `verify-ads` and the watchdog all read the meta tag.
 
+## DMCA notices (auto-detect and auto-remove)
+
+[.github/workflows/dmca-watch.yml](.github/workflows/dmca-watch.yml) scans the
+site's Gmail every 6 hours (`scripts/dmca-watcher.mjs`). When a notice names a
+net27.watch URL, `scripts/dmca-auto-remove.mjs` adds the title to
+[src/lib/dmcaDenyList.ts](src/lib/dmcaDenyList.ts), `functions/player.js` and
+the sitemap list in `astro.config.mjs`. The workflow then commits, redeploys
+and opens a GitHub issue. A notice that names no URL of ours opens a
+"manual look" issue instead.
+
+- Before 2026-09-30 this existed only in the archived `net27.watch` repo. Its
+  Gmail secrets were never set, and it skipped every run while showing green,
+  so it never detected anything. Now missing secrets keep one open issue, and
+  rejected credentials fail the run.
+- Setup is once, locally: `npm run dmca:setup -- --client <client_secret.json>`
+  (a Desktop-app OAuth client with the Gmail API enabled; publish the consent
+  screen to "In production", or the refresh token dies after 7 days). It
+  writes the four `GMAIL_*` secrets as eazagaz-cpu and prints none of them.
+- **The repo is public.** `dmca/queue.json` and `dmca/audit-log.json` keep
+  only the sender's domain, date, report ID and URLs. Never commit or log a
+  complainant's address, a subject line or an email body.
+- URLs are matched only on net27.watch, net-27.cc and
+  net-27-astro.pages.dev. The inbox also gets notices about other sites, and
+  their `/movies/` paths must not take down our titles.
+- Deny-list entries are a legal record. Never remove one.
+
 ### A `_headers` change needs a cache purge
 
 Editing [public/_headers](public/_headers) alone does **not** reach visitors on

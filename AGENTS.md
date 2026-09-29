@@ -151,3 +151,10 @@ URL de, to woh naya sponsor hai — upar wala "NAYA LINK ADD KARNA" flow chalao.
 - `scripts/verify-ads.mjs` deploy rok deta hai agar ad code, slot, ya `public/_headers` CSP mein Adsterra host missing ho. Watchdog har ghante live check karta hai.
 - Kisi aur cheez ko "pass" karwane ke liye ad tag / slot / CSP host kabhi mat hatao. Naya Adsterra host aaye to sirf `ads.json` mein add karo. CSP ab `src/lib/csp.ts` ka `<meta>` tag hai jo ads.json se hosts leta hai. `_headers` mein lambi CSP mat daalo: Cloudflare 2,000 characters se lambi value chupke se hata deta hai.
 - `/player/` par ads nahi lagte.
+
+## 🛡️ DMCA (auto-detect + auto-remove)
+
+- `.github/workflows/dmca-watch.yml` har 6 ghante Gmail scan karta hai (`scripts/dmca-watcher.mjs`). Notice mein net27.watch URL ho to `scripts/dmca-auto-remove.mjs` title ko deny list (`src/lib/dmcaDenyList.ts`, `functions/player.js`, `astro.config.mjs`) mein daal deta hai, commit + redeploy hota hai, aur GitHub issue banta hai.
+- Setup ek dafa: `npm run dmca:setup -- --client <client_secret.json>`. Details CLAUDE.md ke DMCA section mein.
+- Repo PUBLIC hai: `dmca/*.json` mein sirf sender ka domain, date, report ID aur URLs. Email address, subject ya body kabhi commit/log mat karo.
+- Deny list ki entries legal record hain — kabhi mat hatao.
