@@ -176,6 +176,20 @@ const pageSchema = {
                       </div>
                     );
                   }
+                  if (row.label && row.value?.includes('@') && !row.href) {
+                    // Cloudflare's email obfuscation turns addresses into
+                    // "[email protected]" for anything without JavaScript —
+                    // including rights-holders' tools looking for the DMCA
+                    // contact, who then file with Google instead. email_off
+                    // exempts this one address.
+                    const mail = row.value.replace(/[<>&"]/g, '');
+                    return (
+                      <p>
+                        {`${row.label}: `}
+                        <Fragment set:html={`<!--email_off--><a href="mailto:${mail}" class="text-[var(--color-primary)] hover:underline">${mail}</a><!--/email_off-->`} />
+                      </p>
+                    );
+                  }
                   if (row.label && row.value) {
                     const href = row.href?.startsWith('mailto:') ? row.href : row.href ? L(row.href) : undefined;
                     return (

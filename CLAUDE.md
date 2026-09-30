@@ -187,6 +187,12 @@ and opens a GitHub issue. A notice that names no URL of ours opens a
   net-27-astro.pages.dev. The inbox also gets notices about other sites, and
   their `/movies/` paths must not take down our titles.
 - Deny-list entries are a legal record. Never remove one.
+- **The DMCA contact must receive mail.** Until 2026-09-30 net27.watch had no
+  MX records, so `about@net27.watch` (the agent address on /dmca/) bounced and
+  rights-holders filed with Google instead. Cloudflare Email Routing now
+  forwards `about@` and a catch-all to the Gmail inbox the watcher reads.
+  LegalPage wraps addresses in `<!--email_off-->`, because Cloudflare's email
+  obfuscation otherwise shows "[email protected]" to anything without JS.
 - **Theatre-only films get no player** ([src/lib/theatrical.ts](src/lib/theatrical.ts)):
   a movie released within 180 days (or not yet out) that no service streams,
   rents or sells. On 2026-09-28 copyright notices hit, and on 29 Sep Google
