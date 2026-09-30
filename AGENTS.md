@@ -145,11 +145,11 @@ URL de, to woh naya sponsor hai — upar wala "NAYA LINK ADD KARNA" flow chalao.
 
 ---
 
-## 📢 ADS (Adsterra + RollerAds) — KABHI MAT HATANA
+## 📢 ADS (RollerAds)
 
-- Saari keys/hosts sirf `src/data/ads.json` mein. Loader `src/layouts/BaseLayout.astro` mein, banner slots `AdsterraBanner.astro` se.
-- `scripts/verify-ads.mjs` deploy rok deta hai agar ad code, slot, ya `public/_headers` CSP mein Adsterra host missing ho. Watchdog har ghante live check karta hai.
-- Kisi aur cheez ko "pass" karwane ke liye ad tag / slot / CSP host kabhi mat hatao. Naya Adsterra host aaye to sirf `ads.json` mein add karo. CSP ab `src/lib/csp.ts` ka `<meta>` tag hai jo ads.json se hosts leta hai. `_headers` mein lambi CSP mat daalo: Cloudflare 2,000 characters se lambi value chupke se hata deta hai.
+- **Adsterra 2026-10-01 ko owner ke kehne par hata diya gaya** (low CPM). Owner na kahe to wapas mat lagao; purana code git history mein hai.
+- RollerAds ki keys/host sirf `src/data/ads.json` mein. `scripts/verify-ads.mjs` deploy rok deta hai agar RollerAds tag, service worker, ya CSP host missing ho. Watchdog har ghante live check karta hai.
+- Kisi aur cheez ko "pass" karwane ke liye ad tag ya CSP host kabhi mat hatao. CSP `src/lib/csp.ts` ka `<meta>` tag hai. `_headers` mein lambi CSP mat daalo: Cloudflare 2,000 characters se lambi value chupke se hata deta hai.
 - `/player/` par ads nahi lagte.
 
 ## 🛡️ DMCA (auto-detect + auto-remove)

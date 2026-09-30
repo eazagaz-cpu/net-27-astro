@@ -132,32 +132,32 @@ The rules that stop links vanishing:
   local push of a manifest that is not yet on GitHub. When a guard fails, fix
   the manifest. Never weaken the guard.
 
-## Ads (Adsterra, RollerAds) — never remove
+## Ads (RollerAds) — never remove by accident
 
-The owner reported Adsterra tags "removing themselves" several times. None was
-ever committed here; they were added outside git, or on the old net27.watch
-repo, and the next deploy wiped them. Now:
+**Adsterra was removed on 2026-10-01 at the owner's request** (low CPM, no
+earnings). Its loader, `AdsterraBanner.astro` slots and CSP hosts are in git
+history before that date. Do not re-add it unless the owner asks.
 
-- **[src/data/ads.json](src/data/ads.json)** holds every key, script URL and
-  CSP host. BaseLayout builds the Adsterra loader from it (banner slots via
-  `AdsterraBanner.astro`: 2 on the homepage, 1 on title pages, 1 above every
-  footer; Social Bar site-wide after the first interaction). No ads on
-  `/player/`.
+Ad tags here used to "remove themselves": they were added outside git, or on
+the old net27.watch repo, and the next deploy wiped them. Now:
+
+- **[src/data/ads.json](src/data/ads.json)** holds the RollerAds zone, script
+  URL, service worker and CSP host. The tag sits right after `<body>` in
+  BaseLayout. No ads on `/player/`.
 - **`scripts/verify-ads.mjs`** (postbuild, CI between build and deploy, local
-  deploy scripts) fails when a tag or slot is missing from the built pages, or
-  when the site CSP does not allow every Adsterra host, or when any
-  `public/_headers` value exceeds 2,000 characters. A tag that is present but
-  blocked by CSP is as good as gone.
+  deploy scripts) fails when the RollerAds tag or service worker is missing
+  from the built pages, when the site CSP blocks its host, or when any
+  `public/_headers` value exceeds 2,000 characters.
 - The hourly watchdog checks the same on the live site and redeploys `main`
   when it fails.
-- Never remove an ad tag, slot or CSP host to make something else pass. To
-  change a key or add a rotated Adsterra host, edit ads.json only.
+- Remove an ad network only when the owner asks, and then remove its guard
+  checks in the same change.
 
 **The CSP is a `<meta>` tag, not a header.** Cloudflare Pages silently drops
 any `_headers` value over 2,000 characters. Adding the Adsterra hosts took the
 policy to ~2,900, and on 2026-09-29 every page was served with no CSP at all.
 The resource policy now lives in [src/lib/csp.ts](src/lib/csp.ts). BaseLayout
-emits it first in `<head>`, and it reads the Adsterra hosts from ads.json.
+emits it first in `<head>`.
 `public/_headers` keeps only header-only rules (`frame-ancestors` and a few
 others), and /player/ keeps its own header policy. `validate:csp`,
 `verify-ads` and the watchdog all read the meta tag.

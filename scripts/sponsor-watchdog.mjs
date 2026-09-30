@@ -76,7 +76,7 @@ try {
   // The resource CSP is the page's <meta> tag (src/lib/csp.ts).
   adIssues.push(...cspProblems(metaCsp(html), 'live <meta> CSP'));
   if (adIssues.length) { htmlBad = true; adIssues.forEach(p => console.error(`❌ ${p}`)); }
-  else console.log('✅ ads: Adsterra banner + Social Bar tags live, CSP allows their hosts');
+  else console.log('✅ ads: RollerAds tag live, CSP allows its host');
 } catch (e) { htmlBad = true; console.error(`❌ homepage: ${e.message}`); }
 
 process.exitCode = htmlBad ? 1 : apiBad ? 2 : 0;

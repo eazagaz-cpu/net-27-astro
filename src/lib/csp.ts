@@ -9,13 +9,9 @@
  * policy cannot carry (frame-ancestors) plus a few cheap non-fetch rules;
  * browsers enforce both policies together.
  *
- * Owner-approved additions: the Adsterra hosts from src/data/ads.json in
- * script-src, connect-src, frame-src and img-src.
+ * The Adsterra hosts were removed with Adsterra itself on 2026-10-01.
  * /player/ additionally keeps its own, stricter header policy in _headers.
  */
-import ads from '../data/ads.json';
-
-const ADSTERRA = ads.adsterra.cspHosts;
 
 /** Directive → sources. The site-wide policy as of 8632488, minus frame-ancestors (header only). */
 const BASE: Record<string, string[]> = {
@@ -34,11 +30,6 @@ const BASE: Record<string, string[]> = {
   "upgrade-insecure-requests": [],
 };
 
-const WITH_ADS = new Set(['script-src', 'connect-src', 'frame-src', 'img-src']);
-
 export const SITE_CSP = Object.entries(BASE)
-  .map(([directive, sources]) => {
-    const all = WITH_ADS.has(directive) ? [...sources, ...ADSTERRA] : sources;
-    return [directive, ...all].join(' ');
-  })
+  .map(([directive, sources]) => [directive, ...sources].join(' '))
   .join('; ');

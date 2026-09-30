@@ -2,17 +2,17 @@
  * verify-ads.mjs — the ad tags must ship. Runs after `astro build` (postbuild,
  * and in CI between build and deploy); exit 1 blocks the deploy.
  *
- * The owner reported Adsterra tags "removing themselves" more than once. Here
- * that happened because nothing noticed: a tag added outside git, or dropped
+ * Ad tags here used to "remove themselves": a tag added outside git, dropped
  * by an unrelated edit, or overwritten by a deploy from the old net27.watch
- * repo. This checks the built output against src/data/ads.json:
+ * repo, and nothing noticed. This checks the built output against
+ * src/data/ads.json:
  *
- *   - homepage and a title page carry the Adsterra loader (banner key, banner
- *     script, Social Bar script) and at least one banner slot;
- *   - the CSP in public/_headers allows every Adsterra host — without that
- *     the tags are present but silently blocked, which looks the same;
- *   - RollerAds: SDK tag on the homepage and its service worker file.
+ *   - RollerAds: SDK tag on the homepage and a title page, its service worker
+ *     file, and a CSP that allows its host (a blocked tag looks the same as a
+ *     missing one);
+ *   - public/_headers values stay under Cloudflare's 2,000-character limit.
  *
+ * Adsterra was removed on 2026-10-01 at the owner's request (low CPM).
  * The same checks run against the live site hourly (scripts/sponsor-watchdog.mjs).
  */
 import { readFileSync, existsSync, readdirSync } from 'fs';
@@ -21,19 +21,13 @@ import { fileURLToPath } from 'url';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const DIST = join(ROOT, 'dist');
-const ads = JSON.parse(readFileSync(join(ROOT, 'src', 'data', 'ads.json'), 'utf8'));
-const { adsterra, rollerads } = ads;
+const { rollerads } = JSON.parse(readFileSync(join(ROOT, 'src', 'data', 'ads.json'), 'utf8'));
 
 const problems = [];
 const need = (ok, msg) => { if (!ok) problems.push(msg); };
 
-export function adTagProblems(html, where, { expectSlot = true } = {}) {
-  const out = [];
-  if (!html.includes(adsterra.bannerKey)) out.push(`${where}: Adsterra banner key missing`);
-  if (!html.includes(adsterra.bannerScript)) out.push(`${where}: Adsterra banner script missing`);
-  if (!html.includes(adsterra.socialBarScript)) out.push(`${where}: Adsterra Social Bar script missing`);
-  if (expectSlot && !html.includes('data-adsterra-banner')) out.push(`${where}: no Adsterra banner slot`);
-  return out;
+export function adTagProblems(html, where) {
+  return html.includes(rollerads.sdkScript) ? [] : [`${where}: RollerAds SDK tag missing`];
 }
 
 /** The policy in a page's <meta http-equiv="Content-Security-Policy"> tag ('' when absent). */
@@ -42,13 +36,12 @@ export function metaCsp(html) {
   return m ? m[1].replace(/&#39;/g, "'").replace(/&amp;/g, '&') : '';
 }
 
-/** Hosts from ads.json missing from one CSP directive of the site-wide policy. */
+/** Directives of the site-wide policy that would block the RollerAds host. */
 export function cspProblems(csp, where) {
   const out = [];
-  for (const d of ['script-src', 'frame-src', 'connect-src']) {
+  for (const d of ['script-src', 'connect-src']) {
     const value = (csp.match(new RegExp(`${d} ([^;]*)`)) || [])[1] || '';
-    const missing = adsterra.cspHosts.filter(h => !value.split(/\s+/).includes(h));
-    if (missing.length) out.push(`${where}: CSP ${d} blocks ${missing.join(' ')}`);
+    if (!value.split(/\s+/).includes(rollerads.cspHost)) out.push(`${where}: CSP ${d} blocks ${rollerads.cspHost}`);
   }
   return out;
 }
@@ -78,15 +71,14 @@ if (process.argv[1] && process.argv[1].endsWith('verify-ads.mjs')) {
     if (value.length > 2000) problems.push(`public/_headers line ${i + 1}: value is ${value.length} chars; Cloudflare drops values over 2,000`);
   });
 
-  need(homeHtml.includes(rollerads.sdkScript), 'homepage: RollerAds SDK tag missing');
   need(existsSync(join(DIST, rollerads.serviceWorker)), `dist/${rollerads.serviceWorker} missing (RollerAds service worker)`);
 
   if (problems.length) {
     console.error('❌ Ad tags would not work after this deploy:');
     for (const p of problems) console.error(`   • ${p}`);
-    console.error('   Keys/hosts: src/data/ads.json · loader: src/layouts/BaseLayout.astro · CSP: public/_headers');
+    console.error('   Keys/hosts: src/data/ads.json · RollerAds tag: src/layouts/BaseLayout.astro · CSP: src/lib/csp.ts');
     process.exitCode = 1;
   } else {
-    console.log(`✅ Ads: Adsterra banner + Social Bar and RollerAds present; CSP allows all ${adsterra.cspHosts.length} Adsterra hosts.`);
+    console.log('✅ Ads: RollerAds tag and service worker present; CSP allows its host.');
   }
 }
