@@ -79,6 +79,171 @@
       "action": "auto-remove",
       "processedAt": "2026-09-30T09:18:18.056Z",
       "result": "processed"
+    },
+    {
+      "messageId": "1a0e900750f20723",
+      "date": "Mon, 28 Sep 2026 10:11:56 -0700",
+      "fromDomain": "google.com",
+      "reportId": "2-1742000042305-0465477435",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "awarapan-2-1444466",
+          "tmdbId": 1444466
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:20:07.417Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "1a0e4484474e1ad0",
+      "date": "Sun, 27 Sep 2026 12:12:16 -0700",
+      "fromDomain": "google.com",
+      "reportId": "5-5498000041661-2024935596",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "monster-mia-1572116",
+          "tmdbId": 1572116
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:20:07.417Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "1a0bc97d1056b6cc",
+      "date": "Sat, 19 Sep 2026 19:14:20 -0700",
+      "fromDomain": "google.com",
+      "reportId": "5-0925000041952-1463337483",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "spider-island-1462861",
+          "tmdbId": 1462861
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:20:07.418Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "1a085445ffe71598",
+      "date": "Wed, 09 Sep 2026 01:24:05 -0700",
+      "fromDomain": "google.com",
+      "reportId": "8-3283000042085-2124411901",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "spa-weekend-1341138",
+          "tmdbId": 1341138
+        },
+        {
+          "type": "player",
+          "slug": null,
+          "tmdbId": 1341138
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:20:07.420Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "1a068ff99fdc1ba3",
+      "date": "Thu, 03 Sep 2026 13:39:35 -0700",
+      "fromDomain": "google.com",
+      "reportId": "4-3306000041354-0738506008",
+      "targets": [
+        {
+          "type": "player",
+          "slug": null,
+          "tmdbId": 1341138
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:20:07.420Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "1a06791bf4f974cc",
+      "date": "Thu, 03 Sep 2026 06:59:59 -0700",
+      "fromDomain": "google.com",
+      "reportId": "9-2085000041762-1122044031",
+      "targets": [
+        {
+          "type": "player",
+          "slug": null,
+          "tmdbId": 1471168
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:20:07.421Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "1a0627861dea0d41",
+      "date": "Wed, 02 Sep 2026 07:14:09 -0700",
+      "fromDomain": "google.com",
+      "reportId": "5-4252000041810-1362263212",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "spider-man-brand-new-day-969681",
+          "tmdbId": 969681
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:20:07.422Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "1a05978c076392a5",
+      "date": "Mon, 31 Aug 2026 13:18:01 -0700",
+      "fromDomain": "google.com",
+      "reportId": "8-5441000041004-0209944395",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "irumudi-1441228",
+          "tmdbId": 1441228
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:20:07.424Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "1a05976705081ed5",
+      "date": "Mon, 31 Aug 2026 13:15:29 -0700",
+      "fromDomain": "google.com",
+      "reportId": "0-5244000040961-0510082230",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "modha-rathri-1685882",
+          "tmdbId": 1685882
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:20:07.425Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "1a057e66bc8ccebd",
+      "date": "Mon, 31 Aug 2026 05:58:33 -0700",
+      "fromDomain": "google.com",
+      "reportId": "3-8650000041167-0215118043",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "coyote-vs-acme-1204680",
+          "tmdbId": 1204680
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:20:07.426Z",
+      "result": "processed"
     }
   ],
   "manualReview": [
@@ -141,6 +306,15 @@
       "date": "Thu, 03 Sep 2026 08:19:18 +0000",
       "fromDomain": "notify.cloudflare.com",
       "reportId": "a37e65dce9a83274",
+      "targets": [],
+      "action": "manual-review",
+      "reason": "No extractable URL"
+    },
+    {
+      "messageId": "1a06fd0d691c972f",
+      "date": "Fri, 04 Sep 2026 21:25:52 -0700",
+      "fromDomain": "google.com",
+      "reportId": "8-4776000041540-1127912395",
       "targets": [],
       "action": "manual-review",
       "reason": "No extractable URL"

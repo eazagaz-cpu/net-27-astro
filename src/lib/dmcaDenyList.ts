@@ -17,6 +17,11 @@
 
 /** Slugs that must not be served. Used to filter getStaticPaths. */
 export const DMCA_DENIED_SLUGS = new Set<string>([
+  'coyote-vs-acme-1204680',  // Report 3-8650000041167-0215118043
+  'modha-rathri-1685882',  // Report 0-5244000040961-0510082230
+  'irumudi-1441228',  // Report 8-5441000041004-0209944395
+  'spa-weekend-1341138',  // Report 8-3283000042085-2124411901
+  'spider-island-1462861',  // Report 5-0925000041952-1463337483
   'awarapan-2-1444466',  // Report 2-1742000042305-0465477435
   'monster-mia-1572116',  // Report 5-5498000041661-2024935596
   'spider-man-brand-new-day-969681',
@@ -26,6 +31,12 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  1204680,  // TMDB ID 1204680 — Report 3-8650000041167-0215118043
+  1685882,  // TMDB ID 1685882 — Report 0-5244000040961-0510082230
+  1441228,  // TMDB ID 1441228 — Report 8-5441000041004-0209944395
+  1471168,  // TMDB ID 1471168 — Report 9-2085000041762-1122044031
+  1341138,  // TMDB ID 1341138 — Report 8-3283000042085-2124411901
+  1462861,  // TMDB ID 1462861 — Report 5-0925000041952-1463337483
   1444466,  // TMDB ID 1444466 — Report 2-1742000042305-0465477435
   1572116,  // TMDB ID 1572116 — Report 5-5498000041661-2024935596
   969681,   // Spider-Man: Brand New Day — Report afd2de4e15d0c7ae
