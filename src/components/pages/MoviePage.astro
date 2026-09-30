@@ -27,6 +27,7 @@ import { genres } from '../../data/sampleTitles';
 import { breadcrumbSchema, movieSchema, faqSchema } from '../../lib/schema';
 import { SITE_URL, titleSeoHeading, titleSeoDescription, titleOgImage, ottPending } from '../../lib/seo';
 import { personUrl } from '../../lib/people';
+import { isTheatreOnly } from '../../lib/theatrical';
 import { TELEGRAM_URL } from '../../lib/constants';
 import WhereToWatch from '../WhereToWatch.astro';
 import RatingsRow from '../RatingsRow.astro';
@@ -112,6 +113,12 @@ const posterGradients = [
 const posterGradient = posterGradients[title.title.length % posterGradients.length];
 
 const playerUrl = `/player/?type=movie&id=${title.tmdbId}`;
+// Only in cinemas: no player (see src/lib/theatrical.ts).
+const theatreOnly = isTheatreOnly(title);
+const releasedText = title.releaseDate
+  ? new Date(`${title.releaseDate}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC' })
+  : String(title.year);
+const inCinemas = !title.releaseDate || Date.parse(`${title.releaseDate}T00:00:00Z`) <= Date.now();
 
 // Share previews use this film's own backdrop rather than the generic site card.
 const og = titleOgImage(title.backdropUrl, title.title);
@@ -244,10 +251,16 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
 
             <!-- Action Buttons -->
             <div class="flex items-center gap-3 flex-wrap">
-              <a href={playerUrl} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
-                <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                Watch Now
-              </a>
+              {theatreOnly ? (
+                <span class="btn-glass px-6 py-2.5 rounded-lg text-sm cursor-default" data-theatre-only>
+                  🎬 {inCinemas ? `In theatres since ${releasedText}` : `In theatres ${releasedText}`} · not streaming yet
+                </span>
+              ) : (
+                <a href={playerUrl} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                  Watch Now
+                </a>
+              )}
               <WatchlistButton
                 id={title.tmdbId}
                 type="movie"

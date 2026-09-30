@@ -1,5 +1,7 @@
 ---
 import { getBackdropUrl } from '../lib/media';
+import { getRealTitlesByType } from '../lib/realTitles';
+import { isTheatreOnly } from '../lib/theatrical';
 
 interface HeroTitle {
   slug: string;
@@ -21,6 +23,8 @@ interface Props {
 
 const { titles } = Astro.props;
 const slides = titles.slice(0, 5);
+// Theatre-only films get no player (src/lib/theatrical.ts).
+const noPlayer = new Set(getRealTitlesByType('movie').filter(isTheatreOnly).map(t => t.tmdbId));
 ---
 
 <section class="relative w-full h-[62vh] md:h-[72vh] overflow-hidden" aria-label="Featured titles">
@@ -77,10 +81,12 @@ const slides = titles.slice(0, 5);
               </p>
 
               <div class="flex items-center gap-3">
-                <a href={`/player/?type=${slide.type === 'movie' ? 'movie' : 'tv'}&id=${slide.tmdbId}`} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
-                  <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-                  Watch Now
-                </a>
+                {!(slide.type === 'movie' && noPlayer.has(slide.tmdbId)) && (
+                  <a href={`/player/?type=${slide.type === 'movie' ? 'movie' : 'tv'}&id=${slide.tmdbId}`} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                    Watch Now
+                  </a>
+                )}
                 <a href={href} class="btn-glass px-6 py-2.5 rounded-lg text-sm">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
                   More Info

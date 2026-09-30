@@ -45,6 +45,12 @@ const GONE_HTML = `<!DOCTYPE html>
 </body>
 </html>`;
 
+const THEATRE_HTML = GONE_HTML
+  .replace('<title>Content Removed', '<title>In Theatres')
+  .replace('<h1>Content Not Available</h1>', '<h1>Only in theatres for now</h1>')
+  .replace('<p>This title has been removed and is no longer available on NetMirror.</p>',
+    '<p>This film is still in cinemas and no streaming platform offers it yet. Its page shows the OTT release as soon as one is announced.</p>');
+
 export async function onRequest(context) {
   const url = new URL(context.request.url);
   const id = url.searchParams.get('id');
@@ -64,6 +70,31 @@ export async function onRequest(context) {
     });
   }
 
+  // Films still only in cinemas get no player (src/lib/theatrical.ts); the
+  // build publishes their ids. Movie ids only: a TV id can equal a movie id.
+  if (id && type !== 'tv' && (await theatreOnlyIds(context)).has(id)) {
+    return new Response(THEATRE_HTML, {
+      status: 404,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'no-store',
+        'X-Robots-Tag': 'noindex',
+      },
+    });
+  }
+
   // Pass all other requests through to the static player page.
   return context.next();
+}
+
+let theatre = { ids: new Set(), at: 0 };
+
+/** The build's theatre-only list, cached per isolate for 10 minutes; empty if unreadable. */
+async function theatreOnlyIds(context) {
+  if (Date.now() - theatre.at < 600_000) return theatre.ids;
+  try {
+    const res = await context.env.ASSETS.fetch(new URL('/data/theatre-only.json', context.request.url));
+    if (res.ok) theatre = { ids: new Set((await res.json()).ids), at: Date.now() };
+  } catch { /* keep the last list */ }
+  return theatre.ids;
 }

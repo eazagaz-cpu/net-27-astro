@@ -187,6 +187,15 @@ and opens a GitHub issue. A notice that names no URL of ours opens a
   net-27-astro.pages.dev. The inbox also gets notices about other sites, and
   their `/movies/` paths must not take down our titles.
 - Deny-list entries are a legal record. Never remove one.
+- **Theatre-only films get no player** ([src/lib/theatrical.ts](src/lib/theatrical.ts)):
+  a movie released within 180 days (or not yet out) that no service streams,
+  rents or sells. On 2026-09-28 copyright notices hit, and on 29 Sep Google
+  dropped `/movies/dorothy-1578079/`, then ~80% of search clicks, from its
+  results within hours. The page keeps its OTT-release answer; the player
+  returns once the sync finds a provider. `functions/player.js` enforces it at
+  the edge from `/data/theatre-only.json`. Do not move a notice-hit page to a
+  new slug: that re-publishes it, draws a new notice, and repeated valid
+  notices demote the whole site.
 
 ### A `_headers` change needs a cache purge
 
