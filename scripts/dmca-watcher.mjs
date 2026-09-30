@@ -212,10 +212,14 @@ async function main() {
     if (/(^|\.)github\.com$/.test(fromDomain)) continue;
     if (!DMCA_SENDERS.some(p => p.test(from)) && !DMCA_SUBJECTS.some(p => p.test(subject))) continue;
 
-    console.log(`📩 Detected notice from ${fromDomain} | Date: ${date}`);
-
     const targets = extractTargets(fullText);
     const reportId = extractCloudflareId(fullText);
+
+    // Other sites' notices reach the same inbox: without our domain anywhere
+    // in the mail it is not ours, not even for a manual look.
+    if (targets.length === 0 && !/net27\.watch|net-27\.cc|net-27-astro\.pages\.dev/i.test(fullText)) continue;
+
+    console.log(`📩 Detected notice from ${fromDomain} | Date: ${date}`);
 
     if (targets.length === 0) {
       console.log(`   ⚠️  No net27.watch URL found — MANUAL REVIEW required\n`);
