@@ -159,8 +159,10 @@ export function extractTargets(text) {
   return targets;
 }
 
-function extractCloudflareId(text) {
-  const m = text.match(/[Rr]eport\s+(?:ID|#):?\s*([a-f0-9]{16,32})/i) ||
+export function extractCloudflareId(text) {
+  // Google: "reference ID when doing so: 5-5498000041661-2024935596"
+  const m = text.match(/reference\s+ID[^:\n]*:\s*(\d-\d{6,}-\d{6,})/i) ||
+            text.match(/[Rr]eport\s+(?:ID|#):?\s*([a-f0-9]{16,32})/i) ||
             text.match(/\[([a-f0-9]{16,32})\]/);
   return m ? m[1] : null;
 }
@@ -183,7 +185,7 @@ async function main() {
     `(subject:DMCA OR subject:"copyright infringement" OR subject:"takedown request" ` +
     `OR subject:"abuse report" OR subject:"manual action" OR subject:"copyright removal" ` +
     `OR from:abuse@cloudflare.com OR from:dmca-agent@google.com OR from:legal@google.com) ` +
-    `after:${afterTs}`
+    `-from:github.com after:${afterTs}`
   );
 
   console.log('📧 Searching Gmail...');
@@ -201,7 +203,12 @@ async function main() {
     const date = hdrs.date || '';
     const body = decodeBody(msg.payload);
     const fullText = `${from}\n${subject}\n${body}`;
+    // Public repo + public Actions logs: never store or print addresses or subjects.
+    const fromDomain = (from.match(/@([a-z0-9.-]+)/i) || [])[1]?.toLowerCase() || 'unknown';
 
+    // Our own GitHub issue mails say "DMCA" too; reading them back would open
+    // a new issue every run.
+    if (/(^|\.)github\.com$/.test(fromDomain)) continue;
     if (!DMCA_SENDERS.some(p => p.test(from)) && !DMCA_SUBJECTS.some(p => p.test(subject))) continue;
 
     console.log(`📩 Detected notice from ${fromDomain} | Date: ${date}`);
