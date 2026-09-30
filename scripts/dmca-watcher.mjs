@@ -69,7 +69,8 @@ const DMCA_SENDERS = [
 
 const DMCA_SUBJECTS = [
   /\bdmca\b/i,
-  /copyright\s+(infringement|violation|removal)/i,
+  // Search Console: "Google notice regarding copyright-related content"
+  /copyright/i,
   /takedown\s+request/i,
   /removal\s+request/i,
   /abuse\s+report/i,
@@ -182,7 +183,7 @@ async function main() {
 
   const afterTs = Math.floor((Date.now() - DAYS_BACK * 86400_000) / 1000);
   const q = encodeURIComponent(
-    `(subject:DMCA OR subject:"copyright infringement" OR subject:"takedown request" ` +
+    `(subject:DMCA OR subject:copyright OR subject:"takedown request" ` +
     `OR subject:"abuse report" OR subject:"manual action" OR subject:"copyright removal" ` +
     `OR from:abuse@cloudflare.com OR from:dmca-agent@google.com OR from:legal@google.com) ` +
     `-from:github.com after:${afterTs}`
