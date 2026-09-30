@@ -1,0 +1,38 @@
+{
+  "processed": [
+    {
+      "messageId": "gsc-5-5498000041661-2024935596",
+      "date": "2026-09-27",
+      "fromDomain": "google.com",
+      "reportId": "5-5498000041661-2024935596",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "monster-mia-1572116",
+          "tmdbId": 1572116
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:05:21.918Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "gsc-2-1742000042305-0465477435",
+      "date": "2026-09-28",
+      "fromDomain": "google.com",
+      "reportId": "2-1742000042305-0465477435",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "awarapan-2-1444466",
+          "tmdbId": 1444466
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-09-30T09:05:21.938Z",
+      "result": "processed"
+    }
+  ],
+  "manualReview": [],
+  "pending": []
+}

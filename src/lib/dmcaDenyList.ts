@@ -17,6 +17,8 @@
 
 /** Slugs that must not be served. Used to filter getStaticPaths. */
 export const DMCA_DENIED_SLUGS = new Set<string>([
+  'awarapan-2-1444466',  // Report 2-1742000042305-0465477435
+  'monster-mia-1572116',  // Report 5-5498000041661-2024935596
   'spider-man-brand-new-day-969681',
   'the-death-of-robin-hood-1284465',
   'ice-cream-man-1477712',
@@ -24,6 +26,8 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  1444466,  // TMDB ID 1444466 — Report 2-1742000042305-0465477435
+  1572116,  // TMDB ID 1572116 — Report 5-5498000041661-2024935596
   969681,   // Spider-Man: Brand New Day — Report afd2de4e15d0c7ae
   1284465,  // The Death of Robin Hood    — Report a37e65dce9a83274
   1477712,  // Player ID — 451 active

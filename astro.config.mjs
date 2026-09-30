@@ -9,6 +9,8 @@ import { readFileSync } from 'node:fs';
 // DMCA-denied slugs — must never appear in sitemap.
 // Keep in sync with src/lib/dmcaDenyList.ts.
 const DMCA_DENIED_SLUGS = new Set([
+  'awarapan-2-1444466',
+  'monster-mia-1572116',
   'spider-man-brand-new-day-969681',
   'the-death-of-robin-hood-1284465',
   'ice-cream-man-1477712',
