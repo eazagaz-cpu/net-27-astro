@@ -15,7 +15,7 @@
  * Do NOT remove existing entries — this is a permanent legal record.
  */
 
-const DMCA_BLOCKED_IDS = new Set(['1204680', '1685882', '1441228', '1471168', '1341138', '1462861', '1444466', '1572116', 
+const DMCA_BLOCKED_IDS = new Set(['332282', '1204680', '1685882', '1441228', '1471168', '1341138', '1462861', '1444466', '1572116', 
   '1477712', // Active Cloudflare 451 — do not remove
   '969681',  // Spider-Man: Brand New Day — Report afd2de4e15d0c7ae
   '1284465', // The Death of Robin Hood    — Report a37e65dce9a83274

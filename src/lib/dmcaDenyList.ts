@@ -17,6 +17,7 @@
 
 /** Slugs that must not be served. Used to filter getStaticPaths. */
 export const DMCA_DENIED_SLUGS = new Set<string>([
+  'physical-100-mexico-332282',  // Report 8-9857000041155-2050300815
   'coyote-vs-acme-1204680',  // Report 3-8650000041167-0215118043
   'modha-rathri-1685882',  // Report 0-5244000040961-0510082230
   'irumudi-1441228',  // Report 8-5441000041004-0209944395
@@ -31,6 +32,7 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  332282,  // TMDB ID 332282 — Report 8-9857000041155-2050300815
   1204680,  // TMDB ID 1204680 — Report 3-8650000041167-0215118043
   1685882,  // TMDB ID 1685882 — Report 0-5244000040961-0510082230
   1441228,  // TMDB ID 1441228 — Report 8-5441000041004-0209944395
