@@ -48,6 +48,7 @@ const posts = (lang === DEFAULT_LANG ? all : all.filter(p => translated.has(p.sl
     date: post.date,
     author: post.author,
     image: getBlogImage(post.slug, post.tags),
+    noImage: post.noImage === true,
     href: L(`/blog/${post.slug}/`),
   };
 });
@@ -96,7 +97,8 @@ const featured = posts[0];
 
     {featured && (
       <a href={featured.href} class="block glass-card group rounded-xl overflow-hidden hover:border-[var(--color-primary)]/40 transition-all duration-300 mb-8">
-        <div class="grid md:grid-cols-2 gap-0">
+        <div class={featured.noImage ? 'grid gap-0' : 'grid md:grid-cols-2 gap-0'}>
+          {!featured.noImage && (
           <div class="aspect-[16/9] md:aspect-auto overflow-hidden">
             <img
               src={thumbnailUrl(featured.image.url)}
@@ -109,6 +111,7 @@ const featured = posts[0];
               onerror="this.onerror=null;this.src='https://image.tmdb.org/t/p/w500/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg'"
             />
           </div>
+          )}
           <div class="p-6 md:p-8 flex flex-col justify-center">
             <div class="flex flex-wrap items-center gap-2 mb-3">
               <span class="text-[10px] px-2.5 py-1 rounded-full bg-[var(--color-primary)]/15 text-[var(--color-primary)] font-semibold uppercase tracking-wider">{featured.category}</span>
@@ -133,6 +136,7 @@ const featured = posts[0];
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
       {posts.slice(1).map((post, i) => (
         <a href={post.href} class="glass-card group rounded-xl overflow-hidden hover:border-[var(--color-primary)]/40 transition-all duration-300 flex flex-col">
+          {!post.noImage && (
           <div class="aspect-[16/9] overflow-hidden">
             <img
               src={thumbnailUrl(post.image.url)}
@@ -145,6 +149,7 @@ const featured = posts[0];
               onerror="this.onerror=null;this.src='https://image.tmdb.org/t/p/w500/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg'"
             />
           </div>
+          )}
           <div class="p-5 flex flex-col flex-1">
             <div class="flex flex-wrap items-center gap-2 mb-2.5">
               <span class="text-[9px] px-2 py-0.5 rounded-full bg-[var(--color-primary)]/10 text-[var(--color-primary)] font-semibold uppercase tracking-wider">{post.category}</span>

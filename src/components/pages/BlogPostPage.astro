@@ -49,6 +49,8 @@ const post: BlogPost = localized ? { ...english, ...localized } : english;
 
 const relatedPosts = getRelatedPosts(english);
 const blogImage = getBlogImage(english.slug, english.tags);
+// noImage articles share the site card instead of a stock still.
+const shareImage = english.noImage ? `${SITE_URL}/og-image.png` : blogImage.url;
 const path = `/blog/${english.slug}/`;
 const canonical = `${SITE_URL}${L(path)}`;
 
@@ -76,7 +78,7 @@ const schemas: object[] = [
     datePublished: english.date,
     dateModified: english.modifiedDate || english.date,
     author: english.author,
-    image: blogImage.url,
+    image: shareImage,
     slug: english.slug,
   }),
 ];
@@ -92,7 +94,7 @@ const localesWithPage = localesWithPost(english.slug);
   title={post.title}
   description={post.excerpt}
   canonical={canonical}
-  ogImage={blogImage.url}
+  ogImage={shareImage}
   ogType="article"
   localized={localesWithPage.length > 0}
   localesWithPage={localesWithPage}
@@ -128,6 +130,7 @@ const localesWithPage = localesWithPost(english.slug);
       </div>
     </header>
 
+    {!english.noImage && (
     <div class="aspect-[16/9] rounded-xl overflow-hidden mb-8 border border-[var(--color-border)]">
       <img
         src={blogImage.url}
@@ -140,6 +143,7 @@ const localesWithPage = localesWithPost(english.slug);
         onerror="this.onerror=null;this.src='https://image.tmdb.org/t/p/w1280/7RyHsO4yDXtBv1zUU3mTpHeQ0d5.jpg'"
       />
     </div>
+    )}
 
     {post.quickAnswer && <QuickAnswer answer={post.quickAnswer} title={t(tr, 'blog.quickAnswer')} />}
 
@@ -175,7 +179,7 @@ const localesWithPage = localesWithPost(english.slug);
           slug: related.slug,
           title: rel?.title ?? related.title,
           excerpt: rel?.excerpt ?? related.excerpt,
-          image: getBlogImage(related.slug, related.tags).url,
+          image: related.noImage ? undefined : getBlogImage(related.slug, related.tags).url,
           readTime: rel?.readTime ?? related.readTime,
           tags: rel?.tags ?? related.tags,
           href: rel ? L(`/blog/${related.slug}/`) : `/blog/${related.slug}/`,

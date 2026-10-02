@@ -39,6 +39,8 @@ export interface BlogPost {
   date: string;
   modifiedDate?: string;
   image: string;
+  /** Owner's choice for some articles: no hero image, no card image; share previews use the site card. */
+  noImage?: boolean;
   tags: string[];
   category: string;
   readTime: string;
