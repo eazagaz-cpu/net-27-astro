@@ -260,6 +260,22 @@
       "action": "auto-remove",
       "processedAt": "2026-10-01T13:52:06.724Z",
       "result": "processed"
+    },
+    {
+      "messageId": "1a0fdf5a3f174ade",
+      "date": "Fri, 02 Oct 2026 11:52:08 -0700",
+      "fromDomain": "google.com",
+      "reportId": "7-9227000041270-0278538683",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "her-private-hell-1469342",
+          "tmdbId": 1469342
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-02T22:32:34.193Z",
+      "result": "processed"
     }
   ],
   "manualReview": [

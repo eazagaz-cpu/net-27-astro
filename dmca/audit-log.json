@@ -185,5 +185,16 @@
     "slug": "physical-100-mexico-332282",
     "tmdbId": 332282,
     "action": "removed"
+  },
+  {
+    "date": "Fri, 02 Oct 2026 11:52:08 -0700",
+    "processedAt": "2026-10-02T22:32:34.193Z",
+    "source": "google.com",
+    "reportId": "7-9227000041270-0278538683",
+    "messageId": "1a0fdf5a3f174ade",
+    "type": "movie",
+    "slug": "her-private-hell-1469342",
+    "tmdbId": 1469342,
+    "action": "removed"
   }
 ]
