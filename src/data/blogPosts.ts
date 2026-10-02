@@ -122,6 +122,7 @@ export const blogPosts: BlogPost[] = [
 <h2 id="other-platforms">Comparing Other Android Gaming Platforms</h2>
 <p>Android users researching other mobile platforms can also review the official <a href="https://fantasygemsgamee.com.pk/" target="_blank" rel="sponsored noopener">fantasy download</a> instructions.</p>
 <p>Fantasy Gems and P999 are separate platforms. Their accounts, passwords, applications, payment methods, and policies are not connected. Verify each platform independently before downloading an application or submitting personal information.</p>
+<p>Another option players often compare is <a href="https://gobet.pk/pk116-game/" target="_blank" rel="sponsored noopener">666c</a>. The same checks apply: confirm the official domain, use a separate password, and read its payment and withdrawal terms before depositing.</p>
 
 <h2 id="payments">Review the Terms Before Making a Payment</h2>
 <p>Before depositing money, check the current:</p>
