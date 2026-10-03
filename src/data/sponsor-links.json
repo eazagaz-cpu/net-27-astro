@@ -1,7 +1,7 @@
 {
   "_comment": "CANONICAL SOURCE OF TRUTH - the ONLY list of sponsor links. Components, Pages Functions and KV are all generated from it. Add: npm run sponsors:add. Remove (only when the user asks): npm run sponsors:remove, which records the link under removed. Deleting an entry by hand is blocked by CI while the link is live. Then: npm run sponsors:deploy.",
-  "manifestVersion": "2026-10-03-02",
-  "generatedAt": "2026-10-03T08:55:22.130Z",
+  "manifestVersion": "2026-10-03-04",
+  "generatedAt": "2026-10-03T09:52:51.402Z",
   "expectedCounts": {
     "trail1": 11,
     "trail2": 11,
@@ -9,12 +9,12 @@
   },
   "trail1": [
     {
-      "id": "12th-class-result-check",
-      "label": "12th Class Result Check",
+      "id": "11th-class-results",
+      "label": "11th Class Results",
       "tagline": "📢 Check Result Online!",
-      "url": "https://9thclassresult.org.pk/",
-      "image": "/links/12th-class-result-check.webp",
-      "imageFile": "12th-class-result-check.webp",
+      "url": "https://12classresults.com/",
+      "image": "/links/11th-class-results.webp",
+      "imageFile": "11th-class-results.webp",
       "badge": "🔥 Hot",
       "enabled": true,
       "priority": 1
@@ -253,5 +253,14 @@
       "priority": 11
     }
   ],
-  "removed": []
+  "removed": [
+    {
+      "id": "12th-class-result-check",
+      "label": "12th Class Result Check",
+      "url": "https://9thclassresult.org.pk/",
+      "trail": "trail1",
+      "removedOn": "2026-10-03",
+      "reason": "replaced by 11th Class Results (owner request 2026-10-03)"
+    }
+  ]
 }
