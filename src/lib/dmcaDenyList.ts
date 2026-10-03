@@ -17,6 +17,9 @@
 
 /** Slugs that must not be served. Used to filter getStaticPaths. */
 export const DMCA_DENIED_SLUGS = new Set<string>([
+  'motor-city-87513',  // Report 5-6368000041919-0472668742
+  'mutiny-1288445',  // Report 4-0245000041850-1105303401
+  'the-rivals-of-amziah-king-1124142',  // Report 1-6787000041872-2058879532
   'her-private-hell-1469342',  // Report 7-9227000041270-0278538683
   'physical-100-mexico-332282',  // Report 8-9857000041155-2050300815
   'coyote-vs-acme-1204680',  // Report 3-8650000041167-0215118043
@@ -33,6 +36,13 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  1400357,  // TMDB ID 1400357 — Report 9-2165000041310-1923643827
+  87513,  // TMDB ID 87513 — Report 5-6368000041919-0472668742
+  1212763,  // TMDB ID 1212763 — Report 6-9633000040951-0976351274
+  634649,  // TMDB ID 634649 — Report 2-0887000041399-1946778762
+  1288445,  // TMDB ID 1288445 — Report 4-0245000041850-1105303401
+  1124142,  // TMDB ID 1124142 — Report 1-6787000041872-2058879532
+  1701141,  // TMDB ID 1701141 — Report bca639c43b56bc0b
   1469342,  // TMDB ID 1469342 — Report 7-9227000041270-0278538683
   332282,  // TMDB ID 332282 — Report 8-9857000041155-2050300815
   1204680,  // TMDB ID 1204680 — Report 3-8650000041167-0215118043

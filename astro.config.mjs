@@ -9,6 +9,9 @@ import { readFileSync } from 'node:fs';
 // DMCA-denied slugs — must never appear in sitemap.
 // Keep in sync with src/lib/dmcaDenyList.ts.
 const DMCA_DENIED_SLUGS = new Set([
+  'motor-city-87513',
+  'mutiny-1288445',
+  'the-rivals-of-amziah-king-1124142',
   'her-private-hell-1469342',
   'physical-100-mexico-332282',
   'coyote-vs-acme-1204680',

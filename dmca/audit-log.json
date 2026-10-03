@@ -196,5 +196,192 @@
     "slug": "her-private-hell-1469342",
     "tmdbId": 1469342,
     "action": "removed"
+  },
+  {
+    "date": "Tue, 29 Sep 2026 07:27:29 +0000",
+    "processedAt": "2026-10-03T10:41:17.514Z",
+    "source": "notify.cloudflare.com",
+    "reportId": "bca639c43b56bc0b",
+    "messageId": "1a0ec0fca063c195",
+    "type": "player",
+    "slug": null,
+    "tmdbId": 1701141,
+    "action": "removed"
+  },
+  {
+    "date": "Thu, 10 Sep 2026 08:43:41 +0000",
+    "processedAt": "2026-10-03T10:41:17.515Z",
+    "source": "notify.cloudflare.com",
+    "reportId": "adb4b1115e2b54d9",
+    "messageId": "1a08a7cb24e476c8",
+    "type": "player",
+    "slug": null,
+    "tmdbId": 1341138,
+    "action": "already-removed"
+  },
+  {
+    "date": "Fri, 04 Sep 2026 11:28:55 +0000",
+    "processedAt": "2026-10-03T10:41:17.516Z",
+    "source": "notify.cloudflare.com",
+    "reportId": "afd2de4e15d0c7ae",
+    "messageId": "1a06c2dd6e158e30",
+    "type": "movie",
+    "slug": "spider-man-brand-new-day-969681",
+    "tmdbId": 969681,
+    "action": "already-removed"
+  },
+  {
+    "date": "Thu, 03 Sep 2026 08:19:18 +0000",
+    "processedAt": "2026-10-03T10:41:17.516Z",
+    "source": "notify.cloudflare.com",
+    "reportId": "a37e65dce9a83274",
+    "messageId": "1a06659e07266ebc",
+    "type": "movie",
+    "slug": "the-death-of-robin-hood-1284465",
+    "tmdbId": 1284465,
+    "action": "already-removed"
+  },
+  {
+    "date": "Thu, 27 Aug 2026 05:25:10 -0700",
+    "processedAt": "2026-10-03T10:41:17.518Z",
+    "source": "google.com",
+    "reportId": "1-6787000041872-2058879532",
+    "messageId": "1a0432e6dc2d9b73",
+    "type": "movie",
+    "slug": "the-rivals-of-amziah-king-1124142",
+    "tmdbId": 1124142,
+    "action": "removed"
+  },
+  {
+    "date": "Thu, 27 Aug 2026 08:29:16 +0000",
+    "processedAt": "2026-10-03T10:41:17.518Z",
+    "source": "notify.cloudflare.com",
+    "reportId": "b2e5b0c8d44169d1",
+    "messageId": "1a042567f1f06031",
+    "type": "player",
+    "slug": null,
+    "tmdbId": 1477712,
+    "action": "already-removed"
+  },
+  {
+    "date": "Thu, 20 Aug 2026 10:04:36 -0700",
+    "processedAt": "2026-10-03T10:41:17.519Z",
+    "source": "google.com",
+    "reportId": "1-5973000041122-1148615411",
+    "messageId": "1a02021bb9cec4d7",
+    "type": "player",
+    "slug": null,
+    "tmdbId": 1477712,
+    "action": "already-removed"
+  },
+  {
+    "date": "Wed, 19 Aug 2026 21:17:50 -0700",
+    "processedAt": "2026-10-03T10:41:17.520Z",
+    "source": "google.com",
+    "reportId": "4-0245000041850-1105303401",
+    "messageId": "1a01d63bc2f10c22",
+    "type": "movie",
+    "slug": "mutiny-1288445",
+    "tmdbId": 1288445,
+    "action": "removed"
+  },
+  {
+    "date": "Mon, 17 Aug 2026 09:25:15 -0700",
+    "processedAt": "2026-10-03T10:41:17.521Z",
+    "source": "google.com",
+    "reportId": "2-0887000041399-1946778762",
+    "messageId": "1a0108aa0dd91a96",
+    "type": "player",
+    "slug": null,
+    "tmdbId": 634649,
+    "action": "removed"
+  },
+  {
+    "date": "Mon, 17 Aug 2026 09:19:23 -0700",
+    "processedAt": "2026-10-03T10:41:17.522Z",
+    "source": "google.com",
+    "reportId": "6-9633000040951-0976351274",
+    "messageId": "1a0108545b0aea47",
+    "type": "player",
+    "slug": null,
+    "tmdbId": 1212763,
+    "action": "removed"
+  },
+  {
+    "date": "Mon, 17 Aug 2026 14:25:04 +0000",
+    "processedAt": "2026-10-03T10:41:17.522Z",
+    "source": "markscan.in",
+    "reportId": null,
+    "messageId": "1a0101c9bcc9b6f5",
+    "type": "player",
+    "slug": null,
+    "tmdbId": 1212763,
+    "action": "already-removed"
+  },
+  {
+    "date": "Mon, 17 Aug 2026 14:25:04 +0000",
+    "processedAt": "2026-10-03T10:41:17.523Z",
+    "source": "markscan.in",
+    "reportId": null,
+    "messageId": "1a0101c986baf0d5",
+    "type": "player",
+    "slug": null,
+    "tmdbId": 634649,
+    "action": "already-removed"
+  },
+  {
+    "date": "Sat, 15 Aug 2026 01:16:26 -0700",
+    "processedAt": "2026-10-03T10:41:17.523Z",
+    "source": "google.com",
+    "reportId": "7-8365000041179-2072679237",
+    "messageId": "1a0047e60df7a6fd",
+    "type": "movie",
+    "slug": "the-death-of-robin-hood-1284465",
+    "tmdbId": 1284465,
+    "action": "already-removed"
+  },
+  {
+    "date": "Thu, 13 Aug 2026 09:21:24 -0700",
+    "processedAt": "2026-10-03T10:41:17.524Z",
+    "source": "google.com",
+    "reportId": "5-6368000041919-0472668742",
+    "messageId": "19ffbedabeecc4c7",
+    "type": "movie",
+    "slug": "motor-city-87513",
+    "tmdbId": 87513,
+    "action": "removed"
+  },
+  {
+    "date": "Wed, 12 Aug 2026 13:18:12 -0700",
+    "processedAt": "2026-10-03T10:41:17.525Z",
+    "source": "google.com",
+    "reportId": "9-2165000041310-1923643827",
+    "messageId": "19ff7a01fa2d7f09",
+    "type": "player",
+    "slug": null,
+    "tmdbId": 1400357,
+    "action": "removed"
+  },
+  {
+    "date": "Mon, 10 Aug 2026 21:17:27 -0700",
+    "processedAt": "2026-10-03T10:41:17.526Z",
+    "source": "google.com",
+    "reportId": "6-7464000041395-0840113528",
+    "messageId": "19fef0a2810daed4",
+    "type": "movie",
+    "slug": "spider-man-brand-new-day-969681",
+    "tmdbId": 969681,
+    "action": "already-removed"
+  },
+  {
+    "date": "Tue, 11 Aug 2026 00:56:31 +0000",
+    "processedAt": "2026-10-03T10:41:17.527Z",
+    "source": "markscan.in",
+    "reportId": null,
+    "messageId": "19fee52335842707",
+    "type": "movie",
+    "slug": "spider-man-brand-new-day-969681",
+    "tmdbId": 969681,
+    "action": "already-removed"
   }
 ]
