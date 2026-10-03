@@ -131,9 +131,17 @@ function decodeBody(payload) {
 }
 
 // ── URL extractor ─────────────────────────────────────────────────────────────
-export function extractTargets(text) {
+export function extractTargets(raw) {
   const seen = new Set();
   const targets = [];
+  // Cloudflare defangs every URL in its notices ("hxxps://net27[.]watch/...")
+  // and HTML-escapes the query ("&amp;id="). Until 2026-10-03 that hid every
+  // Cloudflare notice from this matcher; Player 1701141 stayed up until
+  // Cloudflare disabled it itself.
+  const text = String(raw)
+    .replace(/hxxp(s?):\/\//gi, 'http$1://')
+    .replace(/\[\.\]|\(\.\)|\[dot\]/gi, '.')
+    .replace(/&amp;/gi, '&');
 
   // /movies/slug-tmdbid or /shows/slug-tmdbid. The domain is required: this inbox
   // also gets notices about other sites, whose /movies/ paths are not ours.
@@ -246,17 +254,20 @@ async function main() {
   let q2 = { processed: [], pending: [], manualReview: [] };
   if (existsSync(queuePath)) { try { q2 = JSON.parse(readFileSync(queuePath, 'utf8')); } catch {} }
 
-  // Anything already queued counts as seen, or a manual-review notice would
-  // be re-reported on every run.
-  const done = new Set([...(q2.processed || []), ...(q2.pending || []), ...(q2.manualReview || [])].map(p => p.messageId));
+  // Processed or pending = done. A manual-review notice is not re-reported, but
+  // it IS acted on once the matcher learns to read it (e.g. defanged URLs).
+  const done = new Set([...(q2.processed || []), ...(q2.pending || [])].map(p => p.messageId));
+  const flagged = new Set((q2.manualReview || []).map(p => p.messageId));
   const newAuto = autoRemove.filter(d => !done.has(d.messageId));
-  const newManual = manualReview.filter(d => !done.has(d.messageId));
+  const newManual = manualReview.filter(d => !done.has(d.messageId) && !flagged.has(d.messageId));
+  const promoted = newAuto.filter(d => flagged.has(d.messageId)).map(d => d.messageId);
 
-  console.log(`   New (unprocessed): ${newAuto.length + newManual.length}`);
+  console.log(`   New (unprocessed): ${newAuto.length + newManual.length}${promoted.length ? ` (${promoted.length} from manual review)` : ''}`);
 
   if (DRY_RUN) { console.log('\n[DRY RUN] No files written.\n'); return; }
   if (newAuto.length === 0 && newManual.length === 0) { console.log('\n✅ All already processed.\n'); return; }
 
+  q2.manualReview = (q2.manualReview || []).filter(p => !promoted.includes(p.messageId));
   (q2.pending ??= []).push(...newAuto);
   (q2.manualReview ??= []).push(...newManual);
   writeFileSync(queuePath, JSON.stringify(q2, null, 2), 'utf8');
