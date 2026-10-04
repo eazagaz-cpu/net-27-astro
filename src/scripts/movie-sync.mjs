@@ -564,8 +564,27 @@ function writeSearchIndex(titles) {
   console.log(`[movie-sync] Wrote search-index.json — ${records.length} records (${kb} KB).`);
 }
 
+// ── DMCA-removed titles never reach a rail or grid ───────────────────────────
+// Their pages 404 and their player is refused, so a card for one is a dead
+// link. Read from the same files the takedown script writes.
+function dmcaDeniedIds() {
+  const ids = new Set();
+  for (const [file, re] of [
+    [join(ROOT, 'src', 'lib', 'dmcaDenyList.ts'), /DMCA_DENIED_TMDB_IDS = new Set<number>\(\[([\s\S]*?)\]\)/],
+    [join(ROOT, 'functions', 'player.js'), /DMCA_BLOCKED_IDS = new Set\(\[([\s\S]*?)\]\)/],
+  ]) {
+    try {
+      const body = readFileSync(file, 'utf8').match(re)?.[1] ?? '';
+      for (const m of body.replace(/\/\/.*$/gm, '').matchAll(/\d{2,9}/g)) ids.add(Number(m[0]));
+    } catch { /* file missing: nothing to filter */ }
+  }
+  return ids;
+}
+const DMCA_DENIED = dmcaDeniedIds();
+
 // ── Write a cache JSON file ──────────────────────────────────────────────────
-function writeCache(category, items) {
+function writeCache(category, rawItems) {
+  const items = rawItems.filter(it => !DMCA_DENIED.has(Number(it.id ?? it.tmdbId)));
   const payload = {
     fetchedAt: new Date().toISOString(),
     category,

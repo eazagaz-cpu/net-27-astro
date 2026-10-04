@@ -16,9 +16,9 @@
  *   node scripts/dmca-auto-remove.mjs --dry-run # Preview only
  */
 
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, mkdirSync, readdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, '..');
@@ -126,6 +126,26 @@ function appendAuditLog(entry) {
   if (!DRY_RUN) writeUtf8(AUDIT_PATH, JSON.stringify(log, null, 2));
 }
 
+// ── Category caches ───────────────────────────────────────────────────────────
+// Rails and grids read src/data/cache/<category>.json. A removed title left
+// there is a card that leads to a 404 (22 such cards on 2026-10-04).
+const CACHE_DIR = join(ROOT, 'src', 'data', 'cache');
+export function pruneCaches(ids) {
+  if (!ids.size || !existsSync(CACHE_DIR)) return 0;
+  let dropped = 0;
+  for (const f of readdirSync(CACHE_DIR)) {
+    if (!f.endsWith('.json') || f === 'titles.json' || f === 'search-index.json') continue;
+    const p = join(CACHE_DIR, f);
+    let data; try { data = JSON.parse(readFile(p)); } catch { continue; }
+    if (!Array.isArray(data?.items)) continue;
+    const kept = data.items.filter(it => !ids.has(Number(it.id ?? it.tmdbId)));
+    if (kept.length === data.items.length) continue;
+    dropped += data.items.length - kept.length;
+    if (!DRY_RUN) writeUtf8(p, JSON.stringify({ ...data, count: kept.length, items: kept }));
+  }
+  return dropped;
+}
+
 // ── Main ──────────────────────────────────────────────────────────────────────
 async function main() {
   console.log('\n🛡️  NET27 Watch — DMCA Auto-Remove');
@@ -203,6 +223,9 @@ async function main() {
     console.log('');
   }
 
+  const pruned = pruneCaches(new Set(removedItems.map(r => Number(r.tmdbId)).filter(Boolean)));
+  if (pruned) console.log(`  ✅ removed ${pruned} card(s) from the category caches`);
+
   // Move pending → processed in queue
   if (!DRY_RUN) {
     queue.processed = [...(queue.processed || []), ...processed];
@@ -235,4 +258,6 @@ async function main() {
   if (removedItems.length > 0 && !DRY_RUN) process.exitCode = 10;
 }
 
-main().catch(err => { console.error('Fatal:', err.message); process.exitCode = 1; });
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+  main().catch(err => { console.error('Fatal:', err.message); process.exitCode = 1; });
+}

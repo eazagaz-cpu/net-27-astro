@@ -108,7 +108,7 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add dmca/queue.json
           [ -f dmca/audit-log.json ] && git add dmca/audit-log.json
-          git add src/lib/dmcaDenyList.ts functions/player.js astro.config.mjs
+          git add src/lib/dmcaDenyList.ts functions/player.js astro.config.mjs src/data/cache/*.json
           git diff --staged --quiet && { echo "Nothing to commit"; exit 0; }
           # No [skip ci]: this push is also what makes Cloudflare's Git build redeploy.
           git commit -m "security: DMCA auto-removal (dmca-watch)"

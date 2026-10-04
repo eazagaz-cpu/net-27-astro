@@ -221,8 +221,8 @@ const MANIFEST_VERSION = '${manifest.manifestVersion}';
 const MANIFEST_HASH = '${manifestHash}';
 const EXPECTED_TRAIL1 = ${manifest.expectedCounts.trail1};
 const EXPECTED_TRAIL2 = ${manifest.expectedCounts.trail2};
-const REQUIRED_TRAIL1_IDS = ['12th-class-result-check', 'y999-game', 'xd777-sting', 'xd777-gamzu', 'jb-game', 'bet-rupees'];
-const REQUIRED_TRAIL2_IDS = ['12th-class-result', 'pkr365', 'm666', 'win786'];
+const REQUIRED_TRAIL1_IDS = ${JSON.stringify(manifest.trail1.filter(s => s.enabled !== false).map(s => s.id))};
+const REQUIRED_TRAIL2_IDS = ${JSON.stringify(manifest.trail2.filter(s => s.enabled !== false).map(s => s.id))};
 
 export async function onRequest(context) {
   const { request, env } = context;

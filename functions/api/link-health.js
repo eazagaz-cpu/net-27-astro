@@ -17,8 +17,8 @@ const MANIFEST_VERSION = '2026-10-03-04';
 const MANIFEST_HASH = '02a255c7d33318ed';
 const EXPECTED_TRAIL1 = 11;
 const EXPECTED_TRAIL2 = 11;
-const REQUIRED_TRAIL1_IDS = ['12th-class-result-check', 'y999-game', 'xd777-sting', 'xd777-gamzu', 'jb-game', 'bet-rupees'];
-const REQUIRED_TRAIL2_IDS = ['12th-class-result', 'pkr365', 'm666', 'win786'];
+const REQUIRED_TRAIL1_IDS = ["11th-class-results","y999-game","xd777-sting","bet-rupees","p999-pk","pak-super-game","hh98","jj77","net-mirror","666c-game","teen-patti-gold"];
+const REQUIRED_TRAIL2_IDS = ["12th-class-result","pkr365","m666","m19-game","1ppp-game","win786","10win","xx555","666c","xd777-gamzu","jb-game"];
 
 export async function onRequest(context) {
   const { request, env } = context;

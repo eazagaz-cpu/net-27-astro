@@ -4,6 +4,8 @@
  * They live in: src/data/cache/{category}.json
  */
 
+import { DMCA_DENIED_TMDB_IDS } from './dmcaDenyList';
+
 export interface CachedItem {
   id: number;
   type: 'movie' | 'tv';
@@ -39,7 +41,9 @@ export function getCachedItems(category: string, limit?: number): CachedItem[] {
   const mod = _modules[key];
   // Vite wraps JSON in { default: ... } when using eager glob
   const file = (mod as any)?.default ?? mod;
-  const items: CachedItem[] = file?.items ?? [];
+  // DMCA-removed titles 404, so their cards would be dead links. The sync
+  // already drops them; this covers a cache written before a new takedown.
+  const items: CachedItem[] = (file?.items ?? []).filter((it: CachedItem) => !DMCA_DENIED_TMDB_IDS.has(it.id));
   return limit ? items.slice(0, limit) : items;
 }
 
