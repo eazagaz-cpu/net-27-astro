@@ -17,6 +17,7 @@
 
 /** Slugs that must not be served. Used to filter getStaticPaths. */
 export const DMCA_DENIED_SLUGS = new Set<string>([
+  'dna-journey-95334',  // Report 4-3544000041599-1791877662
   'neagley-273207',  // Report 8-9482000041961-0983248293
   'elsbeth-226285',  // Report 9-1394000041259-0388052934
   'motor-city-87513',  // Report 5-6368000041919-0472668742
@@ -38,6 +39,7 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  95334,  // TMDB ID 95334 — Report 4-3544000041599-1791877662
   273207,  // TMDB ID 273207 — Report 8-9482000041961-0983248293
   226285,  // TMDB ID 226285 — Report 9-1394000041259-0388052934
   1400357,  // TMDB ID 1400357 — Report 9-2165000041310-1923643827
