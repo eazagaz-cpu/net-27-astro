@@ -70,7 +70,7 @@ export const blogPosts: BlogPost[] = [
 <h2 id="how-to-log-in-on-a-new-android-device">How to Log In on a New Android Device</h2>
 <p>Additional verification may be required when accessing the account from a new phone.</p>
 <h3>Install the Latest Application</h3>
-<p>Download the current Android version from the official website and scan the APK before installation.</p>
+<p>Download the current Android version from the official <a href="https://z7game.co/" target="_blank" rel="sponsored noopener">z7 game</a> website and scan the APK before installation.</p>
 <p>Avoid moving an old or modified APK from another phone.</p>
 <h3>Enter Your Existing Account Details</h3>
 <p>Use the same mobile number, username, and password connected to your original account.</p>
