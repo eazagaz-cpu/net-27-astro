@@ -548,6 +548,38 @@
       "action": "auto-remove",
       "processedAt": "2026-10-03T10:41:17.527Z",
       "result": "processed"
+    },
+    {
+      "messageId": "1a10ef5ad5634cae",
+      "date": "Mon, 05 Oct 2026 19:05:43 -0700",
+      "fromDomain": "google.com",
+      "reportId": "9-1394000041259-0388052934",
+      "targets": [
+        {
+          "type": "show",
+          "slug": "elsbeth-226285",
+          "tmdbId": 226285
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-06T06:50:08.182Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "1a10ee309d8ab920",
+      "date": "Mon, 05 Oct 2026 18:45:22 -0700",
+      "fromDomain": "google.com",
+      "reportId": "8-9482000041961-0983248293",
+      "targets": [
+        {
+          "type": "show",
+          "slug": "neagley-273207",
+          "tmdbId": 273207
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-06T06:50:08.183Z",
+      "result": "processed"
     }
   ],
   "manualReview": [

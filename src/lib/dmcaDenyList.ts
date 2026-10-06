@@ -17,6 +17,8 @@
 
 /** Slugs that must not be served. Used to filter getStaticPaths. */
 export const DMCA_DENIED_SLUGS = new Set<string>([
+  'neagley-273207',  // Report 8-9482000041961-0983248293
+  'elsbeth-226285',  // Report 9-1394000041259-0388052934
   'motor-city-87513',  // Report 5-6368000041919-0472668742
   'mutiny-1288445',  // Report 4-0245000041850-1105303401
   'the-rivals-of-amziah-king-1124142',  // Report 1-6787000041872-2058879532
@@ -36,6 +38,8 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  273207,  // TMDB ID 273207 — Report 8-9482000041961-0983248293
+  226285,  // TMDB ID 226285 — Report 9-1394000041259-0388052934
   1400357,  // TMDB ID 1400357 — Report 9-2165000041310-1923643827
   87513,  // TMDB ID 87513 — Report 5-6368000041919-0472668742
   1212763,  // TMDB ID 1212763 — Report 6-9633000040951-0976351274
