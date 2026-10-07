@@ -628,6 +628,22 @@
       "action": "auto-remove",
       "processedAt": "2026-10-07T06:25:31.789Z",
       "result": "processed"
+    },
+    {
+      "messageId": "1a1172d4c03f4b8f",
+      "date": "Wed, 07 Oct 2026 09:23:26 -0700",
+      "fromDomain": "google.com",
+      "reportId": "1-8057000041768-1284283328",
+      "targets": [
+        {
+          "type": "show",
+          "slug": "chad-powers-247168",
+          "tmdbId": 247168
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-07T23:18:11.860Z",
+      "result": "processed"
     }
   ],
   "manualReview": [

@@ -17,6 +17,7 @@
 
 /** Slugs that must not be served. Used to filter getStaticPaths. */
 export const DMCA_DENIED_SLUGS = new Set<string>([
+  'chad-powers-247168',  // Report 1-8057000041768-1284283328
   'the-voice-37678',  // Report 5-9553000041402-0145338073
   'novak-djokovic-the-wolf-in-winter-1626188',  // Report 8-6147000041272-1140579749
   'dna-journey-95334',  // Report 4-3544000041599-1791877662
@@ -41,6 +42,7 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  247168,  // TMDB ID 247168 — Report 1-8057000041768-1284283328
   37678,  // TMDB ID 37678 — Report 5-9553000041402-0145338073
   1626188,  // TMDB ID 1626188 — Report 8-6147000041272-1140579749
   95334,  // TMDB ID 95334 — Report 4-3544000041599-1791877662
