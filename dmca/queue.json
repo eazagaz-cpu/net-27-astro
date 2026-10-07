@@ -596,6 +596,38 @@
       "action": "auto-remove",
       "processedAt": "2026-10-06T22:47:06.987Z",
       "result": "processed"
+    },
+    {
+      "messageId": "1a11367c66898b99",
+      "date": "Tue, 06 Oct 2026 15:48:50 -0700",
+      "fromDomain": "google.com",
+      "reportId": "8-6147000041272-1140579749",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "novak-djokovic-the-wolf-in-winter-1626188",
+          "tmdbId": 1626188
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-07T06:25:31.787Z",
+      "result": "processed"
+    },
+    {
+      "messageId": "1a11367a335428c6",
+      "date": "Tue, 06 Oct 2026 15:48:41 -0700",
+      "fromDomain": "google.com",
+      "reportId": "5-9553000041402-0145338073",
+      "targets": [
+        {
+          "type": "show",
+          "slug": "the-voice-37678",
+          "tmdbId": 37678
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-07T06:25:31.789Z",
+      "result": "processed"
     }
   ],
   "manualReview": [

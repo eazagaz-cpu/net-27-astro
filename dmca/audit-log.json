@@ -416,5 +416,27 @@
     "slug": "dna-journey-95334",
     "tmdbId": 95334,
     "action": "removed"
+  },
+  {
+    "date": "Tue, 06 Oct 2026 15:48:50 -0700",
+    "processedAt": "2026-10-07T06:25:31.787Z",
+    "source": "google.com",
+    "reportId": "8-6147000041272-1140579749",
+    "messageId": "1a11367c66898b99",
+    "type": "movie",
+    "slug": "novak-djokovic-the-wolf-in-winter-1626188",
+    "tmdbId": 1626188,
+    "action": "removed"
+  },
+  {
+    "date": "Tue, 06 Oct 2026 15:48:41 -0700",
+    "processedAt": "2026-10-07T06:25:31.788Z",
+    "source": "google.com",
+    "reportId": "5-9553000041402-0145338073",
+    "messageId": "1a11367a335428c6",
+    "type": "show",
+    "slug": "the-voice-37678",
+    "tmdbId": 37678,
+    "action": "removed"
   }
 ]

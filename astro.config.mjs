@@ -9,6 +9,8 @@ import { readFileSync } from 'node:fs';
 // DMCA-denied slugs — must never appear in sitemap.
 // Keep in sync with src/lib/dmcaDenyList.ts.
 const DMCA_DENIED_SLUGS = new Set([
+  'the-voice-37678',
+  'novak-djokovic-the-wolf-in-winter-1626188',
   'dna-journey-95334',
   'neagley-273207',
   'elsbeth-226285',
