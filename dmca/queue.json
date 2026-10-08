@@ -644,6 +644,22 @@
       "action": "auto-remove",
       "processedAt": "2026-10-07T23:18:11.860Z",
       "result": "processed"
+    },
+    {
+      "messageId": "1a11d74cd4c2d788",
+      "date": "Thu, 08 Oct 2026 14:39:15 -0700",
+      "fromDomain": "google.com",
+      "reportId": "1-2392000041742-1695293695",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "idiots-445466",
+          "tmdbId": 445466
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-08T23:32:49.221Z",
+      "result": "processed"
     }
   ],
   "manualReview": [

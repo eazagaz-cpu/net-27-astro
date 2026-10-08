@@ -449,5 +449,16 @@
     "slug": "chad-powers-247168",
     "tmdbId": 247168,
     "action": "removed"
+  },
+  {
+    "date": "Thu, 08 Oct 2026 14:39:15 -0700",
+    "processedAt": "2026-10-08T23:32:49.221Z",
+    "source": "google.com",
+    "reportId": "1-2392000041742-1695293695",
+    "messageId": "1a11d74cd4c2d788",
+    "type": "movie",
+    "slug": "idiots-445466",
+    "tmdbId": 445466,
+    "action": "removed"
   }
 ]
