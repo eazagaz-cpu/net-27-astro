@@ -460,5 +460,16 @@
     "slug": "idiots-445466",
     "tmdbId": 445466,
     "action": "removed"
+  },
+  {
+    "date": "Thu, 08 Oct 2026 18:57:53 -0700",
+    "processedAt": "2026-10-09T06:40:07.145Z",
+    "source": "google.com",
+    "reportId": "6-6781000041172-1128366366",
+    "messageId": "1a11e619651d4b9d",
+    "type": "show",
+    "slug": "the-rookie-79744",
+    "tmdbId": 79744,
+    "action": "removed"
   }
 ]

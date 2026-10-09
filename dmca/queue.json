@@ -660,6 +660,22 @@
       "action": "auto-remove",
       "processedAt": "2026-10-08T23:32:49.221Z",
       "result": "processed"
+    },
+    {
+      "messageId": "1a11e619651d4b9d",
+      "date": "Thu, 08 Oct 2026 18:57:53 -0700",
+      "fromDomain": "google.com",
+      "reportId": "6-6781000041172-1128366366",
+      "targets": [
+        {
+          "type": "show",
+          "slug": "the-rookie-79744",
+          "tmdbId": 79744
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-09T06:40:07.145Z",
+      "result": "processed"
     }
   ],
   "manualReview": [

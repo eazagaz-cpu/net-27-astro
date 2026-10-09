@@ -17,6 +17,7 @@
 
 /** Slugs that must not be served. Used to filter getStaticPaths. */
 export const DMCA_DENIED_SLUGS = new Set<string>([
+  'the-rookie-79744',  // Report 6-6781000041172-1128366366
   'idiots-445466',  // Report 1-2392000041742-1695293695
   'chad-powers-247168',  // Report 1-8057000041768-1284283328
   'the-voice-37678',  // Report 5-9553000041402-0145338073
@@ -43,6 +44,7 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  79744,  // TMDB ID 79744 — Report 6-6781000041172-1128366366
   445466,  // TMDB ID 445466 — Report 1-2392000041742-1695293695
   247168,  // TMDB ID 247168 — Report 1-8057000041768-1284283328
   37678,  // TMDB ID 37678 — Report 5-9553000041402-0145338073
