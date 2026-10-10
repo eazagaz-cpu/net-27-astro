@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 // DMCA-denied slugs — must never appear in sitemap.
 // Keep in sync with src/lib/dmcaDenyList.ts.
 const DMCA_DENIED_SLUGS = new Set([
+  'american-horror-story-1413',
   'the-rookie-79744',
   'idiots-445466',
   'chad-powers-247168',

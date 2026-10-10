@@ -471,5 +471,16 @@
     "slug": "the-rookie-79744",
     "tmdbId": 79744,
     "action": "removed"
+  },
+  {
+    "date": "Sat, 10 Oct 2026 03:48:57 -0700",
+    "processedAt": "2026-10-10T13:01:28.025Z",
+    "source": "google.com",
+    "reportId": "8-4351000041251-0024415341",
+    "messageId": "1a1256e26759dde8",
+    "type": "show",
+    "slug": "american-horror-story-1413",
+    "tmdbId": 1413,
+    "action": "removed"
   }
 ]

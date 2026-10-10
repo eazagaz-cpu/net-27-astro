@@ -676,6 +676,22 @@
       "action": "auto-remove",
       "processedAt": "2026-10-09T06:40:07.145Z",
       "result": "processed"
+    },
+    {
+      "messageId": "1a1256e26759dde8",
+      "date": "Sat, 10 Oct 2026 03:48:57 -0700",
+      "fromDomain": "google.com",
+      "reportId": "8-4351000041251-0024415341",
+      "targets": [
+        {
+          "type": "show",
+          "slug": "american-horror-story-1413",
+          "tmdbId": 1413
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-10T13:01:28.025Z",
+      "result": "processed"
     }
   ],
   "manualReview": [
