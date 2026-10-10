@@ -109,6 +109,19 @@ const dir = getDir(lang);
         document.head.appendChild(s);
     })()
   </script>
+  <!-- Popup Ads (mermenrouelle) — zone 156747. Skipped on localhost and /player/ pages. -->
+  <script is:inline data-cfasync="false">
+    (function() {
+      if (location.hostname === 'localhost' || location.hostname === '127.0.0.1' || location.port !== '') return;
+      if (location.pathname.startsWith('/player/')) return;
+      var s = document.createElement('script');
+      s.dataset.cfasync = 'false';
+      s.async = true;
+      s.type = 'text/javascript';
+      s.src = '//wy.mermenrouelle.com/rAWwXrrEN3S5luDT/156747';
+      document.head.appendChild(s);
+    })();
+  </script>
   <SearchOverlay client:media="(min-width: 768px)" />
   <slot />
   <!-- i18n Client Translation Engine -->
