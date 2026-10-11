@@ -692,6 +692,22 @@
       "action": "auto-remove",
       "processedAt": "2026-10-10T13:01:28.025Z",
       "result": "processed"
+    },
+    {
+      "messageId": "1a12c518856985cb",
+      "date": "Sun, 11 Oct 2026 11:55:02 -0700",
+      "fromDomain": "google.com",
+      "reportId": "0-2003000041946-0153281026",
+      "targets": [
+        {
+          "type": "movie",
+          "slug": "sinners-1233413",
+          "tmdbId": 1233413
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-11T22:27:06.591Z",
+      "result": "processed"
     }
   ],
   "manualReview": [

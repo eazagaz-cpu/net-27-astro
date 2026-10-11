@@ -482,5 +482,16 @@
     "slug": "american-horror-story-1413",
     "tmdbId": 1413,
     "action": "removed"
+  },
+  {
+    "date": "Sun, 11 Oct 2026 11:55:02 -0700",
+    "processedAt": "2026-10-11T22:27:06.590Z",
+    "source": "google.com",
+    "reportId": "0-2003000041946-0153281026",
+    "messageId": "1a12c518856985cb",
+    "type": "movie",
+    "slug": "sinners-1233413",
+    "tmdbId": 1233413,
+    "action": "removed"
   }
 ]
