@@ -1,34 +1,53 @@
 ---
-import { TELEGRAM_URL } from '../lib/constants';
+// AppCTA — APK Download strip (Phone + TV).
+// Telegram hata diya gaya (user request 2026-10-18).
 ---
 
-<!-- App CTA: Telegram community + feature highlight. APK direct distribution removed
-     as unverified APK hosting triggers security scanner false positives and is a
-     documented risk factor. Replaced with official Telegram channel link. -->
-<section class="relative z-10 -mt-4">
-  <div class="max-w-3xl mx-auto px-4">
-    <div class="glass-card rounded-2xl px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4">
-      <div class="flex items-center gap-3">
-        <div style="width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,#0088cc,#0066aa);display:flex;align-items:center;justify-content:center;flex-shrink:0">
-          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.01 9.456c-.148.66-.537.822-1.088.511l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.23 14.073l-2.974-.93c-.646-.2-.66-.646.136-.958l11.61-4.478c.538-.194 1.01.131.56.54z"/></svg>
-        </div>
-        <div>
-          <p class="text-sm font-semibold text-white">Join NET27 Watch Community</p>
-          <p class="text-[11px] text-[var(--color-text-muted)]">Updates, announcements & new features</p>
-        </div>
-      </div>
-      <div class="flex items-center gap-2">
-        <a
-          href={TELEGRAM_URL}
-          target="_blank"
-          rel="noopener noreferrer nofollow"
-          class="btn-primary text-xs px-4 py-2 rounded-lg flex items-center gap-1.5"
-          aria-label="Join NET27 Watch on Telegram"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.562 8.248l-2.01 9.456c-.148.66-.537.822-1.088.511l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12L7.23 14.073l-2.974-.93c-.646-.2-.66-.646.136-.958l11.61-4.478c.538-.194 1.01.131.56.54z"/></svg>
-          Join Telegram
-        </a>
-      </div>
+<!-- App download strip: slim single-line bar (net27.cc style) -->
+<section id="app-cta-section" class="relative z-10 px-3 sm:px-6 pt-3 pb-1">
+  <div class="max-w-5xl mx-auto">
+    <div class="flex items-center gap-2 sm:gap-3 sm:justify-center overflow-x-auto scrollbar-none rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2" style="scrollbar-width:none">
+      <!-- Label -->
+      <span class="shrink-0 flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white/85 whitespace-nowrap">
+        <svg class="w-4 h-4 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 3v12m0 0l-4-4m4 4l4-4"/>
+          <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+        </svg>
+        Get the App
+      </span>
+      <span class="hidden sm:block h-5 w-px bg-white/15 shrink-0"></span>
+
+      <!-- Phone APK -->
+      <a
+        href="https://net27.watch/app/net27-phone.apk"
+        download
+        id="apk-phone-btn"
+        class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-white transition active:scale-95 whitespace-nowrap"
+        style="background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));"
+        aria-label="Download NET27 Watch for Phone"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+          <line x1="12" y1="18" x2="12" y2="18"/>
+        </svg>
+        Phone
+      </a>
+
+      <!-- TV APK -->
+      <a
+        href="https://net27.watch/app/net27-tv.apk"
+        download
+        id="apk-tv-btn"
+        class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-white transition active:scale-95 border border-white/15 bg-white/10 hover:bg-white/15 whitespace-nowrap"
+        aria-label="Download NET27 Watch for TV"
+      >
+        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="2" y="4" width="20" height="13" rx="2" ry="2"/>
+          <line x1="8" y1="21" x2="16" y2="21"/>
+          <line x1="12" y1="17" x2="12" y2="21"/>
+        </svg>
+        TV
+      </a>
     </div>
   </div>
 </section>

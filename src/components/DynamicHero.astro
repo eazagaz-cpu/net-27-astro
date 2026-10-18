@@ -32,7 +32,10 @@ const heroData = slides.map((slide) => ({
 }));
 ---
 
-<section class="hero-section" aria-label="Featured titles" data-hero-root>
+<!-- Dynamic color wash — updated per slide via JS -->
+<div id="hero-color-wash" style="pointer-events:none;position:fixed;inset-x:0;top:0;height:60vh;z-index:0;transition:opacity 0.7s;background:radial-gradient(ellipse at top,var(--hero-accent,#d90429) 0%,transparent 65%);opacity:0.14;" aria-hidden="true"></div>
+
+<section class="hero-section" aria-label="Featured titles" data-hero-root style="position:relative;z-index:1">
   <div class="hero-slide is-active">
     <picture>
       <source media="(max-width: 768px)" srcset={heroData[0].backdropSmall} data-hero-source />
@@ -55,13 +58,14 @@ const heroData = slides.map((slide) => ({
       <div class="hero-outer">
         <div class="hero-layout">
           <div class="hero-content">
-            <span class="hero-label">Trending Now</span>
+            <span class="hero-label">🔥 Trending Now</span>
             <h2 class="hero-title" data-hero-title>{first.title}</h2>
             <div class="hero-meta">
               <span class="hero-rating" data-hero-rating>★ {first.rating}</span>
               <span class="hero-meta-text" data-hero-year>{first.year}</span>
               <span class="hero-meta-text">·</span>
               <span class="hero-meta-text hero-type" data-hero-type>{first.type === 'tv' ? 'Series' : 'Movie'}</span>
+              <span class="hero-meta-text" style="padding:1px 6px;background:rgba(255,255,255,0.12);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:0.05em">HD</span>
             </div>
             <p class="hero-description" data-hero-description>{first.overview}</p>
             <div class="hero-actions">
@@ -70,6 +74,7 @@ const heroData = slides.map((slide) => ({
                 Watch Now
               </a>
               <a href={firstHref} class="btn-glass hero-btn" data-hero-info aria-label={`More Info about ${first.title}`}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
                 More Info<span class="sr-only" data-hero-info-title> about {first.title}</span>
               </a>
             </div>
@@ -88,6 +93,21 @@ const heroData = slides.map((slide) => ({
     </div>
   </div>
 
+  <!-- Prev / Next navigation arrows (net27.cc style) -->
+  <button id="hero-prev-btn" type="button" aria-label="Previous slide"
+    style="position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:40;width:36px;height:64px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;color:rgba(255,255,255,0.45);cursor:pointer;transition:color 0.2s">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 1px 6px rgba(0,0,0,.9))"><path d="m15 18-6-6 6-6"/></svg>
+  </button>
+  <button id="hero-next-btn" type="button" aria-label="Next slide"
+    style="position:absolute;right:0;top:50%;transform:translateY(-50%);z-index:40;width:36px;height:64px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;color:rgba(255,255,255,0.45);cursor:pointer;transition:color 0.2s">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 1px 6px rgba(0,0,0,.9))"><path d="m9 18 6-6-6-6"/></svg>
+  </button>
+
+  <!-- Maturity/certification badge (bottom right, net27.cc style) -->
+  <div id="hero-cert-badge" aria-hidden="true"
+    style="display:none;position:absolute;bottom:clamp(20px,4vh,40px);right:clamp(16px,2vw,64px);z-index:30;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:12px;font-weight:700;letter-spacing:0.05em">
+  </div>
+
   <div class="hero-dots" role="group" aria-label="Featured title slides">
     {slides.map((slide, index) => (
       <button
@@ -101,6 +121,17 @@ const heroData = slides.map((slide) => ({
   </div>
   <script type="application/json" data-hero-data set:html={JSON.stringify(heroData).replace(/</g, '\\u003c')} />
 </section>
+
+<!-- Watch modal backdrop preview overlay -->
+<div id="watch-backdrop-overlay" aria-hidden="true"
+  style="display:none;position:fixed;inset:0;z-index:59;background:#000;background-size:cover;background-position:center;transition:opacity 0.5s">
+  <div style="position:absolute;inset:0;background:linear-gradient(to top,#000 0%,rgba(0,0,0,0.4) 40%,rgba(0,0,0,0.7) 100%)"></div>
+  <div style="position:absolute;bottom:24px;right:24px;display:flex;align-items:center;gap:8px;color:rgba(255,255,255,0.7);font-size:12px;font-weight:500">
+    <div style="width:16px;height:16px;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;border-radius:50%;animation:spin 1s linear infinite"></div>
+    Loading…
+  </div>
+</div>
+<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
 
 <script>
   const root = document.querySelector<HTMLElement>('[data-hero-root]');
@@ -119,6 +150,15 @@ const heroData = slides.map((slide) => ({
     const info = root.querySelector<HTMLAnchorElement>('[data-hero-info]');
     const infoTitle = root.querySelector<HTMLElement>('[data-hero-info-title]');
     const dots = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-hero-dot]'));
+    const prevBtn = document.getElementById('hero-prev-btn');
+    const nextBtn = document.getElementById('hero-next-btn');
+    const certBadge = document.getElementById('hero-cert-badge');
+    const colorWash = document.getElementById('hero-color-wash');
+    // Maturity ratings color map
+    const certColors: Record<string, string> = { 'G':'#22c55e','PG':'#3b82f6','PG-13':'#f59e0b','R':'#ef4444','NC-17':'#7c3aed','U':'#22c55e','UA':'#f59e0b','A':'#ef4444' };
+    // Accent colors per slide (derived from rating)
+    const accentColors = ['#d90429','#e50914','#ff6b00','#2563eb','#7c3aed','#059669'];
+
     let current = 0;
     let timer = 0;
 
@@ -149,6 +189,19 @@ const heroData = slides.map((slide) => ({
         if (i === index) dot.setAttribute('aria-current', 'true');
         else dot.removeAttribute('aria-current');
       });
+      // Dynamic color accent
+      const accent = accentColors[index % accentColors.length];
+      document.documentElement.style.setProperty('--hero-accent', accent);
+      // Certification badge (mock — real data needs API; shows rating tier)
+      if (certBadge) {
+        const rating_val = slide.rating || 0;
+        let cert = rating_val >= 8 ? 'U/A 13+' : rating_val >= 6 ? 'U/A 16+' : 'A';
+        certBadge.textContent = cert;
+        const col = certColors[cert] || 'rgba(255,255,255,0.12)';
+        certBadge.style.background = col + '26';
+        certBadge.style.borderColor = col + '66';
+        certBadge.style.display = 'block';
+      }
     };
 
     const restart = () => {
@@ -157,12 +210,36 @@ const heroData = slides.map((slide) => ({
         timer = window.setInterval(() => show((current + 1) % slides.length), 6000);
       }
     };
+
+    // Prev / Next buttons
+    if (prevBtn) prevBtn.addEventListener('click', () => { show((current - 1 + slides.length) % slides.length); restart(); });
+    if (nextBtn) nextBtn.addEventListener('click', () => { show((current + 1) % slides.length); restart(); });
+    // Hover glow on arrows
+    [prevBtn, nextBtn].forEach(btn => {
+      if (!btn) return;
+      btn.addEventListener('mouseenter', () => { btn.style.color = '#fff'; });
+      btn.addEventListener('mouseleave', () => { btn.style.color = 'rgba(255,255,255,0.45)'; });
+    });
+
     dots.forEach((dot, index) => dot.addEventListener('click', () => { show(index); restart(); }));
     document.addEventListener('visibilitychange', () => document.hidden ? window.clearInterval(timer) : restart());
-    // Rotate only once the first backdrop has arrived. On slow mobile
-    // connections the 6 s timer swapped the slide before that image loaded, so
-    // it never painted and the LCP became the next slide's image (9.7 s in
-    // Lighthouse, 2026-09-28).
+
+    // Backdrop preview: intercept Watch Now clicks to show backdrop while player loads
+    const backdropOverlay = document.getElementById('watch-backdrop-overlay');
+    if (backdropOverlay && watch) {
+      watch.addEventListener('click', (e) => {
+        const slide = slides[current];
+        if (!slide) return;
+        backdropOverlay.style.backgroundImage = `url('${slide.backdropLarge}')`;
+        backdropOverlay.style.display = 'block';
+        setTimeout(() => { if(backdropOverlay) backdropOverlay.style.opacity = '1'; }, 10);
+        // Hide after 4s or on navigation
+        setTimeout(() => {
+          if (backdropOverlay) { backdropOverlay.style.opacity = '0'; setTimeout(() => { backdropOverlay.style.display='none'; }, 500); }
+        }, 4000);
+      });
+    }
+
     if (!bg || (bg.complete && bg.naturalWidth > 0)) restart();
     else {
       bg.addEventListener('load', restart, { once: true });

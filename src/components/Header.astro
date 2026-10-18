@@ -37,19 +37,19 @@ const navLinks = [
 
 const currentPath = Astro.url.pathname;
 
-const platformChips: { label: string; href: string; iconHtml: string }[] = [
-  { label: 'Trending', href: '/trending/', iconHtml: '<span style="font-size:14px">🔥</span>' },
-  { label: 'Latest Release', href: '/latest/', iconHtml: '<span style="font-size:14px">✨</span>' },
-  { label: 'Netflix', href: '/platform/netflix/', iconHtml: '<svg width="16" height="16" viewBox="0 0 24 24"><path fill="#E50914" d="M5.398 0v.006c3.028 8.556 5.37 15.175 8.348 23.596 2.344.058 4.85.398 4.854.398-2.8-7.924-5.923-16.747-8.487-24zm8.489 0v9.63L18.6 22.951l.049.031V0zm-13.887.02V24H4.79l-.004-11.087L9.383 24c.004 0 1.588-.048 4.382-.1v-.02L5.227.02z"/></svg>' },
-  { label: 'Prime Video', href: '/platform/prime-video/', iconHtml: '<svg width="18" height="18" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="3" fill="#00264D"/><polygon points="9.5,8 16,12 9.5,16" fill="#00A8E1"/><path d="M4 18.5c2.5-1.5 5.5-2.2 8-2.2s5.5.7 8 2.2" fill="none" stroke="#00A8E1" stroke-width="1.3" stroke-linecap="round"/></svg>' },
-  { label: 'JioHotstar', href: '/platform/jiohotstar/', iconHtml: '<svg width="16" height="16" viewBox="0 0 24 24"><path fill="#1F80E0" d="M12 2l2.47 5.01L20 8.27l-4 3.89.94 5.51L12 14.77l-4.94 2.9.94-5.51-4-3.89 5.53-.76z"/><circle cx="12" cy="12" r="2" fill="#FFD700"/></svg>' },
-  { label: 'SonyLIV', href: '/platform/sonyliv/', iconHtml: '<svg width="16" height="16" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#141414" stroke="#888" stroke-width="1"/><text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" font-family="sans-serif">S</text></svg>' },
-  { label: 'Crunchyroll', href: '/platform/crunchyroll/', iconHtml: '<svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#F47521"/><circle cx="14" cy="10" r="4" fill="#fff"/><circle cx="15" cy="9.5" r="2" fill="#F47521"/></svg>' },
-  { label: 'Mood', href: '/mood/', iconHtml: '<span style="font-size:14px">😊</span>' },
-  { label: 'Coming Soon', href: '/coming-soon/', iconHtml: '<span style="font-size:14px">🎬</span>' },
-  { label: 'Awards', href: '/awards/', iconHtml: '<span style="font-size:14px">🏆</span>' },
-  { label: 'Kids', href: '/genre/kids/', iconHtml: '<span style="font-size:14px">👶</span>' },
-  { label: 'MX Player', href: '/platform/mx-player/', iconHtml: '<svg width="16" height="16" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" fill="#0B7BDB"/><polygon points="9,6 18,12 9,18" fill="#fff"/></svg>' },
+const platformChips: { label: string; href: string; iconHtml: string; color: string }[] = [
+  { label: 'Trending',      href: '/trending/',            color: '#ff6b00', iconHtml: '<span style="font-size:14px">🔥</span>' },
+  { label: 'Latest Release',href: '/latest/',              color: '#22c55e', iconHtml: '<span style="font-size:14px">✨</span>' },
+  { label: 'Netflix',       href: '/platform/netflix/',    color: '#e50914', iconHtml: '<svg width="16" height="16" viewBox="0 0 24 24"><path fill="#E50914" d="M5.398 0v.006c3.028 8.556 5.37 15.175 8.348 23.596 2.344.058 4.85.398 4.854.398-2.8-7.924-5.923-16.747-8.487-24zm8.489 0v9.63L18.6 22.951l.049.031V0zm-13.887.02V24H4.79l-.004-11.087L9.383 24c.004 0 1.588-.048 4.382-.1v-.02L5.227.02z"/></svg>' },
+  { label: 'Prime Video',   href: '/platform/prime-video/',color: '#00a8e1', iconHtml: '<svg width="18" height="18" viewBox="0 0 24 24"><rect x="1" y="4" width="22" height="16" rx="3" fill="#00264D"/><polygon points="9.5,8 16,12 9.5,16" fill="#00A8E1"/><path d="M4 18.5c2.5-1.5 5.5-2.2 8-2.2s5.5.7 8 2.2" fill="none" stroke="#00A8E1" stroke-width="1.3" stroke-linecap="round"/></svg>' },
+  { label: 'JioHotstar',    href: '/platform/jiohotstar/', color: '#2b6def', iconHtml: '<svg width="16" height="16" viewBox="0 0 24 24"><path fill="#1F80E0" d="M12 2l2.47 5.01L20 8.27l-4 3.89.94 5.51L12 14.77l-4.94 2.9.94-5.51-4-3.89 5.53-.76z"/><circle cx="12" cy="12" r="2" fill="#FFD700"/></svg>' },
+  { label: 'SonyLIV',      href: '/platform/sonyliv/',    color: '#9b5de5', iconHtml: '<svg width="16" height="16" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="4" fill="#141414" stroke="#888" stroke-width="1"/><text x="12" y="16.5" text-anchor="middle" font-size="11" font-weight="800" fill="#fff" font-family="sans-serif">S</text></svg>' },
+  { label: 'Crunchyroll',   href: '/platform/crunchyroll/',color: '#f47521', iconHtml: '<svg width="16" height="16" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#F47521"/><circle cx="14" cy="10" r="4" fill="#fff"/><circle cx="15" cy="9.5" r="2" fill="#F47521"/></svg>' },
+  { label: 'Mood',          href: '/mood/',                color: '#ec4899', iconHtml: '<span style="font-size:14px">😊</span>' },
+  { label: 'Coming Soon',   href: '/coming-soon/',         color: '#8b5cf6', iconHtml: '<span style="font-size:14px">🎬</span>' },
+  { label: 'Awards',        href: '/awards/',              color: '#f59e0b', iconHtml: '<span style="font-size:14px">🏆</span>' },
+  { label: 'Kids',          href: '/genre/kids/',          color: '#ff4fa3', iconHtml: '<span style="font-size:14px">👶</span>' },
+  { label: 'MX Player',     href: '/platform/mx-player/', color: '#0085f6', iconHtml: '<svg width="16" height="16" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5" fill="#0B7BDB"/><polygon points="9,6 18,12 9,18" fill="#fff"/></svg>' },
 ];
 ---
 
@@ -101,12 +101,13 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
     </div>
 
     <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] pb-2 hidden md:block">
-      <div class="flex items-center gap-2 overflow-x-auto pb-1" style="scrollbar-width:none;">
+      <div class="flex items-center gap-2 overflow-x-auto pb-1" style="scrollbar-width:none;" id="platform-chips-row">
         {platformChips.map(chip => (
           <a
             href={chip.href}
+            data-color={chip.color}
             class:list={[
-              'flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all shrink-0',
+              'platform-chip flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-medium border transition-all shrink-0',
               currentPath === chip.href
                 ? 'bg-[var(--color-primary)] border-[var(--color-primary)] text-white'
                 : 'bg-white/5 border-white/10 text-[var(--color-muted)] hover:border-white/20 hover:text-white',
@@ -176,6 +177,20 @@ const platformChips: { label: string; href: string; iconHtml: string }[] = [
       e.preventDefault(); openSearch();
     }
   });
+
+  // Dynamic color accent per platform chip (net27.cc style)
+  var row = document.getElementById('platform-chips-row');
+  if (row) {
+    var wash = document.getElementById('hero-color-wash');
+    row.querySelectorAll('.platform-chip').forEach(function(chip) {
+      var color = chip.getAttribute('data-color');
+      if (!color) return;
+      chip.addEventListener('mouseenter', function() {
+        document.documentElement.style.setProperty('--hero-accent', color);
+        if (wash) { wash.style.background = 'radial-gradient(ellipse at top,' + color + ' 0%,transparent 65%)'; }
+      });
+    });
+  }
 })();
 </script>
 
