@@ -1,7 +1,7 @@
 name: 🛡️ Sponsor Links Watchdog
 
 # Every hour: are all sponsor links from src/data/sponsor-links.json live on
-# net27.watch (homepage HTML above Top 10, both /api rails, served from KV)?
+# net27.watch (homepage HTML at the page end, both /api rails, served from KV)?
 #   - API/KV wrong  → re-push KV from the manifest, then check again.
 #   - still wrong, or the HTML itself is wrong → this run fails and GitHub
 #     emails the owner.

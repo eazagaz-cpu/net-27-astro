@@ -126,10 +126,11 @@ URL badalna ho (sirf jab user kahe "update karo"): purana `sponsors:remove`, nay
   **`client:only` KABHI mat karo:** `client:idle` se links build ke waqt HTML mein aa jate hain
   (JS fail/slow/ad-blocker ho tab bhi dikhte hain, aur Google ko bhi milte hain). `verify-links`
   `client:only` par deploy rok deta hai.
-  **Jagah: "Top 10 Movies Today" (`<Top10Rail>`) se UPAR, ContinueWatching ke baad** — user ka
-  faisla (2026-09-26). Page ke neeche le jane par (bbef911) links "gayab" samjhe gaye; ab
-  `verify-links` rails ko `<Top10Rail>` se neeche hone par deploy rok deta hai. Inhein neeche/footer
-  mein mat le jao. `Top10Rail.astro` ke andar kabhi nahi.
+  **Jagah: homepage ke bilkul AAKHIR mein (FAQ aur disclaimer ke baad, `</main>` se pehle)** —
+  user ka faisla (2026-10-20). 2026-09-26 se 2026-10-20 tak yeh Top 10 se upar the. `verify-links`
+  rails ko kahin aur le jane par deploy rok deta hai. Pehle neeche hone par (bbef911) links
+  "gayab" samjhe gaye the — dobara aisi report aaye to pehle built HTML check karo. `Top10Rail.astro`
+  ke andar kabhi nahi.
 - **Images:** `push-sponsors.mjs` har image ka 192px Base64 thumbnail KV payload mein inline karta hai;
   broken image par component casino-avatar fallback dikhata hai.
 - Health check: https://net27.watch/api/link-health

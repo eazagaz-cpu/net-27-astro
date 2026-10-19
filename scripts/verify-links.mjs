@@ -155,13 +155,16 @@ async function main() {
     check(`HomePage.astro server-renders <${rail} client:idle />`,
       new RegExp(`<${rail}\\s+client:(idle|load|visible)\\b`).test(home),
       `src/components/pages/HomePage.astro must render <${rail} client:idle /> — missing, or client:only (which leaves the links out of the HTML)`);
-    // Owner's decision (2026-09-26): rails sit ABOVE the Top 10 rails. Moved
-    // to the page bottom once (bbef911) and were reported as "gone".
+    // Owner's decision (2026-10-20): rails sit at the END of the homepage,
+    // after every content rail, the FAQ and the disclaimer. From 2026-09-26
+    // they sat above Top 10; this check moved with the owner's choice.
     const railAt = home.search(new RegExp(`<${rail}\\s`));
-    const top10At = home.indexOf('<Top10Rail');
-    check(`HomePage.astro places <${rail}> above <Top10Rail>`,
-      railAt !== -1 && top10At !== -1 && railAt < top10At,
-      `<${rail}> must come before <Top10Rail> in HomePage.astro — below it, visitors do not see the links`);
+    const lastContent = Math.max(...['<Top10Rail', '<StaticRail', '<LazyRail', '<GeoRail', '<FAQSection']
+      .map((tag) => home.lastIndexOf(tag)));
+    const mainEnd = home.indexOf('</main>');
+    check(`HomePage.astro places <${rail}> at the end of the page`,
+      railAt !== -1 && railAt > lastContent && (mainEnd === -1 || railAt < mainEnd),
+      `<${rail}> must come after every content rail and the FAQ, inside <main>, in HomePage.astro (owner's decision, 2026-10-20)`);
   }
 
   // ── Check 11: Components derive their fallback from the manifest ─────────

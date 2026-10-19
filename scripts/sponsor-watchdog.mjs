@@ -5,7 +5,8 @@
  * Node's fetch, so it works without npm ci or credentials.
  *
  * Exit codes (the workflow branches on them):
- *   0  every enabled link is live: in the homepage HTML above Top 10 and in
+ *   0  every enabled link is live: in the homepage HTML at the page end
+ *      (after Top 10; owner's decision 2026-10-20) and in
  *      both /api rails, served from KV
  *   2  the API/KV side is wrong (link missing from an API, or served from the
  *      bundled fallback) — fixable by re-pushing KV from the manifest
@@ -58,17 +59,17 @@ try {
   const html = await get('/');
   const top10 = html.search(/<section[^>]+class="[^"]*\btop10-section\b/);
   const missing = [];
-  const below = [];
+  const above = [];
   for (const s of [...t1, ...t2]) {
     const at = html.indexOf(`href="${s.url.replace(/&/g, '&amp;')}"`);
     if (at === -1) missing.push(s.id);
-    else if (top10 !== -1 && at > top10) below.push(s.id);
+    else if (top10 !== -1 && at < top10) above.push(s.id);
   }
-  if (missing.length || below.length) {
+  if (missing.length || above.length) {
     htmlBad = true;
     if (missing.length) console.error(`❌ homepage HTML is missing: ${missing.join(', ')}`);
-    if (below.length) console.error(`❌ homepage HTML has these below Top 10: ${below.join(', ')}`);
-  } else console.log(`✅ homepage HTML: all ${t1.length + t2.length} links above Top 10`);
+    if (above.length) console.error(`❌ homepage HTML has these above Top 10 (rails belong at the page end): ${above.join(', ')}`);
+  } else console.log(`✅ homepage HTML: all ${t1.length + t2.length} links at the page end (after Top 10)`);
 
   // Ad tags (src/data/ads.json): present in the page, and allowed by the CSP
   // the page is actually served with. Either missing = ads silently gone.

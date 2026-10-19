@@ -169,24 +169,7 @@ const homeFaqs = [
     <!-- Continue Watching — client-side localStorage rail -->
     <ContinueWatching />
 
-    <!-- Sponsor rails — MUST stay above the Top 10 rails (owner's decision,
-         2026-09-26). At the page bottom (bbef911) they sat below ~9,500px of
-         content and were reported as "links gone". verify-links.mjs blocks a
-         deploy if they move below Top10Rail again.
-         client:idle, never client:only: the links are rendered into the HTML
-         from src/data/sponsor-links.json at build time, so they show even if
-         the script is slow, fails or is blocked; hydration then swaps in the
-         live KV list. verify-dist-links.mjs checks the built HTML. -->
-    <div class="sponsor-rail-slot" style="min-height:280px">
-      <!-- Rail 1 (Featured) — KV se instant update -->
-      <SponsorRailDynamic client:idle />
-    </div>
-    <div class="sponsor-rail-slot" style="min-height:280px">
-      <!-- Rail 2 (Popular Gaming Links) — KV se instant update -->
-      <SponsorRailSecondary client:idle />
-    </div>
-
-    <!-- Top 10 — directly after hero, no CTA interruption -->
+    <!-- Top 10 — directly after Continue Watching -->
     <Top10Rail mediaType="movie" items={cachedPopularMovies} />
     <Top10Rail mediaType="tv" items={cachedPopularTv} />
 
@@ -285,6 +268,23 @@ const homeFaqs = [
         </div>
       </div>
     </section>
+    <!-- Sponsor rails — at the END of the homepage, after the FAQ and the
+         disclaimer (owner's decision, 2026-10-20; from 2026-09-26 they sat
+         above Top 10). This far down they sit below ~9,500px of content: in
+         bbef911 that was reported as "links gone" although they were there.
+         verify-links.mjs blocks a deploy that moves them anywhere else.
+         client:idle, never client:only: the links are rendered into the HTML
+         from src/data/sponsor-links.json at build time, so they show even if
+         the script is slow, fails or is blocked; hydration then swaps in the
+         live KV list. verify-dist-links.mjs checks the built HTML. -->
+    <div class="sponsor-rail-slot" style="min-height:280px">
+      <!-- Rail 1 (Featured) — KV se instant update -->
+      <SponsorRailDynamic client:idle />
+    </div>
+    <div class="sponsor-rail-slot" style="min-height:280px">
+      <!-- Rail 2 (Popular Gaming Links) — KV se instant update -->
+      <SponsorRailSecondary client:idle />
+    </div>
   </main>
 
   <Footer />
