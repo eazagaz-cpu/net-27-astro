@@ -27,6 +27,11 @@ const dir = getDir(lang);
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#050509" />
+  <!-- Favicons, all from public/icons/icon-512.png. Google Search wants a
+       square icon whose size is a multiple of 48px; /favicon.ico was Astro's
+       starter logo until 2026-10-20 and that is what Search showed. -->
+  <link rel="icon" href="/favicon.ico" sizes="48x48" />
+  <link rel="icon" type="image/png" sizes="96x96" href="/favicon-96x96.png" />
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <link rel="preconnect" href="https://image.tmdb.org" crossorigin />
   <!-- hreflang is emitted by SEOHead for pages that have localized routes,
