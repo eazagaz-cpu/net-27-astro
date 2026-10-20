@@ -1,3 +1,5 @@
+import { DMCA_BLOCKED_IDS } from '../../player.js';
+
 export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const query = url.searchParams.get('q') || '';
@@ -13,7 +15,9 @@ export async function onRequestGet(context) {
     return new Response(JSON.stringify({ error: 'TMDB_API_KEY not configured', items: [] }), { headers });
   }
 
-  const DMCA_BLOCKED_IDS = new Set([969681, 1284465, 1477712]);
+  // The full takedown list from functions/player.js (kept current by the DMCA
+  // watcher). This used to be three hand-copied ids, so search still offered
+  // titles removed since, each leading to a 404.
 
   try {
     const tmdbUrl = `https://api.themoviedb.org/3/search/multi?api_key=${apiKey}&query=${encodeURIComponent(query)}`;
@@ -22,7 +26,7 @@ export async function onRequestGet(context) {
     const data = await res.json();
 
     const items = (data.results || [])
-      .filter(i => !i.adult && (i.media_type === 'movie' || i.media_type === 'tv') && (i.title || i.name) && !DMCA_BLOCKED_IDS.has(i.id))
+      .filter(i => !i.adult && (i.media_type === 'movie' || i.media_type === 'tv') && (i.title || i.name) && !DMCA_BLOCKED_IDS.has(String(i.id)))
       .slice(0, 20)
       .map(i => ({
         id: i.id,

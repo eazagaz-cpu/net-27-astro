@@ -206,6 +206,49 @@ and opens a GitHub issue. A notice that names no URL of ours opens a
   new slug: that re-publishes it, draws a new notice, and repeated valid
   notices demote the whole site.
 
+## Bot traffic (scrapers)
+
+On 2026-10-19/20 a scraper on **Tencent Cloud (AS132203; seen from Singapore)** sent
+~2,000 requests an hour, day and night (49k in 36 hours, more than India).
+It ran headless Chrome on rotating old Windows user agents, searched actor
+names, then hit `/player/`, `/api/media/streaming` and `/api/server-health`.
+It spent the TMDB key and the Functions quota, and showed up in Google
+Analytics as "Singapore" visitors.
+
+- **Edge side (required; owner, dashboard, set 2026-10-20):** a WAF custom
+  rule on net27.watch, `(ip.src.asnum in {132203} and not cf.client.bot)` →
+  Block. Only this keeps the scraper off the Functions quota and out of
+  Google Analytics, and it stops the HTML and static files too — on
+  net27.watch only. It cannot cover `net-27-astro.pages.dev`. The project
+  login has no WAF permission (`Authentication error [10000]`), so changes
+  are a dashboard step. Keep the action at Block and the ASN list identical
+  to `SCRAPER_ASNS`.
+- **Code side:** [functions/_shared/scrapers.js](functions/_shared/scrapers.js)
+  lists the ASNs; `functions/api/_middleware.js` and `functions/player.js`
+  answer them with 403. That saves TMDB calls and upstream fetches, not
+  Functions invocations, and it is the only guard on pages.dev. Keep the list
+  narrow and evidence-based. **Never add** AS8075 (Azure: GitHub Actions runs
+  the watchdog and CI checks), AS15169 (Google), AS13335 (Cloudflare/WARP) or
+  Alibaba Cloud (UC Browser in the audience's countries fetches through it).
+  Some commercial VPNs exit from AS132203; those visitors are blocked too.
+- The api/ middleware turns the Functions routes into `/api/*`, so unknown
+  /api paths now start a Function before the static 404.
+- **How to verify:** blocked requests still count in Cloudflare's traffic
+  numbers. Check Security → Analytics → Events (ASN 132203, action Block), or
+  split the GraphQL Singapore count by status (403 = blocked), and GA4
+  Realtime for Singapore.
+- **Do not enable Bot Fight Mode.** On the Free plan custom rules cannot skip
+  it, and it would challenge the hourly sponsor watchdog, which fetches the
+  site from GitHub Actions runners.
+- **Never add `functions/_middleware.js` at the root.** It turns on
+  Functions for every static file and burns the free quota. Middleware
+  belongs in `functions/api/`.
+- How to look: the GraphQL `httpRequestsAdaptiveGroups` dataset (by country,
+  user agent, path) works with the project token. ASN and query strings are
+  not available on Free there; `wrangler pages deployment tail <id>
+  --project-name net-27-astro --format json` shows `request.cf.asn` and full
+  URLs for Function requests.
+
 ### A `_headers` change needs a cache purge
 
 Editing [public/_headers](public/_headers) alone does **not** reach visitors on

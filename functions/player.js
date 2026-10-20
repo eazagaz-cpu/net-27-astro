@@ -13,9 +13,12 @@
  *
  * To add a new blocked ID: append to DMCA_BLOCKED_IDS below.
  * Do NOT remove existing entries — this is a permanent legal record.
+ * /api/tmdb/search imports this set, so search never offers a removed title.
  */
 
-const DMCA_BLOCKED_IDS = new Set(['1233413', '1413', '79744', '445466', '247168', '37678', '1626188', '95334', '273207', '226285', '1400357', '87513', '1212763', '634649', '1288445', '1124142', '1701141', '1469342', '332282', '1204680', '1685882', '1441228', '1471168', '1341138', '1462861', '1444466', '1572116', 
+import { fromScraperNetwork, scraperRefusal } from './_shared/scrapers.js';
+
+export const DMCA_BLOCKED_IDS = new Set(['1233413', '1413', '79744', '445466', '247168', '37678', '1626188', '95334', '273207', '226285', '1400357', '87513', '1212763', '634649', '1288445', '1124142', '1701141', '1469342', '332282', '1204680', '1685882', '1441228', '1471168', '1341138', '1462861', '1444466', '1572116', 
   '1477712', // Active Cloudflare 451 — do not remove
   '969681',  // Spider-Man: Brand New Day — Report afd2de4e15d0c7ae
   '1284465', // The Death of Robin Hood    — Report a37e65dce9a83274
@@ -52,6 +55,9 @@ const THEATRE_HTML = GONE_HTML
     '<p>This film is still in cinemas and no streaming platform offers it yet. Its page shows the OTT release as soon as one is announced.</p>');
 
 export async function onRequest(context) {
+  // Scraper networks never get the player (functions/_shared/scrapers.js).
+  if (fromScraperNetwork(context.request)) return scraperRefusal();
+
   const url = new URL(context.request.url);
   const id = url.searchParams.get('id');
   const type = url.searchParams.get('type');

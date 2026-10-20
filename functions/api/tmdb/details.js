@@ -1,3 +1,5 @@
+import { DMCA_BLOCKED_IDS } from '../../player.js';
+
 export async function onRequestGet(context) {
   const url = new URL(context.request.url);
   const type = url.searchParams.get('type') || 'movie';
@@ -10,7 +12,7 @@ export async function onRequestGet(context) {
     return new Response(JSON.stringify({ error: 'Missing parameters or API key' }), { headers });
   }
 
-  const DMCA_BLOCKED_IDS = new Set(['969681', '1284465', '1477712']);
+  // The full takedown list (functions/player.js, kept current by the DMCA watcher).
   if (DMCA_BLOCKED_IDS.has(String(id))) {
     return new Response(JSON.stringify({ error: 'Title removed per legal request' }), { status: 404, headers });
   }

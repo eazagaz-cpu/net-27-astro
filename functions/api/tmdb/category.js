@@ -1,3 +1,5 @@
+import { DMCA_BLOCKED_IDS } from '../../player.js';
+
 const TMDB_BASE = 'https://api.themoviedb.org/3';
 
 const PROVIDER_IDS = {
@@ -131,7 +133,7 @@ export async function onRequestGet(context) {
     const allItems = [];
     const seenIds = new Set();
 
-    const DMCA_BLOCKED_IDS = new Set([969681, 1284465, 1477712]);
+    // The full takedown list (functions/player.js); its ids are strings.
 
     for (const ep of endpoints) {
       for (let page = 1; page <= pages; page++) {
@@ -147,7 +149,7 @@ export async function onRequestGet(context) {
           const data = await res.json();
 
           for (const item of (data.results || [])) {
-            if (item.adult || !(item.title || item.name) || DMCA_BLOCKED_IDS.has(item.id)) continue;
+            if (item.adult || !(item.title || item.name) || DMCA_BLOCKED_IDS.has(String(item.id))) continue;
             if (seenIds.has(item.id)) continue;
             seenIds.add(item.id);
             const normalized = normalizeItem(item);
@@ -164,7 +166,7 @@ export async function onRequestGet(context) {
         if (fbRes.ok) {
           const fbData = await fbRes.json();
           for (const item of (fbData.results || [])) {
-            if (seenIds.has(item.id) || DMCA_BLOCKED_IDS.has(item.id)) continue;
+            if (seenIds.has(item.id) || DMCA_BLOCKED_IDS.has(String(item.id))) continue;
             seenIds.add(item.id);
             const n = normalizeItem(item);
             if (n.posterUrl) allItems.push(n);

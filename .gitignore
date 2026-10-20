@@ -54,3 +54,7 @@ SESSION_CHECKPOINT.md
 PROJECT_SESSION_HANDOFF.md
 net27-watch-antigravity-master-prompt.md
 
+
+# Local downloads (reverse-engineering toolkit); never part of the site.
+# safe-push runs `git add -A`, which would publish it in this public repo.
+re-main/

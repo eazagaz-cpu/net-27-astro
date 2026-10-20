@@ -159,3 +159,10 @@ URL de, to woh naya sponsor hai — upar wala "NAYA LINK ADD KARNA" flow chalao.
 - Setup ek dafa: `npm run dmca:setup -- --client <client_secret.json>`. Details CLAUDE.md ke DMCA section mein.
 - Repo PUBLIC hai: `dmca/*.json` mein sirf sender ka domain, date, report ID aur URLs. Email address, subject ya body kabhi commit/log mat karo.
 - Deny list ki entries legal record hain — kabhi mat hatao.
+
+## 🤖 Bot / scraper traffic
+
+- 2026-10-19/20: Tencent Cloud (AS132203, Singapore se dekha gaya) se scraper ~2,000 requests/ghanta bhej raha tha (search → player → `/api/media/streaming`). GA mein "Singapore" visitors yahi the.
+- Edge (zaroori, owner ne 2026-10-20 ko dashboard se lagaya): WAF custom rule `(ip.src.asnum in {132203} and not cf.client.bot)` → Block. Sirf yahi Functions quota aur GA ko bachata hai (sirf net27.watch par, pages.dev par nahi). Action Block hi rakho.
+- Code: `functions/_shared/scrapers.js` mein ASN list; `functions/api/_middleware.js` aur `functions/player.js` unhein 403 dete hain (TMDB calls bachte hain, Function invocation nahi). Dono lists ek jaisi rakho. **Kabhi mat daalo:** AS8075 (Azure — GitHub Actions/watchdog), AS15169 (Google), AS13335 (Cloudflare/WARP), Alibaba Cloud (UC Browser).
+- **Bot Fight Mode on mat karo** (watchdog GitHub Actions se chalta hai; Free plan par skip nahi hota). Root par `functions/_middleware.js` kabhi mat banao (har static file Function ban jayegi, quota khatam).
