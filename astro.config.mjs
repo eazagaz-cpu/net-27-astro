@@ -9,6 +9,8 @@ import { readFileSync } from 'node:fs';
 // DMCA-denied slugs — must never appear in sitemap.
 // Keep in sync with src/lib/dmcaDenyList.ts.
 const DMCA_DENIED_SLUGS = new Set([
+  'the-end-of-oak-street-1101383',
+  'ted-lasso-97546',
   'sinners-1233413',
   'american-horror-story-1413',
   'the-rookie-79744',

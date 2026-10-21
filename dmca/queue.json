@@ -708,6 +708,27 @@
       "action": "auto-remove",
       "processedAt": "2026-10-11T22:27:06.591Z",
       "result": "processed"
+    },
+    {
+      "messageId": "1a15c2e101d9fe96",
+      "date": "Tue, 20 Oct 2026 18:58:05 -0700",
+      "fromDomain": "google.com",
+      "reportId": "7-9314000042441-1313856246",
+      "targets": [
+        {
+          "type": "show",
+          "slug": "ted-lasso-97546",
+          "tmdbId": 97546
+        },
+        {
+          "type": "movie",
+          "slug": "the-end-of-oak-street-1101383",
+          "tmdbId": 1101383
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-21T05:16:41.787Z",
+      "result": "processed"
     }
   ],
   "manualReview": [
