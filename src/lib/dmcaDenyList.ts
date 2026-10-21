@@ -17,6 +17,7 @@
 
 /** Slugs that must not be served. Used to filter getStaticPaths. */
 export const DMCA_DENIED_SLUGS = new Set<string>([
+  'moana-1108427',  // Report 5-8148000041282-1773133303
   'the-end-of-oak-street-1101383',  // Report 7-9314000042441-1313856246
   'ted-lasso-97546',  // Report 7-9314000042441-1313856246
   'sinners-1233413',  // Report 0-2003000041946-0153281026
@@ -48,6 +49,7 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  1108427,  // TMDB ID 1108427 — Report 5-8148000041282-1773133303
   1101383,  // TMDB ID 1101383 — Report 7-9314000042441-1313856246
   97546,  // TMDB ID 97546 — Report 7-9314000042441-1313856246
   1233413,  // TMDB ID 1233413 — Report 0-2003000041946-0153281026
