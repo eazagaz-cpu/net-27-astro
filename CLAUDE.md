@@ -229,6 +229,15 @@ URLs repeated an English page. On the owner's decision (2026-10-23):
 - **Only en/hi/ur/bn may be indexed** (`INDEXABLE_LANGS`). Pages in the other
   routed locales only translate the interface; SEOHead makes them noindex and
   keeps them out of hreflang (sitemap 4,960 → 4,352 URLs).
+- English actor pages need `MIN_INDEXABLE_CREDITS` (5) credits to be indexable;
+  1,517 actor pages drew 22,485 impressions and 31 clicks in 60 days.
+- **/ott-releases/** ("New OTT releases this week", India) is built from real
+  data only (`src/lib/ottReleases.ts`): TMDB's Indian digital release
+  (`digitalRelease`, release type 4, platform from its note) and the first
+  sync that sees a title on a platform (`src/data/cache/ott-arrivals.json`,
+  written by movie-sync and committed with the cache). Platforms listed when
+  tracking began are "baseline" and never shown as new. Title pages show an
+  announced OTT date first and the estimate only when none is announced.
 - OTT-pending title pages give the usual 4–8 week OTT window after the
   cinema release, labelled as an estimate, with a "Last checked" date
   (`ottPending` in `src/lib/seo.ts`). Never present it as an announcement.
