@@ -1,0 +1,222 @@
+---
+/**
+ * /ott-releases/ — "New OTT releases this week" for India.
+ *
+ * Search demand behind it (Search Console, Oct 2026): "<title> ott release
+ * date", "<title> ott platform" and "ott release this week" were the queries
+ * that brought most of this site's traffic. This page answers them for every
+ * title at once, from real dates only (src/lib/ottReleases.ts), and rebuilds
+ * with the catalogue several times a day.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import SEOHead from '../../components/SEOHead.astro';
+import Schema from '../../components/Schema.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import FAQSection from '../../components/FAQSection.astro';
+import { breadcrumbSchema, faqSchema } from '../../lib/schema';
+import { SITE_URL } from '../../lib/seo';
+import { ottReleases, PLATFORM_PAGES, RECENT_DAYS, UPCOMING_DAYS, type OttEntry } from '../../lib/ottReleases';
+import type { RealTitle } from '../../lib/realTitles';
+
+const { recent, upcoming, awaiting, weekFrom, weekTo, updated } = ottReleases();
+
+const fmt = (iso: string, year = false) =>
+  new Date(`${iso}T00:00:00Z`).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', ...(year ? { year: 'numeric' } : {}), timeZone: 'UTC' });
+const weekText = `${fmt(weekFrom)}–${fmt(weekTo, true)}`;
+const updatedText = fmt(updated, true);
+const href = (t: RealTitle) => `/${t.type === 'show' ? 'shows' : 'movies'}/${t.slug}/`;
+const LANG: Record<string, string> = { hi: 'Hindi', ta: 'Tamil', te: 'Telugu', ml: 'Malayalam', kn: 'Kannada', bn: 'Bengali', mr: 'Marathi', pa: 'Punjabi', gu: 'Gujarati', en: 'English', ko: 'Korean', ja: 'Japanese', es: 'Spanish' };
+const lang = (t: RealTitle) => LANG[t.originalLanguage ?? ''] ?? '';
+const kind = (t: RealTitle) => (t.type === 'show' ? 'Series' : 'Movie');
+
+const platformCounts = new Map<string, number>();
+for (const e of recent) for (const p of e.platforms) platformCounts.set(p, (platformCounts.get(p) ?? 0) + 1);
+const topPlatforms = [...platformCounts.entries()].sort((a, b) => b[1] - a[1]).slice(0, 8);
+
+const topNames = recent.slice(0, 3).map(e => e.title.title);
+const description = recent.length
+  ? `New on OTT this week in India: ${topNames.join(', ')} and ${Math.max(recent.length - topNames.length, 0)} more on Netflix, Prime Video, JioHotstar. Upcoming OTT dates too.`
+  : `New OTT releases this week in India on Netflix, Prime Video, JioHotstar, ZEE5 and SonyLIV, plus upcoming OTT release dates. Updated ${updatedText}.`;
+
+const breadcrumbs = [
+  { label: 'Home', href: '/' },
+  { label: 'OTT Releases', href: '/ott-releases/' },
+];
+
+const faqs = [
+  {
+    question: 'Which movies and shows released on OTT this week?',
+    answer: recent.length
+      ? `This week (${weekText}) the newest OTT arrivals in India include ${recent.slice(0, 5).map(e => `${e.title.title}${e.platforms[0] ? ` on ${e.platforms[0]}` : ''}`).join(', ')}. The full list above is updated several times a day.`
+      : `The list above shows every title that reached an Indian streaming platform in the last ${RECENT_DAYS} days. It is updated several times a day.`,
+  },
+  {
+    question: 'Which films are coming to OTT next?',
+    answer: upcoming.length
+      ? `Announced OTT dates in the next ${UPCOMING_DAYS} days include ${upcoming.slice(0, 5).map(e => `${e.title.title} (${fmt(e.date)}${e.platforms[0] ? `, ${e.platforms[0]}` : ''})`).join(', ')}.`
+      : `No OTT premieres are listed for the next ${UPCOMING_DAYS} days yet. Dates appear here as soon as they are announced.`,
+  },
+  {
+    question: 'How soon after the cinema release does a film come to OTT?',
+    answer: 'Most Indian films reach a streaming platform 4 to 8 weeks after their cinema release: Hindi films usually after 8 weeks, many South Indian films after about 4. Big releases can take longer.',
+  },
+  {
+    question: 'Where do these dates come from?',
+    answer: 'Announced dates come from TMDB\'s digital release listings for India. "Now streaming" dates are the day our catalogue check first found the title on that platform. Estimates for films still in cinemas are marked as estimates.',
+  },
+];
+
+const itemList = {
+  '@context': 'https://schema.org',
+  '@type': 'ItemList',
+  name: `New OTT releases this week in India (${weekText})`,
+  itemListElement: recent.slice(0, 30).map((e, i) => ({
+    '@type': 'ListItem',
+    position: i + 1,
+    url: `${SITE_URL}${href(e.title)}`,
+    name: e.title.title,
+  })),
+};
+
+/** One poster card; `badge` is the date line under the title. */
+function cardData(e: OttEntry, upcomingDate = false) {
+  return {
+    t: e.title,
+    when: upcomingDate ? `From ${fmt(e.date)}` : fmt(e.date),
+    platforms: e.platforms.slice(0, 3),
+  };
+}
+---
+
+<BaseLayout>
+  <SEOHead
+    slot="head"
+    title="New OTT Releases This Week in India"
+    description={description}
+    canonical={`${SITE_URL}/ott-releases/`}
+  />
+  <Schema slot="head" schema={[breadcrumbSchema(breadcrumbs), faqSchema(faqs), itemList]} />
+
+  <Header />
+
+  <main class="min-h-screen">
+    <section class="relative overflow-hidden">
+      <div class="absolute inset-0 bg-gradient-to-br from-[var(--color-primary)]/10 to-[var(--color-accent)]/10"></div>
+      <div class="relative z-10 mx-auto max-w-full px-[clamp(16px,2vw,64px)] pt-28 pb-8">
+        <Breadcrumbs items={breadcrumbs} />
+        <h1 class="mt-4 text-3xl sm:text-4xl md:text-5xl font-extrabold leading-tight">
+          📺 New OTT Releases This Week
+        </h1>
+        <p class="mt-3 text-[var(--color-text-secondary)] text-base md:text-lg max-w-3xl">
+          Movies and series that reached Netflix, Prime Video, JioHotstar, ZEE5, SonyLIV and other Indian streaming platforms in the last {RECENT_DAYS} days, the OTT dates announced next, and films still in cinemas.
+        </p>
+        <div class="mt-4 flex flex-wrap items-center gap-2 text-xs">
+          <span class="chip">🗓 Week of {weekText}</span>
+          <span class="chip">🆕 {recent.length} new on OTT</span>
+          <span class="chip">⏳ {upcoming.length} coming soon</span>
+          <span class="chip">🔄 Updated {updatedText}</span>
+        </div>
+      </div>
+    </section>
+
+    <div class="mx-auto max-w-full px-[clamp(16px,2vw,64px)] pb-12 space-y-12">
+
+      <section aria-labelledby="new-on-ott">
+        <h2 id="new-on-ott" class="section-title mb-2">New on OTT (last {RECENT_DAYS} days)</h2>
+        <p class="text-sm text-[var(--color-text-muted)] mb-5">Newest first. The date is the OTT premiere, or the day the title first appeared on that platform.</p>
+        {recent.length === 0 ? (
+          <p class="glass-card rounded-xl p-5 text-[var(--color-text-secondary)]">No new OTT arrivals recorded in the last {RECENT_DAYS} days yet. This list fills as platforms add titles.</p>
+        ) : (
+          <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+            {recent.map(e => cardData(e)).map(c => (
+              <a href={href(c.t)} class="group block">
+                <div class="relative rounded-xl overflow-hidden bg-white/5 aspect-[2/3]">
+                  {c.t.posterUrl && <img src={c.t.posterUrl.replace('/w780/', '/w342/')} alt={`${c.t.title} poster`} class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" loading="lazy" width="200" height="300" />}
+                  <span class="absolute top-2 left-2 bg-[#22c55e] text-black text-[10px] font-extrabold px-2 py-0.5 rounded-full">NEW · {c.when}</span>
+                </div>
+                <p class="mt-2 text-sm font-semibold text-[var(--color-text-primary)] line-clamp-2 group-hover:text-[var(--color-primary)]">{c.t.title}</p>
+                <p class="text-xs text-[var(--color-text-muted)]">{kind(c.t)}{lang(c.t) ? ` · ${lang(c.t)}` : ''} · {c.t.year}</p>
+                {c.platforms.length > 0 && (
+                  <p class="mt-1 flex flex-wrap gap-1">
+                    {c.platforms.map(p => <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/10 text-white/90">{p}</span>)}
+                  </p>
+                )}
+              </a>
+            ))}
+          </div>
+        )}
+      </section>
+
+      <section aria-labelledby="coming-to-ott">
+        <h2 id="coming-to-ott" class="section-title mb-2">Coming to OTT (next {UPCOMING_DAYS} days)</h2>
+        <p class="text-sm text-[var(--color-text-muted)] mb-5">Announced Indian OTT premiere dates, soonest first.</p>
+        {upcoming.length === 0 ? (
+          <p class="glass-card rounded-xl p-5 text-[var(--color-text-secondary)]">No OTT premieres announced for the next {UPCOMING_DAYS} days yet.</p>
+        ) : (
+          <div class="glass-card rounded-xl divide-y divide-white/5">
+            {upcoming.map(e => (
+              <a href={href(e.title)} class="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors">
+                {e.title.posterUrl && <img src={e.title.posterUrl.replace('/w780/', '/w92/')} alt="" class="w-10 h-15 rounded object-cover shrink-0" loading="lazy" width="40" height="60" />}
+                <span class="min-w-0 flex-1">
+                  <span class="block text-sm font-semibold text-[var(--color-text-primary)] truncate">{e.title.title} <span class="font-normal text-[var(--color-text-muted)]">({e.title.year})</span></span>
+                  <span class="block text-xs text-[var(--color-text-muted)]">{kind(e.title)}{lang(e.title) ? ` · ${lang(e.title)}` : ''}</span>
+                </span>
+                <span class="text-right shrink-0">
+                  <span class="block text-sm font-bold text-[#22c55e]">{fmt(e.date, true)}</span>
+                  {e.platforms[0] && <span class="block text-xs text-white/80">{e.platforms[0]}</span>}
+                </span>
+              </a>
+            ))}
+          </div>
+        )}
+      </section>
+
+      {awaiting.length > 0 && (
+        <section aria-labelledby="awaiting-ott">
+          <h2 id="awaiting-ott" class="section-title mb-2">In cinemas, OTT date not announced</h2>
+          <p class="text-sm text-[var(--color-text-muted)] mb-5">Indian films released in the last 90 days that no platform streams yet. The window is the usual 4–8 weeks after the cinema release: an estimate, not an announcement.</p>
+          <div class="glass-card rounded-xl divide-y divide-white/5">
+            {awaiting.slice(0, 30).map(({ title: t, pending }) => (
+              <a href={href(t)} class="flex items-center gap-3 p-3 hover:bg-white/5 transition-colors">
+                <span class="min-w-0 flex-1">
+                  <span class="block text-sm font-semibold text-[var(--color-text-primary)] truncate">{t.title} <span class="font-normal text-[var(--color-text-muted)]">({pending.language})</span></span>
+                  <span class="block text-xs text-[var(--color-text-muted)]">In cinemas since {pending.dateText}</span>
+                </span>
+                <span class="text-right shrink-0 text-xs">
+                  {pending.pastWindow
+                    ? <span class="text-amber-400">Past the usual window</span>
+                    : <span class="text-white/80">Likely {pending.windowText}</span>}
+                </span>
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      <section aria-labelledby="by-platform" class="glass-card rounded-xl p-6">
+        <h2 id="by-platform" class="section-title mb-4">Browse by platform</h2>
+        <div class="flex flex-wrap gap-2">
+          {Object.entries(PLATFORM_PAGES).map(([name, url]) => {
+            const n = platformCounts.get(name);
+            return <a href={url} class="chip text-sm">{name}{n ? ` · ${n} new` : ''}</a>;
+          })}
+        </div>
+        {topPlatforms.length > 0 && (
+          <p class="mt-4 text-sm text-[var(--color-text-muted)]">
+            This week's new arrivals by platform: {topPlatforms.map(([p, n]) => `${p} ${n}`).join(', ')}.
+          </p>
+        )}
+      </section>
+
+      <FAQSection faqs={faqs} />
+
+      <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+        Dates come from TMDB's digital release listings for India and from the day our catalogue check first found a title on a platform. Platforms can change their schedules; check the platform before you plan. NET27 Watch does not host any content.
+      </p>
+    </div>
+  </main>
+
+  <Footer />
+</BaseLayout>

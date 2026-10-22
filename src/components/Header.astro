@@ -40,6 +40,8 @@ const currentPath = Astro.url.pathname;
 // Movie Box (owner's request, 2026-10-22): a header button to movie-box.watch,
 // shown on every screen size — most visitors are on phones, where the nav
 // links and platform chips are hidden. Opens in a new tab so NET27 stays open.
+// nofollow (2026-10-23): a sitewide followed link to another site is a
+// link-scheme signal, and Google had just dropped most of this site.
 const MOVIE_BOX_URL = 'https://movie-box.watch/';
 const movieBoxIcon = `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true" focusable="false">
   <defs><linearGradient id="mb-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#FFC233"/><stop offset="1" stop-color="#FF3D57"/></linearGradient></defs>
@@ -50,6 +52,7 @@ const movieBoxIcon = `<svg viewBox="0 0 24 24" width="18" height="18" aria-hidde
 </svg>`;
 
 const platformChips: { label: string; href: string; iconHtml: string; color: string }[] = [
+  { label: 'OTT Releases',  href: '/ott-releases/',        color: '#22c55e', iconHtml: '<span style="font-size:14px">📺</span>' },
   { label: 'Trending',      href: '/trending/',            color: '#ff6b00', iconHtml: '<span style="font-size:14px">🔥</span>' },
   { label: 'Latest Release',href: '/latest/',              color: '#22c55e', iconHtml: '<span style="font-size:14px">✨</span>' },
   { label: 'Netflix',       href: '/platform/netflix/',    color: '#e50914', iconHtml: '<svg width="16" height="16" viewBox="0 0 24 24"><path fill="#E50914" d="M5.398 0v.006c3.028 8.556 5.37 15.175 8.348 23.596 2.344.058 4.85.398 4.854.398-2.8-7.924-5.923-16.747-8.487-24zm8.489 0v9.63L18.6 22.951l.049.031V0zm-13.887.02V24H4.79l-.004-11.087L9.383 24c.004 0 1.588-.048 4.382-.1v-.02L5.227.02z"/></svg>' },
@@ -92,7 +95,7 @@ const platformChips: { label: string; href: string; iconHtml: string; color: str
       </nav>
 
       <div class="flex items-center gap-1 sm:gap-3">
-        <a href={MOVIE_BOX_URL} target="_blank" rel="noopener" class="movie-box-btn" title="Movie Box — movies, TV shows & where to watch">
+        <a href={MOVIE_BOX_URL} target="_blank" rel="nofollow noopener" class="movie-box-btn" title="Movie Box — movies, TV shows & where to watch">
           <span class="movie-box-icon" set:html={movieBoxIcon} />
           <span>Movie Box</span>
         </a>
@@ -149,7 +152,7 @@ const platformChips: { label: string; href: string; iconHtml: string; color: str
         </button>
       </div>
       <nav class="flex flex-col px-4 py-6 gap-1" aria-label="Mobile navigation">
-        <a href={MOVIE_BOX_URL} target="_blank" rel="noopener" class="movie-box-btn movie-box-btn--menu">
+        <a href={MOVIE_BOX_URL} target="_blank" rel="nofollow noopener" class="movie-box-btn movie-box-btn--menu">
           <span class="movie-box-icon" set:html={movieBoxIcon} />
           <span>Movie Box</span>
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="margin-left:auto;opacity:.7"><path stroke-linecap="round" stroke-linejoin="round" d="M14 4h6v6M20 4l-9 9M19 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1h5"/></svg>
@@ -161,6 +164,7 @@ const platformChips: { label: string; href: string; iconHtml: string; color: str
           <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
           My Watchlist
         </a>
+        <a href="/ott-releases/" class="px-4 py-3 rounded-xl text-lg font-medium text-[var(--color-muted)] hover:text-white hover:bg-white/5 transition-all">📺 New OTT Releases</a>
         <a href="/mood/" class="px-4 py-3 rounded-xl text-lg font-medium text-[var(--color-muted)] hover:text-white hover:bg-white/5 transition-all">😊 Mood Discovery</a>
         <a href="/coming-soon/" class="px-4 py-3 rounded-xl text-lg font-medium text-[var(--color-muted)] hover:text-white hover:bg-white/5 transition-all">🎬 Coming Soon</a>
         <a href="/awards/" class="px-4 py-3 rounded-xl text-lg font-medium text-[var(--color-muted)] hover:text-white hover:bg-white/5 transition-all">🏆 Award Winners</a>

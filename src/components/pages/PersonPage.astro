@@ -18,6 +18,7 @@ import { SITE_URL } from '../../lib/seo';
 import { loadTranslations, t } from '../../i18n';
 import { getLocalizedPath } from '../../i18n/utils';
 import { DEFAULT_LANG, type Lang } from '../../i18n/config';
+import { MIN_INDEXABLE_CREDITS } from '../../lib/indexPolicy';
 
 interface Props {
   person: Person;
@@ -78,13 +79,14 @@ const personSchema = {
 ---
 
 {/* A filmography reads the same in every language, so only the English actor
-    page is indexable and none carries hreflang (src/lib/indexPolicy.ts). */}
+    page is indexable, from MIN_INDEXABLE_CREDITS credits, and none carries
+    hreflang (src/lib/indexPolicy.ts). */}
 <SEOHead
   slot="head"
   title={seoTitle}
   description={`${summary} ${creditLine}`}
   canonical={canonical}
-  noindex={lang !== DEFAULT_LANG}
+  noindex={lang !== DEFAULT_LANG || person.credits.length < MIN_INDEXABLE_CREDITS}
   localized={false}
 />
 <Schema slot="head" schema={[personSchema, breadcrumbSchema(breadcrumbs)]} />

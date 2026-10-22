@@ -29,6 +29,14 @@ export function isIndexableLang(lang: Lang): boolean {
   return INDEXABLE_LANGS.includes(lang);
 }
 
+/**
+ * An English actor page is indexable from this many credits. In the 60 days to
+ * 2026-10-22, 1,517 actor pages drew 22,485 impressions and 31 clicks; a
+ * three- or four-poster filmography answers almost nothing. 863 of the 1,265
+ * pages had 3-4 credits; the 402 with five or more stay indexable.
+ */
+export const MIN_INDEXABLE_CREDITS = 5;
+
 /** Shortest TMDB synopsis that counts as the title's own text in a language. */
 const MIN_LOCAL_OVERVIEW = 40;
 

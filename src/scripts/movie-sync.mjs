@@ -268,7 +268,10 @@ async function fetchTitleDetail(type, id) {
   // no extra call, so availability data is effectively free here.
   // external_ids carries the IMDb id, which TV responses otherwise omit and
   // which OMDb needs to look a title up. Like the other appends it is free.
-  const d = await tmdbFetch(path, { append_to_response: 'credits,videos,similar,watch/providers,external_ids,translations' });
+  // release_dates (movies only) carries the Indian digital release — the OTT
+  // premiere date, often with the platform in its note — for /ott-releases/.
+  const append = 'credits,videos,similar,watch/providers,external_ids,translations' + (type === 'tv' ? '' : ',release_dates');
+  const d = await tmdbFetch(path, { append_to_response: append });
   if (!d.poster_path && !d.backdrop_path) return null;
 
   const title = (d.title || d.name || '').trim();
@@ -321,6 +324,7 @@ async function fetchTitleDetail(type, id) {
     imdbId: d.imdb_id || d.external_ids?.imdb_id || '',
     overviews: extractOverviews(d.translations, d.overview),
     watch: extractWatchProviders(d['watch/providers']),
+    digitalRelease: type === 'tv' ? undefined : extractDigitalRelease(d.release_dates),
     // The season list comes back on the base TV response, so a breakdown costs
     // nothing extra. Full episode listings would need one request per season,
     // which is why only season-level detail is stored.
@@ -402,6 +406,52 @@ function extractWatchProviders(block) {
 
   const hasAny = watch.stream.length || watch.free.length || watch.rent.length || watch.buy.length;
   return hasAny ? watch : null;
+}
+
+// ── Indian digital (OTT) release ─────────────────────────────────────────────
+// TMDB release type 4 is "Digital". For Indian films editors usually add the
+// OTT premiere with the platform in the note ("Netflix", "JioHotstar").
+function extractDigitalRelease(block) {
+  const india = (block?.results || []).find(r => r.iso_3166_1 === 'IN');
+  const digital = (india?.release_dates || [])
+    .filter(r => r.type === 4 && /^\d{4}-\d{2}-\d{2}/.test(r.release_date || ''))
+    .sort((a, b) => a.release_date.localeCompare(b.release_date))[0];
+  if (!digital) return undefined;
+  const note = (digital.note || '').trim().slice(0, 60);
+  return { date: digital.release_date.slice(0, 10), ...(note ? { note } : {}) };
+}
+
+// ── OTT arrival tracking ─────────────────────────────────────────────────────
+// TMDB says where a title streams, not since when. Recording the first sync
+// that sees each streaming platform for a title (Indian region) gives
+// /ott-releases/ a real "arrived on" date. Platforms already listed when
+// tracking starts, or on an older title that only now entered the catalogue,
+// are a baseline rather than an arrival, so old availability never shows up
+// as "new this week". CI commits src/data/cache/, so the file persists.
+const OTT_ARRIVALS = join(CACHE_DIR, 'ott-arrivals.json');
+const ARRIVAL_MAX_AGE_DAYS = 365;
+
+function updateOttArrivals(catalogue) {
+  const today = new Date().toISOString().slice(0, 10);
+  let file = null;
+  try { file = JSON.parse(readFileSync(OTT_ARRIVALS, 'utf8')); } catch { /* first run */ }
+  const firstRun = !file;
+  file ??= { startedAt: today, titles: {} };
+  let added = 0;
+  for (const t of catalogue) {
+    if (t.watch?.region !== 'IN') continue;
+    const known = t.id in file.titles;
+    const age = (Date.parse(today) - Date.parse(t.releaseDate || '1900-01-01')) / 864e5;
+    const record = (file.titles[t.id] ??= {});
+    for (const name of new Set([...t.watch.stream, ...t.watch.free].map(p => p.name))) {
+      if (name in record) continue;
+      const real = !firstRun && (known || age <= ARRIVAL_MAX_AGE_DAYS);
+      record[name] = real ? today : 'baseline';
+      if (real) added++;
+    }
+  }
+  writeFileSync(OTT_ARRIVALS, JSON.stringify(file), 'utf8');
+  console.log(`[movie-sync] OTT arrivals: ${firstRun ? 'baseline recorded' : `${added} new platform listing(s) today`} (${Object.keys(file.titles).length} titles tracked).`);
 }
 
 // ── OMDb ratings (IMDb, Rotten Tomatoes, Metacritic) ─────────────────────────
@@ -823,6 +873,7 @@ async function main() {
     'utf8'
   );
   console.log(`[movie-sync] Wrote titles.json — ${titles.length} live + ${catalogue.length - titles.length} retained titles (${detailFail} failed).`);
+  updateOttArrivals(catalogue);
 
   // Live titles only: client search builds localized links, and retained
   // titles have no localized pages.

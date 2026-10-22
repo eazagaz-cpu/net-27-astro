@@ -1,4 +1,5 @@
 import { SITE_NAME, SITE_URL } from './constants';
+import { platformsFromNote } from './platforms';
 
 export { SITE_NAME, SITE_URL };
 
@@ -56,6 +57,8 @@ interface TitleSeoInput {
   originalLanguage?: string;
   /** Theatrical/primary release date, YYYY-MM-DD. */
   releaseDate?: string;
+  /** Announced Indian digital (OTT) release from TMDB. */
+  digitalRelease?: { date: string; note?: string };
 }
 
 const fmtDate = (iso: string) =>
@@ -81,6 +84,12 @@ export interface OttPending {
   pastWindow: boolean;
   /** Build date; the site rebuilds several times a day. */
   checkedText: string;
+  /**
+   * TMDB's announced Indian digital release, when there is one: the real
+   * answer, shown instead of the estimate. `live` once the date has passed
+   * (the provider listing can lag a few days behind).
+   */
+  announced?: { dateText: string; platforms: string[]; live: boolean };
 }
 
 const OTT_LANG_NAMES: Record<string, string> = {
@@ -101,7 +110,7 @@ const fmtDay = (ms: number, withYear = true) =>
 const fmtRange = (a: number, b: number) =>
   new Date(a).getUTCFullYear() === new Date(b).getUTCFullYear() ? `${fmtDay(a, false)}–${fmtDay(b)}` : `${fmtDay(a)}–${fmtDay(b)}`;
 
-export function ottPending(input: { originalLanguage?: string; releaseDate?: string; watch?: TitleSeoInput['watch'] }): OttPending | null {
+export function ottPending(input: { originalLanguage?: string; releaseDate?: string; watch?: TitleSeoInput['watch']; digitalRelease?: TitleSeoInput['digitalRelease'] }): OttPending | null {
   if (!isOttTitle(input) || !input.releaseDate) return null;
   if (input.watch && (input.watch.stream.length || input.watch.free.length)) return null;
   const released = Date.parse(`${input.releaseDate}T00:00:00Z`);
@@ -118,7 +127,15 @@ export function ottPending(input: { originalLanguage?: string; releaseDate?: str
     windowText: fmtRange(from, to),
     pastWindow: now > to,
     checkedText: fmtDay(now),
+    announced: announcedRelease(input.digitalRelease, released, now),
   };
+}
+
+function announcedRelease(dr: TitleSeoInput['digitalRelease'], cinema: number, now: number): OttPending['announced'] {
+  if (!dr) return undefined;
+  const at = Date.parse(`${dr.date}T00:00:00Z`);
+  if (Number.isNaN(at) || at < cinema) return undefined;
+  return { dateText: fmtDay(at), platforms: platformsFromNote(dr.note), live: at <= now };
 }
 
 /** Snippet budget; generateSEO cuts anything longer with "…". */
@@ -200,7 +217,13 @@ export function titleSeoDescription(input: TitleSeoInput): string {
   if (pending) {
     // The date window is what "<title> ott release date" searches want; it is
     // labelled as the usual window, not an announcement.
-    const lead = !pending.released
+    const ann = pending.announced;
+    const on = ann?.platforms.length ? ` on ${ann.platforms.slice(0, 2).join(' & ')}` : '';
+    const lead = ann
+      ? (ann.live
+        ? `${name} (${year}) OTT release: streaming${on} from ${ann.dateText}, after its ${pending.dateText} cinema release.`
+        : `${name} (${year}) OTT release date: ${ann.dateText}${on} (announced). In theatres since ${pending.dateText}.`)
+      : !pending.released
       ? `${name} (${year}) releases in theatres on ${pending.dateText}; OTT usually follows 4–8 weeks later (${pending.windowText}).`
       : pending.pastWindow
         ? `${name} (${year}) OTT release: no platform yet, past the usual 4–8 weeks after its ${pending.dateText} cinema release.`

@@ -87,6 +87,8 @@ export interface RealTitle {
   relatedIds: string[];
   /** null when TMDB lists no official availability in any covered region. */
   watch?: RealWatchAvailability | null;
+  /** Indian digital (OTT) release from TMDB release type 4; movies only. */
+  digitalRelease?: { date: string; note?: string };
   /** Numbered seasons only; TMDB's season 0 specials bucket is excluded. */
   seasonList?: RealSeason[];
   imdbId?: string;
