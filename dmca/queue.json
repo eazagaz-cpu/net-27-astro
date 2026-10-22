@@ -761,6 +761,37 @@
       "action": "auto-remove",
       "processedAt": "2026-10-22T17:36:44.096Z",
       "result": "processed"
+    },
+    {
+      "messageId": "1a164b1b17434e10",
+      "date": "Thu, 22 Oct 2026 10:38:48 -0700",
+      "fromDomain": "google.com",
+      "reportId": "8-1518000041978-0539538871",
+      "targets": [
+        {
+          "type": "show",
+          "slug": "american-horror-story-1413",
+          "tmdbId": 1413
+        },
+        {
+          "type": "movie",
+          "slug": "captain-america-civil-war-271110",
+          "tmdbId": 271110
+        },
+        {
+          "type": "movie",
+          "slug": "doctor-strange-in-the-multiverse-of-madness-453395",
+          "tmdbId": 453395
+        },
+        {
+          "type": "movie",
+          "slug": "zootopia-269149",
+          "tmdbId": 269149
+        }
+      ],
+      "action": "auto-remove",
+      "processedAt": "2026-10-22T21:54:28.804Z",
+      "result": "processed"
     }
   ],
   "manualReview": [

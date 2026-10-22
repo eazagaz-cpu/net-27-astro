@@ -17,6 +17,9 @@
 
 /** Slugs that must not be served. Used to filter getStaticPaths. */
 export const DMCA_DENIED_SLUGS = new Set<string>([
+  'zootopia-269149',  // Report 8-1518000041978-0539538871
+  'doctor-strange-in-the-multiverse-of-madness-453395',  // Report 8-1518000041978-0539538871
+  'captain-america-civil-war-271110',  // Report 8-1518000041978-0539538871
   'moana-1108427',  // Report 5-8148000041282-1773133303
   'the-end-of-oak-street-1101383',  // Report 7-9314000042441-1313856246
   'ted-lasso-97546',  // Report 7-9314000042441-1313856246
@@ -49,6 +52,9 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  269149,  // TMDB ID 269149 — Report 8-1518000041978-0539538871
+  453395,  // TMDB ID 453395 — Report 8-1518000041978-0539538871
+  271110,  // TMDB ID 271110 — Report 8-1518000041978-0539538871
   1108427,  // TMDB ID 1108427 — Report 5-8148000041282-1773133303
   1101383,  // TMDB ID 1101383 — Report 7-9314000042441-1313856246
   97546,  // TMDB ID 97546 — Report 7-9314000042441-1313856246
