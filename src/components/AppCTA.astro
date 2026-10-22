@@ -1,53 +1,63 @@
 ---
 // AppCTA — APK Download strip (Phone + TV).
 // Telegram hata diya gaya (user request 2026-10-18).
+//
+// Rendered only when both APKs are in public/app/. On 2026-10-22 neither file
+// existed, so "Phone" and "TV" led every homepage visitor to a 404. Put
+// net27-phone.apk and net27-tv.apk in public/app/ and the strip comes back on
+// the next build. Slim single-line bar (net27.cc style).
+import { existsSync } from 'node:fs';
+import { join } from 'node:path';
+
+const appDir = join(process.cwd(), 'public', 'app');
+const hasApks = existsSync(join(appDir, 'net27-phone.apk')) && existsSync(join(appDir, 'net27-tv.apk'));
 ---
+{hasApks && (
+  <section id="app-cta-section" class="relative z-10 px-3 sm:px-6 pt-3 pb-1">
+    <div class="max-w-5xl mx-auto">
+      <div class="flex items-center gap-2 sm:gap-3 sm:justify-center overflow-x-auto scrollbar-none rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2" style="scrollbar-width:none">
+        <!-- Label -->
+        <span class="shrink-0 flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white/85 whitespace-nowrap">
+          <svg class="w-4 h-4 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 3v12m0 0l-4-4m4 4l4-4"/>
+            <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
+          </svg>
+          Get the App
+        </span>
+        <span class="hidden sm:block h-5 w-px bg-white/15 shrink-0"></span>
 
-<!-- App download strip: slim single-line bar (net27.cc style) -->
-<section id="app-cta-section" class="relative z-10 px-3 sm:px-6 pt-3 pb-1">
-  <div class="max-w-5xl mx-auto">
-    <div class="flex items-center gap-2 sm:gap-3 sm:justify-center overflow-x-auto scrollbar-none rounded-xl border border-white/10 bg-white/[0.04] px-3 py-2" style="scrollbar-width:none">
-      <!-- Label -->
-      <span class="shrink-0 flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-white/85 whitespace-nowrap">
-        <svg class="w-4 h-4 text-[var(--color-primary)]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M12 3v12m0 0l-4-4m4 4l4-4"/>
-          <path d="M4 17v2a2 2 0 002 2h12a2 2 0 002-2v-2"/>
-        </svg>
-        Get the App
-      </span>
-      <span class="hidden sm:block h-5 w-px bg-white/15 shrink-0"></span>
+        <!-- Phone APK -->
+        <a
+          href="https://net27.watch/app/net27-phone.apk"
+          download
+          id="apk-phone-btn"
+          class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-white transition active:scale-95 whitespace-nowrap"
+          style="background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));"
+          aria-label="Download NET27 Watch for Phone"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+            <line x1="12" y1="18" x2="12" y2="18"/>
+          </svg>
+          Phone
+        </a>
 
-      <!-- Phone APK -->
-      <a
-        href="https://net27.watch/app/net27-phone.apk"
-        download
-        id="apk-phone-btn"
-        class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-white transition active:scale-95 whitespace-nowrap"
-        style="background: linear-gradient(180deg, var(--color-primary), var(--color-primary-hover));"
-        aria-label="Download NET27 Watch for Phone"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
-          <line x1="12" y1="18" x2="12" y2="18"/>
-        </svg>
-        Phone
-      </a>
-
-      <!-- TV APK -->
-      <a
-        href="https://net27.watch/app/net27-tv.apk"
-        download
-        id="apk-tv-btn"
-        class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-white transition active:scale-95 border border-white/15 bg-white/10 hover:bg-white/15 whitespace-nowrap"
-        aria-label="Download NET27 Watch for TV"
-      >
-        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="2" y="4" width="20" height="13" rx="2" ry="2"/>
-          <line x1="8" y1="21" x2="16" y2="21"/>
-          <line x1="12" y1="17" x2="12" y2="21"/>
-        </svg>
-        TV
-      </a>
+        <!-- TV APK -->
+        <a
+          href="https://net27.watch/app/net27-tv.apk"
+          download
+          id="apk-tv-btn"
+          class="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold text-white transition active:scale-95 border border-white/15 bg-white/10 hover:bg-white/15 whitespace-nowrap"
+          aria-label="Download NET27 Watch for TV"
+        >
+          <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="13" rx="2" ry="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+          TV
+        </a>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
+)}
