@@ -15,6 +15,20 @@
  */
 import { DEFAULT_LANG, DETAIL_PAGE_LANGS, type Lang } from '../i18n/config';
 
+/**
+ * Locales whose pages may be indexed at all: English plus Hindi, Urdu and
+ * Bangla, where the audience is. The other routed locales only translate the
+ * interface around the same English lists; in the 60 days to 2026-10-22 they
+ * drew under 900 clicks each, mostly from detail pages that now redirect to
+ * English. Their pages stay live but are noindex and out of every hreflang
+ * cluster (SEOHead).
+ */
+export const INDEXABLE_LANGS: readonly Lang[] = DETAIL_PAGE_LANGS;
+
+export function isIndexableLang(lang: Lang): boolean {
+  return INDEXABLE_LANGS.includes(lang);
+}
+
 /** Shortest TMDB synopsis that counts as the title's own text in a language. */
 const MIN_LOCAL_OVERVIEW = 40;
 

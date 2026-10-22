@@ -2,6 +2,7 @@
 import { generateSEO } from '../lib/seo';
 import { getAlternateLinks, getLangFromUrl } from '../i18n/utils';
 import { LANGUAGES, DEFAULT_LANG, type Lang } from '../i18n/config';
+import { INDEXABLE_LANGS, isIndexableLang } from '../lib/indexPolicy';
 
 interface Props {
   title: string;
@@ -34,7 +35,10 @@ interface Props {
   ogImageAlt?: string;
 }
 
-const seo = generateSEO(Astro.props);
+// Pages in a locale outside INDEXABLE_LANGS are always noindex (src/lib/indexPolicy.ts).
+const pageLang: Lang = getLangFromUrl(Astro.url);
+const indexableLang = isIndexableLang(pageLang);
+const seo = generateSEO({ ...Astro.props, noindex: Astro.props.noindex || !indexableLang });
 
 const ogImageAlt =
   Astro.props.ogImageAlt ??
@@ -47,11 +51,12 @@ const ogImageHeight = Astro.props.ogImageHeight ?? 630;
 // card is a PNG. Declaring the wrong one loses the preview.
 const ogImageType = /\.jpe?g($|\?)/i.test(seo.ogImage) ? 'image/jpeg' : 'image/png';
 
-const lang: Lang = getLangFromUrl(Astro.url);
+const lang: Lang = pageLang;
 // The cluster is built from the path, so every locale in it resolves to the
-// same page rather than a homepage fallback.
-const alternates = Astro.props.localized
-  ? getAlternateLinks(Astro.url.pathname, Astro.props.localesWithPage)
+// same page rather than a homepage fallback. It lists indexable locales only,
+// and a noindex page carries none.
+const alternates = Astro.props.localized && !seo.noindex
+  ? getAlternateLinks(Astro.url.pathname, (Astro.props.localesWithPage ?? [...INDEXABLE_LANGS]).filter(isIndexableLang))
   : [];
 
 /** Open Graph wants a full locale, not a bare language code. */

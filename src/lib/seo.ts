@@ -69,15 +69,56 @@ const fmtDate = (iso: string) =>
  * rebuilds several times a day, and the answer changes as soon as the sync
  * finds a streaming provider.
  */
-export function ottPending(input: { originalLanguage?: string; releaseDate?: string; watch?: TitleSeoInput['watch'] }):
-  { released: boolean; dateText: string } | null {
+export interface OttPending {
+  released: boolean;
+  /** Cinema release, e.g. "25 Sept 2026". */
+  dateText: string;
+  /** "Tamil", "Hindi"…; the language the usual window is quoted for. */
+  language: string;
+  /** Usual OTT window after the cinema release, e.g. "23 Oct–20 Nov 2026". */
+  windowText: string;
+  /** The usual window has ended and no platform lists the title. */
+  pastWindow: boolean;
+  /** Build date; the site rebuilds several times a day. */
+  checkedText: string;
+}
+
+const OTT_LANG_NAMES: Record<string, string> = {
+  hi: 'Hindi', ta: 'Tamil', te: 'Telugu', ml: 'Malayalam', kn: 'Kannada',
+  bn: 'Bengali', mr: 'Marathi', pa: 'Punjabi', gu: 'Gujarati',
+};
+/**
+ * Indian films usually reach OTT 4 to 8 weeks after their cinema release
+ * (Hindi multiplex agreements use 8; most South films land at 4). Quoted as
+ * an estimate, never as an announcement. Added 2026-10-23: the Dorothy page
+ * kept saying "not announced yet" a month after release, while its searches
+ * ("dorothy ott release date") wanted a date, and Google dropped the page.
+ */
+const OTT_WINDOW_DAYS = [28, 56] as const;
+
+const fmtDay = (ms: number, withYear = true) =>
+  new Date(ms).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', ...(withYear ? { year: 'numeric' } : {}), timeZone: 'UTC' });
+const fmtRange = (a: number, b: number) =>
+  new Date(a).getUTCFullYear() === new Date(b).getUTCFullYear() ? `${fmtDay(a, false)}–${fmtDay(b)}` : `${fmtDay(a)}–${fmtDay(b)}`;
+
+export function ottPending(input: { originalLanguage?: string; releaseDate?: string; watch?: TitleSeoInput['watch'] }): OttPending | null {
   if (!isOttTitle(input) || !input.releaseDate) return null;
   if (input.watch && (input.watch.stream.length || input.watch.free.length)) return null;
   const released = Date.parse(`${input.releaseDate}T00:00:00Z`);
   if (Number.isNaN(released)) return null;
-  const ageDays = (Date.now() - released) / 864e5;
+  const now = Date.now();
+  const ageDays = (now - released) / 864e5;
   if (ageDays > 180 || ageDays < -120) return null;
-  return { released: ageDays >= 0, dateText: fmtDate(input.releaseDate) };
+  const from = released + OTT_WINDOW_DAYS[0] * 864e5;
+  const to = released + OTT_WINDOW_DAYS[1] * 864e5;
+  return {
+    released: ageDays >= 0,
+    dateText: fmtDate(input.releaseDate),
+    language: OTT_LANG_NAMES[input.originalLanguage ?? ''] ?? 'Indian',
+    windowText: fmtRange(from, to),
+    pastWindow: now > to,
+    checkedText: fmtDay(now),
+  };
 }
 
 /** Snippet budget; generateSEO cuts anything longer with "…". */
@@ -157,9 +198,13 @@ export function titleSeoDescription(input: TitleSeoInput): string {
 
   const pending = ottPending(input);
   if (pending) {
-    const lead = pending.released
-      ? `${name} (${year}) OTT release: no streaming platform announced yet. In theatres since ${pending.dateText}.`
-      : `${name} (${year}) releases in theatres on ${pending.dateText}; OTT platform not announced yet.`;
+    // The date window is what "<title> ott release date" searches want; it is
+    // labelled as the usual window, not an announcement.
+    const lead = !pending.released
+      ? `${name} (${year}) releases in theatres on ${pending.dateText}; OTT usually follows 4–8 weeks later (${pending.windowText}).`
+      : pending.pastWindow
+        ? `${name} (${year}) OTT release: no platform yet, past the usual 4–8 weeks after its ${pending.dateText} cinema release.`
+        : `${name} (${year}) OTT release date: not announced yet; usually ${pending.windowText}, 4–8 weeks after the cinema release.`;
     return withStarring(lead, cast);
   }
 

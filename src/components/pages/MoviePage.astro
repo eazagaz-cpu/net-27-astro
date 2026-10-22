@@ -83,8 +83,10 @@ const ott = ottPending(seoInput);
 
 const faqs = [
   ...(ott ? [
-    { question: `Which OTT platform will stream ${title.title}?`, answer: `No OTT or streaming platform has announced ${title.title} yet. It ${ott.released ? 'released' : 'releases'} in theatres on ${ott.dateText}. This page updates as soon as an official platform lists it.` },
-    { question: `What is the ${title.title} OTT release date?`, answer: `The OTT release date of ${title.title} has not been announced. Indian films often reach streaming a few weeks after their theatrical release (${ott.dateText}); check back here for the official platform and date.` },
+    { question: `Which OTT platform will stream ${title.title}?`, answer: `No OTT or streaming platform has announced ${title.title} yet (last checked ${ott.checkedText}). It ${ott.released ? 'released' : 'releases'} in theatres on ${ott.dateText}. This page updates as soon as an official platform lists it.` },
+    { question: `What is the ${title.title} OTT release date?`, answer: ott.pastWindow
+      ? `It has not been announced. ${ott.language} films usually reach OTT 4–8 weeks after their cinema release, which for ${title.title} was ${ott.windowText}; that window has passed, so the streaming release may be delayed or the rights not sold yet.`
+      : `It has not been announced yet. ${ott.language} films usually reach OTT 4–8 weeks after their cinema release (${ott.dateText}), which puts ${title.title} around ${ott.windowText}. That is an estimate, not an announcement.` },
   ] : []),
   { question: `Where can I watch ${title.title}?`, answer: `Check the "Available Now" section on this page for official streaming platforms carrying ${title.title} in your region.` },
   { question: `What is ${title.title} about?`, answer: title.overview },
@@ -300,8 +302,15 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
               {ott.released
                 ? `${title.title} released in theatres on ${ott.dateText}.`
                 : `${title.title} releases in theatres on ${ott.dateText}.`}
-              {` No OTT or streaming platform has been announced yet. When an official platform lists it, it will appear in "Available Now" on this page.`}
+              {` No OTT or streaming platform has been announced yet.`}
             </p>
+            <p class="mt-3">
+              {ott.pastWindow
+                ? `${ott.language} films usually reach OTT 4–8 weeks after their cinema release. For ${title.title} that window was ${ott.windowText} and has passed, so the streaming release may be delayed or the rights not sold yet.`
+                : `${ott.language} films usually reach OTT 4–8 weeks after their cinema release, which puts ${title.title} around ${ott.windowText}. This is an estimate, not an announcement.`}
+              {` When an official platform lists it, it appears under "Available Now" on this page.`}
+            </p>
+            <p class="mt-3 text-xs text-[var(--color-text-muted)]">Last checked: {ott.checkedText}</p>
           </div>
         </section>
       )}
