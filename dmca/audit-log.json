@@ -526,5 +526,16 @@
     "slug": "moana-1108427",
     "tmdbId": 1108427,
     "action": "removed"
+  },
+  {
+    "date": "Thu, 22 Oct 2026 05:24:15 -0700",
+    "processedAt": "2026-10-22T17:36:44.095Z",
+    "source": "google.com",
+    "reportId": "8-1518000041978-0860353607",
+    "messageId": "1a16391b3602e02d",
+    "type": "show",
+    "slug": "american-horror-story-1413",
+    "tmdbId": 1413,
+    "action": "already-removed"
   }
 ]
