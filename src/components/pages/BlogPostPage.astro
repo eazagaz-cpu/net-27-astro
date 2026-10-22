@@ -96,7 +96,8 @@ const localesWithPage = localesWithPost(english.slug);
   canonical={canonical}
   ogImage={shareImage}
   ogType="article"
-  localized={localesWithPage.length > 0}
+  noindex={english.guestPost === true}
+  localized={!english.guestPost && localesWithPage.length > 0}
   localesWithPage={localesWithPage}
 />
 <Schema slot="head" schema={schemas} />

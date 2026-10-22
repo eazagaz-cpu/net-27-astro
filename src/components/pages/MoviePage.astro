@@ -8,7 +8,8 @@
 import type { RealTitle } from '../../lib/realTitles';
 import { loadTranslations, t } from '../../i18n';
 import { getLocalizedPath } from '../../i18n/utils';
-import { DETAIL_PAGE_LANGS, type Lang } from '../../i18n/config';
+import type { Lang } from '../../i18n/config';
+import { indexableTitleLocales, localOverview } from '../../lib/indexPolicy';
 
 interface Props {
   title: RealTitle;
@@ -57,6 +58,12 @@ const seoInput = {
 // Tier C: a page with no synopsis, no cast and no availability has nothing
 // for a searcher, so it stays reachable but out of the index rather than
 // padding it. Rare — a handful of titles out of nine hundred.
+// Indexable only where this locale's page is more than a copy of the English
+// one (src/lib/indexPolicy.ts). The hreflang cluster lists just those locales.
+const indexLocales = indexableTitleLocales(title);
+// The synopsis in this page's language when TMDB has one, server-rendered so
+// the HTML itself is translated, not only what the JS swaps in afterwards.
+const shownOverview = localOverview(title, lang) ?? title.overview;
 const isThin = (title.overview || '').trim().length < 80
   && !title.watch
   && title.cast.length === 0;
@@ -145,9 +152,9 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
     title={seoPageTitle}
     description={seoDescription}
     canonical={`${SITE_URL}${L(`/movies/${title.slug}/`)}`}
-    noindex={isThin}
-    localized={!title.retainedSince}
-    localesWithPage={DETAIL_PAGE_LANGS}
+    noindex={isThin || !indexLocales.includes(lang)}
+    localized={!title.retainedSince && !isThin && indexLocales.includes(lang)}
+    localesWithPage={indexLocales}
     ogType="video.movie"
     ogImage={og.ogImage}
     ogImageWidth={og.ogImageWidth}
@@ -243,7 +250,7 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
               class="text-[var(--color-text-secondary)] leading-relaxed max-w-3xl text-base md:text-lg mb-6"
               data-i18n-overview={title.overviews ? JSON.stringify(title.overviews) : undefined}
             >
-              {title.overview}
+              {shownOverview}
             </p>
 
             <RatingsRow ratings={title.ratings} />

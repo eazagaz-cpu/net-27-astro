@@ -17,7 +17,7 @@ import { breadcrumbSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
 import { loadTranslations, t } from '../../i18n';
 import { getLocalizedPath } from '../../i18n/utils';
-import { DETAIL_PAGE_LANGS, type Lang } from '../../i18n/config';
+import { DEFAULT_LANG, type Lang } from '../../i18n/config';
 
 interface Props {
   person: Person;
@@ -77,13 +77,15 @@ const personSchema = {
 };
 ---
 
+{/* A filmography reads the same in every language, so only the English actor
+    page is indexable and none carries hreflang (src/lib/indexPolicy.ts). */}
 <SEOHead
   slot="head"
   title={seoTitle}
   description={`${summary} ${creditLine}`}
   canonical={canonical}
-  localized={true}
-  localesWithPage={DETAIL_PAGE_LANGS}
+  noindex={lang !== DEFAULT_LANG}
+  localized={false}
 />
 <Schema slot="head" schema={[personSchema, breadcrumbSchema(breadcrumbs)]} />
 

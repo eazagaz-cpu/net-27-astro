@@ -166,3 +166,10 @@ URL de, to woh naya sponsor hai — upar wala "NAYA LINK ADD KARNA" flow chalao.
 - Edge (zaroori, owner ne 2026-10-20 ko dashboard se lagaya): WAF custom rule `(ip.src.asnum in {132203} and not cf.client.bot)` → Block. Sirf yahi Functions quota aur GA ko bachata hai (sirf net27.watch par, pages.dev par nahi). Action Block hi rakho.
 - Code: `functions/_shared/scrapers.js` mein ASN list; `functions/api/_middleware.js` aur `functions/player.js` unhein 403 dete hain (TMDB calls bachte hain, Function invocation nahi). Dono lists ek jaisi rakho. **Kabhi mat daalo:** AS8075 (Azure — GitHub Actions/watchdog), AS15169 (Google), AS13335 (Cloudflare/WARP), Alibaba Cloud (UC Browser).
 - **Bot Fight Mode on mat karo** (watchdog GitHub Actions se chalta hai; Free plan par skip nahi hota). Root par `functions/_middleware.js` kabhi mat banao (har static file Function ban jayegi, quota khatam).
+
+## 🔎 Index policy (2026-10-23 se)
+
+- Google ne 3 Oct aur 18-19 Oct ko site ke lagbhag saare pages index se nikal diye (1,718 → 8 pages). ~6,400 pages English pages ki nakal the.
+- Ab **noindex** (owner ka faisla): bina apni zaban ki kahani wale hi/ur/bn title pages (`src/lib/indexPolicy.ts`), saare non-English actor pages, aur `guestPost: true` wale blog posts (gambling/app guest posts). Pages visitors ke liye live rehte hain.
+- Build har noindex page ko sitemap se khud nikaal deta hai (`astro.config.mjs` → `dropNoindexFromSitemap`).
+- **Har naye guest post par `guestPost: true` lagao.**

@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import react from '@astrojs/react';
 import sitemap from '@astrojs/sitemap';
-import { copyFile } from 'node:fs/promises';
+import { copyFile, readFile, writeFile } from 'node:fs/promises';
 import { readFileSync } from 'node:fs';
 
 // DMCA-denied slugs — must never appear in sitemap.
@@ -116,10 +116,37 @@ async function appendSlugRedirects(dir) {
   }
 }
 
+/**
+ * Drops every URL whose built page says noindex from sitemap-0.xml. The pages
+ * decide indexability (src/lib/indexPolicy.ts, guest posts, thin titles), so
+ * the sitemap can never advertise a page that asks not to be indexed — the
+ * contradiction Search Console reports and that wastes crawl on a site Google
+ * had mostly dropped (2026-10-23).
+ * @param {URL} dir
+ */
+async function dropNoindexFromSitemap(dir) {
+  const file = new URL('sitemap-0.xml', dir);
+  const xml = await readFile(file, 'utf8');
+  const entries = xml.match(/<url>[\s\S]*?<\/url>/g) ?? [];
+  const kept = [];
+  let dropped = 0;
+  for (const entry of entries) {
+    const loc = entry.match(/<loc>([^<]+)<\/loc>/)?.[1];
+    const path = loc ? decodeURI(new URL(loc).pathname) : '';
+    const html = path ? await readFile(new URL(`.${path}${path.endsWith('/') ? 'index.html' : ''}`, dir), 'utf8').catch(() => '') : '';
+    if (/<meta name="robots" content="noindex/.test(html)) { dropped++; continue; }
+    kept.push(entry);
+  }
+  const head = xml.slice(0, xml.indexOf('<url>'));
+  await writeFile(file, `${head}${kept.join('')}</urlset>`);
+  console.log(`[sitemap] ${kept.length} URLs kept, ${dropped} noindex URLs dropped`);
+}
+
 const directSitemap = {
   name: 'net27-direct-sitemap',
   hooks: {
     'astro:build:done': async (/** @type {any} */ { dir }) => {
+      await dropNoindexFromSitemap(dir);
       await copyFile(new URL('sitemap-0.xml', dir), new URL('sitemap.xml', dir));
       await appendSlugRedirects(dir);
 

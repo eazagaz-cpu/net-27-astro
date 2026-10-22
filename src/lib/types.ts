@@ -41,6 +41,12 @@ export interface BlogPost {
   image: string;
   /** Owner's choice for some articles: no hero image, no card image; share previews use the site card. */
   noImage?: boolean;
+  /**
+   * Third-party article (gambling/app guest posts). Rendered noindex on the
+   * owner's decision of 2026-10-23 and dropped from the sitemap; the page and
+   * its links stay live. Set it on every new guest post.
+   */
+  guestPost?: boolean;
   tags: string[];
   category: string;
   readTime: string;

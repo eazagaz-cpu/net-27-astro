@@ -206,6 +206,27 @@ and opens a GitHub issue. A notice that names no URL of ours opens a
   new slug: that re-publishes it, draws a new notice, and repeated valid
   notices demote the whole site.
 
+## Index policy (what asks Google to index it)
+
+Search Console, 2 Oct → 22 Oct 2026: pages earning impressions fell from
+1,718 to 8, in two drops (3 Oct and 18-19 Oct); only the homepage and
+/search/ stayed indexed. Of 74 sampled URLs, 26 were "Crawled - currently not
+indexed" and 40 "URL is unknown to Google". About 6,400 of the 11,219 sitemap
+URLs repeated an English page. On the owner's decision (2026-10-23):
+
+- **noindex**: hi/ur/bn title pages without a TMDB synopsis in that language
+  (`src/lib/indexPolicy.ts`), all non-English actor pages, and blog posts
+  flagged `guestPost: true` (the gambling/app guest posts). The pages and
+  their links stay live for visitors.
+- Localized title pages that do have their own synopsis stay indexable, and
+  now server-render it (the HTML used to carry the English synopsis, with the
+  translation swapped in by JS). hreflang lists only indexable locales;
+  noindex pages carry none.
+- The build drops every noindex page from the sitemap
+  (`dropNoindexFromSitemap` in `astro.config.mjs`), so the two cannot
+  disagree. The sitemap went from 11,387 to 4,961 URLs.
+- **Every new guest post gets `guestPost: true`.**
+
 ## Bot traffic (scrapers)
 
 On 2026-10-19/20 a scraper on **Tencent Cloud (AS132203; seen from Singapore)** sent
