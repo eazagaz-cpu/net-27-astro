@@ -226,6 +226,12 @@ URLs repeated an English page. On the owner's decision (2026-10-23):
   (`dropNoindexFromSitemap` in `astro.config.mjs`), so the two cannot
   disagree. The sitemap went from 11,387 to 4,961 URLs.
 - **Every new guest post gets `guestPost: true`.**
+- **Only en/hi/ur/bn may be indexed** (`INDEXABLE_LANGS`). Pages in the other
+  routed locales only translate the interface; SEOHead makes them noindex and
+  keeps them out of hreflang (sitemap 4,960 → 4,352 URLs).
+- OTT-pending title pages give the usual 4–8 week OTT window after the
+  cinema release, labelled as an estimate, with a "Last checked" date
+  (`ottPending` in `src/lib/seo.ts`). Never present it as an announcement.
 
 ## Bot traffic (scrapers)
 
