@@ -52,6 +52,7 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  1101412,  // TMDB ID 1101412 — Report ca42aef614ed81b6
   269149,  // TMDB ID 269149 — Report 8-1518000041978-0539538871
   453395,  // TMDB ID 453395 — Report 8-1518000041978-0539538871
   271110,  // TMDB ID 271110 — Report 8-1518000041978-0539538871
