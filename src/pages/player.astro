@@ -357,12 +357,6 @@ import { SITE_URL } from '../lib/seo';
   let currentLang      = 'default';
   let playerConfirmed  = false;
 
-  // Post-load verification timer: after iframe.onload fires, we wait this long
-  // for a postMessage from the embed provider before declaring it failed.
-  // Blocked iframes (X-Frame-Options) fire onload but never send postMessages.
-  let postLoadTimer: ReturnType<typeof setTimeout> | null = null;
-  const POST_LOAD_VERIFY_MS = 5000;
-
   // In-player captions: only vidlink (Server 3) has confirmed support for
   // fetching an external VTT track (sub_file/sub_label URL params) and
   // rendering it synced during playback — other embed providers have no
@@ -482,7 +476,6 @@ import { SITE_URL } from '../lib/seo';
 
   function clearTimer() {
     if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
-    if (postLoadTimer) { clearTimeout(postLoadTimer); postLoadTimer = null; }
   }
 
   // ── Servers ───────────────────────────────────────────────────────────────
@@ -593,34 +586,20 @@ import { SITE_URL } from '../lib/seo';
         showStuckNudge();
       }, STUCK_NUDGE_DELAY);
 
-      // onload fires even when X-Frame-Options blocks the content — Chrome
-      // renders its own "This content is blocked" error page inside the iframe
-      // and fires onload for it. We CANNOT detect this via contentDocument
-      // (blocked cross-origin frames still throw SecurityError).
+      // onload fires for both working embeds AND X-Frame-Options-blocked
+      // iframes (Chrome renders its own error page and fires onload for it).
+      // We cannot distinguish these via contentDocument (both throw
+      // SecurityError) or postMessage (most embed providers never send any).
       //
-      // Solution: onload only clears the initial load timeout (page did arrive).
-      // It starts a POST_LOAD_VERIFY timer — if no postMessage from the embed
-      // provider within that window, the server is treated as failed (blocked
-      // or broken) and auto-cycles to the next one.
+      // Strategy: trust onload — set playerConfirmed so the LOAD_TIMEOUT
+      // auto-cycle doesn't fire. The STUCK_NUDGE_DELAY (15s) is the safety
+      // net: if no playback signal arrives, the user gets a manual "try
+      // another server" prompt. autoembed.co (the only consistently blocked
+      // provider) is already demoted to Server 7 so users rarely hit it.
       iframe.onload = () => {
-        // Clear initial load timeout — the page DID load (even if blocked)
-        if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
-
-        // Already confirmed by postMessage? Nothing more to do.
-        if (playerConfirmed) return;
-
-        logDev('iframe onload, waiting for postMessage verification…', srv.id);
-
-        // Give the embed provider POST_LOAD_VERIFY_MS to send a postMessage.
-        // Working embeds send play/ready/timeupdate events quickly.
-        // Blocked/dead iframes send nothing → we cycle.
-        if (postLoadTimer) clearTimeout(postLoadTimer);
-        postLoadTimer = setTimeout(() => {
-          postLoadTimer = null;
-          if (playerConfirmed) return;
-          logDev('no postMessage after onload — treating as failed', srv.id);
-          handleServerFailure(idx, srv.name);
-        }, POST_LOAD_VERIFY_MS);
+        playerConfirmed = true;
+        clearTimer();
+        logDev('iframe loaded, confirmed', srv.id);
       };
 
       iframe.onerror = () => {
