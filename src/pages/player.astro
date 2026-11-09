@@ -346,14 +346,6 @@ import { SITE_URL } from '../lib/seo';
     throw new Error('DMCA removed title blocked');
   }
 
-  // ── Embed proxy ──────────────────────────────────────────────────────────
-  // Route all embed iframes through /api/embed to strip restrictive
-  // X-Frame-Options / frame-ancestors headers that providers started sending.
-  // The proxy also injects popup-blocking and hostname-faking scripts.
-  function embedProxyUrl(directUrl: string): string {
-    return `/api/embed?url=${encodeURIComponent(directUrl)}`;
-  }
-
   // ── Constants & state ─────────────────────────────────────────────────────
   const DEV          = import.meta.env.DEV;
   const LOAD_TIMEOUT = 8000;
@@ -564,7 +556,9 @@ import { SITE_URL } from '../lib/seo';
         src += `${sep}sub_file=${encodeURIComponent(activeCaptionUrl)}&sub_label=${encodeURIComponent(activeCaptionLabel || 'Subtitle')}`;
       }
       // Route through embed proxy to bypass providers' X-Frame-Options / frame-ancestors blocks
-      iframe.src = embedProxyUrl(src);
+      // DISABLED: embed providers block datacenter IPs (Cloudflare Workers), causing 502.
+      // Direct iframe loading works for most providers; auto-cycling handles failures.
+      iframe.src = src;
       logDev('iframe load started');
 
       // Reveal iframe — embed provider shows its own loading UI inside the iframe
@@ -589,9 +583,30 @@ import { SITE_URL } from '../lib/seo';
         showStuckNudge();
       }, STUCK_NUDGE_DELAY);
 
-      // onload = iframe document finished loading = server is alive and serving content.
-      // Set playerConfirmed so the watchdog timer does NOT fire and cycle to next server.
+      // onload fires even when X-Frame-Options blocks the content — Chrome
+      // shows its own error page inside the iframe. Detect this: a blocked
+      // frame renders an about:blank-like page whose contentDocument is
+      // accessible (same-origin). A working cross-origin embed throws
+      // SecurityError when we try to read contentDocument.
       iframe.onload = () => {
+        try {
+          // Accessing contentDocument on a cross-origin iframe throws SecurityError.
+          // If it does NOT throw, the iframe is showing the browser's own
+          // "This content is blocked" error page — treat as server failure.
+          const doc = iframe.contentDocument;
+          if (doc && doc.body) {
+            const text = doc.body.textContent || '';
+            // Browser error pages are short. Real embed pages (if somehow
+            // same-origin) have substantial content.
+            if (text.length < 200) {
+              logDev('iframe blocked by X-Frame-Options', srv.id);
+              handleServerFailure(idx, srv.name);
+              return;
+            }
+          }
+        } catch {
+          // SecurityError = cross-origin = real embed content loaded ✅
+        }
         playerConfirmed = true;
         clearTimer();
         logDev('iframe loaded, confirmed');
@@ -753,14 +768,6 @@ import { SITE_URL } from '../lib/seo';
   window.addEventListener('message', (ev) => {
     const d = ev.data;
     if (!d || typeof d !== 'object') return;
-
-    // Handle embed proxy error — auto-cycle to next server
-    if (d.source === 'embed-proxy' && (d.event === 'error' || d.type === 'error')) {
-      logDev('proxy error for server', currentServerIdx);
-      clearTimer();
-      handleServerFailure(currentServerIdx);
-      return;
-    }
 
     const isPlaying =
       d.event === 'play' || d.event === 'playing' || d.event === 'timeupdate' ||
