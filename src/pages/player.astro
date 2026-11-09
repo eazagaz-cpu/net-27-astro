@@ -7,18 +7,21 @@ import { SITE_URL } from '../lib/seo';
 <BaseLayout>
   <SEOHead slot="head" title="Watch Now — NetMirror Player" description="Watch movies and TV shows on NetMirror. Multiple servers for smooth playback." canonical={`${SITE_URL}/player/`} noindex={true} />
   <!-- DNS prefetch + preconnect for all embed servers — reduces first-frame latency -->
+  <!-- Priority order matches server list: vidsrc first (most reliable) -->
   <link rel="preconnect" href="https://vidsrc.to" slot="head" />
   <link rel="dns-prefetch" href="https://vidsrc.to" slot="head" />
-  <link rel="preconnect" href="https://2embed.cc" slot="head" />
-  <link rel="dns-prefetch" href="https://2embed.cc" slot="head" />
+  <link rel="preconnect" href="https://vidsrc.cc" slot="head" />
+  <link rel="dns-prefetch" href="https://vidsrc.cc" slot="head" />
   <link rel="preconnect" href="https://vidlink.pro" slot="head" />
   <link rel="dns-prefetch" href="https://vidlink.pro" slot="head" />
   <link rel="preconnect" href="https://multiembed.mov" slot="head" />
   <link rel="dns-prefetch" href="https://multiembed.mov" slot="head" />
+  <link rel="preconnect" href="https://www.2embed.cc" slot="head" />
+  <link rel="dns-prefetch" href="https://www.2embed.cc" slot="head" />
+  <link rel="preconnect" href="https://superembed.stream" slot="head" />
+  <link rel="dns-prefetch" href="https://superembed.stream" slot="head" />
   <link rel="preconnect" href="https://autoembed.co" slot="head" />
   <link rel="dns-prefetch" href="https://autoembed.co" slot="head" />
-  <link rel="preconnect" href="https://www.2embed.skin" slot="head" />
-  <link rel="dns-prefetch" href="https://www.2embed.skin" slot="head" />
 
   <main class="player-shell">
 
@@ -354,7 +357,13 @@ import { SITE_URL } from '../lib/seo';
   let currentLang      = 'default';
   let playerConfirmed  = false;
 
-  // In-player captions: only vidlink (Server 4) has confirmed support for
+  // Post-load verification timer: after iframe.onload fires, we wait this long
+  // for a postMessage from the embed provider before declaring it failed.
+  // Blocked iframes (X-Frame-Options) fire onload but never send postMessages.
+  let postLoadTimer: ReturnType<typeof setTimeout> | null = null;
+  const POST_LOAD_VERIFY_MS = 5000;
+
+  // In-player captions: only vidlink (Server 3) has confirmed support for
   // fetching an external VTT track (sub_file/sub_label URL params) and
   // rendering it synced during playback — other embed providers have no
   // documented equivalent. Selecting a caption on any other server switches
@@ -473,6 +482,7 @@ import { SITE_URL } from '../lib/seo';
 
   function clearTimer() {
     if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
+    if (postLoadTimer) { clearTimeout(postLoadTimer); postLoadTimer = null; }
   }
 
   // ── Servers ───────────────────────────────────────────────────────────────
@@ -584,32 +594,33 @@ import { SITE_URL } from '../lib/seo';
       }, STUCK_NUDGE_DELAY);
 
       // onload fires even when X-Frame-Options blocks the content — Chrome
-      // shows its own error page inside the iframe. Detect this: a blocked
-      // frame renders an about:blank-like page whose contentDocument is
-      // accessible (same-origin). A working cross-origin embed throws
-      // SecurityError when we try to read contentDocument.
+      // renders its own "This content is blocked" error page inside the iframe
+      // and fires onload for it. We CANNOT detect this via contentDocument
+      // (blocked cross-origin frames still throw SecurityError).
+      //
+      // Solution: onload only clears the initial load timeout (page did arrive).
+      // It starts a POST_LOAD_VERIFY timer — if no postMessage from the embed
+      // provider within that window, the server is treated as failed (blocked
+      // or broken) and auto-cycles to the next one.
       iframe.onload = () => {
-        try {
-          // Accessing contentDocument on a cross-origin iframe throws SecurityError.
-          // If it does NOT throw, the iframe is showing the browser's own
-          // "This content is blocked" error page — treat as server failure.
-          const doc = iframe.contentDocument;
-          if (doc && doc.body) {
-            const text = doc.body.textContent || '';
-            // Browser error pages are short. Real embed pages (if somehow
-            // same-origin) have substantial content.
-            if (text.length < 200) {
-              logDev('iframe blocked by X-Frame-Options', srv.id);
-              handleServerFailure(idx, srv.name);
-              return;
-            }
-          }
-        } catch {
-          // SecurityError = cross-origin = real embed content loaded ✅
-        }
-        playerConfirmed = true;
-        clearTimer();
-        logDev('iframe loaded, confirmed');
+        // Clear initial load timeout — the page DID load (even if blocked)
+        if (loadTimeoutTimer) { clearTimeout(loadTimeoutTimer); loadTimeoutTimer = null; }
+
+        // Already confirmed by postMessage? Nothing more to do.
+        if (playerConfirmed) return;
+
+        logDev('iframe onload, waiting for postMessage verification…', srv.id);
+
+        // Give the embed provider POST_LOAD_VERIFY_MS to send a postMessage.
+        // Working embeds send play/ready/timeupdate events quickly.
+        // Blocked/dead iframes send nothing → we cycle.
+        if (postLoadTimer) clearTimeout(postLoadTimer);
+        postLoadTimer = setTimeout(() => {
+          postLoadTimer = null;
+          if (playerConfirmed) return;
+          logDev('no postMessage after onload — treating as failed', srv.id);
+          handleServerFailure(idx, srv.name);
+        }, POST_LOAD_VERIFY_MS);
       };
 
       iframe.onerror = () => {
