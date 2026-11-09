@@ -346,6 +346,14 @@ import { SITE_URL } from '../lib/seo';
     throw new Error('DMCA removed title blocked');
   }
 
+  // ── Embed proxy ──────────────────────────────────────────────────────────
+  // Route all embed iframes through /api/embed to strip restrictive
+  // X-Frame-Options / frame-ancestors headers that providers started sending.
+  // The proxy also injects popup-blocking and hostname-faking scripts.
+  function embedProxyUrl(directUrl: string): string {
+    return `/api/embed?url=${encodeURIComponent(directUrl)}`;
+  }
+
   // ── Constants & state ─────────────────────────────────────────────────────
   const DEV          = import.meta.env.DEV;
   const LOAD_TIMEOUT = 8000;
@@ -555,7 +563,8 @@ import { SITE_URL } from '../lib/seo';
         const sep = src.includes('?') ? '&' : '?';
         src += `${sep}sub_file=${encodeURIComponent(activeCaptionUrl)}&sub_label=${encodeURIComponent(activeCaptionLabel || 'Subtitle')}`;
       }
-      iframe.src = src;
+      // Route through embed proxy to bypass providers' X-Frame-Options / frame-ancestors blocks
+      iframe.src = embedProxyUrl(src);
       logDev('iframe load started');
 
       // Reveal iframe — embed provider shows its own loading UI inside the iframe
@@ -744,6 +753,14 @@ import { SITE_URL } from '../lib/seo';
   window.addEventListener('message', (ev) => {
     const d = ev.data;
     if (!d || typeof d !== 'object') return;
+
+    // Handle embed proxy error — auto-cycle to next server
+    if (d.source === 'embed-proxy' && (d.event === 'error' || d.type === 'error')) {
+      logDev('proxy error for server', currentServerIdx);
+      clearTimer();
+      handleServerFailure(currentServerIdx);
+      return;
+    }
 
     const isPlaying =
       d.event === 'play' || d.event === 'playing' || d.event === 'timeupdate' ||

@@ -5,12 +5,25 @@
 //   3. window.location Proxy — fakes hostname/origin so embed domain-checks pass
 //   4. window.top/parent masked — prevents top-level navigation
 
+// HTML error page that notifies the parent player via postMessage so it can
+// auto-cycle to the next server instead of showing a blank/text error.
+function errorPage(msg, status) {
+  const html = `<!DOCTYPE html><html><head><meta charset="utf-8"></head><body style="margin:0;background:#000;color:#888;display:flex;align-items:center;justify-content:center;height:100vh;font-family:system-ui,sans-serif;font-size:14px;text-align:center"><p>${msg}</p><script>try{window.parent.postMessage({event:'error',type:'error',source:'embed-proxy',detail:'${msg}'},'*');}catch(e){}</script></body></html>`;
+  return new Response(html, {
+    status,
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store', 'X-Frame-Options': 'ALLOWALL' },
+  });
+}
+
 const ALLOWED = new Set([
   'autoembed.co',
   'vidlink.pro',
   'vidsrc.to',
+  'vidsrc.cc',
   '2embed.cc',
+  'www.2embed.cc',
   'multiembed.mov',
+  'superembed.stream',
   'www.2embed.skin',
 ]);
 
@@ -39,13 +52,13 @@ export async function onRequestGet(context) {
   const url    = new URL(context.request.url);
   const rawUrl = url.searchParams.get('url');
 
-  if (!rawUrl) return new Response('Missing url', { status: 400 });
+  if (!rawUrl) return errorPage('Missing url', 400);
 
   let target;
-  try { target = new URL(rawUrl); } catch { return new Response('Invalid url', { status: 400 }); }
+  try { target = new URL(rawUrl); } catch { return errorPage('Invalid url', 400); }
 
   if (target.protocol !== 'https:' || !ALLOWED.has(target.hostname)) {
-    return new Response('Domain not allowed', { status: 403 });
+    return errorPage('Domain not allowed', 403);
   }
 
   let upstream;
@@ -63,10 +76,10 @@ export async function onRequestGet(context) {
       redirect: 'follow',
     });
   } catch {
-    return new Response('Upstream unreachable', { status: 502 });
+    return errorPage('Server unreachable', 502);
   }
 
-  if (!upstream.ok) return new Response(`Upstream ${upstream.status}`, { status: 502 });
+  if (!upstream.ok) return errorPage(`Server error (${upstream.status})`, 502);
 
   const ct = upstream.headers.get('Content-Type') || '';
   if (!ct.includes('text/html')) {
