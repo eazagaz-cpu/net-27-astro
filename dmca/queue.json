@@ -855,6 +855,15 @@
       "targets": [],
       "action": "manual-review",
       "reason": "No extractable URL"
+    },
+    {
+      "messageId": "1a1c29a6e6eccff1",
+      "date": "Mon, 9 Nov 2026 23:17:43 +0000",
+      "fromDomain": "markscan.in",
+      "reportId": null,
+      "targets": [],
+      "action": "manual-review",
+      "reason": "No extractable URL"
     }
   ],
   "pending": []
