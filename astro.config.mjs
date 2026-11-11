@@ -9,6 +9,7 @@ import { readFileSync } from 'node:fs';
 // DMCA-denied slugs — must never appear in sitemap.
 // Keep in sync with src/lib/dmcaDenyList.ts.
 const DMCA_DENIED_SLUGS = new Set([
+  'insidious-out-of-the-further-1291595',
   'zootopia-269149',
   'doctor-strange-in-the-multiverse-of-madness-453395',
   'captain-america-civil-war-271110',

@@ -17,6 +17,7 @@
 
 /** Slugs that must not be served. Used to filter getStaticPaths. */
 export const DMCA_DENIED_SLUGS = new Set<string>([
+  'insidious-out-of-the-further-1291595',  // Report 7-2529000042483-0681827346
   'zootopia-269149',  // Report 8-1518000041978-0539538871
   'doctor-strange-in-the-multiverse-of-madness-453395',  // Report 8-1518000041978-0539538871
   'captain-america-civil-war-271110',  // Report 8-1518000041978-0539538871
@@ -52,6 +53,7 @@ export const DMCA_DENIED_SLUGS = new Set<string>([
 
 /** TMDB IDs that must not be served (belt-and-suspenders alongside slugs). */
 export const DMCA_DENIED_TMDB_IDS = new Set<number>([
+  1291595,  // TMDB ID 1291595 — Report 7-2529000042483-0681827346
   1101412,  // TMDB ID 1101412 — Report ca42aef614ed81b6
   269149,  // TMDB ID 269149 — Report 8-1518000041978-0539538871
   453395,  // TMDB ID 453395 — Report 8-1518000041978-0539538871
