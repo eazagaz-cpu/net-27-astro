@@ -14,6 +14,7 @@
  * /data/theatre-only.json, so direct /player/ links are covered too.
  */
 import type { RealTitle } from './realTitles';
+import { getRealTitlesByType } from './realTitles';
 
 /** Days after release within which a film with no provider counts as theatre-only. */
 const WINDOW_DAYS = 180;
@@ -25,4 +26,25 @@ export function isTheatreOnly(title: Pick<RealTitle, 'type' | 'releaseDate' | 'w
   if ((Date.now() - released) / 864e5 > WINDOW_DAYS) return false;
   const w = title.watch;
   return !(w && (w.stream.length || w.free.length || w.rent.length || w.buy.length));
+}
+
+let _theatreOnlyIds: Set<number> | null = null;
+
+export function getTheatreOnlyIdSet(): Set<number> {
+  if (!_theatreOnlyIds) {
+    try {
+      _theatreOnlyIds = new Set(
+        getRealTitlesByType('movie')
+          .filter(isTheatreOnly)
+          .map(t => t.tmdbId)
+      );
+    } catch {
+      _theatreOnlyIds = new Set();
+    }
+  }
+  return _theatreOnlyIds;
+}
+
+export function isTheatreOnlyTmdbId(tmdbId: number): boolean {
+  return getTheatreOnlyIdSet().has(tmdbId);
 }

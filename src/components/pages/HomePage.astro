@@ -38,6 +38,7 @@ import { SITE_NAME } from '../../lib/constants';
 import { getCachedItems } from '../../lib/movie-cache';
 import { getAllBlogPosts } from '../../data/blogPosts';
 import GeoRail from '../GeoRail.tsx';
+import { isTheatreOnlyTmdbId } from '../../lib/theatrical';
 
 // Build-time pre-fetched data (from movie-sync.mjs cache).
 // Returns [] gracefully if sync hasn't been run yet.
@@ -51,7 +52,9 @@ const cachedPopularTv     = getCachedItems('popular-tv',       10);
 // and the Indian OTT catalogues get their own rails rather than being left to
 // the language and platform pages.
 const latestPosts         = getAllBlogPosts().slice(0, 3);
-const firstHeroBackdrop = cachedTrending.find((item) => item.backdropUrl)?.backdropUrl || '';
+// Filter out theatre-only titles from hero so it only shows playable titles with valid streams
+const heroPlayableTrending = cachedTrending.filter(item => !isTheatreOnlyTmdbId(item.id));
+const firstHeroBackdrop = heroPlayableTrending.find((item) => item.backdropUrl)?.backdropUrl || '';
 const heroSmall = firstHeroBackdrop.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w780/');
 const heroLarge = firstHeroBackdrop.replace(/\/t\/p\/(?:w\d+|original)\//, '/t/p/w1280/');
 
@@ -116,7 +119,7 @@ const homeFaqs = [
     </style>
 
     <!-- Hero: server-rendered with cached data — visible immediately, no blank flash -->
-    <DynamicHero initialItems={cachedTrending} />
+    <DynamicHero initialItems={heroPlayableTrending} />
 
     <!-- App Download CTA -->
     <AppCTA />
@@ -175,8 +178,8 @@ const homeFaqs = [
 
 
     <!-- Core sections — same structure as competitor -->
-    <StaticRail title="Trending Now"            items={cachedTrending}   viewAllHref="/trending/"  railKey="trending" />
-    <StaticRail title="Latest Releases (2025&ndash;2026)" items={cachedLatest} viewAllHref="/latest/"    railKey="latest-movies" />
+    <StaticRail title="Trending Now"            items={cachedTrending}   viewAllHref="/trending/"  railKey="trending" autoRefresh={true} refreshCategory="trending" />
+    <StaticRail title="Latest Releases (2025&ndash;2026)" items={cachedLatest} viewAllHref="/latest/"    railKey="latest-movies" autoRefresh={true} refreshCategory="latest" />
     <StaticRail title="Popular on Netflix"           items={cachedNetflix}       viewAllHref="/platform/netflix/" railKey="netflix" />
     <StaticRail title="Hindi Dubbed Hits"            items={cachedHindiDubbed}  viewAllHref="/genre/hindi-dubbed/" railKey="hindi-dubbed" />
 

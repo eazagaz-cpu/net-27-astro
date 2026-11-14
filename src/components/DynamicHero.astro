@@ -1,4 +1,5 @@
 ---
+import { isTheatreOnlyTmdbId } from '../lib/theatrical';
 import { titleDetailUrl } from '../lib/title-url';
 
 interface HeroItem {
@@ -16,16 +17,20 @@ interface Props {
   initialItems?: HeroItem[];
 }
 
-const slides = (Astro.props.initialItems ?? []).filter((item) => item.backdropUrl).slice(0, 5);
+// Filter out theatre-only / unreleased movies so hero only shows playable titles
+const slides = (Astro.props.initialItems ?? [])
+  .filter((item) => item.backdropUrl && !isTheatreOnlyTmdbId(item.id))
+  .slice(0, 5);
+
 if (slides.length === 0) return;
 
-const first = slides[0];
-const firstHref = titleDetailUrl(first);
 const tmdbSize = (url: string, size: 'w185' | 'w780' | 'w1280') =>
   url.replace(/\/t\/p\/(?:w\d+|original)\//, `/t/p/${size}/`);
+
 const heroData = slides.map((slide) => ({
   ...slide,
   detailHref: titleDetailUrl(slide),
+  watchHref: `/player/?type=${slide.type === 'tv' ? 'tv' : 'movie'}&id=${slide.id}`,
   backdropSmall: tmdbSize(slide.backdropUrl, 'w780'),
   backdropLarge: tmdbSize(slide.backdropUrl, 'w1280'),
   posterSmall: tmdbSize(slide.posterUrl, 'w185'),
@@ -36,64 +41,79 @@ const heroData = slides.map((slide) => ({
 <div id="hero-color-wash" style="pointer-events:none;position:fixed;inset-x:0;top:0;height:60vh;z-index:0;transition:opacity 0.7s;background:radial-gradient(ellipse at top,var(--hero-accent,#d90429) 0%,transparent 65%);opacity:0.14;" aria-hidden="true"></div>
 
 <section class="hero-section" aria-label="Featured titles" data-hero-root style="position:relative;z-index:1">
-  <div class="hero-slide is-active">
-    <picture>
-      <source media="(max-width: 768px)" srcset={heroData[0].backdropSmall} data-hero-source />
-      <img
-      src={heroData[0].backdropLarge}
-      alt={`${first.title} backdrop`}
-      class="hero-bg"
-      loading="eager"
-      decoding="async"
-      fetchpriority="high"
-      width="1280"
-      height="720"
-      data-hero-bg
-      />
-    </picture>
-    <div class="hero-overlay-lr"></div>
-    <div class="hero-overlay-tb"></div>
+  {heroData.map((slide, index) => (
+    <div
+      class:list={['hero-slide', index === 0 ? 'is-active' : '']}
+      data-hero-slide={index}
+      data-rating={slide.rating}
+      aria-hidden={index === 0 ? 'false' : 'true'}
+    >
+      <picture>
+        <source media="(max-width: 768px)" srcset={slide.backdropSmall} />
+        <img
+          src={slide.backdropLarge}
+          alt={`${slide.title} backdrop`}
+          class="hero-bg"
+          loading={index === 0 ? 'eager' : 'lazy'}
+          decoding={index === 0 ? 'sync' : 'async'}
+          fetchpriority={index === 0 ? 'high' : 'low'}
+          width="1280"
+          height="720"
+        />
+      </picture>
+      <div class="hero-overlay-lr"></div>
+      <div class="hero-overlay-tb"></div>
 
-    <div class="hero-content-wrap">
-      <div class="hero-outer">
-        <div class="hero-layout">
-          <div class="hero-content">
-            <span class="hero-label">🔥 Trending Now</span>
-            <h2 class="hero-title" data-hero-title>{first.title}</h2>
-            <div class="hero-meta">
-              <span class="hero-rating" data-hero-rating>★ {first.rating}</span>
-              <span class="hero-meta-text" data-hero-year>{first.year}</span>
-              <span class="hero-meta-text">·</span>
-              <span class="hero-meta-text hero-type" data-hero-type>{first.type === 'tv' ? 'Series' : 'Movie'}</span>
-              <span class="hero-meta-text" style="padding:1px 6px;background:rgba(255,255,255,0.12);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:0.05em">HD</span>
-            </div>
-            <p class="hero-description" data-hero-description>{first.overview}</p>
-            <div class="hero-actions">
-              <a href={firstHref} class="btn-primary hero-btn" data-hero-watch aria-label={`Watch Now: ${first.title}`}>
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
-                Watch Now
-              </a>
-              <a href={firstHref} class="btn-glass hero-btn" data-hero-info aria-label={`More Info about ${first.title}`}>
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
-                More Info<span class="sr-only" data-hero-info-title> about {first.title}</span>
-              </a>
-            </div>
-          </div>
-
-          {first.posterUrl && (
-            <div class="hero-poster-wrap">
-              <div class="hero-poster-frame">
-                <img src={heroData[0].posterSmall} alt={`${first.title} poster`} class="hero-poster-img" width="185" height="278" loading="lazy" decoding="async" fetchpriority="low" data-hero-poster />
-                <div class="hero-poster-shine"></div>
+      <div class="hero-content-wrap">
+        <div class="hero-outer">
+          <div class="hero-layout">
+            <div class="hero-content">
+              <span class="hero-label">🔥 Trending Now</span>
+              <h2 class="hero-title">{slide.title}</h2>
+              <div class="hero-meta">
+                <span class="hero-rating">★ {slide.rating}</span>
+                <span class="hero-meta-text">{slide.year}</span>
+                <span class="hero-meta-text">·</span>
+                <span class="hero-meta-text hero-type">{slide.type === 'tv' ? 'Series' : 'Movie'}</span>
+                <span class="hero-meta-text" style="padding:1px 6px;background:rgba(255,255,255,0.12);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:0.05em">HD</span>
+              </div>
+              <p class="hero-description">{slide.overview}</p>
+              <div class="hero-actions">
+                <a href={slide.watchHref} class="btn-primary hero-btn" aria-label={`Watch Now: ${slide.title}`}>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>
+                  Watch Now
+                </a>
+                <a href={slide.detailHref} class="btn-glass hero-btn" aria-label={`More Info about ${slide.title}`}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
+                  More Info<span class="sr-only"> about {slide.title}</span>
+                </a>
               </div>
             </div>
-          )}
+
+            {slide.posterUrl && (
+              <div class="hero-poster-wrap">
+                <div class="hero-poster-frame">
+                  <img
+                    src={slide.posterSmall}
+                    alt={`${slide.title} poster`}
+                    class="hero-poster-img"
+                    width="185"
+                    height="278"
+                    loading={index === 0 ? 'lazy' : 'lazy'}
+                    decoding="async"
+                    fetchpriority="low"
+                  />
+                  <div class="hero-poster-shine"></div>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
-  </div>
+  ))}
 
-  <!-- Prev / Next navigation arrows (net27.cc style) -->
+  <!-- Prev / Next navigation arrows -->
   <button id="hero-prev-btn" type="button" aria-label="Previous slide"
     style="position:absolute;left:0;top:50%;transform:translateY(-50%);z-index:40;width:36px;height:64px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;color:rgba(255,255,255,0.45);cursor:pointer;transition:color 0.2s">
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 1px 6px rgba(0,0,0,.9))"><path d="m15 18-6-6 6-6"/></svg>
@@ -103,13 +123,13 @@ const heroData = slides.map((slide) => ({
     <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="filter:drop-shadow(0 1px 6px rgba(0,0,0,.9))"><path d="m9 18 6-6-6-6"/></svg>
   </button>
 
-  <!-- Maturity/certification badge (bottom right, net27.cc style) -->
+  <!-- Maturity/certification badge (bottom right) -->
   <div id="hero-cert-badge" aria-hidden="true"
     style="display:none;position:absolute;bottom:clamp(20px,4vh,40px);right:clamp(16px,2vw,64px);z-index:30;padding:4px 10px;border-radius:6px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,0.2);color:#fff;font-size:12px;font-weight:700;letter-spacing:0.05em">
   </div>
 
   <div class="hero-dots" role="group" aria-label="Featured title slides">
-    {slides.map((slide, index) => (
+    {heroData.map((slide, index) => (
       <button
         type="button"
         class:list={['hero-dot', index === 0 && 'active']}
@@ -119,7 +139,6 @@ const heroData = slides.map((slide) => ({
       ><span></span></button>
     ))}
   </div>
-  <script type="application/json" data-hero-data set:html={JSON.stringify(heroData).replace(/</g, '\\u003c')} />
 </section>
 
 <!-- Watch modal backdrop preview overlay -->
@@ -131,71 +150,81 @@ const heroData = slides.map((slide) => ({
     Loading…
   </div>
 </div>
-<style>@keyframes spin{to{transform:rotate(360deg)}}</style>
+<style>
+  @keyframes spin{to{transform:rotate(360deg)}}
+  .hero-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), visibility 0.7s;
+    z-index: 1;
+    will-change: opacity;
+  }
+  .hero-slide.is-active {
+    opacity: 1;
+    visibility: visible;
+    pointer-events: auto;
+    z-index: 2;
+  }
+</style>
 
 <script>
   const root = document.querySelector<HTMLElement>('[data-hero-root]');
   if (root) {
-    const dataNode = root.querySelector<HTMLScriptElement>('[data-hero-data]');
-    const slides = JSON.parse(dataNode?.textContent || '[]');
-    const bg = root.querySelector<HTMLImageElement>('[data-hero-bg]');
-    const source = root.querySelector<HTMLSourceElement>('[data-hero-source]');
-    const poster = root.querySelector<HTMLImageElement>('[data-hero-poster]');
-    const title = root.querySelector<HTMLElement>('[data-hero-title]');
-    const rating = root.querySelector<HTMLElement>('[data-hero-rating]');
-    const year = root.querySelector<HTMLElement>('[data-hero-year]');
-    const type = root.querySelector<HTMLElement>('[data-hero-type]');
-    const description = root.querySelector<HTMLElement>('[data-hero-description]');
-    const watch = root.querySelector<HTMLAnchorElement>('[data-hero-watch]');
-    const info = root.querySelector<HTMLAnchorElement>('[data-hero-info]');
-    const infoTitle = root.querySelector<HTMLElement>('[data-hero-info-title]');
+    const slides = Array.from(root.querySelectorAll<HTMLElement>('[data-hero-slide]'));
     const dots = Array.from(root.querySelectorAll<HTMLButtonElement>('[data-hero-dot]'));
     const prevBtn = document.getElementById('hero-prev-btn');
     const nextBtn = document.getElementById('hero-next-btn');
     const certBadge = document.getElementById('hero-cert-badge');
-    const colorWash = document.getElementById('hero-color-wash');
-    // Maturity ratings color map
     const certColors: Record<string, string> = { 'G':'#22c55e','PG':'#3b82f6','PG-13':'#f59e0b','R':'#ef4444','NC-17':'#7c3aed','U':'#22c55e','UA':'#f59e0b','A':'#ef4444' };
-    // Accent colors per slide (derived from rating)
     const accentColors = ['#d90429','#e50914','#ff6b00','#2563eb','#7c3aed','#059669'];
 
     let current = 0;
     let timer = 0;
+    let isHovered = false;
 
-    const show = (index: number) => {
-      const slide = slides[index];
-      if (!slide || !bg || !title || !rating || !year || !type || !description || !watch || !info) return;
-      current = index;
-      if (source) source.srcset = slide.backdropSmall;
-      bg.src = slide.backdropLarge;
-      bg.alt = `${slide.title} backdrop`;
-      title.textContent = slide.title;
-      rating.textContent = `★ ${slide.rating}`;
-      year.textContent = String(slide.year);
-      type.textContent = slide.type === 'tv' ? 'Series' : 'Movie';
-      description.textContent = slide.overview;
-      const href = slide.detailHref;
-      watch.href = href;
-      watch.setAttribute('aria-label', `Watch Now: ${slide.title}`);
-      info.href = href;
-      info.setAttribute('aria-label', `More Info about ${slide.title}`);
-      if (infoTitle) infoTitle.textContent = ` about ${slide.title}`;
-      if (poster) {
-        poster.src = slide.posterSmall;
-        poster.alt = `${slide.title} poster`;
-      }
+    // Preload remaining slide images in background so slide switches are 100% instant
+    const preloadBackdrops = () => {
+      slides.forEach((s, idx) => {
+        if (idx === 0) return;
+        const img = s.querySelector<HTMLImageElement>('.hero-bg');
+        if (img && img.src) {
+          const p = new Image();
+          p.src = img.src;
+        }
+      });
+    };
+    if (typeof requestIdleCallback !== 'undefined') requestIdleCallback(preloadBackdrops);
+    else setTimeout(preloadBackdrops, 1500);
+
+    const show = (nextIndex: number) => {
+      if (slides.length <= 1) return;
+      const target = (nextIndex + slides.length) % slides.length;
+      if (target === current) return;
+
+      slides[current].classList.remove('is-active');
+      slides[current].setAttribute('aria-hidden', 'true');
+
+      slides[target].classList.add('is-active');
+      slides[target].setAttribute('aria-hidden', 'false');
+      current = target;
+
       dots.forEach((dot, i) => {
-        dot.classList.toggle('active', i === index);
-        if (i === index) dot.setAttribute('aria-current', 'true');
+        dot.classList.toggle('active', i === current);
+        if (i === current) dot.setAttribute('aria-current', 'true');
         else dot.removeAttribute('aria-current');
       });
-      // Dynamic color accent
-      const accent = accentColors[index % accentColors.length];
+
+      // Update dynamic accent color wash
+      const accent = accentColors[current % accentColors.length];
       document.documentElement.style.setProperty('--hero-accent', accent);
-      // Certification badge (mock — real data needs API; shows rating tier)
+
+      // Certification badge
       if (certBadge) {
-        const rating_val = slide.rating || 0;
-        let cert = rating_val >= 8 ? 'U/A 13+' : rating_val >= 6 ? 'U/A 16+' : 'A';
+        const ratingVal = parseFloat(slides[current].dataset.rating || '0') || 0;
+        const cert = ratingVal >= 8 ? 'U/A 13+' : ratingVal >= 6 ? 'U/A 16+' : 'A';
         certBadge.textContent = cert;
         const col = certColors[cert] || 'rgba(255,255,255,0.12)';
         certBadge.style.background = col + '26';
@@ -206,44 +235,76 @@ const heroData = slides.map((slide) => ({
 
     const restart = () => {
       window.clearInterval(timer);
-      if (slides.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        timer = window.setInterval(() => show((current + 1) % slides.length), 6000);
+      if (slides.length > 1 && !matchMedia('(prefers-reduced-motion: reduce)').matches && !isHovered) {
+        timer = window.setInterval(() => show(current + 1), 6000);
       }
     };
 
-    // Prev / Next buttons
-    if (prevBtn) prevBtn.addEventListener('click', () => { show((current - 1 + slides.length) % slides.length); restart(); });
-    if (nextBtn) nextBtn.addEventListener('click', () => { show((current + 1) % slides.length); restart(); });
-    // Hover glow on arrows
-    [prevBtn, nextBtn].forEach(btn => {
-      if (!btn) return;
-      btn.addEventListener('mouseenter', () => { btn.style.color = '#fff'; });
-      btn.addEventListener('mouseleave', () => { btn.style.color = 'rgba(255,255,255,0.45)'; });
-    });
+    // Pause on hover so users can comfortably read title details
+    root.addEventListener('mouseenter', () => { isHovered = true; window.clearInterval(timer); });
+    root.addEventListener('mouseleave', () => { isHovered = false; restart(); });
 
+    // Prev / Next buttons
+    if (prevBtn) {
+      prevBtn.addEventListener('click', () => { show(current - 1); restart(); });
+      prevBtn.addEventListener('mouseenter', () => { prevBtn.style.color = '#fff'; });
+      prevBtn.addEventListener('mouseleave', () => { prevBtn.style.color = 'rgba(255,255,255,0.45)'; });
+    }
+    if (nextBtn) {
+      nextBtn.addEventListener('click', () => { show(current + 1); restart(); });
+      nextBtn.addEventListener('mouseenter', () => { nextBtn.style.color = '#fff'; });
+      nextBtn.addEventListener('mouseleave', () => { nextBtn.style.color = 'rgba(255,255,255,0.45)'; });
+    }
+
+    // Dots navigation
     dots.forEach((dot, index) => dot.addEventListener('click', () => { show(index); restart(); }));
+
+    // Touch swipe support for mobile
+    let touchStartX = 0;
+    root.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    root.addEventListener('touchend', (e) => {
+      const diff = touchStartX - e.changedTouches[0].screenX;
+      if (Math.abs(diff) > 45) {
+        if (diff > 0) show(current + 1);
+        else show(current - 1);
+        restart();
+      }
+    }, { passive: true });
+
     document.addEventListener('visibilitychange', () => document.hidden ? window.clearInterval(timer) : restart());
 
-    // Backdrop preview: intercept Watch Now clicks to show backdrop while player loads
+    // Watch backdrop preview overlay
     const backdropOverlay = document.getElementById('watch-backdrop-overlay');
-    if (backdropOverlay && watch) {
-      watch.addEventListener('click', (e) => {
-        const slide = slides[current];
-        if (!slide) return;
-        backdropOverlay.style.backgroundImage = `url('${slide.backdropLarge}')`;
-        backdropOverlay.style.display = 'block';
-        setTimeout(() => { if(backdropOverlay) backdropOverlay.style.opacity = '1'; }, 10);
-        // Hide after 4s or on navigation
-        setTimeout(() => {
-          if (backdropOverlay) { backdropOverlay.style.opacity = '0'; setTimeout(() => { backdropOverlay.style.display='none'; }, 500); }
-        }, 4000);
+    if (backdropOverlay) {
+      root.querySelectorAll<HTMLAnchorElement>('.btn-primary.hero-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const activeBg = slides[current]?.querySelector<HTMLImageElement>('.hero-bg');
+          if (activeBg && activeBg.src) {
+            backdropOverlay.style.backgroundImage = `url('${activeBg.src}')`;
+            backdropOverlay.style.display = 'block';
+            setTimeout(() => { if (backdropOverlay) backdropOverlay.style.opacity = '1'; }, 10);
+            setTimeout(() => {
+              if (backdropOverlay) {
+                backdropOverlay.style.opacity = '0';
+                setTimeout(() => { backdropOverlay.style.display = 'none'; }, 500);
+              }
+            }, 4000);
+          }
+        });
       });
     }
 
-    if (!bg || (bg.complete && bg.naturalWidth > 0)) restart();
-    else {
-      bg.addEventListener('load', restart, { once: true });
-      bg.addEventListener('error', restart, { once: true });
+    // Initial cert badge setup
+    if (certBadge && slides.length > 0) {
+      const firstRating = parseFloat(slides[0]?.dataset.rating || '0') || 0;
+      const cert = firstRating >= 8 ? 'U/A 13+' : firstRating >= 6 ? 'U/A 16+' : 'A';
+      certBadge.textContent = cert;
+      const col = certColors[cert] || 'rgba(255,255,255,0.12)';
+      certBadge.style.background = col + '26';
+      certBadge.style.borderColor = col + '66';
+      certBadge.style.display = 'block';
     }
+
+    restart();
   }
 </script>

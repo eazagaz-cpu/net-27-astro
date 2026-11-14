@@ -28,9 +28,9 @@ const COUNTRY_CODES = {
 };
 
 const CACHE_TTLS = {
-  trending: 1800, latest: 7200, popular: 3600, upcoming: 7200,
-  'tv-popular': 3600, anime: 3600, kids: 3600, bollywood: 3600,
-  hollywood: 3600, 'korean-drama': 3600,
+  trending: 900, latest: 900, 'latest-movies': 900, 'latest-tv': 900,
+  popular: 1800, upcoming: 3600, 'tv-popular': 1800, anime: 3600,
+  kids: 3600, bollywood: 1800, hollywood: 1800, 'korean-drama': 3600,
 };
 
 function getEndpoints(type) {
@@ -39,6 +39,12 @@ function getEndpoints(type) {
     case 'trending': return [{ path: '/trending/all/week', params: {} }];
     case 'latest': return [
       { path: '/discover/movie', params: { sort_by: 'primary_release_date.desc', 'primary_release_date.lte': today, 'vote_count.gte': '10' } },
+      { path: '/discover/tv', params: { sort_by: 'first_air_date.desc', 'first_air_date.lte': today, 'vote_count.gte': '10' } },
+    ];
+    case 'latest-movies': return [
+      { path: '/discover/movie', params: { sort_by: 'primary_release_date.desc', 'primary_release_date.lte': today, 'vote_count.gte': '10' } },
+    ];
+    case 'latest-tv': return [
       { path: '/discover/tv', params: { sort_by: 'first_air_date.desc', 'first_air_date.lte': today, 'vote_count.gte': '10' } },
     ];
     case 'upcoming': return [{ path: '/movie/upcoming', params: { region: 'IN' } }];
