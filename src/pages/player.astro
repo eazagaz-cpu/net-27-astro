@@ -320,7 +320,7 @@ import { SITE_URL } from '../lib/seo';
 </style>
 
 <script>
-  import { getServers } from '../lib/player/servers';
+  import { getServers, type PlayerServer } from '../lib/player/servers';
   import { applySandbox } from '../lib/player/iframePolicy';
   import { loadSavedServer, saveSelectedServer } from '../lib/player/serverMemory';
   import { LANGUAGES, loadLang, saveLang } from '../lib/player/languages';
@@ -355,7 +355,7 @@ import { SITE_URL } from '../lib/seo';
 
   // ── Constants & state ─────────────────────────────────────────────────────
   const DEV          = import.meta.env.DEV;
-  const LOAD_TIMEOUT = 8000;
+  const LOAD_TIMEOUT = 22000;
 
   let currentServerIdx = 0;
   let currentLang      = 'default';
@@ -407,7 +407,10 @@ import { SITE_URL } from '../lib/seo';
     try { return new URL(url).protocol === 'https:'; } catch { return false; }
   }
 
-  function getValidServers() {
+  let validServersCache: PlayerServer[] | null = null;
+
+  function getValidServers(): PlayerServer[] {
+    if (validServersCache) return validServersCache;
     const raw  = getServers({ type, id, season, episode });
     const seen = new Set<string>();
     const valid = raw.filter(s => {
@@ -425,6 +428,7 @@ import { SITE_URL } from '../lib/seo';
 
     // Rename servers after sort so dropdown reads "Server 1, 2, 3…"
     sorted.forEach((s, i) => { s.name = `Server ${i + 1}`; });
+    validServersCache = sorted;
     return sorted;
   }
 
@@ -542,7 +546,6 @@ import { SITE_URL } from '../lib/seo';
 
     currentServerIdx = idx;
     playerConfirmed  = false;
-    playbackStarted  = false;
 
     if (!id) { setState('notfound'); return; }
 
@@ -564,53 +567,44 @@ import { SITE_URL } from '../lib/seo';
     if (!iframeVisible) {
       setState('loading');
       const loadingText = document.getElementById('loading-text');
-      if (loadingText) loadingText.textContent = `Loading ${srv.name} (${srv.id})...`;
+      if (loadingText) loadingText.textContent = `Loading ${srv.name}...`;
+    } else if (!opts.autoAdvance) {
+      showRealtimeNotice(`Switched to ${srv.name}`, 'Connecting stream...', 3000);
     }
 
-    requestAnimationFrame(() => {
-      // Do NOT append lang param — embed servers don't support it and reject modified URLs.
-      // sub_file/sub_label ARE supported by vidlink specifically for external
-      // captions (confirmed via their docs) — safe to append only there.
-      let src = srv.url;
-      if (srv.id === CAPTIONS_SERVER_ID && activeCaptionUrl) {
-        const sep = src.includes('?') ? '&' : '?';
-        src += `${sep}sub_file=${encodeURIComponent(activeCaptionUrl)}&sub_label=${encodeURIComponent(activeCaptionLabel || 'Subtitle')}`;
-      }
-      // Route through embed proxy to bypass providers' X-Frame-Options / frame-ancestors blocks
-      // DISABLED: embed providers block datacenter IPs (Cloudflare Workers), causing 502.
-      // Direct iframe loading works for most providers; auto-cycling handles failures.
-      iframe.src = src;
-      logDev('iframe load started');
+    let src = srv.url;
+    if (srv.id === CAPTIONS_SERVER_ID && activeCaptionUrl) {
+      const sep = src.includes('?') ? '&' : '?';
+      src += `${sep}sub_file=${encodeURIComponent(activeCaptionUrl)}&sub_label=${encodeURIComponent(activeCaptionLabel || 'Subtitle')}`;
+    }
+    iframe.src = src;
+    logDev('iframe load started');
 
-      // Reveal iframe — embed provider shows its own loading UI inside the iframe
-      setState('ready');
+    // Reveal iframe — embed provider renders its own UI inside the iframe
+    setState('ready');
 
-      // Background watchdog: if no play event in LOAD_TIMEOUT ms, try next server silently.
-      loadTimeoutTimer = setTimeout(() => {
-        loadTimeoutTimer = null;
-        if (playerConfirmed) return;
-        logDev('timeout reached for', srv.id);
-        recordTimeout(srv.id);
-        handleServerFailure(idx, srv.name);
-      }, LOAD_TIMEOUT);
+    // Background watchdog: if server does not respond in LOAD_TIMEOUT ms, try next server
+    loadTimeoutTimer = setTimeout(() => {
+      loadTimeoutTimer = null;
+      if (playerConfirmed) return;
+      logDev('timeout reached for', srv.id);
+      recordTimeout(srv.id);
+      handleServerFailure(idx, srv.name);
+    }, LOAD_TIMEOUT);
 
-      // Real-time verification: once iframe fires onload, the server document is active.
-      // We clear load timer and dismiss any active switching notice.
-      // NO fake 15-second timer popups: users enjoy uninterrupted, clean playback.
-      iframe.onload = () => {
-        playerConfirmed = true;
-        clearTimer();
-        hideRealtimeNotice();
-        logDev('iframe loaded, confirmed', srv.id);
-      };
+    iframe.onload = () => {
+      playerConfirmed = true;
+      clearTimer();
+      hideRealtimeNotice();
+      logDev('iframe loaded, confirmed', srv.id);
+    };
 
-      iframe.onerror = () => {
-        clearTimer();
-        logDev('iframe error for', srv.id);
-        showRealtimeNotice(`${srv.name} connection failed`, 'Trying next server...');
-        handleServerFailure(idx, srv.name);
-      };
-    });
+    iframe.onerror = () => {
+      clearTimer();
+      logDev('iframe error for', srv.id);
+      showRealtimeNotice(`${srv.name} connection failed`, 'Trying next server...');
+      handleServerFailure(idx, srv.name);
+    };
   }
 
   function switchServer() {
@@ -772,7 +766,6 @@ import { SITE_URL } from '../lib/seo';
 
     if (isPlaying) {
       playerConfirmed = true;
-      playbackStarted = true;
       clearTimer();
       hideRealtimeNotice();
       // Record success for quality-based server sorting
@@ -817,6 +810,7 @@ import { SITE_URL } from '../lib/seo';
       episodeSelect.value = '1';
       subtitlesFetched = false; subtitlesData = [];
       activeCaptionUrl = null; activeCaptionLabel = null;
+      validServersCache = null;
       populateServers();
       loadPlayer(currentServerIdx);
     });
@@ -827,6 +821,7 @@ import { SITE_URL } from '../lib/seo';
       try { localStorage.setItem(`netmirror:lastep:${id}`, String(episode)); } catch {}
       subtitlesFetched = false; subtitlesData = [];
       activeCaptionUrl = null; activeCaptionLabel = null;
+      validServersCache = null;
       populateServers();
       loadPlayer(currentServerIdx);
     });
