@@ -6,21 +6,26 @@ import { SITE_URL } from '../lib/seo';
 
 <BaseLayout>
   <SEOHead slot="head" title="Watch Now — NetMirror Player" description="Watch movies and TV shows on NetMirror. Multiple servers for smooth playback." canonical={`${SITE_URL}/player/`} noindex={true} />
-  <!-- DNS prefetch + preconnect for all embed servers — reduces first-frame latency -->
-  <!-- Priority order matches server list: vidsrc first (most reliable) -->
+  <!-- DNS prefetch + preconnect for embed servers — reduces first-frame latency -->
+  <!-- Priority order: top 6 most reliable providers get preconnect -->
   <link rel="preconnect" href="https://vidsrc.to" slot="head" />
   <link rel="dns-prefetch" href="https://vidsrc.to" slot="head" />
+  <link rel="preconnect" href="https://vsembed.su" slot="head" />
+  <link rel="dns-prefetch" href="https://vsembed.su" slot="head" />
   <link rel="preconnect" href="https://vidsrc.cc" slot="head" />
   <link rel="dns-prefetch" href="https://vidsrc.cc" slot="head" />
   <link rel="preconnect" href="https://vidlink.pro" slot="head" />
   <link rel="dns-prefetch" href="https://vidlink.pro" slot="head" />
-  <link rel="preconnect" href="https://multiembed.mov" slot="head" />
+  <link rel="preconnect" href="https://vidfast.vc" slot="head" />
+  <link rel="dns-prefetch" href="https://vidfast.vc" slot="head" />
+  <link rel="preconnect" href="https://aether.ist" slot="head" />
+  <link rel="dns-prefetch" href="https://aether.ist" slot="head" />
+  <link rel="dns-prefetch" href="https://embed.vidrift.net" slot="head" />
   <link rel="dns-prefetch" href="https://multiembed.mov" slot="head" />
-  <link rel="preconnect" href="https://www.2embed.cc" slot="head" />
+  <link rel="dns-prefetch" href="https://player.vidlove.cc" slot="head" />
+  <link rel="dns-prefetch" href="https://vidnest.fun" slot="head" />
   <link rel="dns-prefetch" href="https://www.2embed.cc" slot="head" />
-  <link rel="preconnect" href="https://superembed.stream" slot="head" />
   <link rel="dns-prefetch" href="https://superembed.stream" slot="head" />
-  <link rel="preconnect" href="https://autoembed.co" slot="head" />
   <link rel="dns-prefetch" href="https://autoembed.co" slot="head" />
 
   <main class="player-shell">
@@ -357,7 +362,7 @@ import { SITE_URL } from '../lib/seo';
   let currentLang      = 'default';
   let playerConfirmed  = false;
 
-  // In-player captions: only vidlink (Server 3) has confirmed support for
+  // In-player captions: only vidlink (Server 4) has confirmed support for
   // fetching an external VTT track (sub_file/sub_label URL params) and
   // rendering it synced during playback — other embed providers have no
   // documented equivalent. Selecting a caption on any other server switches

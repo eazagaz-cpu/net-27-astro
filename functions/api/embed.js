@@ -25,6 +25,14 @@ const ALLOWED = new Set([
   'multiembed.mov',
   'superembed.stream',
   'www.2embed.skin',
+  'vsembed.su',
+  'vidfast.vc',
+  'aether.ist',
+  'embed.vidrift.net',
+  'vidrift.net',
+  'player.vidlove.cc',
+  'vidlove.cc',
+  'vidnest.fun',
 ]);
 
 function makeBlocker(hostname) {
