@@ -9,7 +9,16 @@ import Breadcrumbs from '../../components/Breadcrumbs.astro';
 import DynamicGrid from '../../components/DynamicGrid.tsx';
 import { breadcrumbSchema } from '../../lib/schema';
 import { SITE_URL } from '../../lib/seo';
-import latestData from '../../data/cache/latest.json';
+import latestMovies from '../../data/cache/latest-movies.json';
+import latestTv from '../../data/cache/latest-tv.json';
+
+// Combine movies + TV, sort by release date (newest first), deduplicate
+const combined = [...(latestMovies.items || []), ...(latestTv.items || [])];
+const seen = new Set<number>();
+const latestItems = combined
+  .filter(item => { if (seen.has(item.id)) return false; seen.add(item.id); return true; })
+  .sort((a: any, b: any) => (b.release_date || '').localeCompare(a.release_date || ''))
+  .slice(0, 60); // Top 60 latest
 
 const breadcrumbs = [
   { label: 'Home', href: '/' },
@@ -26,7 +35,7 @@ const breadcrumbs = [
       <Breadcrumbs items={breadcrumbs} />
       <h1 class="text-3xl md:text-4xl font-bold mb-2">🆕 Latest Releases</h1>
       <p class="text-[var(--color-muted)] mb-8">Newest movies and TV shows released across all streaming platforms.</p>
-      <DynamicGrid client:idle category="latest" title="Latest Releases" initialItems={withTitleSlugs(latestData.items)} />
+      <DynamicGrid client:idle category="latest" title="Latest Releases" initialItems={withTitleSlugs(latestItems)} />
     </div>
   </main>
   <Footer />

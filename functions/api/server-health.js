@@ -11,12 +11,19 @@
  */
 
 const SERVERS = [
-  { id: 'server-1', pingUrl: 'https://vidsrc.to',               defaultScore: 90 },
-  { id: 'server-2', pingUrl: 'https://player.videasy.net',       defaultScore: 85 },
-  { id: 'server-3', pingUrl: 'https://vidsrc.me',                defaultScore: 80 },
-  { id: 'server-4', pingUrl: 'https://autoembed.co',             defaultScore: 65 },
-  { id: 'server-5', pingUrl: 'https://www.2embed.cc',            defaultScore: 60 },
-  { id: 'server-6', pingUrl: 'https://superembed.stream',        defaultScore: 55 },
+  { id: 'vidsrc',     pingUrl: 'https://vidsrc.to',              defaultScore: 90 },
+  { id: 'vsembed',    pingUrl: 'https://vsembed.su',             defaultScore: 88 },
+  { id: 'vidsrc-cc',  pingUrl: 'https://vidsrc.cc',              defaultScore: 85 },
+  { id: 'vidlink',    pingUrl: 'https://vidlink.pro',            defaultScore: 85 },
+  { id: 'vidfast',    pingUrl: 'https://vidfast.vc',             defaultScore: 80 },
+  { id: 'aether',     pingUrl: 'https://aether.ist',             defaultScore: 78 },
+  { id: 'vidrift',    pingUrl: 'https://embed.vidrift.net',      defaultScore: 75 },
+  { id: 'multiembed', pingUrl: 'https://multiembed.mov',         defaultScore: 70 },
+  { id: 'vidlove',    pingUrl: 'https://player.vidlove.cc',      defaultScore: 70 },
+  { id: 'vidnest',    pingUrl: 'https://vidnest.fun',            defaultScore: 68 },
+  { id: '2embed',     pingUrl: 'https://www.2embed.cc',          defaultScore: 60 },
+  { id: 'superembed', pingUrl: 'https://superembed.stream',      defaultScore: 55 },
+  { id: 'autoembed',  pingUrl: 'https://autoembed.co',           defaultScore: 10 },
 ];
 
 const KV_KEY    = 'server-health-v1';

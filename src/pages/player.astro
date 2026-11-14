@@ -325,7 +325,7 @@ import { SITE_URL } from '../lib/seo';
   import { applySandbox } from '../lib/player/iframePolicy';
   import { loadSavedServer, saveSelectedServer } from '../lib/player/serverMemory';
   import { LANGUAGES, loadLang, saveLang } from '../lib/player/languages';
-  import { reportIssue } from '../lib/serverQuality';
+  import { reportIssue, recordSuccess, recordTimeout, recordFailure, sortServersByQuality } from '../lib/serverQuality';
   import type { ReportType } from '../lib/serverQuality';
   import { isDmcaBlockedId } from '../lib/dmcaDenyList';
 
@@ -416,11 +416,22 @@ import { SITE_URL } from '../lib/seo';
   function getValidServers() {
     const raw  = getServers({ type, id, season, episode });
     const seen = new Set<string>();
-    return raw.filter(s => {
+    const valid = raw.filter(s => {
       if (!isValidUrl(s.url) || seen.has(s.url)) return false;
       seen.add(s.url);
       return true;
     });
+
+    // Sort by user's local quality history — servers that worked well
+    // for this user float to the top. First-time visitors get the
+    // default order from servers.ts (which is already priority-ordered).
+    const sortedIds = sortServersByQuality(valid.map(s => s.id));
+    const byId = new Map(valid.map(s => [s.id, s]));
+    const sorted = sortedIds.map(id => byId.get(id)!).filter(Boolean);
+
+    // Rename servers after sort so dropdown reads "Server 1, 2, 3…"
+    sorted.forEach((s, i) => { s.name = `Server ${i + 1}`; });
+    return sorted;
   }
 
   // Remember where the user came from for the back button
@@ -499,7 +510,9 @@ import { SITE_URL } from '../lib/seo';
   function handleServerFailure(idx: number, serverName?: string) {
     const servers = getValidServers();
     failedThisCycle.add(idx);
-    logDev('server failed', servers[idx]?.id);
+    const failedId = servers[idx]?.id;
+    logDev('server failed', failedId);
+    if (failedId) recordFailure(failedId);
 
     if (failedThisCycle.size >= servers.length) {
       logDev('all servers failed');
@@ -577,6 +590,7 @@ import { SITE_URL } from '../lib/seo';
         loadTimeoutTimer = null;
         if (playerConfirmed) return;
         logDev('timeout reached for', srv.id);
+        recordTimeout(srv.id);
         handleServerFailure(idx, srv.name);
       }, LOAD_TIMEOUT);
 
@@ -778,6 +792,10 @@ import { SITE_URL } from '../lib/seo';
       clearTimer();
       clearStuckNudgeTimer();
       hideStuckNudge();
+      // Record success for quality-based server sorting
+      const servers = getValidServers();
+      const currentSrv = servers[currentServerIdx];
+      if (currentSrv) recordSuccess(currentSrv.id);
       const iframe = document.getElementById('player-iframe');
       if (iframe?.classList.contains('hidden')) setState('ready');
     }
