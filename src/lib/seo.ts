@@ -40,8 +40,8 @@ function truncateSeoText(value: string, maxLength: number): string {
 
 const REGION_NAMES: Record<string, string> = { IN: 'India', US: 'the US' };
 
-/** Characters available for a page title once generateSEO appends " | NetMirror". */
-const TITLE_BUDGET = 60 - ` | ${SITE_NAME}`.length;
+/** Characters available for a page title once generateSEO appends " | NET27 Watch" (Google desktop & mobile budget: 60-65 chars). */
+const TITLE_BUDGET = 65 - ` | ${SITE_NAME}`.length;
 
 interface TitleSeoInput {
   name: string;
@@ -159,16 +159,23 @@ const isOttTitle = (input: { originalLanguage?: string }) => OTT_LANGS.has(input
 export function titleSeoHeading(input: TitleSeoInput): string {
   const suffix = input.disambiguator ? ` [${input.disambiguator}]` : '';
   const base = `${input.name} (${input.year})${suffix}`;
-  // Search Console (Sep 2026): title pages averaged 3.5% CTR, and the queries
-  // reaching them add "watch", "online", "streaming". The longest qualifier
-  // that fits wins. Long names would otherwise be cut mid-qualifier
-  // ("… — Where to…"), which reads as a broken title, so a qualifier that does
-  // not fit is dropped whole rather than truncated.
+  // Search intent keywords matching Google Search Console queries:
+  // "watch online", "streaming", "ott platform", "cast".
+  // Pick the highest value qualifier that cleanly fits within the budget.
   const qualifier = [
-    ...(isOttTitle(input) ? [' — OTT Platform & Where to Watch', ' — OTT & Where to Watch'] : []),
-    ' — Where to Watch Online', ' — Where to Watch',
-  ]
-    .find(q => base.length + q.length <= TITLE_BUDGET);
+    ...(isOttTitle(input) ? [
+      ' — OTT Platform & Where to Watch',
+      ' — OTT & Where to Watch',
+      ' — OTT Platform',
+      ' — OTT & Cast',
+    ] : []),
+    ' — Where to Watch Online',
+    ' — Where to Watch',
+    ' — Watch Online',
+    ' — Stream Online',
+    ' — Watch Free',
+    ' — Watch',
+  ].find(q => base.length + q.length <= TITLE_BUDGET);
   return qualifier ? `${base}${qualifier}` : base;
 }
 

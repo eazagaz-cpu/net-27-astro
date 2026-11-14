@@ -63,6 +63,23 @@ const thinTitleSlugs = (() => {
   }
 })();
 
+// Title-to-poster lookup for Google Image Sitemap enrichment
+const titleImageMap = (() => {
+  try {
+    const { items } = JSON.parse(readFileSync('./src/data/cache/titles.json', 'utf8'));
+    const map = new Map();
+    for (const t of items) {
+      if (t.posterUrl) {
+        const path = `/${t.type === 'show' ? 'shows' : 'movies'}/${t.slug}/`;
+        map.set(path, { title: t.title, posterUrl: t.posterUrl });
+      }
+    }
+    return map;
+  } catch {
+    return new Map();
+  }
+})();
+
 // Crawl focus (Search Console, 28 days to 2026-09-24): English pages took
 // 6,170 clicks; the eight locales below took under 20 each, while their
 // ~10,000 title/person pages filled most of the sitemap — and 9 of 10 sampled
@@ -136,7 +153,16 @@ async function dropNoindexFromSitemap(dir) {
     const path = loc ? decodeURI(new URL(loc).pathname) : '';
     const html = path ? await readFile(new URL(`.${path}${path.endsWith('/') ? 'index.html' : ''}`, dir), 'utf8').catch(() => '') : '';
     if (/<meta name="robots" content="noindex/.test(html)) { dropped++; continue; }
-    kept.push(entry);
+
+    // Enrich with Google Image Sitemap tag if poster exists
+    const imgInfo = titleImageMap.get(path);
+    let finalEntry = entry;
+    if (imgInfo && imgInfo.posterUrl) {
+      const safeTitle = imgInfo.title.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+      const imgXml = `<image:image><image:loc>${imgInfo.posterUrl}</image:loc><image:title>${safeTitle} Poster</image:title></image:image>`;
+      finalEntry = entry.replace('</url>', `${imgXml}</url>`);
+    }
+    kept.push(finalEntry);
   }
   const head = xml.slice(0, xml.indexOf('<url>'));
   await writeFile(file, `${head}${kept.join('')}</urlset>`);
@@ -152,18 +178,20 @@ const directSitemap = {
       await appendSlugRedirects(dir);
 
       // IndexNow — tells the Bing/Yandex/Yahoo network that these URLs changed.
-      //
-      // Only from a build that actually publishes. `astro build` runs on dev
-      // machines many times a day, and each of those runs was announcing that
-      // production had changed when nothing had been deployed — a false signal
-      // to Bing, plus a network call and up to a 15s timeout on every local
-      // build. Cloudflare Pages sets CF_PAGES; the cron deploy runs under
-      // GitHub Actions.
       const isPublishingBuild = Boolean(process.env.CF_PAGES || process.env.GITHUB_ACTIONS);
       if (!isPublishingBuild) return;
 
       const INDEXNOW_KEY = 'e9d6b5a3c2f1e8d7b4a0c5f2e1d8b3a6';
       const SITE = 'https://net27.watch';
+
+      // Submit core hubs + top 20 trending/latest titles for instant crawler discovery
+      const freshUrls = (() => {
+        try {
+          const trending = JSON.parse(readFileSync('./src/data/cache/trending.json', 'utf8')).slice(0, 15);
+          return trending.map((/** @type {any} */ t) => `${SITE}/${t.type === 'tv' ? 'shows' : 'movies'}/${t.slug}/`);
+        } catch { return []; }
+      })();
+
       const payload = {
         host: 'net27.watch',
         key: INDEXNOW_KEY,
@@ -177,6 +205,7 @@ const directSitemap = {
           `${SITE}/latest/`,
           `${SITE}/blog/`,
           `${SITE}/sitemap.xml`,
+          ...freshUrls,
         ],
       };
       try {

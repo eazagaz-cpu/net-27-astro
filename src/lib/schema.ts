@@ -78,6 +78,16 @@ export function breadcrumbSchema(
   };
 }
 
+function formatIsoDuration(runtimeStr?: string): string | undefined {
+  if (!runtimeStr) return undefined;
+  const hours = runtimeStr.match(/(\d+)\s*h/);
+  const mins = runtimeStr.match(/(\d+)\s*m/);
+  const h = hours ? parseInt(hours[1], 10) : 0;
+  const m = mins ? parseInt(mins[1], 10) : 0;
+  if (!h && !m) return undefined;
+  return `PT${h ? `${h}H` : ''}${m ? `${m}M` : ''}`;
+}
+
 export function movieSchema(movie: any): object {
   const schema: Record<string, any> = {
     '@context': 'https://schema.org',
@@ -85,6 +95,10 @@ export function movieSchema(movie: any): object {
     name: movie.name ?? movie.title,
     description: movie.description ?? movie.overview,
   };
+
+  if (movie.url) {
+    schema.url = movie.url;
+  }
 
   if (movie.image ?? movie.poster_path) {
     schema.image = movie.image ?? movie.poster_path;
@@ -105,6 +119,30 @@ export function movieSchema(movie: any): object {
     schema.genre = Array.isArray(movie.genre) ? movie.genre : [movie.genre];
   }
 
+  if (movie.runtime) {
+    const dur = formatIsoDuration(movie.runtime);
+    if (dur) schema.duration = dur;
+  }
+
+  if (Array.isArray(movie.cast) && movie.cast.length > 0) {
+    schema.actor = movie.cast.slice(0, 10).map((c: any) => ({
+      '@type': 'Person',
+      name: typeof c === 'string' ? c : c.name,
+      ...(typeof c === 'object' && c.role ? { characterName: c.role } : {}),
+    }));
+  }
+
+  if (movie.originalLanguage) {
+    schema.inLanguage = movie.originalLanguage;
+  }
+
+  if (Array.isArray(movie.countries) && movie.countries.length > 0) {
+    schema.countryOfOrigin = movie.countries.map((c: string) => ({
+      '@type': 'Country',
+      name: c,
+    }));
+  }
+
   const ratingValue = Number(
     movie.aggregateRating?.ratingValue ?? movie.vote_average
   );
@@ -123,6 +161,27 @@ export function movieSchema(movie: any): object {
     };
   }
 
+  if (movie.trailerUrl) {
+    schema.trailer = {
+      '@type': 'VideoObject',
+      name: `${movie.name ?? movie.title} Official Trailer`,
+      description: `Watch official trailer for ${movie.name ?? movie.title}`,
+      thumbnailUrl: movie.backdrop_path ?? movie.image ?? movie.poster_path ?? `${SITE_URL}/og-image.png`,
+      uploadDate: movie.datePublished ?? movie.release_date ?? '2024-01-01',
+      embedUrl: movie.trailerUrl,
+    };
+  }
+
+  if (movie.url) {
+    schema.potentialAction = {
+      '@type': 'WatchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: movie.url,
+      },
+    };
+  }
+
   return schema;
 }
 
@@ -133,6 +192,10 @@ export function tvSeriesSchema(show: any): object {
     name: show.name ?? show.title,
     description: show.description ?? show.overview,
   };
+
+  if (show.url) {
+    schema.url = show.url;
+  }
 
   if (show.image ?? show.poster_path) {
     schema.image = show.image ?? show.poster_path;
@@ -148,6 +211,66 @@ export function tvSeriesSchema(show: any): object {
 
   if (show.numberOfSeasons ?? show.number_of_seasons) {
     schema.numberOfSeasons = show.numberOfSeasons ?? show.number_of_seasons;
+  }
+
+  if (show.numberOfEpisodes ?? show.number_of_episodes ?? show.episodes) {
+    schema.numberOfEpisodes = show.numberOfEpisodes ?? show.number_of_episodes ?? show.episodes;
+  }
+
+  if (Array.isArray(show.cast) && show.cast.length > 0) {
+    schema.actor = show.cast.slice(0, 10).map((c: any) => ({
+      '@type': 'Person',
+      name: typeof c === 'string' ? c : c.name,
+      ...(typeof c === 'object' && c.role ? { characterName: c.role } : {}),
+    }));
+  }
+
+  if (show.originalLanguage) {
+    schema.inLanguage = show.originalLanguage;
+  }
+
+  if (Array.isArray(show.countries) && show.countries.length > 0) {
+    schema.countryOfOrigin = show.countries.map((c: string) => ({
+      '@type': 'Country',
+      name: c,
+    }));
+  }
+
+  const ratingValue = Number(
+    show.aggregateRating?.ratingValue ?? show.vote_average
+  );
+  const ratingCount = Number(
+    show.aggregateRating?.ratingCount ?? show.vote_count
+  );
+
+  if (ratingValue > 0 && ratingCount > 0) {
+    schema.aggregateRating = {
+      '@type': 'AggregateRating',
+      ratingValue,
+      bestRating: show.aggregateRating?.bestRating ?? 10,
+      ratingCount,
+    };
+  }
+
+  if (show.trailerUrl) {
+    schema.trailer = {
+      '@type': 'VideoObject',
+      name: `${show.name ?? show.title} Official Trailer`,
+      description: `Watch official trailer for ${show.name ?? show.title}`,
+      thumbnailUrl: show.backdrop_path ?? show.image ?? show.poster_path ?? `${SITE_URL}/og-image.png`,
+      uploadDate: show.datePublished ?? show.first_air_date ?? '2024-01-01',
+      embedUrl: show.trailerUrl,
+    };
+  }
+
+  if (show.url) {
+    schema.potentialAction = {
+      '@type': 'WatchAction',
+      target: {
+        '@type': 'EntryPoint',
+        urlTemplate: show.url,
+      },
+    };
   }
 
   return schema;

@@ -24,7 +24,7 @@ import Breadcrumbs from '../Breadcrumbs.astro';
 import FAQSection from '../FAQSection.astro';
 import { getRealTitlesByType, getRelatedRealTitles } from '../../lib/realTitles';
 import { genres } from '../../data/sampleTitles';
-import { breadcrumbSchema, movieSchema, faqSchema } from '../../lib/schema';
+import { breadcrumbSchema, movieSchema, faqSchema, videoObjectSchema } from '../../lib/schema';
 import { SITE_URL, titleSeoHeading, titleSeoDescription, titleOgImage, ottPending } from '../../lib/seo';
 import { personUrl } from '../../lib/people';
 import { isTheatreOnly } from '../../lib/theatrical';
@@ -148,16 +148,32 @@ const og = titleOgImage(title.backdropUrl, title.title);
 const schemaData = [
   movieSchema({
     title: title.title,
-    overview: title.overview,
+    overview: shownOverview,
     poster_path: title.posterUrl,
+    backdrop_path: title.backdropUrl,
     release_date: title.releaseDate,
     director: title.director,
     genre: title.genres,
     vote_average: title.rating,
     vote_count: title.voteCount,
+    runtime: title.runtime,
+    cast: title.cast,
+    trailerUrl: title.trailerUrl,
+    originalLanguage: title.originalLanguage,
+    countries: title.countries,
+    url: `${SITE_URL}${L(`/movies/${title.slug}/`)}`,
   }),
   breadcrumbSchema(breadcrumbs),
   faqSchema(faqs),
+  ...(title.trailerUrl ? [
+    videoObjectSchema({
+      name: `${title.title} Official Trailer`,
+      description: `Watch official trailer for ${title.title}`,
+      thumbnailUrl: title.backdropUrl || title.posterUrl || `${SITE_URL}/og-image.png`,
+      uploadDate: title.releaseDate || '2024-01-01',
+      embedUrl: title.trailerUrl,
+    }),
+  ] : []),
 ];
 // Only years that have a /year/ page (src/data/entities); others get plain text.
 const YEAR_PAGES = new Set(years.map(y => y.year));
@@ -219,7 +235,9 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
 
             <!-- Meta Row -->
             <div class="flex flex-wrap items-center gap-3 mb-4">
-              <span class="text-[var(--color-text-secondary)] font-medium">{title.year}</span>
+              {YEAR_PAGES.has(title.year)
+                ? <a href={L(`/year/${title.year}/`)} class="text-[var(--color-text-secondary)] hover:text-white font-medium transition-colors" title={`Movies released in ${title.year}`}>{title.year}</a>
+                : <span class="text-[var(--color-text-secondary)] font-medium">{title.year}</span>}
               {title.runtime && (<>
                 <span class="w-1 h-1 rounded-full bg-[var(--color-text-muted)]"></span>
                 <span class="text-[var(--color-text-secondary)]">{title.runtime}</span>
