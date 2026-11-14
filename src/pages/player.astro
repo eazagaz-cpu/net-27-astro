@@ -180,16 +180,15 @@ import { SITE_URL } from '../lib/seo';
 
     </div>
 
-    <!-- Stuck-buffering nudge — shown when the iframe loaded but no play confirmation arrived in time -->
-    <div id="stuck-toast" class="fixed bottom-4 left-3 right-3 sm:left-auto sm:right-4 sm:w-72 z-[70] hidden" role="alert">
-      <div class="bg-zinc-900 border border-white/10 rounded-xl p-3 shadow-2xl flex items-start gap-2.5">
-        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-zinc-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    <!-- Real-time server status notice — only shown on REAL events (e.g. server down / auto-switching) -->
+    <div id="realtime-toast" class="fixed bottom-4 left-3 right-3 sm:left-auto sm:right-4 sm:w-80 z-[70] hidden" role="status" aria-live="polite">
+      <div class="bg-zinc-900/95 backdrop-blur-md border border-white/10 rounded-xl p-3 shadow-2xl flex items-start gap-2.5">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-[var(--color-primary)] shrink-0 mt-0.5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
         <div class="flex-1 min-w-0">
-          <p class="text-xs font-semibold text-white">Still buffering?</p>
-          <p class="text-xs text-zinc-400 mt-0.5 leading-relaxed">This server might not have this title yet.</p>
-          <button id="stuck-toast-switch" class="text-xs text-[var(--color-primary)] hover:underline mt-1.5 cursor-pointer">Try another server</button>
+          <p id="realtime-toast-msg" class="text-xs font-semibold text-white">Switching server...</p>
+          <p id="realtime-toast-sub" class="text-xs text-zinc-400 mt-0.5 leading-relaxed">Finding the best working stream...</p>
         </div>
-        <button id="stuck-toast-close" class="text-zinc-500 hover:text-white transition-colors shrink-0 cursor-pointer" aria-label="Dismiss">
+        <button id="realtime-toast-close" class="text-zinc-500 hover:text-white transition-colors shrink-0 cursor-pointer p-0.5" aria-label="Dismiss">
           <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
@@ -374,34 +373,29 @@ import { SITE_URL } from '../lib/seo';
   let loadTimeoutTimer: ReturnType<typeof setTimeout> | null = null;
   let failedThisCycle  = new Set<number>();
 
-  // ── Stuck-buffering nudge ────────────────────────────────────────────────
-  // iframe onload only proves the embed page's document loaded — not that a
-  // video is actually playing. Some providers never send a play postMessage
-  // even though playback works fine, so we can't safely auto-switch servers
-  // on this signal alone — we just nudge the user instead.
-  const STUCK_NUDGE_DELAY = 15000;
-  let playbackStarted   = false;
-  let stuckNudgeTimer: ReturnType<typeof setTimeout> | null = null;
+  // ── Real-time notification system (genuine real-time events only — NO fake timer popups) ──
+  let realtimeToastTimer: ReturnType<typeof setTimeout> | null = null;
 
-  function clearStuckNudgeTimer() {
-    if (stuckNudgeTimer) { clearTimeout(stuckNudgeTimer); stuckNudgeTimer = null; }
+  function hideRealtimeNotice() {
+    if (realtimeToastTimer) { clearTimeout(realtimeToastTimer); realtimeToastTimer = null; }
+    document.getElementById('realtime-toast')?.classList.add('hidden');
   }
 
-  function hideStuckNudge() {
-    document.getElementById('stuck-toast')?.classList.add('hidden');
-  }
-
-  function showStuckNudge() {
-    const toast = document.getElementById('stuck-toast');
-    if (!toast || !toast.classList.contains('hidden')) return;
+  function showRealtimeNotice(msg: string, sub: string, durationMs = 4000) {
+    const toast = document.getElementById('realtime-toast');
+    const msgEl = document.getElementById('realtime-toast-msg');
+    const subEl = document.getElementById('realtime-toast-sub');
+    if (!toast || !msgEl || !subEl) return;
+    msgEl.textContent = msg;
+    subEl.textContent = sub;
     toast.classList.remove('hidden');
+    if (realtimeToastTimer) clearTimeout(realtimeToastTimer);
+    realtimeToastTimer = setTimeout(() => {
+      toast.classList.add('hidden');
+    }, durationMs);
   }
 
-  document.getElementById('stuck-toast-close')?.addEventListener('click', hideStuckNudge);
-  document.getElementById('stuck-toast-switch')?.addEventListener('click', () => {
-    hideStuckNudge();
-    switchServer();
-  });
+  document.getElementById('realtime-toast-close')?.addEventListener('click', hideRealtimeNotice);
 
   // ── Dev-only logging (domain only — no full URLs in production) ───────────
   function logDev(...args: unknown[]) { if (DEV) console.log('[player]', ...args); }
@@ -524,6 +518,14 @@ import { SITE_URL } from '../lib/seo';
     while (failedThisCycle.has(next)) next = (next + 1) % servers.length;
     logDev('next server selected', servers[next]?.id);
 
+    const nextSrv = servers[next];
+    if (nextSrv) {
+      showRealtimeNotice(
+        `${serverName || 'Server ' + (idx + 1)} not responding`,
+        `Auto-switching to ${nextSrv.name}...`
+      );
+    }
+
     loadPlayer(next, { autoAdvance: true, failedName: serverName });
   }
 
@@ -541,8 +543,6 @@ import { SITE_URL } from '../lib/seo';
     currentServerIdx = idx;
     playerConfirmed  = false;
     playbackStarted  = false;
-    clearStuckNudgeTimer();
-    hideStuckNudge();
 
     if (!id) { setState('notfound'); return; }
 
@@ -594,36 +594,20 @@ import { SITE_URL } from '../lib/seo';
         handleServerFailure(idx, srv.name);
       }, LOAD_TIMEOUT);
 
-      // Longer watchdog: iframe onload (playerConfirmed) only proves the embed
-      // page loaded, not that a video is actually playing. If no real playback
-      // signal arrives within STUCK_NUDGE_DELAY, nudge the user instead of
-      // auto-switching — some providers never send a play postMessage even
-      // when video is playing fine, so auto-cycling here would interrupt them.
-      stuckNudgeTimer = setTimeout(() => {
-        stuckNudgeTimer = null;
-        if (playbackStarted) return;
-        showStuckNudge();
-      }, STUCK_NUDGE_DELAY);
-
-      // onload fires for both working embeds AND X-Frame-Options-blocked
-      // iframes (Chrome renders its own error page and fires onload for it).
-      // We cannot distinguish these via contentDocument (both throw
-      // SecurityError) or postMessage (most embed providers never send any).
-      //
-      // Strategy: trust onload — set playerConfirmed so the LOAD_TIMEOUT
-      // auto-cycle doesn't fire. The STUCK_NUDGE_DELAY (15s) is the safety
-      // net: if no playback signal arrives, the user gets a manual "try
-      // another server" prompt. autoembed.co (the only consistently blocked
-      // provider) is already demoted to Server 7 so users rarely hit it.
+      // Real-time verification: once iframe fires onload, the server document is active.
+      // We clear load timer and dismiss any active switching notice.
+      // NO fake 15-second timer popups: users enjoy uninterrupted, clean playback.
       iframe.onload = () => {
         playerConfirmed = true;
         clearTimer();
+        hideRealtimeNotice();
         logDev('iframe loaded, confirmed', srv.id);
       };
 
       iframe.onerror = () => {
         clearTimer();
         logDev('iframe error for', srv.id);
+        showRealtimeNotice(`${srv.name} connection failed`, 'Trying next server...');
         handleServerFailure(idx, srv.name);
       };
     });
@@ -790,8 +774,7 @@ import { SITE_URL } from '../lib/seo';
       playerConfirmed = true;
       playbackStarted = true;
       clearTimer();
-      clearStuckNudgeTimer();
-      hideStuckNudge();
+      hideRealtimeNotice();
       // Record success for quality-based server sorting
       const servers = getValidServers();
       const currentSrv = servers[currentServerIdx];

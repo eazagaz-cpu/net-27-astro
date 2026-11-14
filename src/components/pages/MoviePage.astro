@@ -274,9 +274,17 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
             <!-- Action Buttons -->
             <div class="flex items-center gap-3 flex-wrap">
               {theatreOnly ? (
-                <span class="btn-glass px-6 py-2.5 rounded-lg text-sm cursor-default" data-theatre-only>
-                  🎬 {inCinemas ? `In theatres since ${releasedText}` : `In theatres ${releasedText}`} · not streaming yet
-                </span>
+                <>
+                  <span class="btn-glass px-5 py-2.5 rounded-lg text-sm cursor-default border-white/10" data-theatre-only>
+                    🎬 {inCinemas ? `In theatres since ${releasedText}` : `In theatres ${releasedText}`} · not streaming yet
+                  </span>
+                  {title.trailerUrl && (
+                    <a href="#trailer" class="btn-primary px-5 py-2.5 rounded-lg text-sm inline-flex items-center gap-2">
+                      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+                      Watch Trailer
+                    </a>
+                  )}
+                </>
               ) : (
                 <a href={playerUrl} class="btn-primary px-6 py-2.5 rounded-lg text-sm">
                   <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
@@ -425,7 +433,7 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
       </section>
 
       <!-- Trailer Section -->
-      <section>
+      <section id="trailer" class="scroll-mt-24">
         <h2 class="section-title mb-6" data-t="sections.trailer">{t(tr, 'sections.trailer')}</h2>
         {title.trailerUrl ? (
           <div class="aspect-video rounded-xl overflow-hidden glass-card">

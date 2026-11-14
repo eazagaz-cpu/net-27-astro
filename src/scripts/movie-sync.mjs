@@ -7,7 +7,7 @@
  * Auto-runs    : npm run prebuild (before every astro build)
  */
 
-import { writeFileSync, mkdirSync, readFileSync } from 'fs';
+import { writeFileSync, mkdirSync, readFileSync, existsSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
@@ -842,6 +842,26 @@ async function main() {
       console.log(`✗ ${err.message}`);
       fail++;
     }
+  }
+
+  // Auto-generate combined latest.json (latest-movies + latest-tv) so the latest releases feed is 100% fresh
+  try {
+    const lmPath = join(CACHE_DIR, 'latest-movies.json');
+    const ltPath = join(CACHE_DIR, 'latest-tv.json');
+    if (existsSync(lmPath) && existsSync(ltPath)) {
+      const lm = JSON.parse(readFileSync(lmPath, 'utf8') || '{"items":[]}');
+      const lt = JSON.parse(readFileSync(ltPath, 'utf8') || '{"items":[]}');
+      const combinedLatest = [...(lm.items || []), ...(lt.items || [])];
+      const seenLatest = new Set();
+      const dedupedLatest = combinedLatest
+        .filter(item => { if (seenLatest.has(item.id)) return false; seenLatest.add(item.id); return true; })
+        .sort((a, b) => (b.release_date || '').localeCompare(a.release_date || ''))
+        .slice(0, 60);
+      writeCache('latest', dedupedLatest);
+      console.log(`  Auto-generated latest.json (${dedupedLatest.length} fresh items)`);
+    }
+  } catch (err) {
+    console.log(`  latest.json auto-generation skipped: ${err.message}`);
   }
 
   // ── Full-detail pass — real replacement for the old fictional sampleTitles.ts.
