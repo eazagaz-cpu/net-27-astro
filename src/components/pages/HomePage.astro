@@ -1,6 +1,6 @@
----
+﻿---
 /**
- * HomePage.astro — the home page body in one locale.
+ * HomePage.astro â€” the home page body in one locale.
  *
  * Rendered by both / and /[lang]/ so the English page and its localized twins
  * cannot drift apart. Catalogue data is shared; only the prose differs.
@@ -87,23 +87,23 @@ const homeFaqs = [
         the top of the page, but read by search engines and screen readers. */}
     <h1 class="sr-only">{t(tr, 'seo.homeTitle')}</h1>
 
-    <!-- Safety & Independence Notice — visible immediately, prevents phishing confusion -->
+    <!-- Safety & Independence Notice â€” visible immediately, prevents phishing confusion -->
     <div id="safety-ticker" style="background:linear-gradient(90deg,#0d1117,#0d2235,#0d1117);border-bottom:1px solid rgba(59,130,246,0.3);padding:7px 0;overflow:hidden;position:relative;z-index:10">
       <div style="display:flex;align-items:center;gap:0;width:max-content;animation:tickerScroll 32s linear infinite" aria-label="Independence notice">
         {[1,2,3].map(() => (
           <span style="display:inline-flex;align-items:center;gap:14px;padding:0 32px;white-space:nowrap;font-size:12px;color:rgba(147,197,253,0.85);font-weight:500;letter-spacing:0.02em">
-            <span style="color:#60a5fa;font-weight:700">🛡 NET27 Watch</span>
+            <span style="color:#60a5fa;font-weight:700">ðŸ›¡ NET27 Watch</span>
             <span style="color:rgba(255,255,255,0.3)">|</span>
             <span>Independent movie & TV discovery site</span>
-            <span style="color:rgba(255,255,255,0.3)">·</span>
+            <span style="color:rgba(255,255,255,0.3)">Â·</span>
             <span>NOT affiliated with Netflix, Prime Video, Disney+ or any streaming service</span>
-            <span style="color:rgba(255,255,255,0.3)">·</span>
-            <span>No piracy · No illegal downloads · Legal streaming info only</span>
-            <span style="color:rgba(255,255,255,0.3)">·</span>
-            <span style="color:#4ade80">✓ Safe & Legal</span>
-            <span style="color:rgba(255,255,255,0.3)">·</span>
-            <span>Powered by TMDB API · Not endorsed by TMDB</span>
-            <span style="color:rgba(255,255,255,0.3)">·</span>
+            <span style="color:rgba(255,255,255,0.3)">Â·</span>
+            <span>No piracy Â· No illegal downloads Â· Legal streaming info only</span>
+            <span style="color:rgba(255,255,255,0.3)">Â·</span>
+            <span style="color:#4ade80">âœ“ Safe & Legal</span>
+            <span style="color:rgba(255,255,255,0.3)">Â·</span>
+            <span>Powered by TMDB API Â· Not endorsed by TMDB</span>
+            <span style="color:rgba(255,255,255,0.3)">Â·</span>
           </span>
         ))}
       </div>
@@ -118,7 +118,7 @@ const homeFaqs = [
       }
     </style>
 
-    <!-- Hero: server-rendered with cached data — visible immediately, no blank flash -->
+    <!-- Hero: server-rendered with cached data â€” visible immediately, no blank flash -->
     <DynamicHero initialItems={heroPlayableTrending} />
 
     <!-- App Download CTA -->
@@ -169,15 +169,15 @@ const homeFaqs = [
       })();
     </script>
 
-    <!-- Continue Watching — client-side localStorage rail -->
+    <!-- Continue Watching â€” client-side localStorage rail -->
     <ContinueWatching />
 
-    <!-- Top 10 — directly after Continue Watching -->
+    <!-- Top 10 â€” directly after Continue Watching -->
     <Top10Rail mediaType="movie" items={cachedPopularMovies} />
     <Top10Rail mediaType="tv" items={cachedPopularTv} />
 
 
-    <!-- Core sections — same structure as competitor -->
+    <!-- Core sections â€” same structure as competitor -->
     <StaticRail title="Trending Now"            items={cachedTrending}   viewAllHref="/trending/"  railKey="trending" autoRefresh={true} refreshCategory="trending" />
     <StaticRail title="Latest Releases (2025&ndash;2026)" items={cachedLatest} viewAllHref="/latest/"    railKey="latest-movies" autoRefresh={true} refreshCategory="latest" />
     <StaticRail title="Popular on Netflix"           items={cachedNetflix}       viewAllHref="/platform/netflix/" railKey="netflix" />
@@ -199,9 +199,9 @@ const homeFaqs = [
 
     <LazyRail title="Pakistani Dramas" category="pakistani-drama" viewAllHref="/language/urdu/" railKey="pakistani-drama" badge="PK" />
     <LazyRail title="Turkish Dramas (Urdu Dubbed)" category="turkish-drama" viewAllHref="/language/turkish/" railKey="turkish-drama" badge="TR" />
-    <LazyRail title="Trending Globally — Coming Soon" category="upcoming" railKey="upcoming" badge="Upcoming" />
+    <LazyRail title="Trending Globally â€” Coming Soon" category="upcoming" railKey="upcoming" badge="Upcoming" />
 
-    <!-- Geo-Personalized Rail — country-specific content (last rail before search) -->
+    <!-- Geo-Personalized Rail â€” country-specific content (last rail before search) -->
     <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)] py-6">
       <GeoRail client:visible />
     </div>
@@ -229,7 +229,7 @@ const homeFaqs = [
         <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
           <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold" data-t="home.blogHeading">{t(tr, 'home.blogHeading')}</h2>
-            <a href={blogIndexPath(lang)} class="text-sm text-[#ff6479] hover:underline">View all articles →</a>
+            <a href={blogIndexPath(lang)} class="text-sm text-[#ff6479] hover:underline">View all articles â†’</a>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {latestPosts.map(post => (
@@ -260,7 +260,7 @@ const homeFaqs = [
     <section class="py-6 border-t border-white/5">
       <div class="max-w-full mx-auto px-[clamp(16px,2vw,64px)]">
         <div style="background:rgba(30,58,138,0.12);border:1px solid rgba(59,130,246,0.2);border-radius:12px;padding:14px 20px;display:flex;align-items:flex-start;gap:12px">
-          <span style="font-size:20px;flex-shrink:0">🛡</span>
+          <span style="font-size:20px;flex-shrink:0">ðŸ›¡</span>
           <p class="text-[11px] text-[var(--color-text-muted)] leading-relaxed">
             <strong class="text-blue-400">NET27 Watch is an independent service.</strong>{' '}
             It is not affiliated with, endorsed by, or in any way associated with Netflix, Prime Video, Disney+, JioHotstar, or any other streaming platform.
@@ -271,7 +271,7 @@ const homeFaqs = [
         </div>
       </div>
     </section>
-    <!-- Sponsor rails — at the END of the homepage, after the FAQ and the
+    <!-- Sponsor rails â€” at the END of the homepage, after the FAQ and the
          disclaimer (owner's decision, 2026-10-20; from 2026-09-26 they sat
          above Top 10). This far down they sit below ~9,500px of content: in
          bbef911 that was reported as "links gone" although they were there.
@@ -280,13 +280,16 @@ const homeFaqs = [
          from src/data/sponsor-links.json at build time, so they show even if
          the script is slow, fails or is blocked; hydration then swaps in the
          live KV list. verify-dist-links.mjs checks the built HTML. -->
-    <div class="sponsor-rail-slot" style="min-height:280px">
-      <!-- Rail 1 (Featured) — KV se instant update -->
-      <SponsorRailDynamic client:idle />
-    </div>
-    <div class="sponsor-rail-slot" style="min-height:280px">
-      <!-- Rail 2 (Popular Gaming Links) — KV se instant update -->
-      <SponsorRailSecondary client:idle />
+    {/* CASINO_TRAILS_TOGGLE: style="display:none" = hidden | remove style attr to re-enable */
+    <div id="casino-trails-wrapper" style="display:none" data-casino-trails="disabled">
+      <div class="sponsor-rail-slot" style="min-height:280px">
+        <!-- Rail 1 (Featured) — KV se instant update -->
+        <SponsorRailDynamic client:idle />
+      </div>
+      <div class="sponsor-rail-slot" style="min-height:280px">
+        <!-- Rail 2 (Popular Gaming Links) — KV se instant update -->
+        <SponsorRailSecondary client:idle />
+      </div>
     </div>
   </main>
 
