@@ -44,6 +44,8 @@ const noPlayer = new Set(getRealTitlesByType('movie').filter(isTheatreOnly).map(
             loading={i === 0 ? 'eager' : 'lazy'}
             decoding={i === 0 ? 'sync' : 'async'}
             fetchpriority={i === 0 ? 'high' : 'low'}
+            width="1280"
+            height="720"
           />
         )}
 

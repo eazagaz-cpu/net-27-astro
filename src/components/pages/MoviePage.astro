@@ -34,6 +34,7 @@ import RatingsRow from '../RatingsRow.astro';
 import WatchlistButton from '../WatchlistButton.astro';
 import { years } from '../../data/entities';
 import UserReviews from '../UserReviews.tsx';
+import SimilarTitles from '../SimilarTitles.tsx';
 
 
 const { title, lang } = Astro.props;
@@ -202,7 +203,7 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
     <section class="relative w-full min-h-[60vh] md:min-h-[70vh] overflow-hidden">
       <!-- Backdrop Image -->
       {title.backdropUrl && (
-        <img src={title.backdropUrl.replace('/t/p/original/', '/t/p/w1280/')} alt={`${title.title} backdrop`} class="absolute inset-0 w-full h-full object-cover" loading="eager" decoding="async" width="1280" height="720" />
+        <img src={title.backdropUrl.replace('/t/p/original/', '/t/p/w1280/')} alt={`${title.title} backdrop`} class="absolute inset-0 w-full h-full object-cover" loading="eager" decoding="async" fetchpriority="high" width="1280" height="720" />
       )}
       <div class={`absolute inset-0 bg-gradient-to-br ${gradient} ${title.backdropUrl ? 'opacity-40' : ''}`}></div>
 
@@ -477,7 +478,7 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
       <FAQSection faqs={faqs} title={t(tr, 'ui.faqHeading')} />
 
       <!-- User Reviews -->
-      <UserReviews client:only="react" tmdbId={title.tmdbId} titleName={title.title} />
+      <UserReviews client:visible tmdbId={title.tmdbId} titleName={title.title} />
 
       <!-- Related Titles -->
 
@@ -491,6 +492,12 @@ const YEAR_PAGES = new Set(years.map(y => y.year));
           </div>
         </section>
       )}
+
+      <!-- Similar Movies (TMDB live data) -->
+      <section>
+        <h2 class="section-title mb-6">More Like This</h2>
+        <SimilarTitles client:visible tmdbId={title.tmdbId} type="movie" currentTitle={title.title} />
+      </section>
 
       <!-- Legal Disclaimer -->
       <section class="glass-card rounded-xl p-6">
