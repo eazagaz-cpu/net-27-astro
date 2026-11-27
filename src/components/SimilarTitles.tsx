@@ -78,8 +78,8 @@ export default function SimilarTitles({ tmdbId, type, currentTitle }: Props) {
     >
       {items.map(item => {
         const title = item.title || item.name || '';
-        const year = (item.release_date || item.first_air_date || '').slice(0, 4);
-        const slug = slugify(title + (year ? `-${year}` : ''));
+        // Site slugs are "{title-slug}-{tmdbId}" (e.g. inception-27205), not year-based.
+        const slug = slugify(title) + `-${item.id}`;
         const href = type === 'movie' ? `/movies/${slug}/` : `/shows/${slug}/`;
         const poster = `https://image.tmdb.org/t/p/w300${item.poster_path}`;
         const rating = item.vote_average ? item.vote_average.toFixed(1) : null;
